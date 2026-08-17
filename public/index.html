@@ -1807,11 +1807,16 @@ class Component extends DCLogic {
 
     // ===== people, assignment and money =====
     const me = S.profile || {};
-    const isAdmin = !!me.is_admin;
+    // Cross-checked against the staff directory as well as the session profile:
+    // if either says admin, treat as admin. A single missing column here
+    // silently strips approvals, rate editing and the billing panel, and that
+    // failure is invisible — the controls simply are not drawn.
+    const meRow = (D.team||[]).find(t=>t.id===me.id) || {};
+    const isAdmin = !!(me.is_admin || meRow.isAdmin);
     // Finance visibility: owner or accountant. Ordinary staff never see client
     // invoices or anyone else's pay. The database enforces this too — these
     // flags only decide what is worth rendering.
-    const canBilling = isStaff && (isAdmin || !!me.is_accountant);
+    const canBilling = isStaff && (isAdmin || !!me.is_accountant || !!meRow.isAccountant);
     const members = (D.team||[]).filter(t=>t.active!==false);
     const memberName = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?m.name:''; };
 

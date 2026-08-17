@@ -153,10 +153,13 @@
   async function loadProfile() {
     const { data: { user } } = await client().auth.getUser();
     if (!user) { profile = null; return null; }
+    // Select every column: is_admin and is_accountant decide who can approve
+    // pay, edit rates and see client invoices. Naming columns here once meant
+    // those flags silently arrived undefined, which reads as "not an admin".
     const { data, error } = await client()
-      .from('profiles').select('id, role, client_id, name').eq('id', user.id).single();
+      .from('profiles').select('*').eq('id', user.id).single();
     if (error) throw error;
-    profile = { ...data, email: user.email };
+    profile = { ...data, email: data.email || user.email };
     return profile;
   }
 
