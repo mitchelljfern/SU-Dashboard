@@ -291,7 +291,7 @@
             </div>
             <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
               <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
@@ -308,7 +308,7 @@
             </div>
             <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
               <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
@@ -324,7 +324,7 @@
             </div>
             <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
               <button onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.when }}</div>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.when }}</div></div>
                 <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
               </button>
             </sc-for>
@@ -341,7 +341,7 @@
                     <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
                     <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
                     <sc-if value="{{ t.hasAssignee }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--blue);white-space:nowrap">{{ t.assignee }}</div></sc-if>
-                    <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div>
+                    <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ t.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div></div>
                   </div>
                 </sc-for>
               </div>
@@ -396,7 +396,9 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Messages</h3>
               <sc-for list="{{ lastMsgs }}" as="lm" hint-placeholder-count="2">
                 <button onClick="{{ lm.open }}" style="text-align:left;background:none;border:none;border-bottom:1px solid var(--border-hairline);padding:9px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;width:100%" style-hover="background:var(--gray-100)">
-                  <div style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ lm.name }} — {{ lm.who }} · {{ lm.when }}</div>
+                  <div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--text-muted)">
+                    <span style="{{ lm.dot }}"></span>{{ lm.name }} — {{ lm.who }} · {{ lm.when }}
+                  </div>
                   <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ lm.text }}</div>
                 </button>
               </sc-for>
@@ -405,9 +407,12 @@
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Activity</h3>
             <div style="display:flex;flex-direction:column">
               <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
-                <div style="padding:9px 0;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:2px">
-                  <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
-                  <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                <div style="padding:9px 0;border-bottom:1px solid var(--border-hairline);display:flex;align-items:flex-start;gap:9px">
+                  <span style="{{ ev.dot }};margin-top:5px"></span>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                    <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
+                    <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                  </div>
                 </div>
               </sc-for>
             </div>
@@ -434,7 +439,7 @@
             <sc-for list="{{ boardReqs }}" as="r" hint-placeholder-count="2">
               <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid #D68F2E;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer">
                 <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="display:flex;gap:6px">
                   <button onClick="{{ r.approve }}" style="flex:1;background:var(--green);border:none;color:#fff;padding:5px 0;font-size:12px;cursor:pointer;font-family:var(--font-display);font-weight:600" style-hover="filter:brightness(1.08)">Approve ▸</button>
                   <button onClick="{{ r.decline }}" style="flex:1;background:#fff;border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">Decline</button>
@@ -452,7 +457,7 @@
                 <div style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px">
                   <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                    <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span></span>
                     <span style="font-size:11px;color:var(--text-muted)">{{ w.hoursLabel }}</span>
                   </div>
                   <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}">
@@ -483,7 +488,7 @@
             <div style="display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
               <span style="width:18px;height:18px;min-width:18px;background:var(--check);color:#fff;font-size:12px;line-height:18px;text-align:center;border-radius:3px">✓</span>
               <div style="flex:1;font-size:14px;color:var(--text-body)">{{ dn.title }}</div>
-              <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ dn.clientName }}</span>
+              <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ dn.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ dn.clientName }}</span></span>
               <span style="font-size:12px;color:var(--text-muted)">{{ dn.hoursLabel }}</span>
             </div>
           </sc-for>
@@ -556,10 +561,10 @@
         </sc-if>
         <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px">
           <sc-for list="{{ clientCards }}" as="c" hint-placeholder-count="2">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <div style="background:#fff;border:1px solid var(--border-card);border-top:4px solid {{ c.accent }};padding:24px;display:flex;flex-direction:column;gap:14px">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
                 <div style="display:flex;flex-direction:column;gap:2px">
-                  <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)">{{ c.name }}</div>
+                  <div style="display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)"><span style="{{ c.dot }}"></span>{{ c.name }}</div>
                   <div style="font-size:12px;color:var(--text-muted)">{{ c.domain }} · {{ c.service }}</div>
                 </div>
                 <span style="background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ c.plan }}</span>
@@ -588,7 +593,7 @@
               <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
                 <div style="flex:1;display:flex;flex-direction:column;gap:2px">
                   <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ r.clientName }} · {{ r.when }}</div>
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:12px;color:var(--text-muted)">{{ r.clientName }} · {{ r.when }}</div></div>
                   <div style="font-size:13px;color:var(--text-body)">{{ r.desc }}</div>
                 </div>
                 <button onClick="{{ r.approve }}" style="background:var(--green);color:#fff;border:none;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
@@ -601,7 +606,8 @@
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">History</h3>
             <sc-for list="{{ pastRequests }}" as="r" hint-placeholder-count="3">
               <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
-                <div style="flex:1;font-size:13px;color:var(--text-body)">{{ r.title }} <span style="color:var(--text-muted)">· {{ r.clientName }}</span></div>
+                <span style="{{ r.dot }}"></span>
+              <div style="flex:1;font-size:13px;color:var(--text-body)">{{ r.title }} <span style="color:var(--text-muted)">· {{ r.clientName }}</span></div>
                 <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
               </div>
             </sc-for>
@@ -613,7 +619,7 @@
         <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:#fff;border:1px solid var(--border-card);min-height:480px">
           <div class="su-tabs" style="border-right:1px solid var(--border-hairline);display:flex;flex-direction:column;padding:12px 0">
             <sc-for list="{{ msgTabs }}" as="tab" hint-placeholder-count="2">
-              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)">{{ tab.name }}</button>
+              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)"><span style="{{ tab.dot }}"></span>{{ tab.name }}</button>
             </sc-for>
           </div>
           <div style="display:flex;flex-direction:column">
@@ -813,6 +819,7 @@
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">This month by client</h3>
             <sc-for list="{{ timeSummary }}" as="s" hint-placeholder-count="3">
               <div onClick="{{ s.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer">
+                <span style="{{ s.dot }}"></span>
                 <div style="flex:1;font-size:14px;font-weight:500;color:var(--navy)">{{ s.name }}</div>
                 <div style="font-size:12.5px;color:var(--text-muted)">{{ s.rate }}</div>
                 <div style="font-size:13.5px;color:var(--text-body);min-width:70px;text-align:right">{{ s.hours }} hrs</div>
@@ -831,7 +838,7 @@
                 <div style="font-size:12.5px;color:var(--text-muted);min-width:92px">{{ e.date }}</div>
                 <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:1px">
                   <div style="font-size:14px;color:var(--text-body)">{{ e.desc }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ e.clientName }} · {{ e.who }} {{ e.tag }}</div>
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ e.dot }}"></span><div style="font-size:11.5px;color:var(--text-muted)">{{ e.clientName }} · {{ e.who }} {{ e.tag }}</div></div>
                 </div>
                 <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ e.hours }}</div>
                 <button onClick="{{ e.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
@@ -1648,6 +1655,31 @@ class Component extends DCLogic {
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production'];
+
+    // ===== client identity colours =====
+    // A fixed categorical order, validated pair-by-pair (including for the
+    // common colour-vision deficiencies) against this app's white cards and
+    // #F2F4F9 page. The order is deliberate — neighbouring slots are the ones
+    // checked for separation, so it is never sorted or cycled arbitrarily.
+    // Three slots sit under 3:1 against the surface, which is allowed here only
+    // because the client's name is always rendered next to the mark: colour is
+    // a secondary cue, never the only one.
+    const CLIENT_PALETTE=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+    const INTERNAL_COLOR='#7C84A3';   // Social Upgrades' own rows
+    const clientColor=id=>{
+      if(!id) return INTERNAL_COLOR;
+      const c=D.clients.find(x=>x.id===id);
+      if(c&&c.color) return c.color;
+      // Only reached for a client saved before colours existed.
+      const i=Math.max(0,D.clients.findIndex(x=>x.id===id));
+      return CLIENT_PALETTE[i%CLIENT_PALETTE.length];
+    };
+    // 10px so the mark stays legible at the sizes used here, with a ring so it
+    // keeps its edge when it lands on a tinted row.
+    const clientDot=id=>({width:10,height:10,minWidth:10,borderRadius:'50%',
+      background:clientColor(id),boxShadow:'0 0 0 2px rgba(255,255,255,.9)',display:'inline-block'});
+    const clientBar=id=>({width:3,alignSelf:'stretch',minHeight:18,borderRadius:2,
+      background:clientColor(id),display:'inline-block'});
     const URGENCIES=['Low','Normal','High','Urgent'];
     const urgStyle=u=> u==='Urgent'? this.badge('red') : u==='High'? this.badge('amber')
                      : u==='Low'? this.badge('gray') : this.badge('blue');
@@ -1720,7 +1752,7 @@ class Component extends DCLogic {
             this.logEv(x,it.clientId,'Work item completed: '+it.title); }
           else { it.completedAt=null; }
           return x; });
-        return {title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id),
+        return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id),
           // Projected finish is what the client sees on their request card.
           projected:w.projectedFinish||'',
           onProjected:e=>{ const v=e.target.value; this.set(x=>{ x.work.find(y=>y.id===w.id).projectedFinish=v; return x; }); },
@@ -1729,22 +1761,22 @@ class Component extends DCLogic {
       });
       return {label,accent,count:items.length,items};
     });
-    const boardReqs=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+    const boardReqs=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
       approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
-    const doneItems=D.work.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h'}));
+    const doneItems=D.work.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
-    const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
+    const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),dot:clientDot(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
       assignee:t.assigneeName||'', hasAssignee:!!t.assigneeName,
       toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client') this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; })});
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
     const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
     // requests
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
-    const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),when:this.fmt(r.ts),
+    const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
       // Same path as everywhere else, so context is never dropped on this route.
       approve:()=>approveReq(r.id),
       decline:()=>declineReq(r.id)}));
-    const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),badgeStyle,statusLabel}; });
+    const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),badgeStyle,statusLabel}; });
     const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
@@ -1772,6 +1804,7 @@ class Component extends DCLogic {
       const avg=c.pulse.length? (c.pulse.reduce((a,b)=>a+b,0)/c.pulse.length):0;
       const act=D.work.find(w=>w.clientId===c.id&&w.status==='progress');
       return {name:c.name,domain:c.domain,service:c.service,plan:c.plan,
+        dot:clientDot(c.id), accent:clientColor(c.id),
         hoursLabel:c.hoursUsed+' / '+c.hoursTotal+' hrs',
         barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
         openWork:D.work.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
@@ -1832,7 +1865,7 @@ class Component extends DCLogic {
     const mkTimeRow = t=>({
       date:t.entryDate, hours:Number(t.hours||0).toFixed(2),
       desc:t.description||'—', who:whoWorked(t.profileId),
-      clientName:cname(t.clientId),
+      clientName:cname(t.clientId),dot:clientDot(t.clientId),
       billable:t.billable!==false, tag:t.billable===false?'Non-billable':'',
       remove:()=>this.set(x=>{ x.time=x.time.filter(y=>y.id!==t.id); return x; })
     });
@@ -1929,10 +1962,10 @@ class Component extends DCLogic {
         };
       }
     }
-    const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
-    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,clientName:cname(w.clientId),badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
-    const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
-    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,who:m.who,when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
+    const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
+    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
+    const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),dot:clientDot(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
+    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:m.who,when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
     const brandFiles=myFiles.filter(f=>f.brand).map(f=>({name:f.name,size:f.size,ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}));
     // mobile nav
     const mobStyle=active=>({flex:1,background:'transparent',border:'none',borderTop:active?'2px solid var(--green)':'2px solid transparent',color:active?'#fff':'rgba(255,255,255,.65)',fontSize:11.5,fontWeight:active?600:500,padding:'10px 4px',cursor:'pointer',fontFamily:'var(--font-body)'});
@@ -1946,7 +1979,7 @@ class Component extends DCLogic {
       {label:'New requests',value:newReqCount},
       {label:'Open to-dos',value:D.todos.filter(t=>!t.done).length}
     ];
-    const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts)}));
+    const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts),dot:clientDot(l.clientId)}));
 
     // ===== people, assignment and money =====
     const me = S.profile || {};
@@ -2141,7 +2174,7 @@ class Component extends DCLogic {
       timeSummary: D.clients.map(c=>{
         const rows=(D.time||[]).filter(t=>t.clientId===c.id&&monthKey(t.entryDate)===thisMonth);
         const bh=rows.filter(t=>t.billable!==false).reduce((s,t)=>s+Number(t.hours||0),0);
-        return {name:c.name, hours:bh.toFixed(2),
+        return {name:c.name, dot:clientDot(c.id), hours:bh.toFixed(2),
           rate:c.billingType==='hourly'?money(c.hourlyRate)+'/hr':(c.plan||'Plan'),
           value:c.billingType==='hourly'?money(bh*Number(c.hourlyRate||0)):'—',
           open:()=>this.setState({viewClient:c.id,msgClient:c.id})};
@@ -2319,11 +2352,16 @@ class Component extends DCLogic {
         this.setState({syncError:null});
         this.set(x=>{
           const hourly=(d.ncBilling||'retainer')==='hourly';
+          // Take the lowest palette slot nobody is using, so a new client is
+          // distinct from the others until all eight are spoken for.
+          const used=new Set(x.clients.map(c=>c.color).filter(Boolean));
+          const color=CLIENT_PALETTE.find(p=>!used.has(p))
+                   || CLIENT_PALETTE[x.clients.length%CLIENT_PALETTE.length];
           x.clients.push({id,name:nm,domain:(d.ncDomain||'').trim(),service:(d.ncService||'').trim(),
             plan:hourly?'Hourly':(d.ncPlan||'Growth'),price:hourly?0:(Number(d.ncPrice)||0),
             hoursUsed:0,hoursTotal:hourly?0:(Number(d.ncHours)||0),
             pulse:[],businesses,billingPortalUrl:'',billingCycle:hourly?'none':'monthly',
-            billingType:hourly?'hourly':'retainer',hourlyRate:Number(d.ncRate)||0});
+            billingType:hourly?'hourly':'retainer',hourlyRate:Number(d.ncRate)||0,color});
           x.reports[id]={stats:[],note:''};
           this.logEv(x,id,'New client added: '+nm);
           return x;
@@ -2383,8 +2421,8 @@ class Component extends DCLogic {
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
       clientCards, newRequests, noNewRequests:newRequests.length===0, pastRequests,
       msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;
-        return {name:c.name,select:()=>this.setState({msgClient:c.id}),
-          style:{textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:active?'3px solid var(--green)':'3px solid transparent',padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}}; }),
+        return {name:c.name,dot:clientDot(c.id),select:()=>this.setState({msgClient:c.id}),
+          style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(active?clientColor(c.id):'transparent'),padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}}; }),
       thread, threadName:isTeam?cname(msgCid):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
       onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
       portalUpdates, dFeedback:d.feedback||'', onFeedback:this.draft('feedback'),

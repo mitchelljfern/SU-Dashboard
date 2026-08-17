@@ -21,7 +21,7 @@
     price: 'price', hoursUsed: 'hours_used', hoursTotal: 'hours_total',
     pulse: 'pulse', pulseMonth: 'pulse_month', businesses: 'businesses',
     billingPortalUrl: 'billing_portal_url', billingCycle: 'billing_cycle',
-    billingType: 'billing_type', hourlyRate: 'hourly_rate'
+    billingType: 'billing_type', hourlyRate: 'hourly_rate', color: 'color'
   };
 
   // Hours worked for a client, billed monthly for 'hourly' clients.
