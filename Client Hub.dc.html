@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/styles.css">
+  <script src="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/_ds_bundle.js"></script>
+  <style>
+    html,body{margin:0;padding:0;height:100%}
+    body{font-family:var(--font-body);background:var(--cloud);color:var(--text-body);font-size:15px}
+    a{color:var(--link);text-decoration:none}a:hover{color:var(--link-hover)}
+    input,select,textarea,button{font-family:var(--font-body)}
+    input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:-1px}
+    ::placeholder{color:var(--gray-400)}
+    .su-bottom{display:none}
+    .su-grid2>*,.su-half>*,.su-bill>*,.su-cols>*{min-width:0}
+    @media (max-width:860px){
+      .su-side{display:none !important}
+      .su-bottom{display:flex !important}
+      .su-main{padding:24px 18px 110px !important}
+      .su-grid4,.su-cols{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+      .su-grid2,.su-half,.su-bill,.su-msg{grid-template-columns:minmax(0,1fr) !important}
+      .su-grid3{display:flex !important;flex-direction:column-reverse;gap:18px}
+      .su-tabs{flex-direction:row !important;overflow-x:auto;border-right:none !important;border-bottom:1px solid var(--border-hairline)}
+    }
+    @media (max-width:560px){
+      .su-grid4,.su-cols{grid-template-columns:minmax(0,1fr) !important}
+    }
+  </style>
+</helmet>
+<div style="display:flex;height:100vh;overflow:hidden">
+  <aside class="su-side" style="width:232px;min-width:232px;background:var(--navy);color:#fff;display:flex;flex-direction:column;padding:24px 0" data-screen-label="Sidebar">
+    <div style="padding:0 22px 20px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)">
+      <img src="assets/logo-on-dark.svg" alt="Social Upgrades" style="height:28px;width:auto;align-self:flex-start">
+      <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);color:rgba(255,255,255,.55)">{{ hubLabel }}</div>
+    </div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:16px 12px;flex:1;overflow-y:auto">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <button onClick="{{ n.select }}" style="{{ n.style }}" style-hover="background:rgba(255,255,255,.08)">
+          <span>{{ n.label }}</span>
+          <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 8px">{{ n.badge }}</span></sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:10px">
+      <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600">Preview portal as</div>
+        <select value="{{ viewClient }}" onChange="{{ onViewClient }}" style="background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:8px 10px;font-size:13px">
+          <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+        </select>
+        <button onClick="{{ goClient }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Open client portal</button>
+      </sc-if>
+      <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ portalName }}</strong></div>
+        <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
+      </sc-if>
+      <div style="font-size:9px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:500">Based in the United States · Since 2014</div>
+    </div>
+  </aside>
+  <div class="su-bottom" style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:60;justify-content:space-around;align-items:stretch;padding:6px 4px 10px;border-top:1px solid rgba(255,255,255,.12)">
+    <sc-for list="{{ bottomItems }}" as="b" hint-placeholder-count="4">
+      <button onClick="{{ b.select }}" style="{{ b.style }}">{{ b.label }}</button>
+    </sc-for>
+    <button onClick="{{ toggleMore }}" style="flex:1;background:transparent;border:none;color:rgba(255,255,255,.72);font-size:11.5px;font-weight:500;padding:10px 4px;cursor:pointer">More ≡</button>
+  </div>
+  <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ toggleMore }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:70"></div>
+    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:14px 14px 0 0">
+      <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.5);padding-bottom:10px">{{ hubLabel }}</div>
+      <sc-for list="{{ sheetItems }}" as="n" hint-placeholder-count="7">
+        <button onClick="{{ n.select }}" style="{{ n.style }}">{{ n.label }}</button>
+      </sc-for>
+      <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:12px">
+        <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button></sc-if>
+        <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
+      </div>
+    </div>
+  </sc-if>
+  <main class="su-main" style="flex:1;overflow-y:auto;padding:36px 44px 72px;position:relative">
+    <div style="max-width:1720px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+      <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="font-size:12px;font-weight:600;letter-spacing:var(--ls-wide);text-transform:uppercase;color:{{ kickerColor }}">{{ kicker }}</div>
+          <h1 style="font-family:var(--font-display);font-weight:800;font-size:32px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);line-height:1.1;margin:0">{{ heading }}</h1>
+        </div>
+        <div style="position:relative">
+          <button onClick="{{ toggleNotif }}" style="background:#fff;border:1px solid var(--border-card);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:8px" style-hover="background:var(--gray-100)">
+            <span>Notifications</span>
+            <sc-if value="{{ unseen }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 8px">{{ unseen }}</span></sc-if>
+          </button>
+          <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;right:0;top:44px;width:340px;background:#fff;border:1px solid var(--border-card);box-shadow:0 16px 40px rgba(15,22,51,.14);z-index:40;display:flex;flex-direction:column">
+              <div style="padding:12px 16px;border-bottom:1px solid var(--border-hairline);font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Notifications</div>
+              <div style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column">
+                <sc-for list="{{ notifs }}" as="ev" hint-placeholder-count="4">
+                  <div style="padding:11px 16px;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:2px">
+                    <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
+                    <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </header>
+
+      <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
+        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:84vh;overflow-y:auto;background:#fff;z-index:81;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
+            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
+            <button onClick="{{ closeDetail }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
+          </div>
+          <div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:16px;font-weight:500;color:var(--navy);line-height:1.5">{{ detailTitle }}</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
+              <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
+            </div>
+            <sc-if value="{{ hasDetailDesc }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--text-body);line-height:1.6">{{ detailDesc }}</div></sc-if>
+            <sc-for list="{{ detailFiles }}" as="f" hint-placeholder-count="0">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px">
+                <div style="width:28px;height:28px;min-width:28px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px">{{ f.ext }}</div>
+                <div style="flex:1;font-size:13px;font-weight:500;color:var(--navy)">{{ f.name }}</div>
+                <a href="#" style="font-size:13px;font-weight:500">Download</a>
+              </div>
+            </sc-for>
+            <sc-if value="{{ detailCanAttach }}" hint-placeholder-val="{{ false }}">
+              <label style="align-self:flex-start;border:1px solid var(--gray-200);padding:8px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" onChange="{{ onAttachFile }}" style="display:none">+ Attach a file</label>
+            </sc-if>
+            <sc-if value="{{ detailApprove }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ detailApproveFn }}" style="align-self:flex-start;background:var(--green);color:#fff;border:none;padding:9px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
+            </sc-if>
+            <sc-if value="{{ detailReqApprove }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:10px">
+                <button onClick="{{ detailReqApproveFn }}" style="background:var(--green);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
+                <button onClick="{{ detailReqDeclineFn }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:13px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
+              </div>
+            </sc-if>
+          </div>
+          <div style="padding:6px 26px 22px;display:flex;flex-direction:column;gap:4px">
+            <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 6px">Comments</h4>
+            <sc-for list="{{ detailComments }}" as="c" hint-placeholder-count="2">
+              <div style="padding:10px 0;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ c.who }} · {{ c.when }}</span>
+                  <span style="flex:1"></span>
+                  <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen — on it</span></sc-if>
+                  <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
+                </div>
+                <div style="font-size:14px;color:var(--text-body);line-height:1.5">{{ c.text }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noDetailComments }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted);padding:4px 0">No comments yet.</div></sc-if>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input value="{{ dComment }}" onChange="{{ onComment }}" placeholder="Add a comment" style="flex:1;min-width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+              <button onClick="{{ sendComment }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secOverview }}" hint-placeholder-val="{{ true }}">
+        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ tReqCount }})</h3>
+              <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
+            </div>
+            <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noTeamReqs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ tProgCount }})</h3>
+              <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
+            </div>
+            <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
+              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
+                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noTeamProg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval ({{ tApprCount }})</h3>
+            </div>
+            <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
+              <button onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.when }}</div>
+                <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noTeamAppr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on clients.</div></sc-if>
+          </div>
+        </div>
+        <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team to-dos</h3>
+              <div style="display:flex;flex-direction:column">
+                <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
+                    <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                    <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                    <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="Add a to-do" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <option value="">Internal</option>
+                  <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                </select>
+                <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <option value="team">For team</option>
+                  <option value="client">For client</option>
+                </select>
+                <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Post a client update</h3>
+              <div style="display:flex;gap:8px">
+                <select value="{{ dUpdClient }}" onChange="{{ onUpdClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                </select>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-body);cursor:pointer"><input type="checkbox" checked="{{ dUpdApproval }}" onChange="{{ onUpdApproval }}">Needs client approval</label>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input value="{{ dUpdText }}" onChange="{{ onUpdText }}" placeholder="What did we ship or work on?" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <button onClick="{{ postUpdate }}" style="background:var(--grad-brand);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.1)">Post</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:6px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Messages</h3>
+              <sc-for list="{{ lastMsgs }}" as="lm" hint-placeholder-count="2">
+                <button onClick="{{ lm.open }}" style="text-align:left;background:none;border:none;border-bottom:1px solid var(--border-hairline);padding:9px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;width:100%" style-hover="background:var(--gray-100)">
+                  <div style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ lm.name }} — {{ lm.who }} · {{ lm.when }}</div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ lm.text }}</div>
+                </button>
+              </sc-for>
+            </div>
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Activity</h3>
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
+                <div style="padding:9px 0;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
+                  <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secBoard }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:18px 22px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input value="{{ dWork }}" onChange="{{ onWork }}" placeholder="Add a work item" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+          <select value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+            <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+          </select>
+          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 10px;font-size:13px">
+          <button onClick="{{ addWork }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to queue</button>
+        </div>
+        <div class="su-cols" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px">
+              <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Requests</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ boardReqCount }}</div>
+            </div>
+            <sc-for list="{{ boardReqs }}" as="r" hint-placeholder-count="2">
+              <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid #D68F2E;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+                <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div>
+                <div style="display:flex;gap:6px">
+                  <button onClick="{{ r.approve }}" style="flex:1;background:var(--green);border:none;color:#fff;padding:5px 0;font-size:12px;cursor:pointer;font-family:var(--font-display);font-weight:600" style-hover="filter:brightness(1.08)">Approve ▸</button>
+                  <button onClick="{{ r.decline }}" style="flex:1;background:#fff;border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">Decline</button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ boardCols }}" as="col" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px">
+                <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</div>
+                <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
+              </div>
+              <sc-for list="{{ col.items }}" as="w" hint-placeholder-count="2">
+                <div style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span>
+                    <span style="font-size:11px;color:var(--text-muted)">{{ w.hoursLabel }}</span>
+                  </div>
+                  <button onClick="{{ w.openComments }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">{{ w.commentsLabel }}</button>
+                  <div style="display:flex;gap:6px">
+                    <sc-if value="{{ w.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.back }}" style="flex:1;background:#fff;border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button></sc-if>
+                    <sc-if value="{{ w.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.fwd }}" style="flex:1;background:var(--navy);border:none;color:#fff;padding:5px 0;font-size:12px;cursor:pointer" style-hover="background:var(--navy-800)">{{ w.fwdLabel }}</button></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Done ({{ doneCount }})</h3>
+          <sc-for list="{{ doneItems }}" as="dn" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
+              <span style="width:18px;height:18px;min-width:18px;background:var(--check);color:#fff;font-size:12px;line-height:18px;text-align:center;border-radius:3px">✓</span>
+              <div style="flex:1;font-size:14px;color:var(--text-body)">{{ dn.title }}</div>
+              <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ dn.clientName }}</span>
+              <span style="font-size:12px;color:var(--text-muted)">{{ dn.hoursLabel }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing completed yet.</div></sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secClients }}" hint-placeholder-val="{{ false }}">
+        <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px">
+          <sc-for list="{{ clientCards }}" as="c" hint-placeholder-count="2">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)">{{ c.name }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ c.domain }} · {{ c.service }}</div>
+                </div>
+                <span style="background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ c.plan }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours</span><span>{{ c.hoursLabel }}</span></div>
+                <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ c.barStyle }}"></div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ c.openWork }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">In progress</span></div>
+                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ c.pendingReqs }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">New requests</span></div>
+                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:{{ c.pulseColor }}">{{ c.pulse }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pulse / 5</span></div>
+              </div>
+              <div style="font-size:13px;color:var(--text-body);border-top:1px solid var(--border-hairline);padding-top:12px">Now: <strong style="color:var(--navy)">{{ c.activeTitle }}</strong></div>
+              <button onClick="{{ c.openPortal }}" style="align-self:flex-start;background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open portal</button>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secRequests }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Awaiting review</h3>
+            <sc-for list="{{ newRequests }}" as="r" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ r.clientName }} · {{ r.when }}</div>
+                  <div style="font-size:13px;color:var(--text-body)">{{ r.desc }}</div>
+                </div>
+                <button onClick="{{ r.approve }}" style="background:var(--green);color:#fff;border:none;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
+                <button onClick="{{ r.decline }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:8px 14px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noNewRequests }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">History</h3>
+            <sc-for list="{{ pastRequests }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;font-size:13px;color:var(--text-body)">{{ r.title }} <span style="color:var(--text-muted)">· {{ r.clientName }}</span></div>
+                <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secMessages }}" hint-placeholder-val="{{ false }}">
+        <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:#fff;border:1px solid var(--border-card);min-height:480px">
+          <div class="su-tabs" style="border-right:1px solid var(--border-hairline);display:flex;flex-direction:column;padding:12px 0">
+            <sc-for list="{{ msgTabs }}" as="tab" hint-placeholder-count="2">
+              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)">{{ tab.name }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
+              <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
+                <div style="{{ m.rowStyle }}">
+                  <div style="{{ m.bubbleStyle }}">
+                    <div style="font-size:11px;font-weight:600;margin-bottom:3px;opacity:.7">{{ m.who }} · {{ m.when }}</div>
+                    <div style="font-size:14px;line-height:1.5">{{ m.text }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
+              <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+              <button onClick="{{ sendMsg }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pHome }}" hint-placeholder-val="{{ false }}">
+        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ reqCount }})</h3>
+              <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
+            </div>
+            <sc-for list="{{ homeReqCards }}" as="r" hint-placeholder-count="2">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noReqCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No open requests.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ progCount }})</h3>
+            </div>
+            <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
+              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
+                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noProgCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress right now.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval ({{ apprCount }})</h3>
+              <button onClick="{{ goUpdates }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All updates →</button>
+            </div>
+            <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
+              <div onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+                <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
+                <div style="font-size:14px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
+                <sc-for list="{{ u.files }}" as="f" hint-placeholder-count="0">
+                  <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px">
+                    <div style="width:28px;height:28px;min-width:28px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px">{{ f.ext }}</div>
+                    <div style="flex:1;font-size:13px;font-weight:500;color:var(--navy)">{{ f.name }}</div>
+                    <a href="#" style="font-size:13px;font-weight:500">Download</a>
+                  </div>
+                </sc-for>
+                <div style="display:flex;gap:10px">
+                  <button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;padding:8px 20px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
+                  <button onClick="{{ u.openFb }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:8px 16px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Leave feedback</button>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noApprovals }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on you.</div></sc-if>
+          </div>
+        </div>
+        <div class="su-half" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ todosTitle }}</h3>
+                <button onClick="{{ goTodos }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
+              </div>
+              <sc-for list="{{ homeTodos }}" as="t" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
+                  <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                  <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noClientTodos }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing needed from you.</div></sc-if>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Latest messages</h3>
+                <button onClick="{{ goMessages }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Open board →</button>
+              </div>
+              <sc-for list="{{ homeMsgs }}" as="m" hint-placeholder-count="3">
+                <div style="padding:8px 0;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:1px">
+                  <div style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ m.who }} · {{ m.when }}</div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ m.text }}</div>
+                </div>
+              </sc-for>
+            </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Brand files</h3>
+            <button onClick="{{ goFiles }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">View all files →</button>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <sc-for list="{{ brandFiles }}" as="f" hint-placeholder-count="3">
+              <button onClick="{{ goFiles }}" style="width:150px;background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;cursor:pointer;text-align:left" style-hover="border-color:var(--navy)">
+                <div style="width:34px;height:34px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:10px">{{ f.ext }}</div>
+                <div style="font-size:12.5px;font-weight:500;color:var(--navy);line-height:1.35">{{ f.name }}</div>
+                <div style="font-size:11px;color:var(--text-muted)">{{ f.size }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pUpdates }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ portalUpdates }}" as="u" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
+                <sc-if value="{{ u.showApprove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;padding:7px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button></sc-if>
+                <sc-if value="{{ u.approvedBadge }}" hint-placeholder-val="{{ false }}"><span style="color:var(--green);font-size:12px;font-weight:600">✓ Approved</span></sc-if>
+              </div>
+              <div style="font-size:15px;color:var(--navy);line-height:1.55">{{ u.text }}</div>
+              <sc-for list="{{ u.feedback }}" as="f" hint-placeholder-count="0">
+                <div style="border-left:2px solid var(--gray-200);padding:4px 0 4px 14px;font-size:13px;color:var(--text-body)"><strong style="color:var(--navy)">{{ f.name }}:</strong> {{ f.text }}</div>
+              </sc-for>
+              <sc-if value="{{ u.showInput }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px">
+                  <input value="{{ dFeedback }}" onChange="{{ onFeedback }}" placeholder="Your feedback" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <button onClick="{{ u.sendFeedback }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Send</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ u.showFbBtn }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ u.openFeedback }}" style="align-self:flex-start;background:transparent;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Leave feedback</button>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:var(--navy);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:var(--ls-caps)">How are we doing this month?</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.65)">{{ pulsePrompt }}</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ pulseBtns }}" as="p" hint-placeholder-count="5">
+              <button onClick="{{ p.rate }}" style="{{ p.style }}" style-hover="background:var(--green);border-color:var(--green)">{{ p.n }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pRequests }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Request work</h3>
+          <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time — everything else waits in your queue.</div>
+          <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+            <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
+          </select>
+          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px">
+          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:999px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:12px" style-hover="background:#000">Submit request <span style="width:24px;height:24px;border-radius:50%;background:#fff;color:#111;display:inline-flex;align-items:center;justify-content:center;font-size:12px">↗</span></button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Your requests</h3>
+          <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
+            <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1px solid var(--border-hairline);cursor:pointer" style-hover="background:var(--gray-100)">
+              <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+                <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
+                <div style="font-size:12px;color:var(--text-muted)">{{ r.cat }} · {{ r.when }}</div>
+              </div>
+              <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pTodos }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Things our team needs from you. Check them off when done.</div>
+          <sc-for list="{{ clientTodos }}" as="t" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
+              <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+              <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noClientTodos }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing needed from you right now.</div></sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pMessages }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);display:flex;flex-direction:column;min-height:460px">
+          <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
+            <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
+              <div style="{{ m.rowStyle }}">
+                <div style="{{ m.bubbleStyle }}">
+                  <div style="font-size:11px;font-weight:600;margin-bottom:3px;opacity:.7">{{ m.who }} · {{ m.when }}</div>
+                  <div style="font-size:14px;line-height:1.5">{{ m.text }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
+            <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message the team…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+            <button onClick="{{ sendMsg }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pFiles }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{ fileChips }}" as="ch" hint-placeholder-count="5">
+            <button onClick="{{ ch.select }}" style="{{ ch.style }}" style-hover="border-color:var(--navy)">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card)">
+          <sc-for list="{{ portalFiles }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid var(--border-hairline)">
+              <div style="width:34px;height:34px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.02em">{{ f.ext }}</div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+                <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ f.name }}</div>
+                <div style="font-size:12px;color:var(--text-muted)">{{ f.type }} · {{ f.size }} · {{ f.when }}</div>
+              </div>
+              <a href="#" style="font-size:13px;font-weight:500">Download</a>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pReports }}" hint-placeholder-val="{{ false }}">
+        <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+          <sc-for list="{{ reportStats }}" as="s" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:2px">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--navy)">{{ s.value }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ s.label }}</div>
+              <div style="font-size:12px;font-weight:600;color:{{ s.deltaColor }}">{{ s.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
+          <div style="font-size:14px;line-height:1.65;color:var(--text-body)">{{ reportNote }}</div>
+          <div style="font-size:12px;color:var(--text-muted)">Snapshot generated {{ reportDate }} · full analytics available on request</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pBilling }}" hint-placeholder-val="{{ false }}">
+        <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px;align-items:start">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ planName }}</span>
+            <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ planPrice }}<span style="font-size:15px;font-weight:600;color:var(--text-muted)">/month</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours this month</span><span>{{ planHours }}</span></div>
+              <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);border-top:1px solid var(--border-hairline);padding-top:12px">No contracts. Pause or cancel anytime.</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Invoices</h3>
+            <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ inv.num }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ inv.date }}</div>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ inv.amount }}</div>
+                <span style="{{ inv.badgeStyle }}">{{ inv.status }}</span>
+                <a href="#" style="font-size:13px;font-weight:500">PDF</a>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;team&quot;,&quot;client&quot;],&quot;default&quot;:&quot;team&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const saved = localStorage.getItem('su_hub_v5');
+    this.state = {
+      role: (props && props.startView) || 'team', section:'overview', viewClient:'af',
+      msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
+      seenTs: Number(localStorage.getItem('su_hub_seen')||0),
+      d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
+      data: saved ? JSON.parse(saved) : this.seed()
+    };
+  }
+  seed(){
+    const now=Date.now(), h=3600e3, d=24*h;
+    return {
+      clients:[
+        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4]},
+        {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4]}
+      ],
+      todos:[
+        {id:'t1',clientId:'af',title:'QA new PDP template on mobile Safari',who:'team',done:false,ts:now-2*h},
+        {id:'t2',clientId:'vs',title:'Set up staging env for RSVP v2',who:'team',done:false,ts:now-5*h},
+        {id:'t3',clientId:'',title:'Send August retainer summaries',who:'team',done:true,ts:now-d},
+        {id:'t4',clientId:'af',title:'Send us 6–8 product photos for the fall collection page',who:'client',done:false,ts:now-d},
+        {id:'t5',clientId:'af',title:'Confirm shipping rates for Canada zone',who:'client',done:false,ts:now-2*d},
+        {id:'t6',clientId:'vs',title:'Approve the RSVP confirmation email copy',who:'client',done:false,ts:now-8*h}
+      ],
+      work:[
+        {id:'w1',clientId:'af',title:'Fall collection landing page build',status:'progress',hours:8,comments:[{id:'cm1',from:'client',who:'Afore Beauty',text:'Can we also swap the hero photo for the new campaign shot?',ts:Date.now()-3*3600e3,ack:true},{id:'cm2',from:'team',who:'Social Upgrades',text:'Yes — adding it to this build.',ts:Date.now()-2.5*3600e3}]},
+        {id:'w2',clientId:'af',title:'Klaviyo abandoned-cart flow refresh',status:'queued',hours:4},
+        {id:'w3',clientId:'vs',title:'RSVP reminder notifications (email + SMS)',status:'progress',hours:12,comments:[{id:'cm3',from:'client',who:'ViewSlipstream',text:'Reminder timing should be 24h and 2h before showtime.',ts:Date.now()-5*3600e3,ack:false}]},
+        {id:'w4',clientId:'vs',title:'Screening room capacity dashboard',status:'review',hours:6},
+        {id:'w5',clientId:'af',title:'Speed pass: image compression + lazy load',status:'done',hours:3},
+        {id:'w6',clientId:'vs',title:'Host onboarding flow polish',status:'queued',hours:5}
+      ],
+      requests:[
+        {id:'r1',clientId:'af',title:'Gift-with-purchase promo setup',desc:'Free mini serum over $75 — needs cart logic and a banner.',status:'new',ts:now-3*h,category:'E-Commerce Management',comments:[],files:[]},
+        {id:'r2',clientId:'vs',title:'Add calendar export to RSVP confirmations',desc:'Guests keep asking for an "Add to calendar" button.',status:'new',ts:now-d,category:'Website Design',comments:[{id:'rc1',from:'client',who:'ViewSlipstream',text:'Google and Apple calendar are the priority.',ts:now-20*h,ack:false}],files:[]},
+        {id:'r3',clientId:'af',title:'Homepage hero refresh for fall',desc:'',status:'approved',ts:now-4*d,category:'Website Design',comments:[],files:[]},
+        {id:'r4',clientId:'vs',title:'Dark mode for the guest view',desc:'',status:'declined',ts:now-6*d,category:'Website Design',comments:[],files:[]}
+      ],
+      updates:[
+        {id:'u1',clientId:'af',text:'Fall collection landing page is live on staging — hero, product grid, and email capture are in. Take a look before we push to production.',ts:now-4*h,needsApproval:true,approved:false,feedback:[],fileIds:['f2']},
+        {id:'u5',clientId:'af',text:'September social media kit is ready — 12 posts sized for Instagram and Facebook. Approve and we schedule them this week.',ts:now-6*h,needsApproval:true,approved:false,feedback:[],fileIds:['f10']},
+        {id:'u2',clientId:'af',text:'Abandoned-cart flow audit finished. Current recovery rate is 4.1% — refreshed sequence drafts go up this week.',ts:now-2*d,needsApproval:false,approved:false,feedback:[{name:'Afore Beauty',text:'Excited to see the new sequence!'}]},
+        {id:'u3',clientId:'vs',text:'RSVP reminder notifications are in progress — email template done, SMS pending carrier approval.',ts:now-7*h,needsApproval:false,approved:false,feedback:[]},
+        {id:'u4',clientId:'vs',text:'Capacity dashboard first pass ready for review — live headcount per screening plus waitlist overflow.',ts:now-1.5*d,needsApproval:true,approved:false,feedback:[],fileIds:['f6']}
+      ],
+      messages:[
+        {id:'m1',clientId:'af',from:'client',who:'Afore Beauty',text:'Hey team — can we get the promo live before Labor Day weekend?',ts:now-6*h},
+        {id:'m2',clientId:'af',from:'team',who:'Social Upgrades',text:'Yes — if the gift-with-purchase request is approved this week we can ship it by Thursday.',ts:now-5*h},
+        {id:'m3',clientId:'vs',from:'team',who:'Social Upgrades',text:'SMS reminders are waiting on carrier approval, usually 2–3 business days. Email reminders can go live now if you want them separately.',ts:now-9*h},
+        {id:'m4',clientId:'vs',from:'client',who:'ViewSlipstream',text:'Ship email now, SMS when ready. Thanks!',ts:now-8*h}
+      ],
+      files:[
+        {id:'f1',clientId:'af',name:'Fall collection — brand board.pdf',type:'Design',size:'4.2 MB',ts:now-3*d},
+        {id:'f2',clientId:'af',name:'PDP template v3.fig',type:'Design',size:'1.8 MB',ts:now-5*d},
+        {id:'f3',clientId:'af',name:'Q3 content calendar.xlsx',type:'Documents',size:'92 KB',ts:now-8*d},
+        {id:'f4',clientId:'af',name:'Email copy — abandoned cart.docx',type:'Content',size:'38 KB',ts:now-2*d},
+        {id:'f5',clientId:'af',name:'Product photos — summer batch.zip',type:'Assets',size:'214 MB',ts:now-20*d},
+        {id:'f6',clientId:'vs',name:'RSVP flow map v2.pdf',type:'Design',size:'2.6 MB',ts:now-2*d},
+        {id:'f7',clientId:'vs',name:'Reminder email copy.docx',type:'Content',size:'26 KB',ts:now-1*d},
+        {id:'f8',clientId:'vs',name:'Platform SLA + scope.pdf',type:'Documents',size:'310 KB',ts:now-30*d},
+        {id:'f9',clientId:'vs',name:'Brand assets — logos.zip',type:'Assets',size:'48 MB',ts:now-40*d,brand:true},
+        {id:'f10',clientId:'af',name:'Social media kit — September.zip',type:'Content',size:'86 MB',ts:now-6*h},
+        {id:'f11',clientId:'af',name:'Afore logo pack.zip',type:'Assets',size:'22 MB',ts:now-60*d,brand:true},
+        {id:'f12',clientId:'af',name:'Brand guide v2.pdf',type:'Design',size:'6.1 MB',ts:now-60*d,brand:true},
+        {id:'f13',clientId:'vs',name:'ViewSlipstream brand guide.pdf',type:'Design',size:'3.4 MB',ts:now-50*d,brand:true}
+      ],
+      invoices:[
+        {id:'i1',clientId:'af',num:'INV-2026-081',amount:499,status:'Due',date:'Aug 1, 2026'},
+        {id:'i2',clientId:'af',num:'INV-2026-071',amount:499,status:'Paid',date:'Jul 1, 2026'},
+        {id:'i3',clientId:'af',num:'INV-2026-061',amount:499,status:'Paid',date:'Jun 1, 2026'},
+        {id:'i4',clientId:'vs',num:'INV-2026-082',amount:999,status:'Paid',date:'Aug 1, 2026'},
+        {id:'i5',clientId:'vs',num:'INV-2026-072',amount:999,status:'Paid',date:'Jul 1, 2026'}
+      ],
+      reports:{
+        af:{stats:[{label:'Sessions',value:'12.4K',delta:'+18% vs Jul',up:true},{label:'Conversion',value:'2.9%',delta:'+0.4 pts',up:true},{label:'Orders',value:'361',delta:'+22% vs Jul',up:true},{label:'AOV',value:'$68',delta:'−$3 vs Jul',up:false}],note:'Traffic is up on the back of the summer email pushes, and conversion improved after the speed pass. AOV dipped slightly with more single-item orders — the gift-with-purchase promo should help lift it in September.'},
+        vs:{stats:[{label:'RSVPs',value:'1,842',delta:'+31% vs Jul',up:true},{label:'Show-up rate',value:'74%',delta:'+6 pts',up:true},{label:'New hosts',value:'19',delta:'+4 vs Jul',up:true},{label:'Avg fill rate',value:'82%',delta:'−2 pts',up:false}],note:'RSVP volume keeps climbing and show-up rate improved after we tightened the confirmation flow. Reminder notifications should push show-up rate further once SMS clears carrier approval.'}
+      },
+      log:[
+        {id:'l1',clientId:'af',text:'Afore Beauty submitted a request: Gift-with-purchase promo setup',ts:now-3*h},
+        {id:'l2',clientId:'vs',text:'Update posted for ViewSlipstream: RSVP reminder notifications in progress',ts:now-7*h},
+        {id:'l3',clientId:'vs',text:'ViewSlipstream replied on the message board',ts:now-8*h},
+        {id:'l4',clientId:'af',text:'Work item completed: Speed pass — image compression + lazy load',ts:now-2*24*3600e3}
+      ]
+    };
+  }
+  save(){ localStorage.setItem('su_hub_v5', JSON.stringify(this.state.data)); }
+  set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
+  uid(){ return Math.random().toString(36).slice(2,9); }
+  logEv(data, clientId, text){ data.log.unshift({id:this.uid(),clientId,text,ts:Date.now()}); }
+  fmt(ts){
+    const diff=Date.now()-ts;
+    if(diff<3600e3) return Math.max(1,Math.round(diff/60e3))+'m ago';
+    if(diff<24*3600e3) return Math.round(diff/3600e3)+'h ago';
+    if(diff<7*24*3600e3) return Math.round(diff/(24*3600e3))+'d ago';
+    return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  }
+  draft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value; this.setState(s=>({d:{...s.d,[k]:v}})); }; }
+  box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:3}; }
+  badge(kind){
+    const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a']};
+    const [bg,fg]=map[kind];
+    return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:999,whiteSpace:'nowrap'};
+  }
+  renderVals(){
+    const S=this.state, D=S.data, d=S.d, isTeam=S.role==='team';
+    const client = D.clients.find(c=>c.id===S.viewClient)||D.clients[0];
+    const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
+    const openDetail=(type,id)=>()=>this.setState({detail:{type,id},notifOpen:false});
+    const closeDetail=()=>this.setState({detail:null});
+    const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
+    const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
+    const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production'];
+    const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
+    const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
+    const nav = isTeam
+      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['messages','Messages']]
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
+    const newReqCount = D.requests.filter(r=>r.status==='new').length;
+    const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
+    const navItems = nav.map(([id,label])=>{
+      const active=S.section===id, muted=id==='billing';
+      let badge=false;
+      if(isTeam&&id==='requests'&&newReqCount) badge=newReqCount;
+      if(!isTeam&&id==='todos'&&clientTodoCount) badge=clientTodoCount;
+      return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
+        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
+    });
+    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Work Board'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],
+      home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+    const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
+    const secKey=k=>S.section===k;
+    // notifications
+    const notifSrc = isTeam? D.log : D.log.filter(l=>l.clientId===client.id);
+    const unseenN = notifSrc.filter(l=>l.ts>S.seenTs).length;
+    // messages
+    const msgCid = isTeam? S.msgClient : client.id;
+    const thread = D.messages.filter(m=>m.clientId===msgCid).sort((a,b)=>a.ts-b.ts).map(m=>{
+      const mine = isTeam? m.from==='team' : m.from==='client';
+      return {who:m.who,when:this.fmt(m.ts),text:m.text,
+        rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
+        bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--navy)':'var(--gray-100)',color:mine?'#fff':'var(--text-body)',borderRadius:mine?'10px 10px 2px 10px':'10px 10px 10px 2px'}};
+    });
+    const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
+      this.set(x=>{ x.messages.push({id:this.uid(),clientId:msgCid,from:isTeam?'team':'client',who:isTeam?'Social Upgrades':cname(msgCid),text,ts:Date.now()}); this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
+      this.setState(s=>({d:{...s.d,msg:''}})); };
+    // board
+    const order=['queued','progress','review','done'];
+    const cols=[['queued','Queued','var(--gray-400)'],['progress','In Progress','var(--blue)'],['review','In Review','var(--teal)']];
+    const boardCols=cols.map(([st,label,accent])=>{
+      const items=D.work.filter(w=>w.status===st).map(w=>{
+        const i=order.indexOf(st);
+        const move=dir=>()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id); it.status=order[i+dir];
+          if(it.status==='done'){ const c2=x.clients.find(c=>c.id===it.clientId); if(c2) c2.hoursUsed=Math.min(c2.hoursTotal,c2.hoursUsed+(Number(it.hours)||0)); this.logEv(x,it.clientId,'Work item completed: '+it.title); }
+          return x; });
+        return {title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id)};
+      });
+      return {label,accent,count:items.length,items};
+    });
+    const boardReqs=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+      approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
+    const doneItems=D.work.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h'}));
+    // todos
+    const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
+      toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client') this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; })});
+    const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
+    const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
+    // requests
+    const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
+    const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),when:this.fmt(r.ts),
+      approve:()=>this.set(x=>{ const it=x.requests.find(y=>y.id===r.id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; }),
+      decline:()=>this.set(x=>{ x.requests.find(y=>y.id===r.id).status='declined'; return x; })}));
+    const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),badgeStyle,statusLabel}; });
+    const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id)}; });
+    // updates (portal)
+    const portalUpdates=D.updates.filter(u=>u.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(u=>({
+      when:this.fmt(u.ts),text:u.text,feedback:u.feedback,
+      showApprove:u.needsApproval&&!u.approved, approvedBadge:u.needsApproval&&u.approved,
+      approve:()=>this.set(x=>{ const it=x.updates.find(y=>y.id===u.id); it.approved=true; this.logEv(x,u.clientId,cname(u.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }),
+      showInput:S.feedbackFor===u.id, showFbBtn:S.feedbackFor!==u.id,
+      openFeedback:()=>this.setState({feedbackFor:u.id}),
+      sendFeedback:()=>{ const text=(d.feedback||'').trim(); if(!text) return;
+        this.set(x=>{ x.updates.find(y=>y.id===u.id).feedback.push({name:cname(client.id),text}); this.logEv(x,client.id,cname(client.id)+' left feedback on an update'); return x; });
+        this.setState(s=>({feedbackFor:null,d:{...s.d,feedback:''}})); }
+    }));
+    // pulse
+    const month=new Date().toLocaleDateString('en-US',{month:'long'});
+    const rated=(client.pulseMonth===month);
+    const pulseBtns=[1,2,3,4,5].map(n=>({n,rate:()=>this.set(x=>{ const c2=x.clients.find(c=>c.id===client.id); c2.pulse.push(n); c2.pulseMonth=month; this.logEv(x,client.id,cname(client.id)+' rated the month '+n+'/5'); return x; }),
+      style:{width:40,height:40,borderRadius:999,border:'1px solid rgba(255,255,255,.5)',background:'transparent',color:'#fff',fontFamily:'var(--font-display)',fontWeight:700,fontSize:15,cursor:'pointer'}}));
+    // clients (team)
+    const clientCards=D.clients.map(c=>{
+      const pct=Math.round(100*c.hoursUsed/c.hoursTotal);
+      const avg=c.pulse.length? (c.pulse.reduce((a,b)=>a+b,0)/c.pulse.length):0;
+      const act=D.work.find(w=>w.clientId===c.id&&w.status==='progress');
+      return {name:c.name,domain:c.domain,service:c.service,plan:c.plan,
+        hoursLabel:c.hoursUsed+' / '+c.hoursTotal+' hrs',
+        barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
+        openWork:D.work.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
+        pendingReqs:D.requests.filter(r=>r.clientId===c.id&&r.status==='new').length,
+        pulse:avg?avg.toFixed(1):'—', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
+        activeTitle:act?act.title:'Nothing in progress',
+        openPortal:()=>this.setState({role:'client',viewClient:c.id,section:'home',notifOpen:false})};
+    });
+    // files
+    const types=['All','Design','Documents','Content','Assets'];
+    const myFiles=D.files.filter(f=>f.clientId===client.id);
+    const fileChips=types.map(t=>{ const n=t==='All'?myFiles.length:myFiles.filter(f=>f.type===t).length; const active=S.fileFilter===t;
+      return {label:t+' ('+n+')',select:()=>this.setState({fileFilter:t}),
+        style:{background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:999,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
+    const portalFiles=myFiles.filter(f=>S.fileFilter==='All'||f.type===S.fileFilter).sort((a,b)=>b.ts-a.ts).map(f=>({name:f.name,type:f.type,size:f.size,when:this.fmt(f.ts),ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}));
+    // reports & billing
+    const rep=D.reports[client.id]||{stats:[],note:''};
+    const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
+    const invoices=D.invoices.filter(i=>i.clientId===client.id).map(i=>({num:i.num,date:i.date,amount:'$'+i.amount,status:i.status,badgeStyle:invBadge(i.status)}));
+    const planPct=Math.round(100*client.hoursUsed/client.hoursTotal);
+    // portal home dashboard
+    const go=sec=>()=>this.setState({section:sec,moreOpen:false});
+    const fileById=id=>{ const f=D.files.find(x=>x.id===id); return f?{name:f.name,ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}:null; };
+    const homeApprovals=D.updates.filter(u=>u.clientId===client.id&&u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({
+      when:this.fmt(u.ts),text:u.text,files:(u.fileIds||[]).map(fileById).filter(Boolean),
+      open:openDetail('update',u.id), openFb:stopThen(openDetail('update',u.id)),
+      approve:stopThen(()=>this.set(x=>{ const it=x.updates.find(y=>y.id===u.id); it.approved=true; this.logEv(x,u.clientId,cname(u.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }))}));
+    const stMap={queued:['gray','Queued'],progress:['green','In progress'],review:['blue','In review'],done:['blue','Done']};
+    const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
+    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&(w.status==='progress'||w.status==='review')).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
+    const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id)}; });
+    let dv={detailOpen:false};
+    if(S.detail){
+      const ty=S.detail.type;
+      const coll= ty==='work'? D.work : (ty==='update'? D.updates : D.requests);
+      const item=coll.find(y=>y.id===S.detail.id);
+      if(item){
+        const listKey= ty==='update'?'feedback':'comments';
+        const list=item[listKey]||[];
+        const findIt=x=>(ty==='work'? x.work : (ty==='update'? x.updates : x.requests)).find(y=>y.id===item.id);
+        let bs,sl;
+        if(ty==='work'){ [bs,sl]=wBadge(item.status); }
+        else if(ty==='request'){ [bs,sl]=reqBadge(item.status); }
+        else { [bs,sl]= item.needsApproval? (item.approved? [this.badge('green'),'Approved'] : [this.badge('amber'),'Awaiting approval']) : [this.badge('blue'),'Update']; }
+        const extOf=n=>(n.split('.').pop()||'').toUpperCase().slice(0,4);
+        dv={detailOpen:true,
+          detailKind: ty==='work'?'Work item':(ty==='request'?'Request':'Update'),
+          detailTitle: ty==='update'?item.text:item.title,
+          detailBadgeStyle:bs, detailStatus:sl,
+          detailMeta: cname(item.clientId)+(ty==='work'?' · '+(item.hours||0)+'h est.':(ty==='request'?' · '+(item.category||'General')+' · '+this.fmt(item.ts):' · '+this.fmt(item.ts))),
+          hasDetailDesc: ty==='request'&&!!item.desc, detailDesc:item.desc||'',
+          detailFiles: ty==='update'? (item.fileIds||[]).map(fileById).filter(Boolean) : (ty==='request'? (item.files||[]).map(f=>({name:f.name,ext:extOf(f.name)})) : []),
+          detailApprove: ty==='update'&&item.needsApproval&&!item.approved&&!isTeam,
+          detailApproveFn:()=>this.set(x=>{ const it=findIt(x); it.approved=true; this.logEv(x,item.clientId,cname(item.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }),
+          detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
+          detailReqApproveFn:()=>approveReq(item.id),
+          detailReqDeclineFn:()=>declineReq(item.id),
+          detailCanAttach: ty==='request'&&!isTeam,
+          onAttachFile:e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return;
+            this.set(x=>{ const it=findIt(x); it.files=it.files||[]; it.files.push({name:f.name}); this.logEv(x,item.clientId,cname(item.clientId)+' attached a file to "'+it.title+'"'); return x; }); },
+          detailComments:list.map((c,i)=>({who:c.who||c.name||'—', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
+            showAck:isTeam&&c.from!=='team'&&!c.ack,
+            ack:()=>this.set(x=>{ const it=findIt(x); const L=(it[listKey]=it[listKey]||[]); if(L[i]) L[i].ack=true; this.logEv(x,item.clientId,'Team acknowledged a comment'); return x; })})),
+          noDetailComments:list.length===0,
+          sendComment:()=>{ const text=(d.comment||'').trim(); if(!text) return;
+            this.set(x=>{ const it=findIt(x);
+              const nm=isTeam?'Social Upgrades':cname(item.clientId);
+              const entry={id:this.uid(),from:isTeam?'team':'client',who:nm,name:nm,text,ts:Date.now(),ack:false};
+              (it[listKey]=it[listKey]||[]).push(entry);
+              this.logEv(x,item.clientId,nm+' commented on '+(ty==='update'?'an update':'"'+it.title+'"')); return x; });
+            this.setState(s=>({d:{...s.d,comment:''}})); }
+        };
+      }
+    }
+    const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
+    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,clientName:cname(w.clientId),badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
+    const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
+    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,who:m.who,when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
+    const brandFiles=myFiles.filter(f=>f.brand).map(f=>({name:f.name,size:f.size,ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}));
+    // mobile nav
+    const mobStyle=active=>({flex:1,background:'transparent',border:'none',borderTop:active?'2px solid var(--green)':'2px solid transparent',color:active?'#fff':'rgba(255,255,255,.65)',fontSize:11.5,fontWeight:active?600:500,padding:'10px 4px',cursor:'pointer',fontFamily:'var(--font-body)'});
+    const bottomItems=nav.slice(0,4).map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),style:mobStyle(S.section===id)}));
+    const sheetItems=nav.map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
+      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?600:400,cursor:'pointer',borderRadius:6,fontFamily:'var(--font-body)'}}));
+    // stats & activity (team overview)
+    const stats=[
+      {label:'Active clients',value:D.clients.length},
+      {label:'Open work items',value:D.work.filter(w=>w.status!=='done').length},
+      {label:'New requests',value:newReqCount},
+      {label:'Open to-dos',value:D.todos.filter(t=>!t.done).length}
+    ];
+    const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts)}));
+    return {
+      isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:client.name,
+      hubLabel:isTeam?'CLIENT HUB — TEAM':'CLIENT PORTAL',
+      navItems, kicker:hk[0], heading:hk[1], kickerColor:isTeam?'var(--green)':'var(--blue)',
+      onViewClient:e=>this.setState({viewClient:e.target.value,msgClient:e.target.value}),
+      goClient:()=>this.setState({role:'client',section:'home',notifOpen:false,moreOpen:false,fileFilter:'All'}),
+      goTeam:()=>this.setState({role:'team',section:'overview',notifOpen:false,moreOpen:false}),
+      toggleNotif:()=>{ const opening=!S.notifOpen; this.setState({notifOpen:opening}); if(opening){ const ts=Date.now(); localStorage.setItem('su_hub_seen',String(ts)); this.setState({seenTs:ts}); } },
+      notifOpen:S.notifOpen, unseen:unseenN>0?unseenN:false,
+      notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
+      secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
+      secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
+      pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
+      pMessages:!isTeam&&secKey('messages'), pFiles:!isTeam&&secKey('files'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
+      pHome:!isTeam&&secKey('home'),
+      homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
+      homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
+      homeProgCards, progCount:homeProgCards.length, noProgCards:homeProgCards.length===0,
+      todosTitle:client.name+' to-dos', ...dv, closeDetail,
+      dComment:d.comment||'', onComment:this.draft('comment'),
+      teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
+      teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
+      teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
+      goTeamRequests:go('requests'), goBoard:go('board'), lastMsgs,
+      boardReqs, boardReqCount:boardReqs.length, doneItems, doneCount:doneItems.length, noDone:doneItems.length===0,
+      catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
+      homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
+      goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'),
+      bottomItems, sheetItems, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
+      stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
+      dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),
+      addTodo:()=>{ const title=(d.todo||'').trim(); if(!title) return;
+        this.set(x=>{ x.todos.unshift({id:this.uid(),clientId:d.todoClient,title,who:d.todoWho,done:false,ts:Date.now()}); if(d.todoWho==='client') this.logEv(x,d.todoClient,'New to-do for '+cname(d.todoClient)+': '+title); return x; });
+        this.setState(s=>({d:{...s.d,todo:''}})); },
+      dUpdClient:d.updClient, onUpdClient:this.draft('updClient'), dUpdText:d.updText||'', onUpdText:this.draft('updText'), dUpdApproval:d.updApproval, onUpdApproval:this.draft('updApproval'),
+      postUpdate:()=>{ const text=(d.updText||'').trim(); if(!text) return;
+        this.set(x=>{ x.updates.unshift({id:this.uid(),clientId:d.updClient,text,ts:Date.now(),needsApproval:!!d.updApproval,approved:false,feedback:[]}); this.logEv(x,d.updClient,'Update posted for '+cname(d.updClient)); return x; });
+        this.setState(s=>({d:{...s.d,updText:''}})); },
+      boardCols, dWork:d.work||'', onWork:this.draft('work'), dWorkClient:d.workClient, onWorkClient:this.draft('workClient'), dWorkHours:d.workHours||'', onWorkHours:this.draft('workHours'),
+      addWork:()=>{ const title=(d.work||'').trim(); if(!title) return;
+        this.set(x=>{ x.work.unshift({id:this.uid(),clientId:d.workClient,title,status:'queued',hours:Number(d.workHours)||2}); return x; });
+        this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
+      clientCards, newRequests, noNewRequests:newRequests.length===0, pastRequests,
+      msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;
+        return {name:c.name,select:()=>this.setState({msgClient:c.id}),
+          style:{textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:active?'3px solid var(--green)':'3px solid transparent',padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}}; }),
+      thread, threadName:isTeam?cname(msgCid):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
+      onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
+      portalUpdates, dFeedback:d.feedback||'', onFeedback:this.draft('feedback'),
+      pulsePrompt:rated?'Thanks — your rating is in for '+month+'.':'Rate '+month+' from 1–5. It goes straight to the team.',
+      pulseBtns:rated?[]:pulseBtns,
+      dReqTitle:d.reqTitle||'', onReqTitle:this.draft('reqTitle'), dReqDesc:d.reqDesc||'', onReqDesc:this.draft('reqDesc'),
+      submitReq:()=>{ const title=(d.reqTitle||'').trim(); if(!title) return;
+        this.set(x=>{ x.requests.unshift({id:this.uid(),clientId:client.id,title,desc:(d.reqDesc||'').trim(),status:'new',ts:Date.now(),category:d.reqCat||CATS[0],comments:[],files:[]}); this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
+        this.setState(s=>({d:{...s.d,reqTitle:'',reqDesc:''}})); },
+      myRequests, clientTodos, noClientTodos:clientTodos.length===0,
+      fileChips, portalFiles,
+      reportStats:rep.stats.map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E'})), reportNote:rep.note,
+      reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      planName:client.plan, planPrice:'$'+client.price, planHours:client.hoursUsed+' / '+client.hoursTotal+' used',
+      planBarStyle:{width:planPct+'%',height:'100%',background:'var(--grad-brand)'},
+      invoices
+    };
+  }
+}
+</script>
+</body>
+</html>

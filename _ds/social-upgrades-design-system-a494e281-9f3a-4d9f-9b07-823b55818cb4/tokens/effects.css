@@ -1,0 +1,5 @@
+:root{
+--radius-card:16px;--radius-card-lg:24px;--radius-pill:999px;--radius-input:4px;--radius-btn-sq:6px;
+--shadow-card:0 8px 30px rgba(15,22,51,.08);--shadow-card-hover:0 14px 40px rgba(15,22,51,.14);--shadow-float:0 10px 30px rgba(0,0,0,.25);
+--ease-brand:cubic-bezier(.25,.6,.3,1);/* @kind other */--dur-fast:150ms;/* @kind other */--dur-med:300ms;/* @kind other */
+}
