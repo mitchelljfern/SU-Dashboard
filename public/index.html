@@ -3,12 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Social Upgrades — Client Hub</title>
+<title>Social Upgrades • Client Hub</title>
+<meta name="description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
+<link rel="canonical" href="https://su-dashboard.netlify.app/">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#0F1633">
+
+<!-- Social sharing. The hub itself sits behind a login, so this is what people
+     see when the link is pasted anywhere. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Social Upgrades">
+<meta property="og:title" content="Social Upgrades • Client Hub">
+<meta property="og:description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
+<meta property="og:url" content="https://su-dashboard.netlify.app/">
+<meta property="og:image" content="https://su-dashboard.netlify.app/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Social Upgrades Client Hub">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Social Upgrades • Client Hub">
+<meta name="twitter:description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
+<meta name="twitter:image" content="https://su-dashboard.netlify.app/assets/og-image.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script src="./su-config.js"></script>
 <script src="./su-data.js"></script>
@@ -1492,7 +1510,7 @@ class Component extends DCLogic {
       // they cover, so one login serves the whole group.
       businesses:(client.businesses||[]).map(b=>({name:b.name,domain:b.domain||''})),
       multiBusiness:(client.businesses||[]).length>1,
-      hubLabel:isTeam?'CLIENT HUB — TEAM':'CLIENT PORTAL',
+      hubLabel:isTeam?'CLIENT HUB • TEAM':'CLIENT PORTAL',
       navItems, kicker:hk[0], heading:hk[1], kickerColor:isTeam?'var(--green)':'var(--blue)',
       // Clearing portalUrl matters: it is a draft seeded from the viewed client,
       // so carrying it across a switch would save one client's Stripe link onto
