@@ -35,6 +35,25 @@ select public.provision_user('staff@example.com',   '<password>', 'team',   null
 update public.profiles set is_accountant = true where email = 'books@example.com';
 ```
 
+## Requests and work
+
+Clients submit requests from their dashboard or the Requests tab, with a
+category, urgency, an optional "need completed by" date, and file links. Files
+are shared by link rather than uploaded — the client uploads to their own
+Dropbox or Drive and pastes the share link, which travels with the request onto
+the work item.
+
+Approving a request creates a work item that carries its context, including a
+`requestId` back-reference. The team sets a **projected finish** date on the
+Workboard card or in the item's detail view, and the client sees it on their
+open-request and in-progress cards. Completed work appears on the client's
+Updates tab, newest first, each opening to its details, comments and files.
+
+What a client can change inside a shared row is enforced by triggers, not the
+form: they may comment, attach links, tick their own to-dos and approve
+updates. They cannot move a projected finish date, change a status, approve
+their own request, or post a message as the team.
+
 ## Clients and businesses
 
 A client is the tenant and the unit of isolation. A client may cover several

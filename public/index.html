@@ -205,6 +205,41 @@
               <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
             </div>
             <sc-if value="{{ hasDetailDesc }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--text-body);line-height:1.6">{{ detailDesc }}</div></sc-if>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <sc-if value="{{ showUrgency }}" hint-placeholder-val="{{ false }}">
+                <span style="{{ detailUrgencyStyle }}">{{ detailUrgency }}</span>
+              </sc-if>
+              <sc-if value="{{ hasDetailNeedBy }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:12.5px;color:var(--text-muted)">Needed by <strong style="color:var(--navy)">{{ detailNeedBy }}</strong></span>
+              </sc-if>
+              <sc-if value="{{ hasDetailProjected }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:12.5px;color:var(--green);font-weight:600">Projected finish {{ detailProjected }}</span>
+              </sc-if>
+              <sc-if value="{{ hasDetailCompleted }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:12.5px;color:var(--green);font-weight:600">Completed {{ detailCompleted }}</span>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ canSetProjected }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:10px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
+                <input value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:7px 10px;font-size:13px">
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ hasDetailLinks }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Shared links</div>
+                <sc-for list="{{ detailLinks }}" as="dl" hint-placeholder-count="1">
+                  <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px">
+                    <span style="background:#fff;color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ dl.label }}</span>
+                    <a href="{{ dl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ dl.url }}</a>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
             <sc-for list="{{ detailFiles }}" as="f" hint-placeholder-count="0">
               <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px">
                 <div style="width:28px;height:28px;min-width:28px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px">{{ f.ext }}</div>
@@ -420,6 +455,18 @@
                     <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span>
                     <span style="font-size:11px;color:var(--text-muted)">{{ w.hoursLabel }}</span>
                   </div>
+                  <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}">
+                    <span style="{{ w.urgencyStyle }};align-self:flex-start">{{ w.urgency }}</span>
+                  </sc-if>
+                  <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11px;color:var(--text-muted)">Client needs by {{ w.needBy }}</div>
+                  </sc-if>
+                  <!-- Projected finish is shown to the client on their request
+                       and in-progress cards. -->
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
+                    <input value="{{ w.projected }}" onChange="{{ w.onProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:5px 8px;font-size:12px;width:100%;box-sizing:border-box">
+                  </div>
                   <button onClick="{{ w.openComments }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">{{ w.commentsLabel }}</button>
                   <div style="display:flex;gap:6px">
                     <sc-if value="{{ w.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.back }}" style="flex:1;background:#fff;border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button></sc-if>
@@ -599,8 +646,15 @@
               <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
+                </sc-if>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
                   <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
                 </div>
               </button>
@@ -614,8 +668,15 @@
             <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
               <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
+                <sc-if value="{{ w.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ w.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ w.needBy }}</div>
+                </sc-if>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
+                  <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ w.urgencyStyle }}">{{ w.urgency }}</span></sc-if>
                   <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
                 </div>
               </button>
@@ -674,6 +735,41 @@
               </sc-for>
             </div>
         </div>
+
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Submit a request</h3>
+            <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All requests →</button>
+          </div>
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+            <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+              <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
+            </select>
+            <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+              <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
+            </select>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by</label>
+              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+            </div>
+          </div>
+          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px">
+          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details or examples" rows="2" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <a href="{{ dropboxUrl }}" target="_blank" rel="noopener noreferrer" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;text-decoration:none" style-hover="background:rgba(15,22,51,.06)">Open Dropbox ↗</a>
+            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste a file link" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+            <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
+          </div>
+          <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="1">
+            <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-hairline)">
+              <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
+              <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
+              <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+            </div>
+          </sc-for>
+          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:999px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#000">Submit request</button>
+        </div>
+
         <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Brand files</h3>
@@ -986,6 +1082,31 @@
             </div>
           </sc-for>
         </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Completed work</h3>
+            <div style="font-size:12px;color:var(--text-muted)">Everything we have finished, newest first. Open any item for its details, comments and files.</div>
+          </div>
+          <sc-if value="{{ noCompletedWork }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13.5px;color:var(--text-muted)">Nothing completed yet.</div>
+          </sc-if>
+          <sc-for list="{{ completedWork }}" as="cw" hint-placeholder-count="4">
+            <div onClick="{{ cw.open }}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 6px;border-bottom:1px solid var(--border-hairline);cursor:pointer" style-hover="background:var(--gray-100)">
+              <div style="flex:1;min-width:190px;display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ cw.title }}</div>
+                <div style="font-size:12px;color:var(--text-muted)">Completed {{ cw.completed }} · {{ cw.ago }}</div>
+              </div>
+              <sc-if value="{{ cw.hasCat }}" hint-placeholder-val="{{ true }}">
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ cw.cat }}</span>
+              </sc-if>
+              <sc-if value="{{ cw.hasFiles }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:12px;color:var(--text-muted)">{{ cw.fileCount }} file(s)</span>
+              </sc-if>
+              <span style="font-size:12px;color:var(--blue);font-weight:500">{{ cw.commentsLabel }}</span>
+            </div>
+          </sc-for>
+        </div>
+
         <div style="background:var(--navy);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
           <div style="display:flex;flex-direction:column;gap:2px">
             <div style="font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:var(--ls-caps)">How are we doing this month?</div>
@@ -1008,6 +1129,34 @@
           </select>
           <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px">
           <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Urgency</label>
+              <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+                <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by (optional)</label>
+              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
+            <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</label>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Upload to your own Dropbox or Drive, copy the share link, and paste it below.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <a href="{{ dropboxUrl }}" target="_blank" rel="noopener noreferrer" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;text-decoration:none" style-hover="background:rgba(15,22,51,.06)">Open Dropbox ↗</a>
+              <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="https://www.dropbox.com/scl/..." style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+              <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
+            </div>
+            <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-hairline)">
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
+                <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
+                <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+              </div>
+            </sc-for>
+          </div>
           <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:999px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:12px" style-hover="background:#000">Submit request <span style="width:24px;height:24px;border-radius:50%;background:#fff;color:#111;display:inline-flex;align-items:center;justify-content:center;font-size:12px">↗</span></button>
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
@@ -1017,7 +1166,14 @@
               <div style="flex:1;display:flex;flex-direction:column;gap:1px">
                 <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
                 <div style="font-size:12px;color:var(--text-muted)">{{ r.cat }} · {{ r.when }}</div>
+                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
+                </sc-if>
               </div>
+              <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
               <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
             </div>
           </sc-for>
@@ -1329,8 +1485,8 @@ class Component extends DCLogic {
   draft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value; this.setState(s=>({d:{...s.d,[k]:v}})); }; }
   box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:3}; }
   badge(kind){
-    const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a']};
-    const [bg,fg]=map[kind];
+    const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],red:['rgba(216,86,78,.14)','#a8352d']};
+    const [bg,fg]=map[kind]||map.gray;
     return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:999,whiteSpace:'nowrap'};
   }
   renderVals(){
@@ -1349,7 +1505,32 @@ class Component extends DCLogic {
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production'];
-    const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
+    const URGENCIES=['Low','Normal','High','Urgent'];
+    const urgStyle=u=> u==='Urgent'? this.badge('red') : u==='High'? this.badge('amber')
+                     : u==='Low'? this.badge('gray') : this.badge('blue');
+    // Dates arrive as YYYY-MM-DD from the date inputs; render them readably
+    // without letting the browser shift them a day by timezone.
+    const niceDate=s2=>{ if(!s2) return ''; const p=String(s2).split('-');
+      if(p.length!==3) return String(s2);
+      return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
+    // A shared host label for pasted file links (Dropbox, Drive, WeTransfer...).
+    const linkLabel=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return 'Link'; } };
+    // An approved request becomes a work item; look it up so the client sees
+    // the projected finish date the team set, without leaving their own view.
+    const workForReq=id=>D.work.find(w=>w.requestId===id);
+    const dateBits=(needBy,projected)=>({
+      needBy:niceDate(needBy), hasNeedBy:!!needBy,
+      projected:niceDate(projected), hasProjected:!!projected
+    });
+    // Approving carries the request's context onto the work item — including
+    // requestId, so the client's request card can show the projected finish
+    // date that gets set on the work item later.
+    const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved';
+      x.work.unshift({id:this.uid(),requestId:it.id,clientId:it.clientId,title:it.title,
+        desc:it.desc||'',category:it.category||'',urgency:it.urgency||'Normal',
+        needBy:it.needBy||'',links:(it.links||[]).slice(),files:(it.files||[]).slice(),
+        status:'queued',hours:4,projectedFinish:'',comments:(it.comments||[]).slice(),ts:Date.now()});
+      this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
@@ -1389,9 +1570,19 @@ class Component extends DCLogic {
       const items=D.work.filter(w=>w.status===st).map(w=>{
         const i=order.indexOf(st);
         const move=dir=>()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id); it.status=order[i+dir];
-          if(it.status==='done'){ const c2=x.clients.find(c=>c.id===it.clientId); if(c2) c2.hoursUsed=Math.min(c2.hoursTotal,c2.hoursUsed+(Number(it.hours)||0)); this.logEv(x,it.clientId,'Work item completed: '+it.title); }
+          if(it.status==='done'){ const c2=x.clients.find(c=>c.id===it.clientId); if(c2) c2.hoursUsed=Math.min(c2.hoursTotal,c2.hoursUsed+(Number(it.hours)||0));
+            // Stamped so the client's completed list can sort by it.
+            it.completedAt=Date.now();
+            if(it.requestId){ const rq=x.requests.find(y=>y.id===it.requestId); if(rq) rq.status='done'; }
+            this.logEv(x,it.clientId,'Work item completed: '+it.title); }
+          else { it.completedAt=null; }
           return x; });
-        return {title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id)};
+        return {title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id),
+          // Projected finish is what the client sees on their request card.
+          projected:w.projectedFinish||'',
+          onProjected:e=>{ const v=e.target.value; this.set(x=>{ x.work.find(y=>y.id===w.id).projectedFinish=v; return x; }); },
+          needBy:w.needBy||'', hasNeedBy:!!w.needBy,
+          urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent')};
       });
       return {label,accent,count:items.length,items};
     });
@@ -1407,10 +1598,15 @@ class Component extends DCLogic {
     // requests
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
     const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),when:this.fmt(r.ts),
-      approve:()=>this.set(x=>{ const it=x.requests.find(y=>y.id===r.id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; }),
-      decline:()=>this.set(x=>{ x.requests.find(y=>y.id===r.id).status='declined'; return x; })}));
+      // Same path as everywhere else, so context is never dropped on this route.
+      approve:()=>approveReq(r.id),
+      decline:()=>declineReq(r.id)}));
     const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),badgeStyle,statusLabel}; });
-    const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id)}; });
+    const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+      const w=workForReq(r.id);
+      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+        urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
+        dateBits(r.needBy, w&&w.projectedFinish)); });
     // updates (portal)
     const portalUpdates=D.updates.filter(u=>u.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(u=>({
       when:this.fmt(u.ts),text:u.text,feedback:u.feedback,
@@ -1509,8 +1705,29 @@ class Component extends DCLogic {
       approve:stopThen(()=>this.set(x=>{ const it=x.updates.find(y=>y.id===u.id); it.approved=true; this.logEv(x,u.clientId,cname(u.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }))}));
     const stMap={queued:['gray','Queued'],progress:['green','In progress'],review:['blue','In review'],done:['blue','Done']};
     const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
-    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&(w.status==='progress'||w.status==='review')).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
-    const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id)}; });
+    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&(w.status==='progress'||w.status==='review')).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+      return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
+        urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
+        dateBits(w.needBy,w.projectedFinish)); });
+
+    const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+      const w=workForReq(r.id);
+      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+        urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
+        dateBits(r.needBy, w&&w.projectedFinish)); });
+
+    // Finished work, newest first, for the client's Updates tab.
+    const completedWork=D.work.filter(w=>w.clientId===client.id&&w.status==='done')
+      .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
+      .map(w=>({title:w.title,
+        completed: w.completedAt? new Date(w.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—',
+        ago: w.completedAt? this.fmt(w.completedAt) : '',
+        cat:w.category||'', hasCat:!!w.category,
+        commentsLabel:cLabel((w.comments||[]).length),
+        fileCount:((w.files||[]).length+(w.links||[]).length),
+        hasFiles:((w.files||[]).length+(w.links||[]).length)>0,
+        open:openDetail('work',w.id)}));
+    const noCompletedWork=completedWork.length===0;
     let dv={detailOpen:false};
     if(S.detail){
       const ty=S.detail.type;
@@ -1530,8 +1747,23 @@ class Component extends DCLogic {
           detailTitle: ty==='update'?item.text:item.title,
           detailBadgeStyle:bs, detailStatus:sl,
           detailMeta: cname(item.clientId)+(ty==='work'?' · '+(item.hours||0)+'h est.':(ty==='request'?' · '+(item.category||'General')+' · '+this.fmt(item.ts):' · '+this.fmt(item.ts))),
-          hasDetailDesc: ty==='request'&&!!item.desc, detailDesc:item.desc||'',
-          detailFiles: ty==='update'? (item.fileIds||[]).map(fileById).filter(Boolean) : (ty==='request'? (item.files||[]).map(f=>({name:f.name,ext:extOf(f.name)})) : []),
+          hasDetailDesc: (ty==='request'||ty==='work')&&!!item.desc, detailDesc:item.desc||'',
+          detailFiles: ty==='update'? (item.fileIds||[]).map(fileById).filter(Boolean) : (item.files||[]).map(f=>({name:f.name,ext:extOf(f.name)})),
+          // Shared file links (Dropbox, Drive, ...) travel with the item.
+          detailLinks: (item.links||[]).map(l=>({url:l.url,label:l.label||linkLabel(l.url)})),
+          hasDetailLinks: (item.links||[]).length>0,
+          detailUrgency: item.urgency||'Normal',
+          detailUrgencyStyle: urgStyle(item.urgency),
+          showUrgency: ty!=='update' && !!item.urgency,
+          detailNeedBy: niceDate(item.needBy), hasDetailNeedBy: !!item.needBy,
+          detailProjected: niceDate(ty==='work'? item.projectedFinish : (workForReq(item.id)||{}).projectedFinish),
+          hasDetailProjected: !!(ty==='work'? item.projectedFinish : (workForReq(item.id)||{}).projectedFinish),
+          detailCompleted: (ty==='work'&&item.completedAt)? new Date(item.completedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '',
+          hasDetailCompleted: ty==='work'&&!!item.completedAt,
+          // Team sets the projected finish from inside the detail view too.
+          canSetProjected: isTeam&&ty==='work',
+          detailProjectedRaw: (ty==='work'? item.projectedFinish : '')||'',
+          onDetailProjected: e=>{ const v=e.target.value; this.set(x=>{ const it=findIt(x); it.projectedFinish=v; return x; }); },
           detailApprove: ty==='update'&&item.needsApproval&&!item.approved&&!isTeam,
           detailApproveFn:()=>this.set(x=>{ const it=findIt(x); it.approved=true; this.logEv(x,item.clientId,cname(item.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }),
           detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
@@ -1924,10 +2156,31 @@ class Component extends DCLogic {
       pulsePrompt:rated?'Thanks — your rating is in for '+month+'.':'Rate '+month+' from 1–5. It goes straight to the team.',
       pulseBtns:rated?[]:pulseBtns,
       dReqTitle:d.reqTitle||'', onReqTitle:this.draft('reqTitle'), dReqDesc:d.reqDesc||'', onReqDesc:this.draft('reqDesc'),
+      dReqUrgency:d.reqUrgency||'Normal', onReqUrgency:this.draft('reqUrgency'),
+      urgencyOptions:URGENCIES.map(u=>({name:u})),
+      dReqNeedBy:d.reqNeedBy||'', onReqNeedBy:this.draft('reqNeedBy'),
+      // Files are shared by link rather than uploaded: the client uploads to
+      // their own Dropbox/Drive and pastes the share link back here.
+      dReqLink:d.reqLink||'', onReqLink:this.draft('reqLink'),
+      dropboxUrl:'https://www.dropbox.com/home',
+      reqLinks:(S.reqLinks||[]).map((l,i)=>({url:l.url,label:l.label,
+        remove:()=>this.setState({reqLinks:(S.reqLinks||[]).filter((_,j)=>j!==i)})})),
+      noReqLinks:(S.reqLinks||[]).length===0,
+      addReqLink:()=>{ const u=(d.reqLink||'').trim(); if(!u) return;
+        if(!/^https?:\/\//i.test(u)) return this.setState({syncError:'A file link needs to start with http:// or https://'});
+        this.setState(s=>({syncError:null,
+          reqLinks:(s.reqLinks||[]).concat([{url:u,label:linkLabel(u)}]),
+          d:{...s.d,reqLink:''}})); },
       submitReq:()=>{ const title=(d.reqTitle||'').trim(); if(!title) return;
-        this.set(x=>{ x.requests.unshift({id:this.uid(),clientId:client.id,title,desc:(d.reqDesc||'').trim(),status:'new',ts:Date.now(),category:d.reqCat||CATS[0],comments:[],files:[]}); this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
-        this.setState(s=>({d:{...s.d,reqTitle:'',reqDesc:''}})); },
+        const links=(S.reqLinks||[]).slice();
+        this.set(x=>{ x.requests.unshift({id:this.uid(),clientId:client.id,title,desc:(d.reqDesc||'').trim(),
+          status:'new',ts:Date.now(),category:d.reqCat||CATS[0],
+          urgency:d.reqUrgency||'Normal', needBy:d.reqNeedBy||'', links,
+          comments:[],files:[]});
+          this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
+        this.setState(s=>({reqLinks:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, clientTodos, noClientTodos:clientTodos.length===0,
+      completedWork, noCompletedWork,
       fileChips, portalFiles,
       reportStats:rep.stats.map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E'})), reportNote:rep.note,
       reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
