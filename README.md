@@ -64,10 +64,28 @@ client opens the real invoice from their own Billing tab. Nothing is charged by
 this app; it stores links, hours and status.
 
 **Team pay** runs on the 1st and the 16th: the 16th covers the 1st–15th of that
-month, the 1st covers the 16th–end of the previous month. "Open pay period"
-creates the current period for a member at their current rate; hours are
-entered, `amount` is computed in Postgres (`hours * rate + adjustment`) and each
-row toggles between pending and paid. Rates are per-member and admin-editable.
+month, the 1st covers the 16th–end of the previous month.
+
+Members submit their own pay from the **Payments** tab, in three kinds:
+
+| Kind | For |
+|---|---|
+| Hours | A pay period, optionally split by client |
+| Invoice | Project work, for members paid per project rather than hourly |
+| One-time payment | Expenses and reimbursements |
+
+Then: **pending** → admin approves → **unpaid** → admin marks paid → **paid**.
+
+Hours are stored as whole `minutes`, so "2h 59m" survives a round trip exactly,
+and `amount` is generated in Postgres — `minutes * rate / 60 + adjustment` for
+hours, `flat_amount + adjustment` otherwise — so a total can never drift from
+its inputs.
+
+What a member may set is enforced by a trigger, not by the form: their own
+submissions only, always at the rate on file, always starting as pending, and
+locked once approved. Rates live in `team_rates`, readable only by an admin
+(and by the member for their own row) — a rate column on `profiles` would have
+been visible to the whole team, because RLS filters rows, not columns.
 
 ## Structure
 

@@ -31,21 +31,30 @@
   };
 
   // Staff directory, used for assigning work and for the payments ledger.
+  // Pay rates deliberately live in their own table — see RATE_COLS.
   const TEAM_COLS = {
     name: 'name', email: 'email', isAdmin: 'is_admin',
-    isAccountant: 'is_accountant', hourlyRate: 'hourly_rate', active: 'active'
+    isAccountant: 'is_accountant', active: 'active'
   };
 
+  // Rates are admin-only, so they are a separate table with their own policy;
+  // a member's load returns just their own row.
+  const RATE_COLS = { hourlyRate: 'hourly_rate', payType: 'pay_type' };
+
   // `amount` is a generated column — readable, never writable.
+  // `minutes` is authoritative for hours submissions, so 2h59m stays exact.
   const PAY_COLS = {
-    profileId: 'profile_id', periodStart: 'period_start', periodEnd: 'period_end',
-    payDate: 'pay_date', hours: 'hours', rate: 'rate', adjustment: 'adjustment',
-    status: 'status', paidAt: 'paid_at', note: 'note'
+    profileId: 'profile_id', kind: 'kind', periodStart: 'period_start',
+    periodEnd: 'period_end', payDate: 'pay_date', minutes: 'minutes',
+    rate: 'rate', flatAmount: 'flat_amount', adjustment: 'adjustment',
+    breakdown: 'breakdown', status: 'status', paidAt: 'paid_at',
+    approvedBy: 'approved_by', approvedAt: 'approved_at', note: 'note'
   };
 
   const NUMERIC_COLS = new Set([
     'price', 'hours_used', 'hours_total', 'hourly_rate',
-    'hours', 'rate', 'adjustment', 'amount'
+    'rate', 'adjustment', 'amount', 'flat_amount', 'minutes',
+    'hours'   // still used by time_entries, even though pay is in minutes
   ]);
 
   // Generic column mapper for the tables that are not jsonb-bodied.
@@ -121,9 +130,23 @@
   const payFromRow = r => {
     const o = mapFromRow(r, PAY_COLS);
     o.amount = Number(r.amount || 0);
+    if (!Array.isArray(o.breakdown)) o.breakdown = [];
     return o;
   };
   const payToRow = p => mapToRow(p, PAY_COLS);
+
+  // team_rates is keyed by profile_id rather than id, so it maps by hand —
+  // the generic mapper would set id from a column this table does not have.
+  const rateFromRow = r => ({
+    id: r.profile_id, profileId: r.profile_id,
+    hourlyRate: Number(r.hourly_rate || 0),
+    payType: r.pay_type || 'hourly'
+  });
+  const rateToRow = r => ({
+    profile_id: r.profileId || r.id,
+    hourly_rate: r.hourlyRate,
+    pay_type: r.payType || 'hourly'
+  });
 
   // ---------- auth ----------
 
@@ -170,7 +193,9 @@
       // their own rows, clients see none.
       db.from('team_payments').select('*').order('pay_date', { ascending: false }),
       // Hours worked. Staff see every client's; a client sees only its own.
-      db.from('time_entries').select('*').order('entry_date', { ascending: false })
+      db.from('time_entries').select('*').order('entry_date', { ascending: false }),
+      // Pay rates. Admin gets everyone, a member gets only their own row.
+      db.from('team_rates').select('*')
     ];
     for (const t of TABLES) {
       jobs.push(db.from(t).select('*').order('ts', { ascending: ORDER[t] === 'asc' }));
@@ -186,7 +211,8 @@
     data.team = results[2].data.map(teamFromRow);
     data.payments = results[3].data.map(payFromRow);
     data.time = results[4].data.map(timeFromRow);
-    TABLES.forEach((t, i) => { data[t] = results[i + 5].data.map(fromRow); });
+    data.rates = results[5].data.map(rateFromRow);
+    TABLES.forEach((t, i) => { data[t] = results[i + 6].data.map(fromRow); });
 
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
@@ -253,6 +279,14 @@
       const { upserts, deletes } = diffList(prev.time, next.time);
       if (upserts.length) ops.push(db.from('time_entries').upsert(upserts.map(timeToRow)));
       if (deletes.length) ops.push(db.from('time_entries').delete().in('id', deletes));
+    }
+
+    // pay rates (admin-only writes; RLS rejects anyone else)
+    {
+      const { upserts } = diffList(prev.rates, next.rates);
+      if (upserts.length) {
+        ops.push(db.from('team_rates').upsert(upserts.map(rateToRow), { onConflict: 'profile_id' }));
+      }
     }
 
     // jsonb-bodied collections

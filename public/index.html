@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Social Upgrades • Client Hub</title>
 <meta name="description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
-<link rel="canonical" href="https://su-dashboard.netlify.app/">
+<link rel="canonical" href="https://dashboard.socialupgrades.com/">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -18,15 +18,15 @@
 <meta property="og:site_name" content="Social Upgrades">
 <meta property="og:title" content="Social Upgrades • Client Hub">
 <meta property="og:description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
-<meta property="og:url" content="https://su-dashboard.netlify.app/">
-<meta property="og:image" content="https://su-dashboard.netlify.app/assets/og-image.png">
+<meta property="og:url" content="https://dashboard.socialupgrades.com/">
+<meta property="og:image" content="https://dashboard.socialupgrades.com/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Social Upgrades Client Hub">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Social Upgrades • Client Hub">
 <meta name="twitter:description" content="The Social Upgrades client hub. Track work, requests, updates, hours and billing in one place.">
-<meta name="twitter:image" content="https://su-dashboard.netlify.app/assets/og-image.png">
+<meta name="twitter:image" content="https://dashboard.socialupgrades.com/assets/og-image.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script src="./su-config.js"></script>
 <script src="./su-data.js"></script>
@@ -758,13 +758,19 @@
                   <div style="font-size:12px;color:var(--text-muted)">{{ m.email }}</div>
                 </div>
                 <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 11px">{{ m.role }}</span>
-                <div style="display:flex;align-items:center;gap:6px">
-                  <span style="font-size:12px;color:var(--text-muted)">$</span>
-                  <input value="{{ m.rate }}" onChange="{{ m.onRate }}" type="number" disabled="{{ m.cannotEdit }}" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
-                  <span style="font-size:12px;color:var(--text-muted)">/hr</span>
-                </div>
-                <sc-if value="{{ m.canPay }}" hint-placeholder-val="{{ true }}">
-                  <button onClick="{{ m.addPay }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open pay period</button>
+                <!-- Rates render only for an admin. Previously this was a
+                     disabled attribute bound to a value, which HTML treats as
+                     disabled whatever the value is, so the field never saved. -->
+                <sc-if value="{{ m.showRate }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <select value="{{ m.payType }}" onChange="{{ m.onPayType }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px;background:#fff">
+                      <option value="hourly">Hourly</option>
+                      <option value="project">Per project</option>
+                    </select>
+                    <span style="font-size:12px;color:var(--text-muted)">$</span>
+                    <input value="{{ m.rate }}" onChange="{{ m.onRate }}" type="number" step="0.01" style="width:80px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
+                    <span style="font-size:12px;color:var(--text-muted)">/hr</span>
+                  </div>
                 </sc-if>
               </div>
             </sc-for>
@@ -785,45 +791,172 @@
             </sc-if>
           </div>
 
-          <sc-if value="{{ notBilling }}" hint-placeholder-val="{{ false }}">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;font-size:13.5px;color:var(--text-muted)">
-              You can see your own payments below. Client invoices and other members' pay are visible to admins and accountants only.
-            </div>
-          </sc-if>
+        </div>
+      </sc-if>
 
+      <sc-if value="{{ secPayments }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <!-- Submit your own pay -->
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
             <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
               <div style="display:flex;flex-direction:column;gap:3px">
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Payments</h3>
-                <div style="font-size:12px;color:var(--text-muted)">Current period {{ curPeriodLabel }}</div>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Submit for payment</h3>
+                <div style="font-size:12px;color:var(--text-muted)">Current period {{ curPeriodLabel }} · your rate {{ myRateLabel }}</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end">
-                <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ payTotalPending }}</div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pending</div>
+                <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ myTotalUnpaid }}</div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Owed to you</div>
               </div>
             </div>
-            <sc-if value="{{ noPayRows }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13.5px;color:var(--text-muted)">No payments yet. Use “Open pay period” above to start one.</div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Type</label>
+                <select value="{{ dPayKind }}" onChange="{{ onPayKind }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <option value="hours">Hours</option>
+                  <option value="invoice">Invoice (per project)</option>
+                  <option value="expense">One-time payment</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
+                <input value="{{ dPayStart }}" onChange="{{ onPayStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
+                <input value="{{ dPayEnd }}" onChange="{{ onPayEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <sc-if value="{{ payKindIsFlat }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:5px">
+                  <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
+                  <input value="{{ dPayAmount }}" onChange="{{ onPayAmount }}" type="number" step="0.01" placeholder="0.00" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                </div>
+              </sc-if>
+              <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
+                <input value="{{ dPayNote }}" onChange="{{ onPayNote }}" placeholder="What this covers" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+            </div>
+
+            <sc-if value="{{ payKindIsHours }}" hint-placeholder-val="{{ true }}">
+              <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:10px">
+                <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Break your hours down by client</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <select value="{{ dLineClient }}" onChange="{{ onLineClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                    <option value="">Social Upgrades (internal)</option>
+                    <sc-for list="{{ clients }}" as="c" hint-placeholder-count="4"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                  </select>
+                  <input value="{{ dLineHours }}" onChange="{{ onLineHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dLineMinutes }}" onChange="{{ onLineMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <button onClick="{{ addLine }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add line</button>
+                </div>
+                <sc-for list="{{ draftLines }}" as="l" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
+                    <div style="flex:1;font-size:13.5px;color:var(--text-body)">{{ l.name }}</div>
+                    <div style="font-size:13.5px;font-weight:600;color:var(--navy)">{{ l.hours }}</div>
+                    <button onClick="{{ l.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noDraftLines }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px;color:var(--text-muted)">No lines yet. You can also enter a total below instead.</div>
+                </sc-if>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <span style="font-size:12.5px;color:var(--text-muted)">Total</span>
+                  <input value="{{ dPayHours }}" onChange="{{ onPayHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dPayMinutes }}" onChange="{{ onPayMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <span style="font-size:12.5px;color:var(--text-muted)">or from lines: <strong style="color:var(--navy)">{{ draftLinesTotal }}</strong></span>
+                </div>
+              </div>
             </sc-if>
-            <sc-for list="{{ payRows }}" as="p" hint-placeholder-count="3">
-              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
-                <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
-                  <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.who }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · paid {{ p.payDate }}</div>
+
+            <div>
+              <button onClick="{{ submitPay }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Submit</button>
+            </div>
+          </div>
+
+          <!-- Your own submissions -->
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your submissions</h3>
+            <sc-if value="{{ noMyPayRows }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted)">Nothing submitted yet.</div>
+            </sc-if>
+            <sc-for list="{{ myPayRows }}" as="p" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                  <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:2px">
+                    <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.kind }} · {{ p.hoursLabel }}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · {{ p.note }}</div>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ p.rateLabel }}</div>
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:86px;text-align:right">{{ p.amount }}</div>
+                  <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
+                  <sc-if value="{{ p.canRemove }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                  </sc-if>
                 </div>
-                <div style="display:flex;align-items:center;gap:6px">
-                  <input value="{{ p.hours }}" onChange="{{ p.onHours }}" type="number" disabled="{{ p.cannotEdit }}" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
-                  <span style="font-size:12px;color:var(--text-muted)">hrs × {{ p.rate }}</span>
-                </div>
-                <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:80px;text-align:right">{{ p.amount }}</div>
-                <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
-                <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}">
-                  <button onClick="{{ p.toggle }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Mark {{ p.nextStatus }}</button>
-                  <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
+                    <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
+                      <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
+                    </sc-for>
+                  </div>
                 </sc-if>
               </div>
             </sc-for>
           </div>
+
+          <!-- Everything, for finance -->
+          <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">All submissions</h3>
+                <div style="display:flex;gap:22px">
+                  <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy)">{{ payTotalPending }}</div>
+                    <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Awaiting approval</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy)">{{ payTotalUnpaid }}</div>
+                    <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Approved, unpaid</div>
+                  </div>
+                </div>
+              </div>
+              <sc-if value="{{ noPayRows }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px;color:var(--text-muted)">Nothing submitted yet.</div>
+              </sc-if>
+              <sc-for list="{{ payRows }}" as="p" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+                  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                    <div style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:2px">
+                      <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.who }} · {{ p.kind }} {{ p.hoursLabel }}</div>
+                      <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · pay {{ p.payDate }} {{ p.note }}</div>
+                    </div>
+                    <div style="font-size:12px;color:var(--text-muted)">{{ p.rateLabel }}</div>
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:86px;text-align:right">{{ p.amount }}</div>
+                    <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
+                    <sc-if value="{{ p.canApprove }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ p.approve }}" style="background:var(--cta-bg);color:#fff;border:none;padding:7px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#000">Approve</button>
+                    </sc-if>
+                    <sc-if value="{{ p.canMarkPaid }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ p.markPaid }}" style="background:var(--green);color:#fff;border:none;padding:7px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer">Mark paid</button>
+                    </sc-if>
+                    <sc-if value="{{ p.canUnpay }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ p.unpay }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer">Undo paid</button>
+                    </sc-if>
+                    <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                  </div>
+                  <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
+                      <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
+                        <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
 
         </div>
       </sc-if>
@@ -1122,7 +1255,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[],rates:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -1219,7 +1352,7 @@ class Component extends DCLogic {
     const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['team','Team']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
@@ -1231,7 +1364,7 @@ class Component extends DCLogic {
       return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
     });
-    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],team:['Internal Dashboard','Team'],
+    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team'],
       home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
@@ -1467,42 +1600,81 @@ class Component extends DCLogic {
     };
     const curPeriod = periodFor(new Date());
 
-    const payRows = (D.payments||[]).slice()
-      .sort((a,b)=> (b.payDate||'').localeCompare(a.payDate||''))
-      .map(p=>({
-        who: memberName(p.profileId) || '—',
-        period: (p.periodStart||'')+' → '+(p.periodEnd||''),
-        payDate: p.payDate||'',
-        hours: p.hours, rate:'$'+p.rate,
-        amount: '$'+Number(p.amount||0).toFixed(2),
-        status: p.status==='paid'?'Paid':'Pending',
-        nextStatus: p.status==='paid'?'pending':'paid',
-        badgeStyle: p.status==='paid'? this.badge('green') : this.badge('amber'),
-        canEdit: canBilling, cannotEdit: !canBilling,
-        onHours: e=>{ const v=Number(e.target.value)||0; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id); r.hours=v; r.amount=v*r.rate+ (r.adjustment||0); return x; }); },
-        toggle: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
-          r.status = r.status==='paid'?'pending':'paid';
-          r.paidAt = r.status==='paid'? new Date().toISOString() : null; return x; }); },
-        remove: ()=>{ if(!canBilling) return; this.set(x=>{ x.payments=x.payments.filter(y=>y.id!==p.id); return x; }); }
-      }));
+    // Minutes are the stored unit so "2h 59m" survives a round trip exactly.
+    const hm = mins=>{ const m=Math.max(0,Math.round(Number(mins)||0)); return Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m'; };
+    const rateOf = pid=>{ const r=(D.rates||[]).find(x=>x.profileId===pid); return r?Number(r.hourlyRate||0):0; };
+    const myRate = rateOf(me.id);
+
+    const KIND_LABEL = {hours:'Hours', invoice:'Invoice', expense:'One-time payment'};
+    const STATUS_LABEL = {pending:'Pending', unpaid:'Unpaid', paid:'Paid'};
+    const statusBadge = st=> st==='paid'? this.badge('green') : st==='unpaid'? this.badge('blue') : this.badge('amber');
+
+    const mkPayRow = p=>({
+      id:p.id,
+      who: memberName(p.profileId) || '—',
+      kind: KIND_LABEL[p.kind]||'Hours',
+      isHoursKind: p.kind==='hours',
+      period: (p.periodStart||'')+' to '+(p.periodEnd||''),
+      payDate: p.payDate||'',
+      hoursLabel: p.kind==='hours'? hm(p.minutes) : '',
+      rateLabel: p.kind==='hours'? ('$'+p.rate+'/hr') : '',
+      amount: '$'+Number(p.amount||0).toFixed(2),
+      note: p.note||'',
+      status: STATUS_LABEL[p.status]||'Pending',
+      badgeStyle: statusBadge(p.status),
+      breakdown: (p.breakdown||[]).map(b=>({name:b.name||'Internal',hours:hm(b.minutes)})),
+      hasBreakdown: (p.breakdown||[]).length>0,
+      // Finance actions. The database re-checks all of this.
+      canApprove: canBilling && p.status==='pending',
+      canMarkPaid: canBilling && p.status==='unpaid',
+      canUnpay: canBilling && p.status==='paid',
+      canRemove: canBilling || (p.profileId===me.id && p.status==='pending'),
+      approve: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
+        r.status='unpaid'; r.approvedBy=me.id; r.approvedAt=new Date().toISOString(); return x; }); },
+      markPaid: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
+        r.status='paid'; r.paidAt=new Date().toISOString(); return x; }); },
+      unpay: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
+        r.status='unpaid'; r.paidAt=null; return x; }); },
+      remove: ()=>this.set(x=>{ x.payments=x.payments.filter(y=>y.id!==p.id); return x; })
+    });
+
+    const allPayments = (D.payments||[]).slice()
+      .sort((a,b)=> (b.payDate||'').localeCompare(a.payDate||'') || (b.periodStart||'').localeCompare(a.periodStart||''));
+    const payRows = allPayments.map(mkPayRow);
     const noPayRows = payRows.length===0;
-    const payTotalPending = '$'+(D.payments||[]).filter(p=>p.status!=='paid')
+    const myPayRows = allPayments.filter(p=>p.profileId===me.id).map(mkPayRow);
+    const noMyPayRows = myPayRows.length===0;
+
+    const sumOf = f => '$'+allPayments.filter(f).reduce((s,p)=>s+Number(p.amount||0),0).toFixed(2);
+    const payTotalPending = sumOf(p=>p.status==='pending');
+    const payTotalUnpaid  = sumOf(p=>p.status==='unpaid');
+    const myTotalUnpaid   = '$'+allPayments.filter(p=>p.profileId===me.id&&p.status!=='paid')
       .reduce((s,p)=>s+Number(p.amount||0),0).toFixed(2);
 
-    const teamRows = (D.team||[]).map(m=>({
-      name:m.name||m.email, email:m.email||'',
-      role: m.isAdmin?'Admin':(m.isAccountant?'Accountant':'Team'),
-      rate: m.hourlyRate,
-      canEdit: isAdmin, cannotEdit: !isAdmin, canPay: canBilling,
-      onRate: e=>{ const v=Number(e.target.value)||0; this.set(x=>{ x.team.find(y=>y.id===m.id).hourlyRate=v; return x; }); },
-      // Opens the current pay period for this member, pre-filled at their rate.
-      addPay: ()=>{ if(!canBilling) return; this.set(x=>{
-        const dup=(x.payments||[]).some(p=>p.profileId===m.id&&p.periodStart===curPeriod.start);
-        if(dup) return x;
-        x.payments.unshift({id:this.uid(),profileId:m.id,periodStart:curPeriod.start,periodEnd:curPeriod.end,
-          payDate:curPeriod.pay,hours:0,rate:m.hourlyRate,adjustment:0,amount:0,status:'pending',note:''});
-        return x; }); }
-    }));
+    // Rates are admin-only. A member's load contains just their own row, so
+    // there is nothing to hide client-side — the column simply is not there.
+    const teamRows = (D.team||[]).map(m=>{
+      const r=(D.rates||[]).find(x=>x.profileId===m.id);
+      return {
+        name:m.name||m.email, email:m.email||'',
+        role: m.isAdmin?'Admin':(m.isAccountant?'Accountant':'Team'),
+        rate: r?r.hourlyRate:0,
+        payType: r?(r.payType||'hourly'):'hourly',
+        showRate: isAdmin,
+        onRate: e=>{ const v=Number(e.target.value)||0; this.set(x=>{
+          x.rates = (x.rates||[]).slice();
+          const row = x.rates.find(y=>y.profileId===m.id);
+          if(row) row.hourlyRate=v;
+          else x.rates.push({id:m.id,profileId:m.id,hourlyRate:v,payType:'hourly'});
+          return x; }); },
+        onPayType: e=>{ const v=e.target.value; this.set(x=>{
+          x.rates = (x.rates||[]).slice();
+          const row = x.rates.find(y=>y.profileId===m.id);
+          if(row) row.payType=v;
+          else x.rates.push({id:m.id,profileId:m.id,hourlyRate:0,payType:v});
+          return x; }); }
+      };
+    });
 
     return {
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:client.name,
@@ -1576,8 +1748,62 @@ class Component extends DCLogic {
       noRecentTime: (D.time||[]).length===0,
 
       // ----- team + payroll -----
-      teamRows, payRows, noPayRows, payTotalPending,
-      curPeriodLabel: curPeriod.start+' → '+curPeriod.end+'  (paid '+curPeriod.pay+')',
+      teamRows, payRows, noPayRows, payTotalPending, payTotalUnpaid,
+      myPayRows, noMyPayRows, myTotalUnpaid,
+      secPayments: isTeam&&secKey('payments'),
+      myRateLabel: myRate>0? ('$'+myRate+'/hr') : 'Not set',
+      curPeriodLabel: curPeriod.start+' to '+curPeriod.end+' (paid '+curPeriod.pay+')',
+
+      // ----- submitting your own pay -----
+      dPayKind:d.payKind||'hours', onPayKind:this.draft('payKind'),
+      payKindIsHours: (d.payKind||'hours')==='hours',
+      payKindIsFlat: (d.payKind||'hours')!=='hours',
+      dPayStart:d.payStart||curPeriod.start, onPayStart:this.draft('payStart'),
+      dPayEnd:d.payEnd||curPeriod.end, onPayEnd:this.draft('payEnd'),
+      dPayHours:d.payHours||'', onPayHours:this.draft('payHours'),
+      dPayMinutes:d.payMinutes||'', onPayMinutes:this.draft('payMinutes'),
+      dPayAmount:d.payAmount||'', onPayAmount:this.draft('payAmount'),
+      dPayNote:d.payNote||'', onPayNote:this.draft('payNote'),
+      // Per-client split for an hours submission, built up line by line.
+      dLineClient:d.lineClient||'', onLineClient:this.draft('lineClient'),
+      dLineHours:d.lineHours||'', onLineHours:this.draft('lineHours'),
+      dLineMinutes:d.lineMinutes||'', onLineMinutes:this.draft('lineMinutes'),
+      draftLines: (S.payLines||[]).map((l,i)=>({name:l.name,hours:hm(l.minutes),
+        remove:()=>this.setState({payLines:(S.payLines||[]).filter((_,j)=>j!==i)})})),
+      noDraftLines: (S.payLines||[]).length===0,
+      draftLinesTotal: hm((S.payLines||[]).reduce((s,l)=>s+l.minutes,0)),
+      addLine:()=>{
+        const mins=(Number(d.lineHours)||0)*60+(Number(d.lineMinutes)||0);
+        if(!(mins>0)) return this.setState({syncError:'Enter hours or minutes for the line.'});
+        const cid=d.lineClient||'';
+        const nm=cid?cname(cid):'Social Upgrades (internal)';
+        this.setState(s=>({syncError:null,
+          payLines:(s.payLines||[]).concat([{clientId:cid||null,name:nm,minutes:mins}]),
+          d:{...s.d,lineHours:'',lineMinutes:''}}));
+      },
+      submitPay:()=>{
+        const kind=d.payKind||'hours';
+        const lines=S.payLines||[];
+        // Line items win when present, so the total always matches the detail.
+        const typed=(Number(d.payHours)||0)*60+(Number(d.payMinutes)||0);
+        const mins = lines.length? lines.reduce((s,l)=>s+l.minutes,0) : typed;
+        const flat = Number(d.payAmount)||0;
+        if(kind==='hours' && !(mins>0)) return this.setState({syncError:'Add your hours before submitting.'});
+        if(kind!=='hours' && !(flat>0)) return this.setState({syncError:'Enter an amount before submitting.'});
+        this.setState({syncError:null});
+        this.set(x=>{ x.payments.unshift({
+          id:this.uid(), profileId:me.id, kind,
+          periodStart:d.payStart||curPeriod.start, periodEnd:d.payEnd||curPeriod.end,
+          payDate:curPeriod.pay,
+          minutes: kind==='hours'?mins:0,
+          rate: kind==='hours'?myRate:0,
+          flatAmount: kind==='hours'?0:flat,
+          adjustment:0, breakdown: kind==='hours'?lines:[],
+          status:'pending', note:(d.payNote||'').trim(),
+          amount: kind==='hours'? Math.round(mins*myRate/60*100)/100 : flat
+        }); return x; });
+        this.setState(s=>({payLines:[],d:{...s.d,payHours:'',payMinutes:'',payAmount:'',payNote:''}}));
+      },
       dMemberName:d.memberName||'', onMemberName:this.draft('memberName'),
       dMemberEmail:d.memberEmail||'', onMemberEmail:this.draft('memberEmail'),
       dMemberPass:d.memberPass||'', onMemberPass:this.draft('memberPass'),
