@@ -1,6 +1,6 @@
+# No build step — the app is served as-is from public/.
 [build]
   publish = "public"
-  command = ""
 
 # Single-page app: the whole hub lives in index.html and routes in-memory.
 [[redirects]]
