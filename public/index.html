@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Social Upgrades — Client Hub</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0F1633">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
 <script src="./su-config.js"></script>
 <script src="./su-data.js"></script>
@@ -282,6 +287,7 @@
                   <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
                     <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
                     <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                    <sc-if value="{{ t.hasAssignee }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--blue);white-space:nowrap">{{ t.assignee }}</div></sc-if>
                     <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div>
                   </div>
                 </sc-for>
@@ -296,8 +302,27 @@
                   <option value="team">For team</option>
                   <option value="client">For client</option>
                 </select>
+                <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
+                </select>
                 <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
               </div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">My to-dos</h3>
+                <span style="background:var(--blue);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 9px">{{ myTodoCount }}</span>
+              </div>
+              <sc-if value="{{ noMyTodos }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px;color:var(--text-muted)">Nothing assigned to you right now.</div>
+              </sc-if>
+              <sc-for list="{{ myTodos }}" as="m" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
+                  <button onClick="{{ m.toggle }}" style="{{ m.boxStyle }}"></button>
+                  <div style="flex:1;font-size:14px;color:var(--text-body)">{{ m.title }}</div>
+                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ m.client }}</div>
+                </div>
+              </sc-for>
             </div>
             <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Post a client update</h3>
@@ -402,6 +427,57 @@
       </sc-if>
 
       <sc-if value="{{ secClients }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:flex-end">
+          <button onClick="{{ toggleNewClient }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">+ New client</button>
+        </div>
+        <sc-if value="{{ newClientOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">New client</h3>
+            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Client name</label>
+                <input value="{{ dNewClientName }}" onChange="{{ onNewClientName }}" placeholder="Double Ops Inc" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Domain</label>
+                <input value="{{ dNewClientDomain }}" onChange="{{ onNewClientDomain }}" placeholder="doubleops.com" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label>
+                <input value="{{ dNewClientService }}" onChange="{{ onNewClientService }}" placeholder="Web platform + marketing" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label>
+                <input value="{{ dNewClientPlan }}" onChange="{{ onNewClientPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label>
+                <input value="{{ dNewClientPrice }}" onChange="{{ onNewClientPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label>
+                <input value="{{ dNewClientHours }}" onChange="{{ onNewClientHours }}" type="number" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Additional businesses (comma separated)</label>
+              <input value="{{ dNewClientBrands }}" onChange="{{ onNewClientBrands }}" placeholder="Bravo Boxing" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <div style="font-size:12px;color:var(--text-muted)">Extra brands run under the same umbrella account, so one login covers them all.</div>
+            </div>
+            <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="font-size:12px;color:var(--text-muted)">Optional — create the client's portal login now.</div>
+              <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+                <input value="{{ dNewClientContact }}" onChange="{{ onNewClientContact }}" placeholder="Contact name" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientEmail }}" onChange="{{ onNewClientEmail }}" placeholder="chris@doubleops.com" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientPass }}" onChange="{{ onNewClientPass }}" type="password" placeholder="Password (12+ chars)" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ addClient }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Create client</button>
+              <button onClick="{{ toggleNewClient }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:10px 22px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
+            </div>
+          </div>
+        </sc-if>
         <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px">
           <sc-for list="{{ clientCards }}" as="c" hint-placeholder-count="2">
             <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
@@ -586,6 +662,88 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secTeam }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team members</h3>
+            <sc-for list="{{ teamRows }}" as="m" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ m.name }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ m.email }}</div>
+                </div>
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 11px">{{ m.role }}</span>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <span style="font-size:12px;color:var(--text-muted)">$</span>
+                  <input value="{{ m.rate }}" onChange="{{ m.onRate }}" type="number" disabled="{{ m.cannotEdit }}" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
+                  <span style="font-size:12px;color:var(--text-muted)">/hr</span>
+                </div>
+                <sc-if value="{{ m.canPay }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ m.addPay }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open pay period</button>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ true }}">
+              <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:10px">
+                <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Add a team member</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <input value="{{ dMemberName }}" onChange="{{ onMemberName }}" placeholder="Name" style="flex:1;min-width:130px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberEmail }}" onChange="{{ onMemberEmail }}" placeholder="name@socialupgrades.com" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberPass }}" onChange="{{ onMemberPass }}" type="password" placeholder="Password (12+)" style="min-width:150px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberRate }}" onChange="{{ onMemberRate }}" type="number" placeholder="Rate" style="width:90px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-body)">
+                    <input type="checkbox" checked="{{ dMemberAcct }}" onChange="{{ onMemberAcct }}"> Accountant
+                  </label>
+                  <button onClick="{{ addMember }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ notBilling }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;font-size:13.5px;color:var(--text-muted)">
+              You can see your own payments below. Client invoices and other members' pay are visible to admins and accountants only.
+            </div>
+          </sc-if>
+
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Payments</h3>
+                <div style="font-size:12px;color:var(--text-muted)">Current period {{ curPeriodLabel }}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ payTotalPending }}</div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pending</div>
+              </div>
+            </div>
+            <sc-if value="{{ noPayRows }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted)">No payments yet. Use “Open pay period” above to start one.</div>
+            </sc-if>
+            <sc-for list="{{ payRows }}" as="p" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.who }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · paid {{ p.payDate }}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <input value="{{ p.hours }}" onChange="{{ p.onHours }}" type="number" disabled="{{ p.cannotEdit }}" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
+                  <span style="font-size:12px;color:var(--text-muted)">hrs × {{ p.rate }}</span>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:80px;text-align:right">{{ p.amount }}</div>
+                <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
+                <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ p.toggle }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Mark {{ p.nextStatus }}</button>
+                  <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+
+        </div>
+      </sc-if>
+
       <sc-if value="{{ pUpdates }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:14px">
           <sc-for list="{{ portalUpdates }}" as="u" hint-placeholder-count="3">
@@ -727,6 +885,9 @@
               <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours this month</span><span>{{ planHours }}</span></div>
               <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
             </div>
+            <sc-if value="{{ canManagePlan }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ managePlanUrl }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;background:var(--cta-bg);color:#fff;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;text-decoration:none" style-hover="background:#000">Manage plan</a>
+            </sc-if>
             <div style="font-size:12px;color:var(--text-muted);border-top:1px solid var(--border-hairline);padding-top:12px">No contracts. Pause or cancel anytime.</div>
           </div>
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
@@ -739,11 +900,57 @@
                 </div>
                 <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ inv.amount }}</div>
                 <span style="{{ inv.badgeStyle }}">{{ inv.status }}</span>
-                <a href="#" style="font-size:13px;font-weight:500">PDF</a>
+                <sc-if value="{{ inv.hasUrl }}" hint-placeholder-val="{{ true }}">
+                  <a href="{{ inv.url }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">View</a>
+                </sc-if>
               </div>
             </sc-for>
           </div>
         </div>
+
+        <sc-if value="{{ manageInvoices }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Billing admin</h3>
+              <div style="font-size:12px;color:var(--text-muted)">Visible to admins and accountants only. Invoices are raised in Stripe — paste the hosted invoice link so the client can open it.</div>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+              <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stripe billing portal link</label>
+                <input value="{{ dPortalUrl }}" onChange="{{ onPortalUrl }}" placeholder="https://billing.stripe.com/p/session/..." style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <button onClick="{{ savePortalUrl }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save</button>
+            </div>
+
+            <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <input value="{{ dInvNum }}" onChange="{{ onInvNum }}" placeholder="INV-2026-091" style="min-width:150px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dInvAmount }}" onChange="{{ onInvAmount }}" type="number" placeholder="Amount" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dInvUrl }}" onChange="{{ onInvUrl }}" placeholder="Stripe invoice link" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <select value="{{ dInvStatus }}" onChange="{{ onInvStatus }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <option value="Due">Due</option>
+                <option value="Paid">Paid</option>
+              </select>
+              <button onClick="{{ addInvoice }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add invoice</button>
+            </div>
+
+            <sc-for list="{{ teamInvoices }}" as="ti" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:1px">
+                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ ti.num }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ ti.date }}</div>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ ti.amount }}</div>
+                <span style="{{ ti.badgeStyle }}">{{ ti.status }}</span>
+                <sc-if value="{{ ti.hasUrl }}" hint-placeholder-val="{{ true }}">
+                  <a href="{{ ti.url }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">Open in Stripe</a>
+                </sc-if>
+                <button onClick="{{ ti.toggle }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Toggle status</button>
+                <button onClick="{{ ti.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
       </sc-if>
     </div>
   </main>
@@ -765,7 +972,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{}};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -862,7 +1069,7 @@ class Component extends DCLogic {
     const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['messages','Messages']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['team','Team']]
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
@@ -874,7 +1081,7 @@ class Component extends DCLogic {
       return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
     });
-    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Work Board'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],
+    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],team:['Internal Dashboard','Team'],
       home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
@@ -910,6 +1117,7 @@ class Component extends DCLogic {
     const doneItems=D.work.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
     const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
+      assignee:t.assigneeName||'', hasAssignee:!!t.assigneeName,
       toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client') this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; })});
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
     const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
@@ -960,7 +1168,11 @@ class Component extends DCLogic {
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
     const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
-    const invoices=D.invoices.filter(i=>i.clientId===client.id).map(i=>({num:i.num,date:i.date,amount:'$'+i.amount,status:i.status,badgeStyle:invBadge(i.status)}));
+    // Invoices are raised in Stripe; we store the hosted link so both sides can
+    // open the real invoice. Rows with no link still render, just without one.
+    const invoices=D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts)
+      .map(i=>({num:i.num,date:i.date,amount:'$'+i.amount,status:i.status,badgeStyle:invBadge(i.status),
+        url:i.url||'',hasUrl:!!i.url}));
     // Guarded: a client on no retainer has hoursTotal 0, which would render NaN%.
     const planPct=client.hoursTotal>0?Math.round(100*client.hoursUsed/client.hoursTotal):0;
     // portal home dashboard
@@ -1035,17 +1247,162 @@ class Component extends DCLogic {
       {label:'Open to-dos',value:D.todos.filter(t=>!t.done).length}
     ];
     const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts)}));
+
+    // ===== people, assignment and money =====
+    const me = S.profile || {};
+    const isAdmin = !!me.is_admin;
+    // Finance visibility: owner or accountant. Ordinary staff never see client
+    // invoices or anyone else's pay. The database enforces this too — these
+    // flags only decide what is worth rendering.
+    const canBilling = isStaff && (isAdmin || !!me.is_accountant);
+    const members = (D.team||[]).filter(t=>t.active!==false);
+    const memberName = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?m.name:''; };
+
+    // "My to-dos" — team work assigned to whoever is signed in.
+    const myTodos = D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id)
+      .map(t=>({title:t.title,client:t.clientId?cname(t.clientId):'Internal',when:this.fmt(t.ts),
+        toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; return x; }),
+        boxStyle:this.box(false)}));
+    const noMyTodos = myTodos.length===0;
+
+    // Pay periods: paid on the 1st and the 16th. The 16th covers the 1st-15th
+    // of the same month; the 1st covers the 16th-end of the previous month.
+    const iso = d=>d.toISOString().slice(0,10);
+    const periodFor = now=>{
+      const y=now.getFullYear(), m=now.getMonth(), day=now.getDate();
+      if(day<16) return {start:iso(new Date(Date.UTC(y,m,1))), end:iso(new Date(Date.UTC(y,m,15))), pay:iso(new Date(Date.UTC(y,m,16)))};
+      return {start:iso(new Date(Date.UTC(y,m,16))), end:iso(new Date(Date.UTC(y,m+1,0))), pay:iso(new Date(Date.UTC(y,m+1,1)))};
+    };
+    const curPeriod = periodFor(new Date());
+
+    const payRows = (D.payments||[]).slice()
+      .sort((a,b)=> (b.payDate||'').localeCompare(a.payDate||''))
+      .map(p=>({
+        who: memberName(p.profileId) || '—',
+        period: (p.periodStart||'')+' → '+(p.periodEnd||''),
+        payDate: p.payDate||'',
+        hours: p.hours, rate:'$'+p.rate,
+        amount: '$'+Number(p.amount||0).toFixed(2),
+        status: p.status==='paid'?'Paid':'Pending',
+        nextStatus: p.status==='paid'?'pending':'paid',
+        badgeStyle: p.status==='paid'? this.badge('green') : this.badge('amber'),
+        canEdit: canBilling, cannotEdit: !canBilling,
+        onHours: e=>{ const v=Number(e.target.value)||0; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id); r.hours=v; r.amount=v*r.rate+ (r.adjustment||0); return x; }); },
+        toggle: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
+          r.status = r.status==='paid'?'pending':'paid';
+          r.paidAt = r.status==='paid'? new Date().toISOString() : null; return x; }); },
+        remove: ()=>{ if(!canBilling) return; this.set(x=>{ x.payments=x.payments.filter(y=>y.id!==p.id); return x; }); }
+      }));
+    const noPayRows = payRows.length===0;
+    const payTotalPending = '$'+(D.payments||[]).filter(p=>p.status!=='paid')
+      .reduce((s,p)=>s+Number(p.amount||0),0).toFixed(2);
+
+    const teamRows = (D.team||[]).map(m=>({
+      name:m.name||m.email, email:m.email||'',
+      role: m.isAdmin?'Admin':(m.isAccountant?'Accountant':'Team'),
+      rate: m.hourlyRate,
+      canEdit: isAdmin, cannotEdit: !isAdmin, canPay: canBilling,
+      onRate: e=>{ const v=Number(e.target.value)||0; this.set(x=>{ x.team.find(y=>y.id===m.id).hourlyRate=v; return x; }); },
+      // Opens the current pay period for this member, pre-filled at their rate.
+      addPay: ()=>{ if(!canBilling) return; this.set(x=>{
+        const dup=(x.payments||[]).some(p=>p.profileId===m.id&&p.periodStart===curPeriod.start);
+        if(dup) return x;
+        x.payments.unshift({id:this.uid(),profileId:m.id,periodStart:curPeriod.start,periodEnd:curPeriod.end,
+          payDate:curPeriod.pay,hours:0,rate:m.hourlyRate,adjustment:0,amount:0,status:'pending',note:''});
+        return x; }); }
+    }));
+
     return {
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:client.name,
+      // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
+      // they cover, so one login serves the whole group.
+      businesses:(client.businesses||[]).map(b=>({name:b.name,domain:b.domain||''})),
+      multiBusiness:(client.businesses||[]).length>1,
       hubLabel:isTeam?'CLIENT HUB — TEAM':'CLIENT PORTAL',
       navItems, kicker:hk[0], heading:hk[1], kickerColor:isTeam?'var(--green)':'var(--blue)',
-      onViewClient:e=>this.setState({viewClient:e.target.value,msgClient:e.target.value}),
+      // Clearing portalUrl matters: it is a draft seeded from the viewed client,
+      // so carrying it across a switch would save one client's Stripe link onto
+      // another.
+      onViewClient:e=>this.setState(s=>({viewClient:e.target.value,msgClient:e.target.value,
+        d:{...s.d,portalUrl:undefined,invNum:'',invAmount:'',invUrl:''}})),
       goClient:()=>this.setState({role:'client',section:'home',notifOpen:false,moreOpen:false,fileFilter:'All'}),
       // Guarded as well as hidden: a client account cannot switch to the team
       // view even if the control is reached some other way. The database would
       // refuse to hand over another tenant's rows regardless.
       goTeam:()=>{ if(!isStaff) return; this.setState({role:'team',section:'overview',notifOpen:false,moreOpen:false}); },
       showBackToTeam: isStaff && !isTeam,
+
+      // ----- roles -----
+      isAdmin, canBilling, notBilling:isTeam&&!canBilling,
+      secTeam: isTeam&&secKey('team'),
+
+      // ----- my to-dos -----
+      myTodos, noMyTodos, myTodoCount: myTodos.length,
+
+      // ----- team + payroll -----
+      teamRows, payRows, noPayRows, payTotalPending,
+      curPeriodLabel: curPeriod.start+' → '+curPeriod.end+'  (paid '+curPeriod.pay+')',
+      dMemberName:d.memberName||'', onMemberName:this.draft('memberName'),
+      dMemberEmail:d.memberEmail||'', onMemberEmail:this.draft('memberEmail'),
+      dMemberPass:d.memberPass||'', onMemberPass:this.draft('memberPass'),
+      dMemberRate:d.memberRate===undefined?20:d.memberRate, onMemberRate:this.draft('memberRate'),
+      dMemberAcct:!!d.memberAcct, onMemberAcct:this.draft('memberAcct'),
+      addMember:()=>{
+        const nm=(d.memberName||'').trim(), em=(d.memberEmail||'').trim(), pw=d.memberPass||'';
+        if(!nm||!em) return this.setState({syncError:'Name and email are required to add a team member.'});
+        if(pw.length<12) return this.setState({syncError:'Team member password must be at least 12 characters.'});
+        this.setState({syncError:null});
+        window.SUData.createTeamMember(em,pw,nm,Number(d.memberRate)||20,!!d.memberAcct)
+          .then(()=>window.SUData.load())
+          .then(data=>{ this.__synced=structuredClone(data);
+            this.setState({data,d:{...this.state.d,memberName:'',memberEmail:'',memberPass:'',memberRate:20,memberAcct:false}}); })
+          .catch(err=>this.setState({syncError:'Could not add team member: '+(err.message||err)}));
+      },
+
+      // ----- new client -----
+      dNewClientName:d.ncName||'', onNewClientName:this.draft('ncName'),
+      dNewClientDomain:d.ncDomain||'', onNewClientDomain:this.draft('ncDomain'),
+      dNewClientService:d.ncService||'', onNewClientService:this.draft('ncService'),
+      dNewClientPlan:d.ncPlan||'Growth', onNewClientPlan:this.draft('ncPlan'),
+      dNewClientPrice:d.ncPrice===undefined?499:d.ncPrice, onNewClientPrice:this.draft('ncPrice'),
+      dNewClientHours:d.ncHours===undefined?25:d.ncHours, onNewClientHours:this.draft('ncHours'),
+      dNewClientBrands:d.ncBrands||'', onNewClientBrands:this.draft('ncBrands'),
+      dNewClientEmail:d.ncEmail||'', onNewClientEmail:this.draft('ncEmail'),
+      dNewClientPass:d.ncPass||'', onNewClientPass:this.draft('ncPass'),
+      dNewClientContact:d.ncContact||'', onNewClientContact:this.draft('ncContact'),
+      newClientOpen:!!S.newClientOpen,
+      toggleNewClient:()=>this.setState({newClientOpen:!S.newClientOpen,syncError:null}),
+      addClient:()=>{
+        const nm=(d.ncName||'').trim();
+        if(!nm) return this.setState({syncError:'Client name is required.'});
+        // Short, readable tenant id derived from the name, kept unique.
+        let base=nm.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,6)||'client';
+        let id=base, n=2; while(D.clients.some(c=>c.id===id)){ id=base+n; n++; }
+        // Extra brands are comma-separated; the client itself is always the
+        // first business, so an umbrella account holds both under one login.
+        const extra=(d.ncBrands||'').split(',').map(s=>s.trim()).filter(Boolean);
+        const businesses=[{id:id+'-main',name:nm,domain:(d.ncDomain||'').trim()}]
+          .concat(extra.map((b,i)=>({id:id+'-b'+(i+1),name:b,domain:''})));
+        const email=(d.ncEmail||'').trim(), pass=d.ncPass||'';
+        if(email && pass.length<12) return this.setState({syncError:'Client password must be at least 12 characters.'});
+        this.setState({syncError:null});
+        this.set(x=>{
+          x.clients.push({id,name:nm,domain:(d.ncDomain||'').trim(),service:(d.ncService||'').trim(),
+            plan:d.ncPlan||'Growth',price:Number(d.ncPrice)||0,hoursUsed:0,hoursTotal:Number(d.ncHours)||0,
+            pulse:[],businesses,billingPortalUrl:'',billingCycle:'monthly'});
+          x.reports[id]={stats:[],note:''};
+          this.logEv(x,id,'New client added: '+nm);
+          return x;
+        });
+        const done=()=>this.setState({newClientOpen:false,viewClient:id,msgClient:id,
+          d:{...this.state.d,ncName:'',ncDomain:'',ncService:'',ncBrands:'',ncEmail:'',ncPass:'',ncContact:''}});
+        if(email){
+          // The board exists either way; only the login can fail here.
+          window.SUData.createClientLogin(id,email,pass,(d.ncContact||nm))
+            .then(done)
+            .catch(err=>this.setState({syncError:'Client board created, but the login failed: '+(err.message||err)}));
+        } else done();
+      },
       signOut:()=>window.SUSignOut(),
       userName: (S.profile && (S.profile.name || S.profile.email)) || '',
       syncError: S.syncError || false,
@@ -1073,8 +1430,14 @@ class Component extends DCLogic {
       bottomItems, sheetItems, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
       stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
       dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),
+      // Assignee applies to team to-dos only — a client to-do belongs to the client.
+      dTodoAssignee:d.todoAssignee||'', onTodoAssignee:this.draft('todoAssignee'),
+      assigneeOptions:[{id:'',name:'Unassigned'}].concat(members.map(m=>({id:m.id,name:m.name||m.email}))),
       addTodo:()=>{ const title=(d.todo||'').trim(); if(!title) return;
-        this.set(x=>{ x.todos.unshift({id:this.uid(),clientId:d.todoClient,title,who:d.todoWho,done:false,ts:Date.now()}); if(d.todoWho==='client') this.logEv(x,d.todoClient,'New to-do for '+cname(d.todoClient)+': '+title); return x; });
+        const assignee=d.todoWho==='team'?(d.todoAssignee||''):'';
+        this.set(x=>{ x.todos.unshift({id:this.uid(),clientId:d.todoClient,title,who:d.todoWho,done:false,ts:Date.now(),
+          assigneeId:assignee,assigneeName:assignee?memberName(assignee):''});
+          if(d.todoWho==='client') this.logEv(x,d.todoClient,'New to-do for '+cname(d.todoClient)+': '+title); return x; });
         this.setState(s=>({d:{...s.d,todo:''}})); },
       dUpdClient:d.updClient, onUpdClient:this.draft('updClient'), dUpdText:d.updText||'', onUpdText:this.draft('updText'), dUpdApproval:d.updApproval, onUpdApproval:this.draft('updApproval'),
       postUpdate:()=>{ const text=(d.updText||'').trim(); if(!text) return;
@@ -1101,6 +1464,32 @@ class Component extends DCLogic {
       fileChips, portalFiles,
       reportStats:rep.stats.map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E'})), reportNote:rep.note,
       reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      // Stripe billing portal — clients on a recurring plan manage it themselves.
+      managePlanUrl: client.billingPortalUrl||'',
+      canManagePlan: !!client.billingPortalUrl && client.billingCycle!=='none',
+      // Finance-only controls for wiring the client up to Stripe.
+      dPortalUrl: d.portalUrl===undefined?(client.billingPortalUrl||''):d.portalUrl,
+      onPortalUrl:this.draft('portalUrl'),
+      savePortalUrl:()=>{ if(!canBilling) return; const u=(d.portalUrl||'').trim();
+        this.set(x=>{ x.clients.find(c=>c.id===client.id).billingPortalUrl=u; return x; }); },
+      dInvNum:d.invNum||'', onInvNum:this.draft('invNum'),
+      dInvAmount:d.invAmount||'', onInvAmount:this.draft('invAmount'),
+      dInvUrl:d.invUrl||'', onInvUrl:this.draft('invUrl'),
+      dInvStatus:d.invStatus||'Due', onInvStatus:this.draft('invStatus'),
+      addInvoice:()=>{ if(!canBilling) return;
+        const num=(d.invNum||'').trim(), amt=Number(d.invAmount)||0, url=(d.invUrl||'').trim();
+        if(!num) return this.setState({syncError:'Invoice number is required.'});
+        this.setState({syncError:null});
+        this.set(x=>{ x.invoices.unshift({id:this.uid(),clientId:client.id,num,amount:amt,url,
+          status:d.invStatus||'Due',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),ts:Date.now()}); return x; });
+        this.setState(s=>({d:{...s.d,invNum:'',invAmount:'',invUrl:''}})); },
+      manageInvoices: canBilling && isTeam,
+      teamInvoices: canBilling ? D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(i=>({
+        num:i.num, date:i.date, amount:'$'+i.amount, status:i.status,
+        badgeStyle:invBadge(i.status), url:i.url||'', hasUrl:!!i.url,
+        toggle:()=>this.set(x=>{ const r=x.invoices.find(y=>y.id===i.id); r.status = r.status==='Paid'?'Due':'Paid'; return x; }),
+        remove:()=>this.set(x=>{ x.invoices=x.invoices.filter(y=>y.id!==i.id); return x; })
+      })) : [],
       planName:client.plan, planPrice:'$'+client.price, planHours:client.hoursUsed+' / '+client.hoursTotal+' used',
       planBarStyle:{width:planPct+'%',height:'100%',background:'var(--grad-brand)'},
       invoices

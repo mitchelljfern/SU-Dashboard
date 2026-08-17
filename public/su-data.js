@@ -19,8 +19,52 @@
   const CLIENT_COLS = {
     name: 'name', domain: 'domain', service: 'service', plan: 'plan',
     price: 'price', hoursUsed: 'hours_used', hoursTotal: 'hours_total',
-    pulse: 'pulse', pulseMonth: 'pulse_month'
+    pulse: 'pulse', pulseMonth: 'pulse_month', businesses: 'businesses',
+    billingPortalUrl: 'billing_portal_url', billingCycle: 'billing_cycle'
   };
+
+  // Staff directory, used for assigning work and for the payments ledger.
+  const TEAM_COLS = {
+    name: 'name', email: 'email', isAdmin: 'is_admin',
+    isAccountant: 'is_accountant', hourlyRate: 'hourly_rate', active: 'active'
+  };
+
+  // `amount` is a generated column — readable, never writable.
+  const PAY_COLS = {
+    profileId: 'profile_id', periodStart: 'period_start', periodEnd: 'period_end',
+    payDate: 'pay_date', hours: 'hours', rate: 'rate', adjustment: 'adjustment',
+    status: 'status', paidAt: 'paid_at', note: 'note'
+  };
+
+  const NUMERIC_COLS = new Set([
+    'price', 'hours_used', 'hours_total', 'hourly_rate',
+    'hours', 'rate', 'adjustment', 'amount'
+  ]);
+
+  // Generic column mapper for the tables that are not jsonb-bodied.
+  function mapFromRow(row, cols, extra) {
+    const o = { id: row.id };
+    for (const [appKey, col] of Object.entries(cols)) {
+      let v = row[col];
+      if (NUMERIC_COLS.has(col) && v !== null && v !== undefined) v = Number(v);
+      if (v !== null && v !== undefined) o[appKey] = v;
+    }
+    for (const col of (extra || [])) {
+      if (row[col] !== undefined && row[col] !== null) {
+        o[col.replace(/_(\w)/g, (_, c) => c.toUpperCase())] =
+          NUMERIC_COLS.has(col) ? Number(row[col]) : row[col];
+      }
+    }
+    return o;
+  }
+
+  function mapToRow(item, cols) {
+    const r = { id: item.id };
+    for (const [appKey, col] of Object.entries(cols)) {
+      if (item[appKey] !== undefined) r[col] = item[appKey];
+    }
+    return r;
+  }
 
   let sb = null;
   let profile = null;
@@ -53,23 +97,23 @@
   };
 
   const clientFromRow = r => {
-    const o = { id: r.id };
-    for (const [appKey, col] of Object.entries(CLIENT_COLS)) {
-      let v = r[col];
-      if (col === 'price' || col === 'hours_used' || col === 'hours_total') v = Number(v);
-      if (v !== null && v !== undefined) o[appKey] = v;
-    }
+    const o = mapFromRow(r, CLIENT_COLS);
     if (!Array.isArray(o.pulse)) o.pulse = [];
+    if (!Array.isArray(o.businesses)) o.businesses = [];
     return o;
   };
+  const clientToRow = c => mapToRow(c, CLIENT_COLS);
 
-  const clientToRow = c => {
-    const r = { id: c.id };
-    for (const [appKey, col] of Object.entries(CLIENT_COLS)) {
-      if (c[appKey] !== undefined) r[col] = c[appKey];
-    }
-    return r;
+  const teamFromRow = r => mapFromRow(r, TEAM_COLS);
+  const teamToRow   = t => mapToRow(t, TEAM_COLS);
+
+  // amount is generated in Postgres; carry it for display, drop it on write.
+  const payFromRow = r => {
+    const o = mapFromRow(r, PAY_COLS);
+    o.amount = Number(r.amount || 0);
+    return o;
   };
+  const payToRow = p => mapToRow(p, PAY_COLS);
 
   // ---------- auth ----------
 
@@ -108,7 +152,13 @@
     const db = client();
     const jobs = [
       db.from('clients').select('*').order('created_at', { ascending: true }),
-      db.from('reports').select('*')
+      db.from('reports').select('*'),
+      // Staff directory. A client user only ever gets their own row back, so
+      // this is naturally empty for them.
+      db.from('profiles').select('*').eq('role', 'team').order('name', { ascending: true }),
+      // Payroll. RLS decides scope: finance sees everyone, a member sees only
+      // their own rows, clients see none.
+      db.from('team_payments').select('*').order('pay_date', { ascending: false })
     ];
     for (const t of TABLES) {
       jobs.push(db.from(t).select('*').order('ts', { ascending: ORDER[t] === 'asc' }));
@@ -121,7 +171,9 @@
     data.clients = results[0].data.map(clientFromRow);
     data.reports = {};
     for (const r of results[1].data) data.reports[r.client_id] = r.data;
-    TABLES.forEach((t, i) => { data[t] = results[i + 2].data.map(fromRow); });
+    data.team = results[2].data.map(teamFromRow);
+    data.payments = results[3].data.map(payFromRow);
+    TABLES.forEach((t, i) => { data[t] = results[i + 4].data.map(fromRow); });
 
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
@@ -169,6 +221,20 @@
       if (deletes.length) ops.push(db.from('clients').delete().in('id', deletes));
     }
 
+    // staff directory (admin-only writes; RLS rejects anyone else)
+    {
+      const { upserts } = diffList(prev.team, next.team);
+      if (upserts.length) ops.push(db.from('profiles').upsert(upserts.map(teamToRow)));
+      // profiles are never deleted from the UI — deactivate instead
+    }
+
+    // payroll
+    {
+      const { upserts, deletes } = diffList(prev.payments, next.payments);
+      if (upserts.length) ops.push(db.from('team_payments').upsert(upserts.map(payToRow)));
+      if (deletes.length) ops.push(db.from('team_payments').delete().in('id', deletes));
+    }
+
     // jsonb-bodied collections
     for (const t of TABLES) {
       const { upserts, deletes } = diffList(prev[t], next[t]);
@@ -193,8 +259,35 @@
     return { ok: true, writes: ops.length };
   }
 
+  // ---------- admin actions ----------
+  // Creating a login needs privileges the browser must not hold, so these are
+  // thin calls onto SECURITY DEFINER functions that re-check is_admin() in the
+  // database. A non-admin gets a permission error from Postgres, not from here.
+
+  async function createClientLogin(clientId, email, password, name) {
+    const { error } = await client().rpc('admin_create_client_login', {
+      p_client_id: clientId,
+      p_email: String(email || '').trim().toLowerCase(),
+      p_password: password,
+      p_name: name || ''
+    });
+    if (error) throw error;
+  }
+
+  async function createTeamMember(email, password, name, rate, isAccountant) {
+    const { error } = await client().rpc('admin_create_team_member', {
+      p_email: String(email || '').trim().toLowerCase(),
+      p_password: password,
+      p_name: name || '',
+      p_rate: Number(rate) || 20,
+      p_is_accountant: !!isAccountant
+    });
+    if (error) throw error;
+  }
+
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, sync,
+    createClientLogin, createTeamMember,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
   };

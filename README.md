@@ -8,26 +8,53 @@ backed by Supabase with per-client logins.
 
 ## Accounts
 
-Every user signs in with email + password. A user's account decides what they see:
+Every user signs in with email + password. The account decides what they see:
 
-| Profile role | Sees |
+| Account | Sees |
 |---|---|
-| `team` | Every client, both views, can switch into any client's portal |
-| `client` | Only their own tenant's rows, portal only — cannot reach the team view |
+| Team — admin | Everything: all clients, staff directory, rates, client invoices, payroll |
+| Team — accountant | Everything a member sees, plus client invoices and all payroll |
+| Team — member | All clients and work; **no** client invoices, only their own pay |
+| Client | Only their own tenant, portal only — cannot reach the team view |
 
 Isolation is enforced in Postgres by row-level security, not in the browser.
-A client account cannot read another client's data, move rows between tenants,
-delete anything, edit its own invoices, or promote itself to `team` — even if
-someone edits the JavaScript.
+A client cannot read another client's data, move rows between tenants, delete
+anything, edit its own invoices, or promote itself to staff. A team member
+cannot read client invoices, mark their own pay as paid, change their own
+hourly rate, or make themselves an admin — even by editing the JavaScript.
 
-Add a user from the Supabase SQL editor:
+Admins add people from the dashboard (Clients → New client, Team → Add a team
+member). Those forms call `admin_create_client_login` /
+`admin_create_team_member`, which re-check `is_admin()` in the database.
+
+From the Supabase SQL editor:
 
 ```sql
 select public.provision_user('someone@example.com', '<password>', 'client', 'af', 'Client Name');
 select public.provision_user('staff@example.com',   '<password>', 'team',   null, 'Staff Name');
+update public.profiles set is_accountant = true where email = 'books@example.com';
 ```
 
-The third argument is the role, the fourth the client id (`null` for team).
+## Clients and businesses
+
+A client is the tenant and the unit of isolation. A client may cover several
+businesses — Double Ops Inc and Bravo Boxing sit under one account, so one
+login serves the whole group. Extra businesses are entered comma-separated when
+creating the client and stored on `clients.businesses`.
+
+## Money
+
+**Client invoices** are raised in Stripe. The team pastes the hosted invoice
+link (Billing admin panel, visible to admins and accountants only) and the
+client opens the real invoice from their own Billing tab. Clients on a
+recurring plan get a **Manage plan** button pointing at their Stripe billing
+portal link. Nothing is charged by this app; it stores links and status.
+
+**Team pay** runs on the 1st and the 16th: the 16th covers the 1st–15th of that
+month, the 1st covers the 16th–end of the previous month. "Open pay period"
+creates the current period for a member at their current rate; hours are
+entered, `amount` is computed in Postgres (`hours * rate + adjustment`) and each
+row toggles between pending and paid. Rates are per-member and admin-editable.
 
 ## Structure
 
@@ -37,7 +64,8 @@ The third argument is the role, the fourth the client id (`null` for team).
 - `public/su-boot.js` — login gate
 - `public/support.js` — component runtime
 - `public/_ds/` — Social Upgrades design system (tokens, styles, bundle)
-- `public/assets/` — brand logos
+- `public/assets/` — brand mark, app icon and favicons
+- `public/site.webmanifest` — installable-app metadata
 - `supabase/migrations/` — schema, RLS policies, and user provisioning
 - `netlify.toml` — publish config, headers, SPA rewrite
 
