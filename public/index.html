@@ -447,6 +447,17 @@
                 <input value="{{ dNewClientService }}" onChange="{{ onNewClientService }}" placeholder="Web platform + marketing" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
+                <select value="{{ dNewClientBilling }}" onChange="{{ onNewClientBilling }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <option value="retainer">Monthly plan</option>
+                  <option value="hourly">Hourly · custom invoices</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
+                <input value="{{ dNewClientRate }}" onChange="{{ onNewClientRate }}" type="number" placeholder="0" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label>
                 <input value="{{ dNewClientPlan }}" onChange="{{ onNewClientPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
               </div>
@@ -659,6 +670,61 @@
               </button>
             </sc-for>
           </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secTime }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Log hours</h3>
+              <div style="font-size:12px;color:var(--text-muted)">Hourly clients see these hours and their running bill in their own portal.</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <select value="{{ dTimeClient }}" onChange="{{ onTimeClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+              </select>
+              <input value="{{ dTimeDate }}" onChange="{{ onTimeDate }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dTimeHours }}" onChange="{{ onTimeHours }}" type="number" step="0.25" placeholder="Hours" style="width:100px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dTimeDesc }}" onChange="{{ onTimeDesc }}" placeholder="What was worked on" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-body)">
+                <input type="checkbox" checked="{{ dTimeBillable }}" onChange="{{ onTimeBillable }}"> Billable
+              </label>
+              <button onClick="{{ addTime }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Log</button>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">This month by client</h3>
+            <sc-for list="{{ timeSummary }}" as="s" hint-placeholder-count="3">
+              <div onClick="{{ s.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer">
+                <div style="flex:1;font-size:14px;font-weight:500;color:var(--navy)">{{ s.name }}</div>
+                <div style="font-size:12.5px;color:var(--text-muted)">{{ s.rate }}</div>
+                <div style="font-size:13.5px;color:var(--text-body);min-width:70px;text-align:right">{{ s.hours }} hrs</div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);min-width:90px;text-align:right">{{ s.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Recent entries</h3>
+            <sc-if value="{{ noRecentTime }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted)">No hours logged yet.</div>
+            </sc-if>
+            <sc-for list="{{ recentTime }}" as="e" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
+                <div style="font-size:12.5px;color:var(--text-muted);min-width:92px">{{ e.date }}</div>
+                <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:1px">
+                  <div style="font-size:14px;color:var(--text-body)">{{ e.desc }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ e.clientName }} · {{ e.who }} {{ e.tag }}</div>
+                </div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ e.hours }}</div>
+                <button onClick="{{ e.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+              </div>
+            </sc-for>
+          </div>
+
         </div>
       </sc-if>
 
@@ -879,12 +945,29 @@
       <sc-if value="{{ pBilling }}" hint-placeholder-val="{{ false }}">
         <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px;align-items:start">
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
-            <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ planName }}</span>
-            <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ planPrice }}<span style="font-size:15px;font-weight:600;color:var(--text-muted)">/month</span></div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours this month</span><span>{{ planHours }}</span></div>
-              <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
-            </div>
+            <sc-if value="{{ isRetainer }}" hint-placeholder-val="{{ true }}">
+              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ planName }}</span>
+              <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ planPrice }}<span style="font-size:15px;font-weight:600;color:var(--text-muted)">/month</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours this month</span><span>{{ planHours }}</span></div>
+                <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isHourly }}" hint-placeholder-val="{{ false }}">
+              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">Hourly · {{ clientRate }}/hr</span>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ thisMonthLabel }} so far</div>
+                <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ currentBill }}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--border-hairline);padding-top:12px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-body)"><span>Billable hours</span><strong>{{ billableHours }}</strong></div>
+                <sc-if value="{{ hasUnbillable }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted)"><span>Non-billable (not charged)</span><span>{{ unbillableHours }}</span></div>
+                </sc-if>
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-body)"><span>Rate</span><span>{{ clientRate }}/hr</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted)"><span>Next invoice</span><span>{{ nextBillDate }}</span></div>
+              </div>
+            </sc-if>
             <sc-if value="{{ canManagePlan }}" hint-placeholder-val="{{ true }}">
               <a href="{{ managePlanUrl }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;background:var(--cta-bg);color:#fff;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;text-decoration:none" style-hover="background:#000">Manage plan</a>
             </sc-if>
@@ -908,11 +991,60 @@
           </div>
         </div>
 
+        <sc-if value="{{ isHourly }}" hint-placeholder-val="{{ false }}">
+          <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Hours this month</h3>
+              <sc-if value="{{ noMonthEntries }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px;color:var(--text-muted)">No hours logged yet this month.</div>
+              </sc-if>
+              <sc-for list="{{ monthEntries }}" as="e" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
+                  <div style="font-size:12.5px;color:var(--text-muted);min-width:92px">{{ e.date }}</div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:1px">
+                    <div style="font-size:14px;color:var(--text-body)">{{ e.desc }}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ e.who }} {{ e.tag }}</div>
+                  </div>
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ e.hours }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Previous months</h3>
+              <sc-if value="{{ noMonthHistory }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px;color:var(--text-muted)">Nothing billed yet.</div>
+              </sc-if>
+              <sc-for list="{{ monthHistory }}" as="h" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
+                  <div style="flex:1;font-size:13.5px;color:var(--text-body)">{{ h.month }}</div>
+                  <div style="font-size:12.5px;color:var(--text-muted)">{{ h.hours }} hrs</div>
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ h.total }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ manageInvoices }}" hint-placeholder-val="{{ false }}">
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
             <div style="display:flex;flex-direction:column;gap:3px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Billing admin</h3>
               <div style="font-size:12px;color:var(--text-muted)">Visible to admins and accountants only. Invoices are raised in Stripe — paste the hosted invoice link so the client can open it.</div>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
+                <select value="{{ dBillingType }}" onChange="{{ onBillingType }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <option value="retainer">Monthly plan</option>
+                  <option value="hourly">Hourly</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
+                <input value="{{ dClientRate }}" onChange="{{ onClientRate }}" type="number" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              </div>
+              <button onClick="{{ saveBilling }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save billing</button>
             </div>
 
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
@@ -972,7 +1104,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -1069,7 +1201,7 @@ class Component extends DCLogic {
     const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['team','Team']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['team','Team']]
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
@@ -1081,7 +1213,7 @@ class Component extends DCLogic {
       return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
     });
-    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],team:['Internal Dashboard','Team'],
+    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],team:['Internal Dashboard','Team'],
       home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
@@ -1175,6 +1307,48 @@ class Component extends DCLogic {
         url:i.url||'',hasUrl:!!i.url}));
     // Guarded: a client on no retainer has hoursTotal 0, which would render NaN%.
     const planPct=client.hoursTotal>0?Math.round(100*client.hoursUsed/client.hoursTotal):0;
+
+    // ===== hourly billing =====
+    // Hourly clients are invoiced on the 1st for the month just finished, so
+    // the "current bill" is whatever has been logged in the current month.
+    const isHourly = client.billingType==='hourly';
+    const now2 = new Date();
+    const monthKey = d => String(d).slice(0,7);              // 'YYYY-MM'
+    const thisMonth = monthKey(now2.toISOString());
+    const nextBill = new Date(Date.UTC(now2.getFullYear(), now2.getMonth()+1, 1))
+      .toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    const money = n => '$'+Number(n||0).toFixed(2);
+
+    const clientTime = (D.time||[]).filter(t=>t.clientId===client.id);
+    const monthTime  = clientTime.filter(t=>monthKey(t.entryDate)===thisMonth);
+    const billableHours = monthTime.filter(t=>t.billable!==false)
+      .reduce((s,t)=>s+Number(t.hours||0),0);
+    const unbillableHours = monthTime.filter(t=>t.billable===false)
+      .reduce((s,t)=>s+Number(t.hours||0),0);
+    const currentBill = billableHours * Number(client.hourlyRate||0);
+
+    // Earlier months, so both sides have a history to look back on.
+    const monthHistory = Object.entries(
+      clientTime.filter(t=>monthKey(t.entryDate)!==thisMonth && t.billable!==false)
+        .reduce((acc,t)=>{ const k=monthKey(t.entryDate); acc[k]=(acc[k]||0)+Number(t.hours||0); return acc; },{}))
+      .sort((a,b)=>b[0].localeCompare(a[0])).slice(0,6)
+      .map(([k,h])=>({month:new Date(k+'-01T00:00:00Z').toLocaleDateString('en-US',{month:'long',year:'numeric'}),
+        hours:h.toFixed(2), total:money(h*Number(client.hourlyRate||0))}));
+    const noMonthHistory = monthHistory.length===0;
+
+    // Local lookup: the staff directory is only assembled further down, and a
+    // client user never receives it anyway.
+    const whoWorked = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?(m.name||m.email):''; };
+    const mkTimeRow = t=>({
+      date:t.entryDate, hours:Number(t.hours||0).toFixed(2),
+      desc:t.description||'—', who:whoWorked(t.profileId),
+      clientName:cname(t.clientId),
+      billable:t.billable!==false, tag:t.billable===false?'Non-billable':'',
+      remove:()=>this.set(x=>{ x.time=x.time.filter(y=>y.id!==t.id); return x; })
+    });
+    const monthEntries = monthTime.slice()
+      .sort((a,b)=>String(b.entryDate).localeCompare(String(a.entryDate))).map(mkTimeRow);
+    const noMonthEntries = monthEntries.length===0;
     // portal home dashboard
     const go=sec=>()=>this.setState({section:sec,moreOpen:false});
     const fileById=id=>{ const f=D.files.find(x=>x.id===id); return f?{name:f.name,ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}:null; };
@@ -1324,7 +1498,8 @@ class Component extends DCLogic {
       // so carrying it across a switch would save one client's Stripe link onto
       // another.
       onViewClient:e=>this.setState(s=>({viewClient:e.target.value,msgClient:e.target.value,
-        d:{...s.d,portalUrl:undefined,invNum:'',invAmount:'',invUrl:''}})),
+        d:{...s.d,portalUrl:undefined,billingType:undefined,clientRate:undefined,
+           invNum:'',invAmount:'',invUrl:''}})),
       goClient:()=>this.setState({role:'client',section:'home',notifOpen:false,moreOpen:false,fileFilter:'All'}),
       // Guarded as well as hidden: a client account cannot switch to the team
       // view even if the control is reached some other way. The database would
@@ -1338,6 +1513,49 @@ class Component extends DCLogic {
 
       // ----- my to-dos -----
       myTodos, noMyTodos, myTodoCount: myTodos.length,
+
+      // ----- hourly billing -----
+      isHourly, isRetainer:!isHourly,
+      billingTypeLabel: isHourly?'Hourly':'Monthly plan',
+      clientRate: money(client.hourlyRate),
+      billableHours: billableHours.toFixed(2),
+      unbillableHours: unbillableHours.toFixed(2),
+      hasUnbillable: unbillableHours>0,
+      currentBill: money(currentBill),
+      nextBillDate: nextBill,
+      thisMonthLabel: now2.toLocaleDateString('en-US',{month:'long',year:'numeric'}),
+      monthEntries, noMonthEntries, monthHistory, noMonthHistory,
+
+      // ----- time logging (team) -----
+      secTime: isTeam&&secKey('time'),
+      dTimeClient:d.timeClient||(D.clients[0]&&D.clients[0].id)||'', onTimeClient:this.draft('timeClient'),
+      dTimeDate:d.timeDate||new Date().toISOString().slice(0,10), onTimeDate:this.draft('timeDate'),
+      dTimeHours:d.timeHours||'', onTimeHours:this.draft('timeHours'),
+      dTimeDesc:d.timeDesc||'', onTimeDesc:this.draft('timeDesc'),
+      dTimeBillable:d.timeBillable===undefined?true:d.timeBillable, onTimeBillable:this.draft('timeBillable'),
+      addTime:()=>{
+        const hrs=Number(d.timeHours);
+        const cid=d.timeClient||(D.clients[0]&&D.clients[0].id);
+        if(!cid) return this.setState({syncError:'Pick a client to log time against.'});
+        if(!(hrs>0)) return this.setState({syncError:'Enter how many hours were worked.'});
+        this.setState({syncError:null});
+        this.set(x=>{ x.time.unshift({id:this.uid(),clientId:cid,profileId:me.id||null,
+          entryDate:d.timeDate||new Date().toISOString().slice(0,10),hours:hrs,
+          description:(d.timeDesc||'').trim(),
+          billable:d.timeBillable===undefined?true:!!d.timeBillable}); return x; });
+        this.setState(s=>({d:{...s.d,timeHours:'',timeDesc:''}}));
+      },
+      // Every client's hours this month, so the team can see where time is going.
+      timeSummary: D.clients.map(c=>{
+        const rows=(D.time||[]).filter(t=>t.clientId===c.id&&monthKey(t.entryDate)===thisMonth);
+        const bh=rows.filter(t=>t.billable!==false).reduce((s,t)=>s+Number(t.hours||0),0);
+        return {name:c.name, hours:bh.toFixed(2),
+          rate:c.billingType==='hourly'?money(c.hourlyRate)+'/hr':(c.plan||'Plan'),
+          value:c.billingType==='hourly'?money(bh*Number(c.hourlyRate||0)):'—',
+          open:()=>this.setState({viewClient:c.id,msgClient:c.id})};
+      }),
+      recentTime: (D.time||[]).slice(0,40).map(mkTimeRow),
+      noRecentTime: (D.time||[]).length===0,
 
       // ----- team + payroll -----
       teamRows, payRows, noPayRows, payTotalPending,
@@ -1367,6 +1585,8 @@ class Component extends DCLogic {
       dNewClientPrice:d.ncPrice===undefined?499:d.ncPrice, onNewClientPrice:this.draft('ncPrice'),
       dNewClientHours:d.ncHours===undefined?25:d.ncHours, onNewClientHours:this.draft('ncHours'),
       dNewClientBrands:d.ncBrands||'', onNewClientBrands:this.draft('ncBrands'),
+      dNewClientBilling:d.ncBilling||'retainer', onNewClientBilling:this.draft('ncBilling'),
+      dNewClientRate:d.ncRate===undefined?0:d.ncRate, onNewClientRate:this.draft('ncRate'),
       dNewClientEmail:d.ncEmail||'', onNewClientEmail:this.draft('ncEmail'),
       dNewClientPass:d.ncPass||'', onNewClientPass:this.draft('ncPass'),
       dNewClientContact:d.ncContact||'', onNewClientContact:this.draft('ncContact'),
@@ -1387,9 +1607,12 @@ class Component extends DCLogic {
         if(email && pass.length<12) return this.setState({syncError:'Client password must be at least 12 characters.'});
         this.setState({syncError:null});
         this.set(x=>{
+          const hourly=(d.ncBilling||'retainer')==='hourly';
           x.clients.push({id,name:nm,domain:(d.ncDomain||'').trim(),service:(d.ncService||'').trim(),
-            plan:d.ncPlan||'Growth',price:Number(d.ncPrice)||0,hoursUsed:0,hoursTotal:Number(d.ncHours)||0,
-            pulse:[],businesses,billingPortalUrl:'',billingCycle:'monthly'});
+            plan:hourly?'Hourly':(d.ncPlan||'Growth'),price:hourly?0:(Number(d.ncPrice)||0),
+            hoursUsed:0,hoursTotal:hourly?0:(Number(d.ncHours)||0),
+            pulse:[],businesses,billingPortalUrl:'',billingCycle:hourly?'none':'monthly',
+            billingType:hourly?'hourly':'retainer',hourlyRate:Number(d.ncRate)||0});
           x.reports[id]={stats:[],note:''};
           this.logEv(x,id,'New client added: '+nm);
           return x;
@@ -1464,9 +1687,18 @@ class Component extends DCLogic {
       fileChips, portalFiles,
       reportStats:rep.stats.map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E'})), reportNote:rep.note,
       reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
-      // Stripe billing portal — clients on a recurring plan manage it themselves.
+      // Stripe billing portal — only meaningful for recurring plans.
       managePlanUrl: client.billingPortalUrl||'',
-      canManagePlan: !!client.billingPortalUrl && client.billingCycle!=='none',
+      canManagePlan: !isHourly && !!client.billingPortalUrl,
+      // Finance can switch a client between a monthly plan and hourly billing.
+      dBillingType: d.billingType===undefined?(client.billingType||'retainer'):d.billingType,
+      onBillingType:this.draft('billingType'),
+      dClientRate: d.clientRate===undefined?(client.hourlyRate||0):d.clientRate,
+      onClientRate:this.draft('clientRate'),
+      saveBilling:()=>{ if(!canBilling) return;
+        const bt=(d.billingType===undefined?client.billingType:d.billingType)||'retainer';
+        const rt=Number(d.clientRate===undefined?client.hourlyRate:d.clientRate)||0;
+        this.set(x=>{ const c=x.clients.find(y=>y.id===client.id); c.billingType=bt; c.hourlyRate=rt; return x; }); },
       // Finance-only controls for wiring the client up to Stripe.
       dPortalUrl: d.portalUrl===undefined?(client.billingPortalUrl||''):d.portalUrl,
       onPortalUrl:this.draft('portalUrl'),

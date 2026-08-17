@@ -20,7 +20,14 @@
     name: 'name', domain: 'domain', service: 'service', plan: 'plan',
     price: 'price', hoursUsed: 'hours_used', hoursTotal: 'hours_total',
     pulse: 'pulse', pulseMonth: 'pulse_month', businesses: 'businesses',
-    billingPortalUrl: 'billing_portal_url', billingCycle: 'billing_cycle'
+    billingPortalUrl: 'billing_portal_url', billingCycle: 'billing_cycle',
+    billingType: 'billing_type', hourlyRate: 'hourly_rate'
+  };
+
+  // Hours worked for a client, billed monthly for 'hourly' clients.
+  const TIME_COLS = {
+    clientId: 'client_id', profileId: 'profile_id', entryDate: 'entry_date',
+    hours: 'hours', description: 'description', billable: 'billable'
   };
 
   // Staff directory, used for assigning work and for the payments ledger.
@@ -107,6 +114,9 @@
   const teamFromRow = r => mapFromRow(r, TEAM_COLS);
   const teamToRow   = t => mapToRow(t, TEAM_COLS);
 
+  const timeFromRow = r => mapFromRow(r, TIME_COLS);
+  const timeToRow   = t => mapToRow(t, TIME_COLS);
+
   // amount is generated in Postgres; carry it for display, drop it on write.
   const payFromRow = r => {
     const o = mapFromRow(r, PAY_COLS);
@@ -158,7 +168,9 @@
       db.from('profiles').select('*').eq('role', 'team').order('name', { ascending: true }),
       // Payroll. RLS decides scope: finance sees everyone, a member sees only
       // their own rows, clients see none.
-      db.from('team_payments').select('*').order('pay_date', { ascending: false })
+      db.from('team_payments').select('*').order('pay_date', { ascending: false }),
+      // Hours worked. Staff see every client's; a client sees only its own.
+      db.from('time_entries').select('*').order('entry_date', { ascending: false })
     ];
     for (const t of TABLES) {
       jobs.push(db.from(t).select('*').order('ts', { ascending: ORDER[t] === 'asc' }));
@@ -173,7 +185,8 @@
     for (const r of results[1].data) data.reports[r.client_id] = r.data;
     data.team = results[2].data.map(teamFromRow);
     data.payments = results[3].data.map(payFromRow);
-    TABLES.forEach((t, i) => { data[t] = results[i + 4].data.map(fromRow); });
+    data.time = results[4].data.map(timeFromRow);
+    TABLES.forEach((t, i) => { data[t] = results[i + 5].data.map(fromRow); });
 
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
@@ -233,6 +246,13 @@
       const { upserts, deletes } = diffList(prev.payments, next.payments);
       if (upserts.length) ops.push(db.from('team_payments').upsert(upserts.map(payToRow)));
       if (deletes.length) ops.push(db.from('team_payments').delete().in('id', deletes));
+    }
+
+    // logged hours
+    {
+      const { upserts, deletes } = diffList(prev.time, next.time);
+      if (upserts.length) ops.push(db.from('time_entries').upsert(upserts.map(timeToRow)));
+      if (deletes.length) ops.push(db.from('time_entries').delete().in('id', deletes));
     }
 
     // jsonb-bodied collections

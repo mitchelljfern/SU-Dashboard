@@ -44,11 +44,24 @@ creating the client and stored on `clients.businesses`.
 
 ## Money
 
+**Billing type** is per client:
+
+- **Monthly plan** (`retainer`) — plan, price and retainer hours, as before.
+  These clients get a **Manage plan** button pointing at their Stripe billing
+  portal link.
+- **Hourly** — no plan. Staff log hours in the Time tab; the client's Billing
+  tab shows the hours worked this month, their rate, the running total, and the
+  date of the next invoice (the 1st). Previous months stay visible as history.
+
+Hours live in `time_entries`. Any staff member can log them; a client can read
+its own but cannot create, edit or delete them, so the number behind a bill
+can't be altered by the party being billed. Entries can be marked non-billable,
+in which case they show on the client's list but are excluded from the total.
+
 **Client invoices** are raised in Stripe. The team pastes the hosted invoice
 link (Billing admin panel, visible to admins and accountants only) and the
-client opens the real invoice from their own Billing tab. Clients on a
-recurring plan get a **Manage plan** button pointing at their Stripe billing
-portal link. Nothing is charged by this app; it stores links and status.
+client opens the real invoice from their own Billing tab. Nothing is charged by
+this app; it stores links, hours and status.
 
 **Team pay** runs on the 1st and the 16th: the 16th covers the 1st–15th of that
 month, the 1st covers the 16th–end of the previous month. "Open pay period"
