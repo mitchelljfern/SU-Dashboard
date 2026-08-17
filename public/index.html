@@ -3,9 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social Upgrades — Client Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="./su-config.js"></script>
+<script src="./su-data.js"></script>
+<script src="./su-boot.js"></script>
 <script src="./support.js"></script>
+<style>
+  /* Inline so the gate is styled on the first paint, before any stylesheet
+     or font has loaded. The dashboard must never flash to a signed-out user. */
+  #su-login{position:fixed;inset:0;z-index:9999;background:#0F1633;
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+  #su-login-card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:18px}
+  #su-login h1{margin:0;color:#fff;font-size:20px;font-weight:700;letter-spacing:-.01em}
+  #su-login p.sub{margin:0;color:rgba(255,255,255,.55);font-size:13.5px;line-height:1.5}
+  #su-login-form{display:flex;flex-direction:column;gap:12px;visibility:hidden}
+  #su-login label{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:block}
+  #su-login input{width:100%;box-sizing:border-box;padding:11px 13px;font-size:14px;
+    border-radius:6px;border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.06);color:#fff;outline:none}
+  #su-login input:focus{border-color:#4F8DF5;background:rgba(255,255,255,.1)}
+  #su-login button{margin-top:4px;padding:12px 16px;font-size:14px;font-weight:600;
+    border:none;border-radius:999px;background:#3BB273;color:#fff;cursor:pointer}
+  #su-login button:hover:not(:disabled){background:#33a066}
+  #su-login-msg{min-height:18px;font-size:13px;visibility:hidden;line-height:1.4}
+</style>
 </head>
 <body>
+
+<div id="su-login">
+  <div id="su-login-card">
+    <img src="assets/logo-on-dark.svg" alt="Social Upgrades" style="height:30px;width:auto;align-self:flex-start">
+    <div>
+      <h1>Client Hub</h1>
+      <p class="sub">Sign in to your dashboard.</p>
+    </div>
+    <form id="su-login-form" autocomplete="on">
+      <div>
+        <label for="su-login-email">Email</label>
+        <input id="su-login-email" type="email" name="email" autocomplete="username" required>
+      </div>
+      <div>
+        <label for="su-login-password">Password</label>
+        <input id="su-login-password" type="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button id="su-login-btn" type="submit">Sign in</button>
+    </form>
+    <div id="su-login-msg"></div>
+  </div>
+</div>
+
 <x-dc>
 <helmet>
   <link rel="stylesheet" href="_ds/social-upgrades-design-system-a494e281-9f3a-4d9f-9b07-823b55818cb4/tokens/fonts.css">
@@ -60,10 +109,11 @@
         </select>
         <button onClick="{{ goClient }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Open client portal</button>
       </sc-if>
-      <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}">
-        <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ portalName }}</strong></div>
+      <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
       </sc-if>
+      <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ userName }}</strong></div>
+      <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:999px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
       <div style="font-size:9px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:500">Based in the United States · Since 2014</div>
     </div>
   </aside>
@@ -82,12 +132,16 @@
       </sc-for>
       <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:12px">
         <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button></sc-if>
-        <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
+        <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
+        <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
       </div>
     </div>
   </sc-if>
   <main class="su-main" style="flex:1;overflow-y:auto;padding:36px 44px 72px;position:relative">
     <div style="max-width:1720px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
+      <sc-if value="{{ syncError }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FDECEA;border:1px solid #F3B9B4;color:#8E2B24;border-radius:6px;padding:12px 16px;font-size:13.5px;line-height:1.45">{{ syncError }}</div>
+      </sc-if>
       <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
         <div style="display:flex;flex-direction:column;gap:5px">
           <div style="font-size:12px;font-weight:600;letter-spacing:var(--ls-wide);text-transform:uppercase;color:{{ kickerColor }}">{{ kicker }}</div>
@@ -699,94 +753,81 @@
 class Component extends DCLogic {
   constructor(props){
     super(props);
-    const saved = localStorage.getItem('su_hub_v5');
+    // Starts empty and stays behind the login overlay; componentDidMount fills
+    // this in once Supabase has authenticated and returned the user's rows.
     this.state = {
-      role: (props && props.startView) || 'team', section:'overview', viewClient:'af',
+      role:'team', section:'overview', viewClient:'af',
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
-      data: saved ? JSON.parse(saved) : this.seed()
+      profile:null, syncError:null, booted:false,
+      data: this.emptyData()
     };
   }
-  seed(){
-    const now=Date.now(), h=3600e3, d=24*h;
-    return {
-      clients:[
-        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4]},
-        {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4]}
-      ],
-      todos:[
-        {id:'t1',clientId:'af',title:'QA new PDP template on mobile Safari',who:'team',done:false,ts:now-2*h},
-        {id:'t2',clientId:'vs',title:'Set up staging env for RSVP v2',who:'team',done:false,ts:now-5*h},
-        {id:'t3',clientId:'',title:'Send August retainer summaries',who:'team',done:true,ts:now-d},
-        {id:'t4',clientId:'af',title:'Send us 6–8 product photos for the fall collection page',who:'client',done:false,ts:now-d},
-        {id:'t5',clientId:'af',title:'Confirm shipping rates for Canada zone',who:'client',done:false,ts:now-2*d},
-        {id:'t6',clientId:'vs',title:'Approve the RSVP confirmation email copy',who:'client',done:false,ts:now-8*h}
-      ],
-      work:[
-        {id:'w1',clientId:'af',title:'Fall collection landing page build',status:'progress',hours:8,comments:[{id:'cm1',from:'client',who:'Afore Beauty',text:'Can we also swap the hero photo for the new campaign shot?',ts:Date.now()-3*3600e3,ack:true},{id:'cm2',from:'team',who:'Social Upgrades',text:'Yes — adding it to this build.',ts:Date.now()-2.5*3600e3}]},
-        {id:'w2',clientId:'af',title:'Klaviyo abandoned-cart flow refresh',status:'queued',hours:4},
-        {id:'w3',clientId:'vs',title:'RSVP reminder notifications (email + SMS)',status:'progress',hours:12,comments:[{id:'cm3',from:'client',who:'ViewSlipstream',text:'Reminder timing should be 24h and 2h before showtime.',ts:Date.now()-5*3600e3,ack:false}]},
-        {id:'w4',clientId:'vs',title:'Screening room capacity dashboard',status:'review',hours:6},
-        {id:'w5',clientId:'af',title:'Speed pass: image compression + lazy load',status:'done',hours:3},
-        {id:'w6',clientId:'vs',title:'Host onboarding flow polish',status:'queued',hours:5}
-      ],
-      requests:[
-        {id:'r1',clientId:'af',title:'Gift-with-purchase promo setup',desc:'Free mini serum over $75 — needs cart logic and a banner.',status:'new',ts:now-3*h,category:'E-Commerce Management',comments:[],files:[]},
-        {id:'r2',clientId:'vs',title:'Add calendar export to RSVP confirmations',desc:'Guests keep asking for an "Add to calendar" button.',status:'new',ts:now-d,category:'Website Design',comments:[{id:'rc1',from:'client',who:'ViewSlipstream',text:'Google and Apple calendar are the priority.',ts:now-20*h,ack:false}],files:[]},
-        {id:'r3',clientId:'af',title:'Homepage hero refresh for fall',desc:'',status:'approved',ts:now-4*d,category:'Website Design',comments:[],files:[]},
-        {id:'r4',clientId:'vs',title:'Dark mode for the guest view',desc:'',status:'declined',ts:now-6*d,category:'Website Design',comments:[],files:[]}
-      ],
-      updates:[
-        {id:'u1',clientId:'af',text:'Fall collection landing page is live on staging — hero, product grid, and email capture are in. Take a look before we push to production.',ts:now-4*h,needsApproval:true,approved:false,feedback:[],fileIds:['f2']},
-        {id:'u5',clientId:'af',text:'September social media kit is ready — 12 posts sized for Instagram and Facebook. Approve and we schedule them this week.',ts:now-6*h,needsApproval:true,approved:false,feedback:[],fileIds:['f10']},
-        {id:'u2',clientId:'af',text:'Abandoned-cart flow audit finished. Current recovery rate is 4.1% — refreshed sequence drafts go up this week.',ts:now-2*d,needsApproval:false,approved:false,feedback:[{name:'Afore Beauty',text:'Excited to see the new sequence!'}]},
-        {id:'u3',clientId:'vs',text:'RSVP reminder notifications are in progress — email template done, SMS pending carrier approval.',ts:now-7*h,needsApproval:false,approved:false,feedback:[]},
-        {id:'u4',clientId:'vs',text:'Capacity dashboard first pass ready for review — live headcount per screening plus waitlist overflow.',ts:now-1.5*d,needsApproval:true,approved:false,feedback:[],fileIds:['f6']}
-      ],
-      messages:[
-        {id:'m1',clientId:'af',from:'client',who:'Afore Beauty',text:'Hey team — can we get the promo live before Labor Day weekend?',ts:now-6*h},
-        {id:'m2',clientId:'af',from:'team',who:'Social Upgrades',text:'Yes — if the gift-with-purchase request is approved this week we can ship it by Thursday.',ts:now-5*h},
-        {id:'m3',clientId:'vs',from:'team',who:'Social Upgrades',text:'SMS reminders are waiting on carrier approval, usually 2–3 business days. Email reminders can go live now if you want them separately.',ts:now-9*h},
-        {id:'m4',clientId:'vs',from:'client',who:'ViewSlipstream',text:'Ship email now, SMS when ready. Thanks!',ts:now-8*h}
-      ],
-      files:[
-        {id:'f1',clientId:'af',name:'Fall collection — brand board.pdf',type:'Design',size:'4.2 MB',ts:now-3*d},
-        {id:'f2',clientId:'af',name:'PDP template v3.fig',type:'Design',size:'1.8 MB',ts:now-5*d},
-        {id:'f3',clientId:'af',name:'Q3 content calendar.xlsx',type:'Documents',size:'92 KB',ts:now-8*d},
-        {id:'f4',clientId:'af',name:'Email copy — abandoned cart.docx',type:'Content',size:'38 KB',ts:now-2*d},
-        {id:'f5',clientId:'af',name:'Product photos — summer batch.zip',type:'Assets',size:'214 MB',ts:now-20*d},
-        {id:'f6',clientId:'vs',name:'RSVP flow map v2.pdf',type:'Design',size:'2.6 MB',ts:now-2*d},
-        {id:'f7',clientId:'vs',name:'Reminder email copy.docx',type:'Content',size:'26 KB',ts:now-1*d},
-        {id:'f8',clientId:'vs',name:'Platform SLA + scope.pdf',type:'Documents',size:'310 KB',ts:now-30*d},
-        {id:'f9',clientId:'vs',name:'Brand assets — logos.zip',type:'Assets',size:'48 MB',ts:now-40*d,brand:true},
-        {id:'f10',clientId:'af',name:'Social media kit — September.zip',type:'Content',size:'86 MB',ts:now-6*h},
-        {id:'f11',clientId:'af',name:'Afore logo pack.zip',type:'Assets',size:'22 MB',ts:now-60*d,brand:true},
-        {id:'f12',clientId:'af',name:'Brand guide v2.pdf',type:'Design',size:'6.1 MB',ts:now-60*d,brand:true},
-        {id:'f13',clientId:'vs',name:'ViewSlipstream brand guide.pdf',type:'Design',size:'3.4 MB',ts:now-50*d,brand:true}
-      ],
-      invoices:[
-        {id:'i1',clientId:'af',num:'INV-2026-081',amount:499,status:'Due',date:'Aug 1, 2026'},
-        {id:'i2',clientId:'af',num:'INV-2026-071',amount:499,status:'Paid',date:'Jul 1, 2026'},
-        {id:'i3',clientId:'af',num:'INV-2026-061',amount:499,status:'Paid',date:'Jun 1, 2026'},
-        {id:'i4',clientId:'vs',num:'INV-2026-082',amount:999,status:'Paid',date:'Aug 1, 2026'},
-        {id:'i5',clientId:'vs',num:'INV-2026-072',amount:999,status:'Paid',date:'Jul 1, 2026'}
-      ],
-      reports:{
-        af:{stats:[{label:'Sessions',value:'12.4K',delta:'+18% vs Jul',up:true},{label:'Conversion',value:'2.9%',delta:'+0.4 pts',up:true},{label:'Orders',value:'361',delta:'+22% vs Jul',up:true},{label:'AOV',value:'$68',delta:'−$3 vs Jul',up:false}],note:'Traffic is up on the back of the summer email pushes, and conversion improved after the speed pass. AOV dipped slightly with more single-item orders — the gift-with-purchase promo should help lift it in September.'},
-        vs:{stats:[{label:'RSVPs',value:'1,842',delta:'+31% vs Jul',up:true},{label:'Show-up rate',value:'74%',delta:'+6 pts',up:true},{label:'New hosts',value:'19',delta:'+4 vs Jul',up:true},{label:'Avg fill rate',value:'82%',delta:'−2 pts',up:false}],note:'RSVP volume keeps climbing and show-up rate improved after we tightened the confirmation flow. Reminder notifications should push show-up rate further once SMS clears carrier approval.'}
-      },
-      log:[
-        {id:'l1',clientId:'af',text:'Afore Beauty submitted a request: Gift-with-purchase promo setup',ts:now-3*h},
-        {id:'l2',clientId:'vs',text:'Update posted for ViewSlipstream: RSVP reminder notifications in progress',ts:now-7*h},
-        {id:'l3',clientId:'vs',text:'ViewSlipstream replied on the message board',ts:now-8*h},
-        {id:'l4',clientId:'af',text:'Work item completed: Speed pass — image compression + lazy load',ts:now-2*24*3600e3}
-      ]
-    };
+  emptyData(){
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{}};
   }
-  save(){ localStorage.setItem('su_hub_v5', JSON.stringify(this.state.data)); }
+  componentDidMount(){
+    window.SUBoot.ready.then(({profile,data})=>{
+      const isTeam = profile.role === 'team';
+      // A client account is pinned to its own tenant and opens in the portal.
+      const cid = isTeam ? ((data.clients[0]&&data.clients[0].id)||'af') : profile.client_id;
+      this.__synced = structuredClone(data);
+      this.setState({
+        profile, data, booted:true,
+        role: isTeam ? 'team' : 'client',
+        section: isTeam ? 'overview' : 'home',
+        viewClient: cid, msgClient: cid,
+        d:{todoClient:'', todoWho:'team', updClient:cid, updApproval:false, workClient:cid}
+      });
+    }).catch(err=>{
+      console.error('[hub] boot failed', err);
+      this.setState({syncError:'Could not load your dashboard. Refresh to try again.'});
+    });
+
+    // Pick up other people's changes when the tab is refocused. Skipped while a
+    // write is in flight so an in-progress edit is never clobbered.
+    this.__onFocus = ()=>{
+      if(!this.state.booted || this.__writing) return;
+      window.SUData.load().then(data=>{
+        this.__synced = structuredClone(data);
+        this.setState({data});
+      }).catch(err=>console.error('[hub] refresh failed', err));
+    };
+    window.addEventListener('focus', this.__onFocus);
+  }
+  componentWillUnmount(){
+    if(this.__onFocus) window.removeEventListener('focus', this.__onFocus);
+  }
+  // Diffs the current tree against the last successfully-persisted one, so
+  // batched edits still produce a complete set of writes. __synced only
+  // advances on success — a failed write stays in the next diff and retries.
+  save(){
+    if(!this.state.booted) return;
+    const next = this.state.data;
+    const prev = this.__synced || this.emptyData();
+    this.__writing = true;
+    window.SUData.sync(prev, next).then(()=>{
+      this.__synced = structuredClone(next);
+      this.__writing = false;
+      if(this.state.syncError) this.setState({syncError:null});
+    }).catch(err=>{
+      this.__writing = false;
+      const denied = err && (err.code==='42501' || /row-level security|permission/i.test(err.message||''));
+      this.setState({syncError: denied
+        ? 'That change was not allowed for your account.'
+        : 'Could not save. Check your connection — we will retry on your next change.'});
+    });
+  }
   set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
-  uid(){ return Math.random().toString(36).slice(2,9); }
+  // Now a shared primary key across every user, so the old 7-char random
+  // string is no longer good enough — two people creating rows at once could
+  // collide and overwrite each other.
+  uid(){
+    return (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      : 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
+  }
   logEv(data, clientId, text){ data.log.unshift({id:this.uid(),clientId,text,ts:Date.now()}); }
   fmt(ts){
     const diff=Date.now()-ts;
@@ -803,8 +844,15 @@ class Component extends DCLogic {
     return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:999,whiteSpace:'nowrap'};
   }
   renderVals(){
-    const S=this.state, D=S.data, d=S.d, isTeam=S.role==='team';
-    const client = D.clients.find(c=>c.id===S.viewClient)||D.clients[0];
+    const S=this.state, D=S.data, d=S.d;
+    // Whether the signed-in *account* is staff, as opposed to which view is
+    // currently open. A client account can never reach the team view.
+    const isStaff = !!(S.profile && S.profile.role==='team');
+    const isTeam = isStaff && S.role==='team';
+    // Placeholder keeps render total during the pre-auth frame, when no rows
+    // have loaded yet and the login overlay is still covering the page.
+    const client = D.clients.find(c=>c.id===S.viewClient) || D.clients[0] ||
+      {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
     const openDetail=(type,id)=>()=>this.setState({detail:{type,id},notifOpen:false});
     const closeDetail=()=>this.setState({detail:null});
@@ -913,7 +961,8 @@ class Component extends DCLogic {
     const rep=D.reports[client.id]||{stats:[],note:''};
     const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
     const invoices=D.invoices.filter(i=>i.clientId===client.id).map(i=>({num:i.num,date:i.date,amount:'$'+i.amount,status:i.status,badgeStyle:invBadge(i.status)}));
-    const planPct=Math.round(100*client.hoursUsed/client.hoursTotal);
+    // Guarded: a client on no retainer has hoursTotal 0, which would render NaN%.
+    const planPct=client.hoursTotal>0?Math.round(100*client.hoursUsed/client.hoursTotal):0;
     // portal home dashboard
     const go=sec=>()=>this.setState({section:sec,moreOpen:false});
     const fileById=id=>{ const f=D.files.find(x=>x.id===id); return f?{name:f.name,ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}:null; };
@@ -992,7 +1041,14 @@ class Component extends DCLogic {
       navItems, kicker:hk[0], heading:hk[1], kickerColor:isTeam?'var(--green)':'var(--blue)',
       onViewClient:e=>this.setState({viewClient:e.target.value,msgClient:e.target.value}),
       goClient:()=>this.setState({role:'client',section:'home',notifOpen:false,moreOpen:false,fileFilter:'All'}),
-      goTeam:()=>this.setState({role:'team',section:'overview',notifOpen:false,moreOpen:false}),
+      // Guarded as well as hidden: a client account cannot switch to the team
+      // view even if the control is reached some other way. The database would
+      // refuse to hand over another tenant's rows regardless.
+      goTeam:()=>{ if(!isStaff) return; this.setState({role:'team',section:'overview',notifOpen:false,moreOpen:false}); },
+      showBackToTeam: isStaff && !isTeam,
+      signOut:()=>window.SUSignOut(),
+      userName: (S.profile && (S.profile.name || S.profile.email)) || '',
+      syncError: S.syncError || false,
       toggleNotif:()=>{ const opening=!S.notifOpen; this.setState({notifOpen:opening}); if(opening){ const ts=Date.now(); localStorage.setItem('su_hub_seen',String(ts)); this.setState({seenTs:ts}); } },
       notifOpen:S.notifOpen, unseen:unseenN>0?unseenN:false,
       notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
