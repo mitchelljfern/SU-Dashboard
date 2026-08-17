@@ -987,15 +987,72 @@
                   <div style="font-size:12px;color:var(--text-muted)">{{ p.rateLabel }}</div>
                   <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:86px;text-align:right">{{ p.amount }}</div>
                   <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
-                  <sc-if value="{{ p.canRemove }}" hint-placeholder-val="{{ true }}">
-                    <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                  <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ p.startEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Edit</button>
                   </sc-if>
                 </div>
+                <sc-if value="{{ p.changeRequested }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:6px;padding:10px 14px;font-size:13px;line-height:1.45">
+                    <strong>Changes requested:</strong> {{ p.changeNote }}
+                  </div>
+                </sc-if>
                 <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
                   <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
                     <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
                       <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
                     </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+                      <div style="display:flex;flex-direction:column;gap:4px">
+                        <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
+                        <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:4px">
+                        <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
+                        <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                      </div>
+                      <sc-if value="{{ p.isHoursKind }}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                          <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Total</label>
+                          <div style="display:flex;gap:6px;align-items:center">
+                            <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                            <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          </div>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ p.isFlatKind }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                          <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
+                          <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        </div>
+                      </sc-if>
+                      <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px">
+                        <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
+                        <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                      </div>
+                    </div>
+                    <sc-if value="{{ hasEdLines }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;flex-direction:column;gap:6px">
+                        <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">By client · total {{ edLinesTotal }}</div>
+                        <sc-for list="{{ edLines }}" as="el" hint-placeholder-count="3">
+                          <div style="display:flex;align-items:center;gap:8px">
+                            <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
+                            <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                            <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                            <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border-hairline);padding-top:12px">
+                      <button onClick="{{ saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
+                      <button onClick="{{ cancelEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
+                      <span style="flex:1"></span>
+                      <button onClick="{{ p.remove }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                    </div>
                   </div>
                 </sc-if>
               </div>
@@ -1040,13 +1097,95 @@
                     <sc-if value="{{ p.canUnpay }}" hint-placeholder-val="{{ false }}">
                       <button onClick="{{ p.unpay }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer">Undo paid</button>
                     </sc-if>
-                    <button onClick="{{ p.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                    <sc-if value="{{ p.canRequestChange }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ p.requestChange }}" style="background:transparent;border:1px solid #D68F2E;color:#a2691a;padding:7px 15px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#FDF6EC">Request change</button>
+                    </sc-if>
+                    <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ p.startEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Edit</button>
+                    </sc-if>
                   </div>
+
+                  <sc-if value="{{ p.changeRequested }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:6px;padding:10px 14px;font-size:13px;line-height:1.45">
+                      <strong>Changes requested:</strong> {{ p.changeNote }}
+                    </div>
+                  </sc-if>
+
                   <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
                       <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
                         <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
                       </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ p.askingChange }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:#FDF6EC;border:1px solid #EBD6B4;padding:14px;display:flex;flex-direction:column;gap:10px">
+                      <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:#8A6116">What needs changing?</label>
+                      <input value="{{ dChangeNote }}" onChange="{{ onChangeNote }}" placeholder="e.g. the AIS MGMT hours look high, can you double check" style="border:1px solid #EBD6B4;border-radius:4px;padding:9px 12px;font-size:13px">
+                      <div style="display:flex;gap:10px">
+                        <button onClick="{{ confirmChange }}" style="background:#D68F2E;color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer">Send back</button>
+                        <button onClick="{{ cancelChange }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px">
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                          <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
+                          <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:4px">
+                          <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
+                          <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        </div>
+                        <sc-if value="{{ p.isHoursKind }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;flex-direction:column;gap:4px">
+                            <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Total</label>
+                            <div style="display:flex;gap:6px;align-items:center">
+                              <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                              <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ p.isFlatKind }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:4px">
+                            <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
+                            <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ edCanAdjust }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;flex-direction:column;gap:4px">
+                            <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Adjustment</label>
+                            <input value="{{ edAdjustment }}" onChange="{{ onEdAdjustment }}" type="number" step="0.01" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          </div>
+                        </sc-if>
+                        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px">
+                          <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
+                          <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        </div>
+                      </div>
+                      <sc-if value="{{ hasEdLines }}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-direction:column;gap:6px">
+                          <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">By client · total {{ edLinesTotal }}</div>
+                          <sc-for list="{{ edLines }}" as="el" hint-placeholder-count="3">
+                            <div style="display:flex;align-items:center;gap:8px">
+                              <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
+                              <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                              <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                              <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border-hairline);padding-top:12px">
+                        <button onClick="{{ saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
+                        <button onClick="{{ cancelEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
+                        <span style="flex:1"></span>
+                        <button onClick="{{ p.remove }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                      </div>
                     </div>
                   </sc-if>
                 </div>
@@ -1483,6 +1622,10 @@ class Component extends DCLogic {
     return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
   }
   draft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value; this.setState(s=>({d:{...s.d,[k]:v}})); }; }
+  // Same idea as draft(), but for the payment row being edited. Held apart from
+  // `d` so cancelling an edit cannot disturb the other forms on the page.
+  editDraft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
+    this.setState(s=>({editDraft:{...(s.editDraft||{}),[k]:v}})); }; }
   box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:3}; }
   badge(kind){
     const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],red:['rgba(216,86,78,.14)','#a8352d']};
@@ -1851,6 +1994,7 @@ class Component extends DCLogic {
       who: memberName(p.profileId) || '—',
       kind: KIND_LABEL[p.kind]||'Hours',
       isHoursKind: p.kind==='hours',
+      isFlatKind: p.kind!=='hours',
       period: (p.periodStart||'')+' to '+(p.periodEnd||''),
       payDate: p.payDate||'',
       hoursLabel: p.kind==='hours'? hm(p.minutes) : '',
@@ -1861,17 +2005,38 @@ class Component extends DCLogic {
       badgeStyle: statusBadge(p.status),
       breakdown: (p.breakdown||[]).map(b=>({name:b.name||'Internal',hours:hm(b.minutes)})),
       hasBreakdown: (p.breakdown||[]).length>0,
+      // Feedback from a reviewer. Editing the row clears the flag.
+      changeRequested: !!p.changeRequested,
+      changeNote: p.changeNote||'',
+      hasChangeNote: !!p.changeNote,
       // Finance actions. The database re-checks all of this.
       canApprove: canBilling && p.status==='pending',
       canMarkPaid: canBilling && p.status==='unpaid',
       canUnpay: canBilling && p.status==='paid',
-      canRemove: canBilling || (p.profileId===me.id && p.status==='pending'),
+      // Sending your own submission back to yourself is not a workflow.
+      canRequestChange: canBilling && p.status!=='paid' && p.profileId!==me.id,
+      // A member may edit their own only while it is still pending; finance may
+      // edit anything that has not been paid out yet.
+      canEdit: (canBilling && p.status!=='paid') || (p.profileId===me.id && p.status==='pending'),
+      editing: S.editPay===p.id,
+      askingChange: S.changeFor===p.id,
+      startEdit: ()=>this.setState({editPay:p.id, editDraft:{
+        periodStart:p.periodStart||'', periodEnd:p.periodEnd||'',
+        h:Math.floor((Number(p.minutes)||0)/60), m:(Number(p.minutes)||0)%60,
+        flatAmount:p.flatAmount||0, adjustment:p.adjustment||0,
+        note:p.note||'', lines:(p.breakdown||[]).map(b=>({...b}))
+      }, syncError:null}),
       approve: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
-        r.status='unpaid'; r.approvedBy=me.id; r.approvedAt=new Date().toISOString(); return x; }); },
+        r.status='unpaid'; r.approvedBy=me.id; r.approvedAt=new Date().toISOString();
+        r.changeRequested=false; return x; }); },
       markPaid: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
         r.status='paid'; r.paidAt=new Date().toISOString(); return x; }); },
       unpay: ()=>{ if(!canBilling) return; this.set(x=>{ const r=x.payments.find(y=>y.id===p.id);
         r.status='unpaid'; r.paidAt=null; return x; }); },
+      // Sends it back to the submitter with a note instead of rejecting it, so
+      // the work already entered is kept and can be corrected.
+      requestChange: ()=>{ if(!canBilling) return;
+        this.setState({changeFor:p.id, dChangeNote:p.changeNote||'', syncError:null}); },
       remove: ()=>this.set(x=>{ x.payments=x.payments.filter(y=>y.id!==p.id); return x; })
     });
 
@@ -1989,6 +2154,71 @@ class Component extends DCLogic {
       myPayRows, noMyPayRows, myTotalUnpaid,
       secPayments: isTeam&&secKey('payments'),
       myRateLabel: myRate>0? ('$'+myRate+'/hr') : 'Not set',
+
+      // ----- editing a submission -----
+      // One row is editable at a time; the draft lives in state so cancelling
+      // leaves the stored row untouched.
+      edPeriodStart:(S.editDraft||{}).periodStart||'', onEdPeriodStart:this.editDraft('periodStart'),
+      edPeriodEnd:(S.editDraft||{}).periodEnd||'', onEdPeriodEnd:this.editDraft('periodEnd'),
+      edHours:(S.editDraft||{}).h===undefined?'':(S.editDraft||{}).h, onEdHours:this.editDraft('h'),
+      edMinutes:(S.editDraft||{}).m===undefined?'':(S.editDraft||{}).m, onEdMinutes:this.editDraft('m'),
+      edAmount:(S.editDraft||{}).flatAmount===undefined?'':(S.editDraft||{}).flatAmount, onEdAmount:this.editDraft('flatAmount'),
+      edAdjustment:(S.editDraft||{}).adjustment===undefined?'':(S.editDraft||{}).adjustment, onEdAdjustment:this.editDraft('adjustment'),
+      edNote:(S.editDraft||{}).note||'', onEdNote:this.editDraft('note'),
+      edLines:((S.editDraft||{}).lines||[]).map((l,i)=>({
+        name:l.name||'Internal',
+        h:Math.floor((Number(l.minutes)||0)/60), m:(Number(l.minutes)||0)%60,
+        onH:e=>this.setState(s=>{ const lines=(s.editDraft.lines||[]).slice();
+          lines[i]={...lines[i],minutes:(Number(e.target.value)||0)*60+((Number(lines[i].minutes)||0)%60)};
+          return {editDraft:{...s.editDraft,lines}}; }),
+        onM:e=>this.setState(s=>{ const lines=(s.editDraft.lines||[]).slice();
+          lines[i]={...lines[i],minutes:Math.floor((Number(lines[i].minutes)||0)/60)*60+(Number(e.target.value)||0)};
+          return {editDraft:{...s.editDraft,lines}}; }),
+        remove:()=>this.setState(s=>({editDraft:{...s.editDraft,lines:(s.editDraft.lines||[]).filter((_,j)=>j!==i)}}))
+      })),
+      hasEdLines:((S.editDraft||{}).lines||[]).length>0,
+      edLinesTotal:hm(((S.editDraft||{}).lines||[]).reduce((s2,l)=>s2+(Number(l.minutes)||0),0)),
+      edCanAdjust: canBilling,
+      cancelEdit:()=>this.setState({editPay:null,editDraft:null,syncError:null}),
+      saveEdit:()=>{
+        const id=S.editPay, dr=S.editDraft||{};
+        if(!id) return;
+        const row=(D.payments||[]).find(p=>p.id===id);
+        if(!row) return this.setState({editPay:null,editDraft:null});
+        const lines=(dr.lines||[]).filter(l=>(Number(l.minutes)||0)>0);
+        // Line items win when present, so the stored total always matches the
+        // detail the reviewer is looking at.
+        const mins = lines.length? lines.reduce((s2,l)=>s2+(Number(l.minutes)||0),0)
+                                 : (Number(dr.h)||0)*60+(Number(dr.m)||0);
+        const flat = Number(dr.flatAmount)||0;
+        if(row.kind==='hours' && !(mins>0)) return this.setState({syncError:'Hours cannot be zero. Remove the submission instead.'});
+        if(row.kind!=='hours' && !(flat>0)) return this.setState({syncError:'Amount cannot be zero. Remove the submission instead.'});
+        this.set(x=>{ const r=x.payments.find(y=>y.id===id);
+          r.periodStart=dr.periodStart||r.periodStart;
+          r.periodEnd=dr.periodEnd||r.periodEnd;
+          r.note=(dr.note||'').trim();
+          if(r.kind==='hours'){ r.minutes=mins; r.breakdown=lines; r.amount=Math.round(mins*(Number(r.rate)||0)/60*100)/100; }
+          else { r.flatAmount=flat; r.amount=flat; }
+          if(canBilling){ r.adjustment=Number(dr.adjustment)||0; r.amount=Number(r.amount)+(Number(dr.adjustment)||0); }
+          return x; });
+        this.setState({editPay:null,editDraft:null,syncError:null});
+      },
+
+      // ----- request change -----
+      changeOpenFor: S.changeFor||'',
+      dChangeNote: S.dChangeNote||'',
+      onChangeNote: e=>this.setState({dChangeNote:e.target.value}),
+      cancelChange: ()=>this.setState({changeFor:null,dChangeNote:''}),
+      confirmChange: ()=>{
+        const id=S.changeFor, note=(S.dChangeNote||'').trim();
+        if(!id) return;
+        if(!note) return this.setState({syncError:'Add a note so they know what to change.'});
+        this.set(x=>{ const r=x.payments.find(y=>y.id===id);
+          r.changeRequested=true; r.changeNote=note;
+          r.status='pending'; r.approvedBy=null; r.approvedAt=null; r.paidAt=null;
+          return x; });
+        this.setState({changeFor:null,dChangeNote:'',syncError:null});
+      },
       curPeriodLabel: curPeriod.start+' to '+curPeriod.end+' (paid '+curPeriod.pay+')',
 
       // ----- submitting your own pay -----

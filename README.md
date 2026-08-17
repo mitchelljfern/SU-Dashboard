@@ -95,6 +95,17 @@ Members submit their own pay from the **Payments** tab, in three kinds:
 
 Then: **pending** → admin approves → **unpaid** → admin marks paid → **paid**.
 
+Instead of rejecting, a reviewer can **Request change**: the submission goes
+back to pending with a note, so nothing already entered is lost. The member
+sees the note, edits, and the act of editing clears the flag and returns it to
+the queue — the note stays as context for the next review.
+
+Both sides can edit a submission: a member while theirs is still pending, a
+reviewer any time before it is paid. Editing per-client lines recomputes the
+total, so the number can never disagree with the detail under it. **Remove**
+lives inside the edit panel rather than next to Approve, so destructive and
+approving actions are not adjacent.
+
 Hours are stored as whole `minutes`, so "2h 59m" survives a round trip exactly,
 and `amount` is generated in Postgres — `minutes * rate / 60 + adjustment` for
 hours, `flat_amount + adjustment` otherwise — so a total can never drift from

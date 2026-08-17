@@ -48,7 +48,8 @@
     periodEnd: 'period_end', payDate: 'pay_date', minutes: 'minutes',
     rate: 'rate', flatAmount: 'flat_amount', adjustment: 'adjustment',
     breakdown: 'breakdown', status: 'status', paidAt: 'paid_at',
-    approvedBy: 'approved_by', approvedAt: 'approved_at', note: 'note'
+    approvedBy: 'approved_by', approvedAt: 'approved_at', note: 'note',
+    changeRequested: 'change_requested', changeNote: 'change_note'
   };
 
   const NUMERIC_COLS = new Set([
