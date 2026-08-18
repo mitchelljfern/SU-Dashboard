@@ -43,8 +43,10 @@ can be uploaded directly, or shared by link (Dropbox, Drive, WeTransfer) when
 they are too big or already live somewhere else. Both travel with the request
 onto the work item.
 
-Approving a request creates a work item that carries its context, including a
-`requestId` back-reference. The team sets a **projected finish** date on the
+Approving a request creates a work item that carries its context — attachments
+and links included — through a `requestId` back-reference. Anything the team
+adds to the request *after* approval is carried onto that work item too, so the
+card the team actually works from never falls behind the request it came from. The team sets a **projected finish** date on the
 Workboard card or in the item's detail view, and the client sees it on their
 open-request and in-progress cards. Completed work appears on the client's
 Updates tab, newest first, each opening to its details, comments and files.
@@ -115,8 +117,25 @@ the owner out.
 Unread counts are per reader, held in `message_reads` — two people on the same
 board track their own unread independently, and a marker is only ever readable
 or writable by the person it belongs to. Only the *other* side's messages count
-as unread, and opening a board (or switching thread) is what marks it read.
-The count shows on the Messages menu item and again per thread.
+as unread, and opening a board (or switching thread) is what marks it read, as
+does a message arriving while you already have that board open. The count shows
+on the Messages menu item and again per thread.
+
+The app used to pull new rows only when the tab regained focus, so two windows
+open side by side never saw each other and a message sent from one simply never
+appeared in the other. It now polls every 15 seconds: two indexed lookups for
+the newest `messages` / `log` row this reader can see, and a full load only when
+that number moves. A hidden tab does not poll at all, and the app's own writes
+advance the mark so they never trigger a needless reload.
+
+## Notifications
+
+The bell is other people's news, so it leaves out anything you did yourself:
+every log entry records the profile that caused it, and entries matching the
+reader are filtered out. Without that, sending a message notified you about
+your own message. The team overview's activity list is separate and still shows
+everything, including your own actions. Entries written before this carry no
+author and are shown to everyone — nobody can be identified as their author.
 
 ## Clients and businesses
 

@@ -531,7 +531,7 @@
                 <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
               </div>
               <sc-for list="{{ col.items }}" as="w" hint-placeholder-count="2">
-                <div onClick="{{ w.openComments }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.12)">
+                <div onClick="{{ w.openComments }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                   <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span></span>
@@ -731,17 +731,33 @@
         <div style="display:flex;flex-direction:column;gap:20px">
           <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Awaiting review</h3>
-            <sc-for list="{{ newRequests }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:14px;padding:12px 6px;border-bottom:1px solid var(--border-hairline);border-radius:12px;cursor:pointer" style-hover="background:var(--gray-100)">
-                <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:12px;color:var(--text-muted)">{{ r.clientName }} · {{ r.when }}</div></div>
-                  <div style="font-size:13px;color:var(--text-body)">{{ r.desc }}</div>
+            <div style="display:flex;flex-direction:column;gap:12px;padding-top:4px">
+              <sc-for list="{{ newRequests }}" as="r" hint-placeholder-count="2">
+                <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                    <div style="display:inline-flex;align-items:center;gap:7px">
+                      <span style="{{ r.dot }}"></span>
+                      <span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</span>
+                    </div>
+                    <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                    <sc-if value="{{ r.hasDesc }}" hint-placeholder-val="{{ true }}">
+                      <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ r.desc }}</div>
+                    </sc-if>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                      <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                      <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
+                      <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</span></sc-if>
+                      <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--text-muted)">{{ r.filesLabel }}</span></sc-if>
+                      <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+                    <button onClick="{{ r.approve }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Approve → queue</button>
+                    <button onClick="{{ r.decline }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;color:var(--text-body);padding:9px 18px;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--gray-100)">Decline</button>
+                  </div>
                 </div>
-                <button onClick="{{ r.approve }}" style="background:var(--green);color:#fff;border:none;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
-                <button onClick="{{ r.decline }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:8px 14px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
-              </div>
-            </sc-for>
+              </sc-for>
+            </div>
             <sc-if value="{{ noNewRequests }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
           </div>
           <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
@@ -1051,7 +1067,7 @@
                   <div style="font-size:12.5px;color:var(--text-muted);padding:4px 2px">Nothing here yet.</div>
                 </sc-if>
                 <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="2">
-                  <div onClick="{{ it.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.12)">
+                  <div onClick="{{ it.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                     <div style="font-size:13.5px;font-weight:500;color:var(--navy);line-height:1.4">{{ it.title }}</div>
                     <sc-if value="{{ it.hasBody }}" hint-placeholder-val="{{ true }}">
                       <div style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ it.body }}</div>
@@ -1563,22 +1579,31 @@
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Your requests</h3>
-          <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
-            <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1px solid var(--border-hairline);cursor:pointer" style-hover="background:var(--gray-100)">
-              <div style="flex:1;display:flex;flex-direction:column;gap:1px">
-                <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
-                <div style="font-size:12px;color:var(--text-muted)">{{ r.cat }} · {{ r.when }}</div>
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+            <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
                 </sc-if>
                 <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
                 </sc-if>
-              </div>
-              <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-              <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-            </div>
-          </sc-for>
+                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
+                </sc-if>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noMyRequests }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;color:var(--text-muted)">Nothing submitted yet.</div>
+            </sc-if>
+          </div>
         </div>
       </sc-if>
 
@@ -1854,6 +1879,7 @@ class Component extends DCLogic {
       // A client account is pinned to its own tenant and opens in the portal.
       const cid = isTeam ? ((data.clients[0]&&data.clients[0].id)||'af') : profile.client_id;
       this.__synced = structuredClone(data);
+      this.__seenTs = this.watermark(data);
       this.setState({
         profile, data, booted:true,
         role: isTeam ? 'team' : 'client',
@@ -1866,16 +1892,31 @@ class Component extends DCLogic {
       this.setState({syncError:'Could not load your dashboard. Refresh to try again.'});
     });
 
-    // Pick up other people's changes when the tab is refocused. Skipped while a
-    // write is in flight so an in-progress edit is never clobbered.
-    this.__onFocus = ()=>{
-      if(!this.state.booted || this.__writing) return;
-      window.SUData.load().then(data=>{
+    // Pick up other people's changes. Skipped while a write is in flight so an
+    // in-progress edit is never clobbered.
+    this.__pull = ()=>{
+      if(!this.state.booted || this.__writing) return Promise.resolve();
+      return window.SUData.load().then(data=>{
         this.__synced = structuredClone(data);
+        this.__seenTs = this.watermark(data);
         this.setState({data});
       }).catch(err=>console.error('[hub] refresh failed', err));
     };
+    this.__onFocus = ()=>{ this.__pull(); };
     window.addEventListener('focus', this.__onFocus);
+
+    // Refocusing the tab was the *only* thing that pulled new rows, so two
+    // windows open side by side never saw each other — a message sent from one
+    // simply never arrived in the other. Poll instead: two indexed lookups for
+    // the newest row, and a full load only when that number moves. Skipped
+    // entirely while the tab is hidden, so a backgrounded tab costs nothing.
+    this.__poll = setInterval(()=>{
+      if(!this.state.booted || this.__writing) return;
+      if(document.hidden) return;
+      window.SUData.latestTs().then(ts=>{
+        if(ts > (this.__seenTs||0)){ this.__seenTs = ts; this.__pull(); }
+      }).catch(err=>console.error('[hub] poll failed', err));
+    }, 15000);
 
     // Escape closes the attachment lightbox — it can open over the detail
     // modal, so there needs to be a way out that is not the overlay behind it.
@@ -1885,6 +1926,24 @@ class Component extends DCLogic {
   componentWillUnmount(){
     if(this.__onFocus) window.removeEventListener('focus', this.__onFocus);
     if(this.__onKey) window.removeEventListener('keydown', this.__onKey);
+    if(this.__poll) clearInterval(this.__poll);
+  }
+  // Sitting on the message board counts as reading it, so a message that lands
+  // while it is open does not leave an unread badge behind.
+  componentDidUpdate(){
+    const S=this.state, me=S.profile;
+    if(!S.booted || !me || S.section!=='messages') return;
+    const isStaff = me.role==='team';
+    const cid = isStaff ? S.msgClient : me.client_id;
+    if(!cid) return;
+    const other = isStaff ? 'client' : 'team';
+    const r = (S.data.reads||[]).find(x=>x.clientId===cid && x.profileId===me.id);
+    const last = r ? Number(r.lastReadTs||0) : 0;
+    // Only the other side's messages count, and marking read pushes the marker
+    // past them — so this settles after one pass rather than looping.
+    const newest = (S.data.messages||[]).reduce(
+      (a,m)=>(m.clientId===cid && m.from===other && m.ts>a) ? m.ts : a, 0);
+    if(newest > last) this.markRead(cid);
   }
   // Diffs the current tree against the last successfully-persisted one, so
   // batched edits still produce a complete set of writes. __synced only
@@ -1897,6 +1956,11 @@ class Component extends DCLogic {
     window.SUData.sync(prev, next).then(()=>{
       this.__synced = structuredClone(next);
       this.__writing = false;
+      // Our own write moves the watermark too. Recording where it landed stops
+      // the next poll reading it as somebody else's change — and, unlike
+      // clearing the mark, cannot swallow a change that arrives before the
+      // following tick.
+      this.__seenTs = this.watermark(next);
       if(this.state.syncError) this.setState({syncError:null});
     }).catch(err=>{
       this.__writing = false;
@@ -1915,7 +1979,15 @@ class Component extends DCLogic {
       ? window.crypto.randomUUID()
       : 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
   }
-  logEv(data, clientId, text){ data.log.unshift({id:this.uid(),clientId,text,ts:Date.now()}); }
+  // Every log entry records who caused it, because the notification bell has
+  // to be able to leave your own actions out — you already know you sent that
+  // message. Entries written before this have no `by` and are shown to
+  // everyone, which is right: nobody can be identified as their author.
+  logEv(data, clientId, text){
+    const me = this.state.profile || {};
+    data.log.unshift({id:this.uid(),clientId,text,ts:Date.now(),
+      by: me.id || '', side: me.role==='team' ? 'team' : 'client'});
+  }
   // Attachments sit in a private bucket, so every view needs a signed URL.
   // Signing is resolved lazily: the first ask starts the request and returns
   // null, and the answer arrives on the re-render it triggers. That way a
@@ -1941,6 +2013,23 @@ class Component extends DCLogic {
     return null;
   }
   sigFailed(path){ const r = (this.__sigs||{})[path]; return !!(r && r.error); }
+  // Newest row this reader can see, in the two collections the poll watches.
+  // Compared against the server's answer to decide whether a full load is
+  // worth doing at all.
+  watermark(data){
+    const mx = list => (list||[]).reduce((n,r)=>Math.max(n, Number(r.ts)||0), 0);
+    return Math.max(mx(data && data.messages), mx(data && data.log));
+  }
+  markRead(cid){
+    const me = this.state.profile || {};
+    if(!cid || !me.id) return;
+    this.set(x=>{
+      x.reads=(x.reads||[]).slice();
+      const rid=me.id+':'+cid, row=x.reads.find(r=>r.id===rid), now=Date.now();
+      if(row) row.lastReadTs=now;
+      else x.reads.push({id:rid,profileId:me.id,clientId:cid,lastReadTs:now});
+      return x; });
+  }
   fmt(ts){
     const diff=Date.now()-ts;
     if(diff<3600e3) return Math.max(1,Math.round(diff/60e3))+'m ago';
@@ -2209,12 +2298,7 @@ class Component extends DCLogic {
       return r?Number(r.lastReadTs||0):0; };
     const unreadFor = cid=>D.messages.filter(m=>m.clientId===cid&&m.from===otherSide&&m.ts>readTs(cid)).length;
     const unreadTotal = isStaff ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0) : unreadFor(client.id);
-    const markRead = cid=>{ if(!cid||!me.id) return; this.set(x=>{
-      x.reads=(x.reads||[]).slice();
-      const rid=me.id+':'+cid, row=x.reads.find(r=>r.id===rid), now=Date.now();
-      if(row) row.lastReadTs=now;
-      else x.reads.push({id:rid,profileId:me.id,clientId:cid,lastReadTs:now});
-      return x; }); };
+    const markRead = cid=>this.markRead(cid);
 
     // ===== strategy boards =====
     // One board per channel. The lists differ because the end states differ:
@@ -2290,7 +2374,10 @@ class Component extends DCLogic {
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
-    const notifSrc = isTeam? D.log : D.log.filter(l=>l.clientId===client.id);
+    // Your own actions are not news to you, so they never reach the bell. The
+    // overview's activity list is separate and still shows everything.
+    const mine = l => !!l.by && l.by===me.id;
+    const notifSrc = (isTeam? D.log : D.log.filter(l=>l.clientId===client.id)).filter(l=>!mine(l));
     const unseenN = notifSrc.filter(l=>l.ts>S.seenTs).length;
     // messages
     const msgCid = isTeam? S.msgClient : client.id;
@@ -2336,8 +2423,23 @@ class Component extends DCLogic {
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
     const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
     // requests
+    // What travelled with a request, summarised for its card.
+    const attachLabel=r=>{
+      const n=(r.files||[]).length, l=(r.links||[]).length, bits=[];
+      if(n) bits.push(n===1?'1 file':n+' files');
+      if(l) bits.push(l===1?'1 link':l+' links');
+      return bits.join(' \u00b7 ');
+    };
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
-    const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
+    const newRequests=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,
+      desc:r.desc||'', hasDesc:!!r.desc,
+      clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
+      cat:r.category||'General',
+      badgeStyle:this.badge('amber'), statusLabel:'Pending review',
+      urgency:r.urgency||'Normal', urgencyStyle:urgStyle(r.urgency),
+      isUrgent:(r.urgency==='High'||r.urgency==='Urgent'),
+      needBy:niceDate(r.needBy), hasNeedBy:!!r.needBy,
+      filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
       open:openDetail('request',r.id),
       // Same path as everywhere else, so context is never dropped on this route.
       // stopThen keeps the row's own click from also opening the detail.
@@ -2347,6 +2449,7 @@ class Component extends DCLogic {
     const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+        filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
         dateBits(r.needBy, w&&w.projectedFinish)); });
     // updates (portal)
@@ -2484,6 +2587,7 @@ class Component extends DCLogic {
     const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+        filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
         dateBits(r.needBy, w&&w.projectedFinish)); });
 
@@ -2565,7 +2669,12 @@ class Component extends DCLogic {
           addDetailLink:()=>{ const u=(d.detailLink||'').trim(); if(!u) return;
             if(!/^https?:\/\//i.test(u)) return this.setState({syncError:'A file link needs to start with http:// or https://'});
             this.setState({syncError:null});
-            this.set(x=>{ const it=findIt(x); it.links=(it.links||[]).concat([{url:u,label:linkLabel(u)}]);
+            this.set(x=>{ const it=findIt(x); const link={url:u,label:linkLabel(u)};
+              it.links=(it.links||[]).concat([link]);
+              if(ty==='request'){                       // same carry-over as files
+                const w=x.work.find(y=>y.requestId===item.id);
+                if(w) w.links=(w.links||[]).concat([link]);
+              }
               this.logEv(x,item.clientId,(isTeam?'Team':cname(item.clientId))+' added a file link to "'+(it.title||'an item')+'"'); return x; });
             this.setState(s2=>({d:{...s2.d,detailLink:''}})); },
           // Attaching used to record the file name and nothing else, which is
@@ -2580,6 +2689,14 @@ class Component extends DCLogic {
             startUploads(picked, {clientId:item.clientId, kind, itemId:item.id}, meta=>{
               this.set(x=>{ const it=findIt(x);
                 it.files=(it.files||[]).concat([meta]);
+                // Approving a request copies its attachments onto the work item,
+                // so anything added *before* approval travels. Anything added
+                // after used to stop at the request — the work card the team
+                // actually works from never saw it. Carry it across.
+                if(ty==='request'){
+                  const w=x.work.find(y=>y.requestId===item.id);
+                  if(w) w.files=(w.files||[]).concat([meta]);
+                }
                 this.logEv(x,item.clientId,who+' attached '+meta.name+' to "'+(it.title||'an item')+'"');
                 return x; });
             });
@@ -3180,7 +3297,8 @@ class Component extends DCLogic {
           comments:[],files:[]});
           this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
         this.setState(s=>({reqLinks:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
-      myRequests, clientTodos, noClientTodos:clientTodos.length===0,
+      myRequests, noMyRequests:myRequests.length===0,
+      clientTodos, noClientTodos:clientTodos.length===0,
       completedWork, noCompletedWork,
       fileChips, portalFiles, noPortalFiles:portalFiles.length===0,
       // The library is the team's to fill — clients read it, staff add to it,

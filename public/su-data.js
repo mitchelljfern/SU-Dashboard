@@ -352,6 +352,25 @@
     return { ok: true, writes: ops.length };
   }
 
+  // ---------- live refresh ----------
+  // The app used to pick up other people's changes only when the tab regained
+  // focus, so a message sent while both windows were open never arrived. This
+  // is the cheap half of a poll: two indexed lookups for the newest row this
+  // reader can see. `log` gets an entry for essentially every action, so
+  // between it and `messages` it stands in for "something happened". A full
+  // load() only runs when this number actually moves.
+  async function latestTs() {
+    const db = client();
+    const [m, l] = await Promise.all([
+      db.from('messages').select('ts').order('ts', { ascending: false }).limit(1),
+      db.from('log').select('ts').order('ts', { ascending: false }).limit(1)
+    ]);
+    if (m.error) throw m.error;
+    if (l.error) throw l.error;
+    const pick = r => (r.data && r.data[0] ? Number(r.data[0].ts) : 0);
+    return Math.max(pick(m), pick(l));
+  }
+
   // ---------- attachments ----------
   // Files live in a private bucket, one folder per tenant, and the item only
   // ever stores the object path. URLs are signed on demand and expire, so a
@@ -466,7 +485,7 @@
   }
 
   window.SUData = {
-    signIn, signOut, currentSession, loadProfile, load, sync,
+    signIn, signOut, currentSession, loadProfile, load, sync, latestTs,
     uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
