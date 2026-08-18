@@ -102,8 +102,15 @@
       .su-main{padding:24px 18px 110px !important}
       .su-grid4,.su-cols{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
       .su-grid2,.su-half,.su-bill,.su-msg{grid-template-columns:minmax(0,1fr) !important}
-      .su-grid3{display:flex !important;flex-direction:column-reverse;gap:18px}
+      /* The inline style carries align-items:start for the three-column grid.
+         Flipping to a column flexbox keeps it, and in that direction it stops
+         the cards stretching — they shrank to the width of their own text. */
+      .su-grid3{display:flex !important;flex-direction:column-reverse;gap:18px;align-items:stretch !important}
       .su-tabs{flex-direction:row !important;overflow-x:auto;border-right:none !important;border-bottom:1px solid var(--border-hairline)}
+      /* iOS zooms the page in when a focused field is under 16px, and does not
+         zoom back out afterwards. Bumping the fields is the fix that keeps
+         pinch-zoom working, unlike locking maximum-scale. */
+      input,select,textarea{font-size:16px !important}
     }
     @media (max-width:560px){
       .su-grid4,.su-cols{grid-template-columns:minmax(0,1fr) !important}
@@ -145,19 +152,37 @@
   </aside>
   <div class="su-bottom" style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:60;justify-content:space-around;align-items:stretch;padding:6px 4px 10px;border-top:1px solid rgba(255,255,255,.12)">
     <sc-for list="{{ bottomItems }}" as="b" hint-placeholder-count="4">
-      <button onClick="{{ b.select }}" style="{{ b.style }}">{{ b.label }}</button>
+      <button onClick="{{ b.select }}" style="{{ b.style }}">
+        <span style="display:inline-flex;align-items:center;gap:5px">{{ b.label }}
+          <sc-if value="{{ b.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ b.badge }}</span></sc-if>
+        </span>
+      </button>
     </sc-for>
-    <button onClick="{{ toggleMore }}" style="flex:1;background:transparent;border:none;color:rgba(255,255,255,.72);font-size:11.5px;font-weight:500;padding:10px 4px;cursor:pointer">More ≡</button>
+    <button onClick="{{ toggleMore }}" style="flex:1;background:transparent;border:none;color:rgba(255,255,255,.72);font-size:11.5px;font-weight:500;padding:10px 4px;cursor:pointer">
+      <span style="display:inline-flex;align-items:center;gap:5px">More ≡
+        <sc-if value="{{ moreBadge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ moreBadge }}</span></sc-if>
+      </span>
+    </button>
   </div>
   <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ toggleMore }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:70"></div>
     <div style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:12px 14px 0 0">
       <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.5);padding-bottom:10px">{{ hubLabel }}</div>
       <sc-for list="{{ sheetItems }}" as="n" hint-placeholder-count="7">
-        <button onClick="{{ n.select }}" style="{{ n.style }}">{{ n.label }}</button>
+        <button onClick="{{ n.select }}" style="{{ n.style }}">
+          <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%">{{ n.label }}
+            <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ n.badge }}</span></sc-if>
+          </span>
+        </button>
       </sc-for>
       <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:12px">
-        <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button></sc-if>
+        <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;padding-bottom:6px">Preview portal as</div>
+          <select value="{{ viewClient }}" onChange="{{ onViewClient }}" style="width:100%;box-sizing:border-box;background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px;font-size:13px;margin-bottom:8px">
+            <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+          </select>
+          <button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button>
+        </sc-if>
         <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
         <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
       </div>
@@ -2353,19 +2378,26 @@ class Component extends DCLogic {
 
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
+    // The sidebar is hidden on a phone, and the mobile bars carried no badges
+    // at all — so an unread message was invisible there. One rule, three bars.
+    const badgeFor = id=>{
+      if(isTeam && id==='requests' && newReqCount) return newReqCount;
+      if(!isTeam && id==='todos' && clientTodoCount) return clientTodoCount;
+      if(id==='messages' && unreadTotal) return unreadTotal;
+      return false;
+    };
+    // Opening a board is what marks it read, wherever it is opened from.
+    const openSection = id=>()=>{
+      if(id==='messages') markRead(isStaff? S.msgClient : client.id);
+      this.setState({section:id,notifOpen:false,moreOpen:false});
+    };
     const navItems = [];
     nav.forEach(([id,label])=>{
       const active=S.section===id, muted=id==='billing';
-      let badge=false;
-      if(isTeam&&id==='requests'&&newReqCount) badge=newReqCount;
-      if(!isTeam&&id==='todos'&&clientTodoCount) badge=clientTodoCount;
-      if(id==='messages'&&unreadTotal) badge=unreadTotal;
+      const badge=badgeFor(id);
       navItems.push({label,badge,
         arrow: id==='strategy' ? (active?'▾':'▸') : false,
-        select:()=>{
-        // Opening the board is what marks it read.
-        if(id==='messages') markRead(isStaff? S.msgClient : client.id);
-        this.setState({section:id,notifOpen:false,moreOpen:false}); },
+        select:openSection(id),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       // Strategy opens into its three channels rather than being one long board.
       if(id==='strategy'&&active){
@@ -2756,8 +2788,12 @@ class Component extends DCLogic {
       return Object.assign(r,{open: r.canPreview? r.open : go('files')}); });
     // mobile nav
     const mobStyle=active=>({flex:1,background:'transparent',border:'none',borderTop:active?'2px solid var(--green)':'2px solid transparent',color:active?'#fff':'rgba(255,255,255,.65)',fontSize:11.5,fontWeight:active?600:500,padding:'10px 4px',cursor:'pointer',fontFamily:'var(--font-body)'});
-    const bottomItems=nav.slice(0,4).map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),style:mobStyle(S.section===id)}));
-    const sheetItems=nav.map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
+    const bottomItems=nav.slice(0,4).map(([id,label])=>({label,badge:badgeFor(id),
+      select:openSection(id),style:mobStyle(S.section===id)}));
+    // Messages is not among the first four on either side, so its unread count
+    // would otherwise sit unseen behind "More".
+    const moreBadge=nav.slice(4).reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
+    const sheetItems=nav.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
       style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
     // stats & activity (team overview)
     const stats=[
@@ -3271,7 +3307,7 @@ class Component extends DCLogic {
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
       goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'),
-      bottomItems, sheetItems, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
+      bottomItems, sheetItems, moreBadge:moreBadge>0?moreBadge:false, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
       stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
       dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),
       // Assignee applies to team to-dos only — a client to-do belongs to the client.

@@ -139,6 +139,20 @@ the newest `messages` / `log` row this reader can see, and a full load only when
 that number moves. A hidden tab does not poll at all, and the app's own writes
 advance the mark so they never trigger a needless reload.
 
+## On a phone
+
+The sidebar is replaced by a bottom bar of the first four sections plus a
+**More** sheet holding the rest. Both carry the same unread and pending badges
+the sidebar does, and the More button carries the total for whatever is hidden
+behind it — otherwise an unread message sat unseen, since Messages is not among
+the first four on either side. The sheet also holds the *Preview portal as*
+picker, so staff can choose which client portal to open without a desktop.
+
+Form fields are 16px on narrow screens. Below that, iOS zooms the page in when
+one is focused and does not zoom back out, which strands the user at a zoom
+level they have to pinch their way out of. Raising the fields fixes it without
+locking `maximum-scale`, so pinch-zoom still works for anyone who wants it.
+
 ## Notifications
 
 The bell is other people's news, so it leaves out anything you did yourself:
