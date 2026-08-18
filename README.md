@@ -56,8 +56,10 @@ their own request, or post a message as the team.
 
 ## Strategy
 
-A **Strategy** tab on both sides, opening into three channel boards. The lists
-differ because the end states do:
+A **Strategy** tab in the client portal, opening into three channel boards. It
+is not in the team menu — staff reach it the same way they see the rest of the
+portal, through *Open client portal*. The lists differ because the end states
+do:
 
 | Channel | Lists |
 |---|---|
@@ -65,11 +67,11 @@ differ because the end states do:
 | Emails | Ideas → Approved → Sent |
 | Paid Ads | Ideas → Approved → Live → Paused → Ended |
 
-Cards carry a title, notes, an optional scheduled date, links and comments, and
-move between lists with the arrows. The team plans and moves freely; a client
-reads their own board, comments, and can sign off an idea — but only
-idea → approved. "Posted", "sent" and "live" are claims about work the agency
-did, so a client can never set them, walk an approval back, or rewrite a card.
+It is a shared board: both staff and client members add cards and move them
+between lists. Cards carry a title, notes, an optional scheduled date, links
+and comments. Deleting is team-only — it is the one destructive action, and
+RLS still pins every card to its own tenant, so neither side can add to or read
+another client's board.
 
 ## Portal access
 
