@@ -924,6 +924,70 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secStrategy }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ channelTabs }}" as="ct" hint-placeholder-count="3">
+              <button onClick="{{ ct.select }}" style="{{ ct.style }}" style-hover="border-color:var(--navy)">{{ ct.label }}</button>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ isStratTeam }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid var(--border-card);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Add to {{ stratChannel }}</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <input value="{{ dStratTitle }}" onChange="{{ onStratTitle }}" placeholder="What is the idea?" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <input value="{{ dStratWhen }}" onChange="{{ onStratWhen }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <button onClick="{{ addStrategy }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
+              </div>
+              <textarea value="{{ dStratBody }}" onChange="{{ onStratBody }}" placeholder="Copy, angle, notes…" rows="2" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical"></textarea>
+            </div>
+          </sc-if>
+
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;align-items:start">
+            <sc-for list="{{ stratCols }}" as="col" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:6px;border-bottom:2px solid {{ col.accent }}">
+                  <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ col.count }}</span>
+                </div>
+                <sc-if value="{{ col.noItems }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px;color:var(--text-muted);padding:4px 2px">Nothing here yet.</div>
+                </sc-if>
+                <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="2">
+                  <div onClick="{{ it.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.12)">
+                    <div style="font-size:13.5px;font-weight:500;color:var(--navy);line-height:1.4">{{ it.title }}</div>
+                    <sc-if value="{{ it.hasBody }}" hint-placeholder-val="{{ true }}">
+                      <div style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ it.body }}</div>
+                    </sc-if>
+                    <sc-if value="{{ it.hasWhen }}" hint-placeholder-val="{{ true }}">
+                      <div style="font-size:11.5px;font-weight:600;color:var(--blue)">{{ it.when }}</div>
+                    </sc-if>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ it.commentsLabel }}</div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                      <sc-if value="{{ it.canBack }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ it.back }}" style="flex:0 0 auto;background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:5px 10px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button>
+                      </sc-if>
+                      <sc-if value="{{ it.canFwd }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ it.fwd }}" style="flex:1;background:var(--navy);border:none;border-radius:12px;color:#fff;padding:5px 10px;font-size:12px;cursor:pointer" style-hover="background:var(--navy-800)">{{ it.fwdLabel }} ▸</button>
+                      </sc-if>
+                      <sc-if value="{{ it.canApprove }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ it.approve }}" style="flex:1;background:var(--green);border:none;border-radius:12px;color:#fff;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer">Approve</button>
+                      </sc-if>
+                      <sc-if value="{{ it.canRemove }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ it.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+
+        </div>
+      </sc-if>
+
       <sc-if value="{{ secTeam }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:18px">
 
@@ -1657,7 +1721,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -1826,8 +1890,8 @@ class Component extends DCLogic {
       this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['strategy','Strategy'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -1844,23 +1908,77 @@ class Component extends DCLogic {
       else x.reads.push({id:rid,profileId:me.id,clientId:cid,lastReadTs:now});
       return x; }); };
 
+    // ===== strategy boards =====
+    // One board per channel. The lists differ because the end states differ:
+    // a post is posted, an email is sent, an ad runs and then stops.
+    const CHANNELS=[
+      {id:'social', label:'Social Media',
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['posted','Posted','var(--blue)']]},
+      {id:'email',  label:'Emails',
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['sent','Sent','var(--blue)']]},
+      {id:'ads',    label:'Paid Ads',
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['live','Live','var(--blue)'],['paused','Paused','#D68F2E'],['ended','Ended','var(--text-muted)']]}
+    ];
+    const chanId = S.channel || 'social';
+    const chan = CHANNELS.find(c=>c.id===chanId) || CHANNELS[0];
+    const chanOrder = chan.cols.map(c=>c[0]);
+    // Team sees the client currently being viewed; a client sees only itself.
+    const stratClient = isStaff ? S.viewClient : client.id;
+    const stratItems = (D.strategy||[]).filter(x=>x.clientId===stratClient&&x.channel===chan.id);
+
+    const stratCols = chan.cols.map(([st,label,accent])=>{
+      const items = stratItems.filter(x=>(x.status||'idea')===st)
+        .sort((a,b)=>(a.scheduledFor||'').localeCompare(b.scheduledFor||'')||b.ts-a.ts)
+        .map(x=>{
+          const i = chanOrder.indexOf(st);
+          const move = dir=>stopThen(()=>this.set(y=>{
+            const it=y.strategy.find(z=>z.id===x.id);
+            it.status=chanOrder[Math.max(0,Math.min(chanOrder.length-1,i+dir))];
+            return y; }));
+          return {
+            title:x.title||'Untitled', body:x.body||'', hasBody:!!x.body,
+            when:x.scheduledFor?niceDate(x.scheduledFor):'', hasWhen:!!x.scheduledFor,
+            commentsLabel:cLabel((x.comments||[]).length),
+            open:openDetail('strategy',x.id),
+            // Team moves freely; a client may only sign off an idea.
+            canBack:isTeam&&i>0, canFwd:isTeam&&i<chanOrder.length-1,
+            back:move(-1), fwd:move(1), fwdLabel:chan.cols[Math.min(i+1,chan.cols.length-1)][1],
+            canApprove:(!isTeam)&&st==='idea',
+            approve:stopThen(()=>this.set(y=>{ y.strategy.find(z=>z.id===x.id).status='approved'; return y; })),
+            canRemove:isTeam,
+            remove:stopThen(()=>this.set(y=>{ y.strategy=y.strategy.filter(z=>z.id!==x.id); return y; }))
+          };
+        });
+      return {label,accent,count:items.length,items,noItems:items.length===0};
+    });
+
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
-    const navItems = nav.map(([id,label])=>{
+    const navItems = [];
+    nav.forEach(([id,label])=>{
       const active=S.section===id, muted=id==='billing';
       let badge=false;
       if(isTeam&&id==='requests'&&newReqCount) badge=newReqCount;
       if(!isTeam&&id==='todos'&&clientTodoCount) badge=clientTodoCount;
       if(id==='messages'&&unreadTotal) badge=unreadTotal;
-      return {label,badge,select:()=>{
+      navItems.push({label,badge,select:()=>{
         // Opening the board is what marks it read.
         if(id==='messages') markRead(isStaff? S.msgClient : client.id);
         this.setState({section:id,notifOpen:false,moreOpen:false}); },
-        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}};
+        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+      // Strategy opens into its three channels rather than being one long board.
+      if(id==='strategy'&&active){
+        CHANNELS.forEach(ch=>{
+          const on=chanId===ch.id;
+          navItems.push({label:ch.label,badge:false,
+            select:()=>this.setState({channel:ch.id,notifOpen:false,moreOpen:false}),
+            style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',borderLeft:'2px solid '+(on?'var(--green)':'rgba(255,255,255,.18)'),color:on?'#fff':'rgba(255,255,255,.6)',padding:'8px 12px 8px 20px',margin:'0 0 0 12px',fontSize:12.5,fontWeight:on?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+        });
+      }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team']}
-      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],strategy:['Internal Dashboard','Strategy · '+chan.label],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team']}
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
@@ -2065,23 +2183,31 @@ class Component extends DCLogic {
     let dv={detailOpen:false};
     if(S.detail){
       const ty=S.detail.type;
-      const coll= ty==='work'? D.work : (ty==='update'? D.updates : D.requests);
+      const coll= ty==='work'? D.work : ty==='update'? D.updates : ty==='strategy'? (D.strategy||[]) : D.requests;
       const item=coll.find(y=>y.id===S.detail.id);
       if(item){
         const listKey= ty==='update'?'feedback':'comments';
         const list=item[listKey]||[];
-        const findIt=x=>(ty==='work'? x.work : (ty==='update'? x.updates : x.requests)).find(y=>y.id===item.id);
+        const findIt=x=>(ty==='work'? x.work : ty==='update'? x.updates : ty==='strategy'? x.strategy : x.requests).find(y=>y.id===item.id);
         let bs,sl;
         if(ty==='work'){ [bs,sl]=wBadge(item.status); }
+        else if(ty==='strategy'){ const st=item.status||'idea';
+          bs = st==='idea'? this.badge('gray') : st==='approved'? this.badge('green')
+             : st==='paused'? this.badge('amber') : st==='ended'? this.badge('gray') : this.badge('blue');
+          sl = st.charAt(0).toUpperCase()+st.slice(1); }
         else if(ty==='request'){ [bs,sl]=reqBadge(item.status); }
         else { [bs,sl]= item.needsApproval? (item.approved? [this.badge('green'),'Approved'] : [this.badge('amber'),'Awaiting approval']) : [this.badge('blue'),'Update']; }
         const extOf=n=>(n.split('.').pop()||'').toUpperCase().slice(0,4);
         dv={detailOpen:true,
-          detailKind: ty==='work'?'Work item':(ty==='request'?'Request':'Update'),
+          detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Strategy':'Update',
           detailTitle: ty==='update'?item.text:item.title,
           detailBadgeStyle:bs, detailStatus:sl,
-          detailMeta: cname(item.clientId)+(ty==='work'?' · '+(item.hours||0)+'h est.':(ty==='request'?' · '+(item.category||'General')+' · '+this.fmt(item.ts):' · '+this.fmt(item.ts))),
-          hasDetailDesc: (ty==='request'||ty==='work')&&!!item.desc, detailDesc:item.desc||'',
+          detailMeta: cname(item.clientId)+(ty==='work'?' · '+(item.hours||0)+'h est.'
+            : ty==='request'?' · '+(item.category||'General')+' · '+this.fmt(item.ts)
+            : ty==='strategy'?((item.scheduledFor?' · '+niceDate(item.scheduledFor):'')+' · '+this.fmt(item.ts))
+            : ' · '+this.fmt(item.ts)),
+          hasDetailDesc: ((ty==='request'||ty==='work')&&!!item.desc)||(ty==='strategy'&&!!item.body),
+          detailDesc: ty==='strategy'? (item.body||'') : (item.desc||''),
           detailFiles: ty==='update'? (item.fileIds||[]).map(fileById).filter(Boolean) : (item.files||[]).map(f=>({name:f.name,ext:extOf(f.name)})),
           // Shared file links (Dropbox, Drive, ...) travel with the item.
           detailLinks: (item.links||[]).map(l=>({url:l.url,label:l.label||linkLabel(l.url)})),
@@ -2103,9 +2229,9 @@ class Component extends DCLogic {
           detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
           detailReqApproveFn:()=>approveReq(item.id),
           detailReqDeclineFn:()=>declineReq(item.id),
-          detailCanAttach: (ty==='request'&&!isTeam) || (isTeam&&(ty==='work'||ty==='request')),
+          detailCanAttach: (ty==='request'&&!isTeam) || (isTeam&&(ty==='work'||ty==='request'||ty==='strategy')),
           // Links are how files are shared here, so both sides can add one.
-          detailCanLink: (ty==='request'||ty==='work'),
+          detailCanLink: (ty==='request'||ty==='work'||ty==='strategy'),
           dDetailLink: d.detailLink||'', onDetailLink:this.draft('detailLink'),
           addDetailLink:()=>{ const u=(d.detailLink||'').trim(); if(!u) return;
             if(!/^https?:\/\//i.test(u)) return this.setState({syncError:'A file link needs to start with http:// or https://'});
@@ -2292,6 +2418,27 @@ class Component extends DCLogic {
       // ----- roles -----
       isAdmin, canBilling, notBilling:isTeam&&!canBilling,
       secTeam: isTeam&&secKey('team'),
+      secStrategy: secKey('strategy'),
+      stratCols, stratChannel: chan.label, isStratTeam: isTeam,
+      channelTabs: CHANNELS.map(ch=>({label:ch.label,
+        select:()=>this.setState({channel:ch.id}),
+        style:{background:chanId===ch.id?'var(--navy)':'#fff',color:chanId===ch.id?'#fff':'var(--text-body)',
+          border:'1px solid '+(chanId===ch.id?'var(--navy)':'var(--gray-200)'),borderRadius:12,
+          padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}})),
+      // Adding a card (team only)
+      dStratTitle:d.stTitle||'', onStratTitle:this.draft('stTitle'),
+      dStratBody:d.stBody||'', onStratBody:this.draft('stBody'),
+      dStratWhen:d.stWhen||'', onStratWhen:this.draft('stWhen'),
+      addStrategy:()=>{
+        const t=(d.stTitle||'').trim();
+        if(!t) return this.setState({syncError:'Give the card a title.'});
+        if(!stratClient) return this.setState({syncError:'Pick a client first.'});
+        this.setState({syncError:null});
+        this.set(x=>{ x.strategy.unshift({id:this.uid(),clientId:stratClient,ts:Date.now(),
+          channel:chan.id,status:'idea',title:t,body:(d.stBody||'').trim(),
+          scheduledFor:d.stWhen||'',links:[],comments:[]}); return x; });
+        this.setState(s2=>({d:{...s2.d,stTitle:'',stBody:'',stWhen:''}}));
+      },
 
       // ----- my to-dos -----
       myTodos, noMyTodos, myTodoCount: myTodos.length,

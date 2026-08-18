@@ -9,7 +9,7 @@
   'use strict';
 
   // Collections stored as id / client_id / ts / data(jsonb).
-  const TABLES = ['todos', 'work', 'requests', 'updates', 'messages', 'files', 'invoices', 'log'];
+  const TABLES = ['todos', 'work', 'requests', 'updates', 'messages', 'files', 'invoices', 'log', 'strategy'];
 
   // How each collection is ordered when loaded, to match what the UI expects.
   // Messages read as a chat thread (oldest first); everything else is a feed.

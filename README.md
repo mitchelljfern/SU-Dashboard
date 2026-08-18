@@ -54,6 +54,23 @@ form: they may comment, attach links, tick their own to-dos and approve
 updates. They cannot move a projected finish date, change a status, approve
 their own request, or post a message as the team.
 
+## Strategy
+
+A **Strategy** tab on both sides, opening into three channel boards. The lists
+differ because the end states do:
+
+| Channel | Lists |
+|---|---|
+| Social Media | Ideas → Approved → Posted |
+| Emails | Ideas → Approved → Sent |
+| Paid Ads | Ideas → Approved → Live → Paused → Ended |
+
+Cards carry a title, notes, an optional scheduled date, links and comments, and
+move between lists with the arrows. The team plans and moves freely; a client
+reads their own board, comments, and can sign off an idea — but only
+idea → approved. "Posted", "sent" and "live" are claims about work the agency
+did, so a client can never set them, walk an approval back, or rewrite a card.
+
 ## Portal access
 
 A client is a tenant, not a single login. Clients add their own colleagues from
