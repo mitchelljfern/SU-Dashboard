@@ -85,11 +85,20 @@ download is a URL signed for the hour, so a link copied out of the portal stops
 working, and row-level security decides who can sign one at all: staff reach
 every folder, a client only its own. Clients can upload (their own requests)
 but never delete — removing a file is team-only, like every other destructive
-action here.
+action here, and the storage policies say the same, not just the buttons.
 
 Images, PDFs, video and audio open in a preview over the card; anything else
 downloads. Limit is 50 MB a file. Attachments added before this existed have a
 name and no stored file, and say so instead of offering a dead download.
+
+Staff delete an attachment with the `×` on its row, which asks before it acts.
+One stored object can be referenced from two places — approving a request
+copies its attachments onto the work item, paths and all — so a delete counts
+the references first. The last one takes the bytes out of the bucket and says
+so ("Delete for everyone?"); any earlier one only drops that card's reference
+("Remove from this card?") and leaves the file for whatever still points at it.
+Deleting from a client's Files tab also unhooks the file from any update that
+referenced it, so nothing is left pointing at a row that is gone.
 
 ## Portal access
 

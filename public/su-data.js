@@ -409,6 +409,14 @@
     return data.signedUrl;
   }
 
+  // Removing is team-only in the database as well as in the UI: a client's
+  // storage policies grant select and insert, never delete.
+  async function deleteAttachment(path) {
+    if (!path) return;
+    const { error } = await client().storage.from(BUCKET).remove([path]);
+    if (error) throw error;
+  }
+
   // The same signed URL, asking storage for Content-Disposition: attachment —
   // which is what actually makes the browser save the file rather than
   // navigate to it. Kept as a plain string op so a download can be started
@@ -459,7 +467,8 @@
 
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, sync,
-    uploadAttachment, signedUrl, downloadUrl, MAX_ATTACHMENT_BYTES: MAX_BYTES,
+    uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
+    MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }

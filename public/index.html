@@ -258,11 +258,19 @@
                       <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</div>
                       <div style="font-size:11.5px;color:var(--text-muted)">{{ f.meta }}</div>
                     </div>
+                    <sc-if value="{{ f.confirming }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">{{ f.removeWarning }}</span>
+                      <button onClick="{{ f.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Delete</button>
+                      <button onClick="{{ f.cancelRemove }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Cancel</button>
+                    </sc-if>
                     <sc-if value="{{ f.canPreview }}" hint-placeholder-val="{{ true }}">
                       <button onClick="{{ f.open }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Preview</button>
                     </sc-if>
-                    <sc-if value="{{ f.stored }}" hint-placeholder-val="{{ true }}">
+                    <sc-if value="{{ f.canDownload }}" hint-placeholder-val="{{ true }}">
                       <button onClick="{{ f.download }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
+                    </sc-if>
+                    <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
                     </sc-if>
                   </div>
                 </sc-for>
@@ -848,11 +856,19 @@
                       <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</div>
                       <div style="font-size:11.5px;color:var(--text-muted)">{{ f.meta }}</div>
                     </div>
+                    <sc-if value="{{ f.confirming }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">{{ f.removeWarning }}</span>
+                      <button onClick="{{ f.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Delete</button>
+                      <button onClick="{{ f.cancelRemove }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Cancel</button>
+                    </sc-if>
                     <sc-if value="{{ f.canPreview }}" hint-placeholder-val="{{ true }}">
                       <button onClick="{{ f.open }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Preview</button>
                     </sc-if>
-                    <sc-if value="{{ f.stored }}" hint-placeholder-val="{{ true }}">
+                    <sc-if value="{{ f.canDownload }}" hint-placeholder-val="{{ true }}">
                       <button onClick="{{ f.download }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
+                    </sc-if>
+                    <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
                     </sc-if>
                   </div>
                 </sc-for>
@@ -1626,11 +1642,19 @@
                 <div style="font-size:14px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</div>
                 <div style="font-size:12px;color:var(--text-muted)">{{ f.type }} · {{ f.meta }} · {{ f.when }}</div>
               </div>
+              <sc-if value="{{ f.confirming }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">{{ f.removeWarning }}</span>
+                <button onClick="{{ f.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Delete</button>
+                <button onClick="{{ f.cancelRemove }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Cancel</button>
+              </sc-if>
               <sc-if value="{{ f.canPreview }}" hint-placeholder-val="{{ true }}">
                 <button onClick="{{ f.open }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Preview</button>
               </sc-if>
-              <sc-if value="{{ f.stored }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ f.canDownload }}" hint-placeholder-val="{{ true }}">
                 <button onClick="{{ f.download }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
+              </sc-if>
+              <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
               </sc-if>
             </div>
           </sc-for>
@@ -1812,8 +1836,9 @@ class Component extends DCLogic {
     this.state = {
       role:'team', section:'overview', viewClient:'af',
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
-      // Attachment lightbox, and how many uploads are still in flight.
-      preview:null, uploading:0,
+      // Attachment lightbox, how many uploads are in flight, and which
+      // attachment is mid-way through its delete confirmation.
+      preview:null, uploading:0, delFile:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
       profile:null, syncError:null, booted:false,
@@ -1963,8 +1988,8 @@ class Component extends DCLogic {
     const client = D.clients.find(c=>c.id===S.viewClient) || D.clients[0] ||
       {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
-    const openDetail=(type,id)=>()=>this.setState({detail:{type,id},notifOpen:false});
-    const closeDetail=()=>this.setState({detail:null});
+    const openDetail=(type,id)=>()=>this.setState({detail:{type,id},notifOpen:false,delFile:null});
+    const closeDetail=()=>this.setState({detail:null,delFile:null});
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production'];
@@ -2055,15 +2080,62 @@ class Component extends DCLogic {
         this.setState({syncError:'That file could not be downloaded. Refresh and try again.'});
       });
     };
-    // One attachment, as every list in the app renders it.
-    const fileRow=f=>{
+    // Deleting is staff-only, like every other destructive action here, and
+    // the storage policies say the same: a client gets select and insert.
+    const canRemoveFiles = isStaff;
+    // One stored object can be referenced twice — approving a request copies
+    // its attachments onto the work item, paths and all. Only the last
+    // reference is allowed to take the bytes with it.
+    const pathRefs = path => {
+      if(!path) return 0;
+      let n = 0;
+      for(const coll of [D.work, D.requests, D.strategy, D.updates, D.todos]) {
+        for(const it of (coll||[])) {
+          for(const x2 of (it.files||[])) if(x2 && x2.path===path) n++;
+        }
+      }
+      for(const f of (D.files||[])) if(f.path===path) n++;
+      return n;
+    };
+    // Bytes first, then the record: freeing the space is the whole point, and
+    // a record write that fails is retried on the next change, while an
+    // orphaned object in the bucket would never be noticed.
+    const removeFile = (f, dropRecord) => {
+      this.setState({delFile:null, syncError:null});
+      const drop = () => this.set(dropRecord);
+      if(!f.path || pathRefs(f.path) > 1) return drop();
+      window.SUData.deleteAttachment(f.path).then(drop).catch(err=>{
+        console.error('[hub] delete failed', err);
+        this.setState({syncError:'That file could not be deleted. Refresh and try again.'});
+      });
+    };
+    // One attachment, as every list in the app renders it. Pass a mutator to
+    // make the row removable; leave it out and the row is read-only.
+    const fileRow=(f, dropRecord)=>{
       const kind=fileKind(f), stored=!!f.path;
       const thumb=(stored&&kind==='image')? this.sigUrl(f.path) : null;
       const size=niceSize(f.size);
+      // Confirmation is inline and per-row, so the key has to identify this
+      // attachment and not merely its position in a list.
+      const key=f.path||f.id||f.name||'';
+      const removable=!!dropRecord && canRemoveFiles;
+      const confirming=removable && S.delFile===key;
+      const stop=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
       return {name:f.name||'File', ext:extOfName(f.name), size,
         meta: stored? size : 'No file stored',
-        stored, thumb:thumb||'', hasThumb:!!thumb, showExt:!thumb,
-        canPreview: stored && kind!=='other',
+        thumb:thumb||'', hasThumb:!!thumb, showExt:!thumb,
+        // While confirming, the row shows only the two answers.
+        canDownload: stored && !confirming,
+        canPreview: stored && kind!=='other' && !confirming,
+        canRemove: removable && !confirming,
+        confirming,
+        // Deleting the last reference takes the file out of storage for good,
+        // for the client as well — so say so rather than just "Remove?".
+        removeWarning: (stored && pathRefs(f.path)<=1)
+          ? 'Delete for everyone?' : 'Remove from this card?',
+        askRemove: stop(()=>this.setState({delFile:key})),
+        cancelRemove: stop(()=>this.setState({delFile:null})),
+        doRemove: stop(()=>removeFile(f, dropRecord)),
         open: openPreview(f), download: downloadFile(f)};
     };
     // Files are uploaded one at a time but several can be picked at once, so
@@ -2331,8 +2403,18 @@ class Component extends DCLogic {
     const fileChips=types.map(t=>{ const n=t==='All'?myFiles.length:myFiles.filter(f=>f.type===t).length; const active=S.fileFilter===t;
       return {label:t+' ('+n+')',select:()=>this.setState({fileFilter:t}),
         style:{background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:12,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
+    // Dropping a library file also unhooks it from any update that referenced
+    // it, so no update is left pointing at a row that is gone.
+    const libraryDrop = f => x => {
+      x.files = x.files.filter(y=>y.id!==f.id);
+      for(const u of x.updates) {
+        if(Array.isArray(u.fileIds)) u.fileIds = u.fileIds.filter(id=>id!==f.id);
+      }
+      this.logEv(x, f.clientId, 'Social Upgrades deleted a file: '+(f.name||'a file'));
+      return x;
+    };
     const portalFiles=myFiles.filter(f=>S.fileFilter==='All'||f.type===S.fileFilter).sort((a,b)=>b.ts-a.ts)
-      .map(f=>Object.assign(fileRow(f),{type:f.type||'File',when:this.fmt(f.ts)}));
+      .map(f=>Object.assign(fileRow(f, libraryDrop(f)),{type:f.type||'File',when:this.fmt(f.ts)}));
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
     const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
@@ -2434,11 +2516,17 @@ class Component extends DCLogic {
           sl = st.charAt(0).toUpperCase()+st.slice(1); }
         else if(ty==='request'){ [bs,sl]=reqBadge(item.status); }
         else { [bs,sl]= item.needsApproval? (item.approved? [this.badge('green'),'Approved'] : [this.badge('amber'),'Awaiting approval']) : [this.badge('blue'),'Update']; }
-        // Updates reference the client's file library by id; everything else
-        // carries its attachments inline.
+        // Updates reference the client's file library by id, so their rows are
+        // read-only here — that library is managed from the Files tab.
+        // Everything else carries its attachments inline and can drop one.
         const dFiles = ty==='update'
           ? (item.fileIds||[]).map(fileById).filter(Boolean)
-          : (item.files||[]).map(fileRow);
+          : (item.files||[]).map((f,i)=>fileRow(f, x=>{
+              const it=findIt(x);
+              it.files=(it.files||[]).filter((y,j)=> f.path? y.path!==f.path : j!==i);
+              this.logEv(x,item.clientId,
+                'Social Upgrades removed '+(f.name||'a file')+' from "'+(it.title||'an item')+'"');
+              return x; }));
         dv={detailOpen:true,
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Strategy':'Update',
           detailTitle: ty==='update'?item.text:item.title,
