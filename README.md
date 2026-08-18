@@ -38,10 +38,10 @@ update public.profiles set is_accountant = true where email = 'books@example.com
 ## Requests and work
 
 Clients submit requests from their dashboard or the Requests tab, with a
-category, urgency, an optional "need completed by" date, and file links. Files
-are shared by link rather than uploaded — the client uploads to their own
-Dropbox or Drive and pastes the share link, which travels with the request onto
-the work item.
+category, urgency, an optional "need completed by" date, and attachments. Files
+can be uploaded directly, or shared by link (Dropbox, Drive, WeTransfer) when
+they are too big or already live somewhere else. Both travel with the request
+onto the work item.
 
 Approving a request creates a work item that carries its context, including a
 `requestId` back-reference. The team sets a **projected finish** date on the
@@ -50,8 +50,8 @@ open-request and in-progress cards. Completed work appears on the client's
 Updates tab, newest first, each opening to its details, comments and files.
 
 What a client can change inside a shared row is enforced by triggers, not the
-form: they may comment, attach links, tick their own to-dos and approve
-updates. They cannot move a projected finish date, change a status, approve
+form: they may comment, attach files and links, tick their own to-dos and
+approve updates. They cannot move a projected finish date, change a status, approve
 their own request, or post a message as the team.
 
 ## Strategy
@@ -72,6 +72,24 @@ between lists. Cards carry a title, notes, an optional scheduled date, links
 and comments. Deleting is team-only — it is the one destructive action, and
 RLS still pins every card to its own tenant, so neither side can add to or read
 another client's board.
+
+## Attachments
+
+Files uploaded to a card, or into a client's Files tab, are stored in the
+private `attachments` bucket in Supabase Storage, under
+`<client_id>/<kind>/<item_id>/`. The item itself only records the object path,
+the original filename, its size and its type.
+
+Nothing in the bucket is readable by URL alone. Every thumbnail, preview and
+download is a URL signed for the hour, so a link copied out of the portal stops
+working, and row-level security decides who can sign one at all: staff reach
+every folder, a client only its own. Clients can upload (their own requests)
+but never delete — removing a file is team-only, like every other destructive
+action here.
+
+Images, PDFs, video and audio open in a preview over the card; anything else
+downloads. Limit is 50 MB a file. Attachments added before this existed have a
+name and no stored file, and say so instead of offering a dead download.
 
 ## Portal access
 

@@ -352,6 +352,72 @@
     return { ok: true, writes: ops.length };
   }
 
+  // ---------- attachments ----------
+  // Files live in a private bucket, one folder per tenant, and the item only
+  // ever stores the object path. URLs are signed on demand and expire, so a
+  // link copied out of the portal is not a way around row-level security.
+
+  const BUCKET = 'attachments';
+  const MAX_BYTES = 50 * 1024 * 1024;
+  const SIGN_SECONDS = 3600;
+
+  // The display name is kept on the item; the object key is opaque. Spaces,
+  // slashes and non-ascii all travel badly through storage paths, and a
+  // predictable key would let one upload silently overwrite another.
+  function objectKey(name) {
+    const raw = String(name || '');
+    const dot = raw.lastIndexOf('.');
+    const ext = dot > 0
+      ? raw.slice(dot + 1).toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8)
+      : '';
+    const id = (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+    return ext ? id + '.' + ext : id;
+  }
+
+  // Returns the record the UI stores on the item's `files` array.
+  async function uploadAttachment(file, where) {
+    const w = where || {};
+    if (!file) throw new Error('No file was selected.');
+    if (file.size > MAX_BYTES) {
+      throw new Error('"' + file.name + '" is larger than the 50 MB limit.');
+    }
+    const path = [w.clientId || '_internal', w.kind || 'item', w.itemId || 'misc']
+      .join('/') + '/' + objectKey(file.name);
+    const { error } = await client().storage.from(BUCKET).upload(path, file, {
+      contentType: file.type || 'application/octet-stream',
+      upsert: false
+    });
+    if (error) throw error;
+    return {
+      id: path,
+      name: file.name,
+      path,
+      size: file.size,
+      mime: file.type || '',
+      ts: Date.now(),
+      by: (profile && (profile.name || profile.email)) || ''
+    };
+  }
+
+  async function signedUrl(path) {
+    if (!path) throw new Error('That attachment has no stored file.');
+    const { data, error } = await client().storage.from(BUCKET)
+      .createSignedUrl(path, SIGN_SECONDS);
+    if (error) throw error;
+    return data.signedUrl;
+  }
+
+  // The same signed URL, asking storage for Content-Disposition: attachment —
+  // which is what actually makes the browser save the file rather than
+  // navigate to it. Kept as a plain string op so a download can be started
+  // from inside the click that asked for it, using a URL signed earlier.
+  function downloadUrl(url, filename) {
+    return url + (url.indexOf('?') >= 0 ? '&' : '?')
+      + 'download=' + encodeURIComponent(filename || '');
+  }
+
   // ---------- admin actions ----------
   // Creating a login needs privileges the browser must not hold, so these are
   // thin calls onto SECURITY DEFINER functions that re-check is_admin() in the
@@ -393,6 +459,7 @@
 
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, sync,
+    uploadAttachment, signedUrl, downloadUrl, MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
