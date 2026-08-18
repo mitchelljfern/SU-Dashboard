@@ -57,7 +57,7 @@ their own request, or post a message as the team.
 ## Portal access
 
 A client is a tenant, not a single login. Clients add their own colleagues from
-the **Portal access** card on their dashboard — the tenant comes from the
+their **Team** tab — the tenant comes from the
 caller, so an invite can only ever land on their own portal. The team sees and
 manages the same list when editing a client, and admins can remove a member.
 Removal is deliberately one-way: it only accepts client accounts, never a team

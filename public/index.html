@@ -852,29 +852,6 @@
         </div>
 
         <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-          <div style="display:flex;flex-direction:column;gap:3px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Portal access</h3>
-            <div style="font-size:12px;color:var(--text-muted)">Anyone you add here can sign in and see this portal.</div>
-          </div>
-          <sc-for list="{{ portalPeople }}" as="pp" hint-placeholder-count="2">
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
-              <div style="flex:1;display:flex;flex-direction:column">
-                <span style="font-size:13.5px;color:var(--navy);font-weight:500">{{ pp.name }}</span>
-                <span style="font-size:11.5px;color:var(--text-muted)">{{ pp.email }}</span>
-              </div>
-              <sc-if value="{{ pp.isMe }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--text-muted)">You</span></sc-if>
-            </div>
-          </sc-for>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <input value="{{ dPmName }}" onChange="{{ onPmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            <input value="{{ dPmEmail }}" onChange="{{ onPmEmail }}" placeholder="colleague@company.com" style="flex:1;min-width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            <input value="{{ dPmPass }}" onChange="{{ onPmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
-          </div>
-          <div style="font-size:11.5px;color:var(--text-muted)">Ask Social Upgrades if you need someone removed.</div>
-        </div>
-
-        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Brand files</h3>
             <button onClick="{{ goFiles }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">View all files →</button>
@@ -1298,6 +1275,31 @@
             </div>
           </sc-if>
 
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pTeam }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Portal access</h3>
+            <div style="font-size:12px;color:var(--text-muted)">Anyone you add here can sign in and see this portal.</div>
+          </div>
+          <sc-for list="{{ portalPeople }}" as="pp" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
+              <div style="flex:1;display:flex;flex-direction:column">
+                <span style="font-size:13.5px;color:var(--navy);font-weight:500">{{ pp.name }}</span>
+                <span style="font-size:11.5px;color:var(--text-muted)">{{ pp.email }}</span>
+              </div>
+              <sc-if value="{{ pp.isMe }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--text-muted)">You</span></sc-if>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input value="{{ dPmName }}" onChange="{{ onPmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <input value="{{ dPmEmail }}" onChange="{{ onPmEmail }}" placeholder="colleague@company.com" style="flex:1;min-width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <input value="{{ dPmPass }}" onChange="{{ onPmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-muted)">Ask Social Upgrades if you need someone removed.</div>
         </div>
       </sc-if>
 
@@ -1825,7 +1827,7 @@ class Component extends DCLogic {
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -1856,8 +1858,9 @@ class Component extends DCLogic {
         this.setState({section:id,notifOpen:false,moreOpen:false}); },
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}};
     });
-    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team'],
-      home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+    const headings = isTeam
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team']}
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
@@ -2612,7 +2615,7 @@ class Component extends DCLogic {
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
-      pMessages:!isTeam&&secKey('messages'), pFiles:!isTeam&&secKey('files'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
+      pMessages:!isTeam&&secKey('messages'), pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
