@@ -148,6 +148,16 @@ behind it — otherwise an unread message sat unseen, since Messages is not amon
 the first four on either side. The sheet also holds the *Preview portal as*
 picker, so staff can choose which client portal to open without a desktop.
 
+The bar is an explicit four per side rather than "the first four sections", so
+Messages has a place on it and its unread count is visible without opening
+anything: Overview, Workboard, Requests, Messages for staff; Dashboard,
+Messages, Requests, To-Dos for a client. Clients and Updates move into More.
+
+One trap worth knowing: a card that is itself a `<button>` cannot contain a
+button. The parser closes the outer one early, which unbalances the surrounding
+`sc-if` and leaks whole sections onto other pages. Clickable cards that carry an
+action inside them are `<div>`s.
+
 Form fields are 16px on narrow screens. Below that, iOS zooms the page in when
 one is focused and does not zoom back out, which strands the user at a zoom
 level they have to pinch their way out of. Raising the fields fixes it without
@@ -179,6 +189,26 @@ creating the client and stored on `clients.businesses`.
 - **Hourly** — no plan. Staff log hours in the Time tab; the client's Billing
   tab shows the hours worked this month, their rate, the running total, and the
   date of the next invoice (the 1st). Previous months stay visible as history.
+
+### Retainer hours
+
+Hours on a retainer are counted when a finished item is **approved**, into the
+month it was approved in. The team sets an estimate when approving a request,
+records the hours it actually took when handing the item over (optional — blank
+means the estimate stands), and the client approves. Approving is what counts:
+`hoursApproved` and `approvedAt` are stamped on the work item, and the month's
+total is the sum over items approved in that month. Nothing resets on the 1st,
+and earlier months stay visible on the client's Billing tab.
+
+`clients.hours_used` is no longer read or written — it was a running total fed
+by a hardcoded 4-hour estimate on every approved request. The column is left in
+place; the figure shown is derived.
+
+A client approving their own work is only trustworthy because the trigger
+decides what approval means: the client may flip `approved` on an item that is
+in `review`, and nothing else. The status, the timestamps and the hours counted
+are stamped in Postgres from values already stored, so the number cannot be
+edited on its way through the browser.
 
 Hours live in `time_entries`. Any staff member can log them; a client can read
 its own but cannot create, edit or delete them, so the number behind a bill
