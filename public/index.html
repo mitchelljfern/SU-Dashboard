@@ -418,14 +418,23 @@
               <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
             </div>
             <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
-              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
                   <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
                 </div>
-              </button>
+                <sc-if value="{{ w.canSubmit }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;border-top:1px solid var(--border-hairline);padding-top:10px">
+                    <div style="flex:1;min-width:130px;font-size:11.5px;color:var(--text-muted);line-height:1.4">{{ w.submitNote }}</div>
+                    <button onClick="{{ w.submit }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ w.waiting }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border-hairline);padding-top:10px;width:100%">Waiting on the client to approve.</div>
+                </sc-if>
+              </div>
             </sc-for>
             <sc-if value="{{ noTeamProg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress.</div></sc-if>
           </div>
@@ -894,12 +903,6 @@
                   <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ w.urgencyStyle }}">{{ w.urgency }}</span></sc-if>
                   <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
                 </div>
-                <sc-if value="{{ w.needsSignoff }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;border-top:1px solid var(--border-hairline);padding-top:10px">
-                    <div style="flex:1;min-width:130px;font-size:12px;color:var(--text-muted);line-height:1.4">Finished — approve to count {{ w.signoffHours }} against this month.</div>
-                    <button onClick="{{ w.approve }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:8px 18px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Approve</button>
-                  </div>
-                </sc-if>
               </div>
             </sc-for>
             <sc-if value="{{ noProgCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress right now.</div></sc-if>
@@ -941,9 +944,12 @@
                     </sc-if>
                   </div>
                 </sc-for>
-                <div style="display:flex;gap:10px">
-                  <button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;padding:8px 20px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
-                  <button onClick="{{ u.openFb }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:8px 16px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Leave feedback</button>
+                <sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted);line-height:1.45">{{ u.hoursNote }}</div>
+                </sc-if>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:8px 20px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
+                  <button onClick="{{ u.openFb }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;color:var(--text-body);padding:8px 16px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Leave feedback</button>
                 </div>
               </div>
             </sc-for>
@@ -997,6 +1003,15 @@
           </div>
           <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
           <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details or examples" rows="2" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label style="border:1px solid var(--gray-200);background:#fff;border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
+            <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
+              <span style="display:inline-flex;align-items:center;gap:6px;background:var(--gray-100);border-radius:12px;padding:5px 10px;font-size:12px;color:var(--navy);max-width:100%">
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">{{ rf.name }}</span>
+                <button onClick="{{ rf.drop }}" title="Remove" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0;line-height:1" style-hover="color:#D8564E">×</button>
+              </span>
+            </sc-for>
+          </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link — Drive, Dropbox, anywhere" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
             <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
@@ -1613,7 +1628,26 @@
           </div>
           <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
             <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</label>
-            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Paste a share link from wherever the files already live — Google Drive, Dropbox, WeTransfer, Figma, anywhere. Add as many as you need.</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Attach files directly, or paste a share link from wherever they already live — Google Drive, Dropbox, WeTransfer, Figma, anywhere.</div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="border:1px solid var(--gray-200);background:#fff;border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
+              <span style="font-size:12px;color:var(--text-muted)">Up to 50 MB a file</span>
+            </div>
+            <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
+                <sc-if value="{{ rf.hasThumb }}" hint-placeholder-val="{{ false }}">
+                  <img sc-camel-src="{{ rf.thumb }}" alt="" style="width:32px;height:32px;min-width:32px;object-fit:cover;border-radius:8px;background:#fff">
+                </sc-if>
+                <sc-if value="{{ rf.showExt }}" hint-placeholder-val="{{ true }}">
+                  <div style="width:32px;height:32px;min-width:32px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px;border-radius:8px">{{ rf.ext }}</div>
+                </sc-if>
+                <div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:1px">
+                  <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rf.name }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ rf.meta }}</div>
+                </div>
+                <button onClick="{{ rf.drop }}" title="Remove from this request" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
+              </div>
+            </sc-for>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
               <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link (https://…)" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
               <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
@@ -2138,7 +2172,7 @@ class Component extends DCLogic {
       d:{...s2.d,detailDesc:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
-    const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production'];
+    const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production','Blog','Events'];
 
     // ===== client identity colours =====
     // A fixed categorical order, validated pair-by-pair (including for the
@@ -2301,6 +2335,9 @@ class Component extends DCLogic {
     // Picking the same file twice in a row has to fire onChange again, and it
     // only does if the input is cleared first.
     const takeFiles=e=>{ const input=e.target; const picked=Array.from(input.files||[]); input.value=''; return picked; };
+    // Held off state deliberately: two quick picks would otherwise race and
+    // mint two ids, scattering one request's files across two folders.
+    const reqDraftId=()=> this.__reqDraftId || (this.__reqDraftId=this.uid());
     const uploading=(S.uploading||0)>0;
 
     // ===== attachment preview =====
@@ -2701,24 +2738,36 @@ class Component extends DCLogic {
     // portal home dashboard
     const go=sec=>()=>this.setState({section:sec,moreOpen:false});
     const fileById=id=>{ const f=D.files.find(x=>x.id===id); return f? fileRow(f) : null; };
-    const homeApprovals=D.updates.filter(u=>u.clientId===client.id&&u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({
-      when:this.fmt(u.ts),text:u.text,files:(u.fileIds||[]).map(fileById).filter(Boolean),
+    const approvalUpdates=D.updates.filter(u=>u.clientId===client.id&&u.needsApproval&&!u.approved).map(u=>({
+      sortTs:u.ts, when:this.fmt(u.ts), text:u.text, files:(u.fileIds||[]).map(fileById).filter(Boolean),
+      hasHoursNote:false, hoursNote:'',
       open:openDetail('update',u.id), openFb:stopThen(openDetail('update',u.id)),
       approve:stopThen(()=>this.set(x=>{ const it=x.updates.find(y=>y.id===u.id); it.approved=true; this.logEv(x,u.clientId,cname(u.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }))}));
-    const stMap={queued:['gray','Queued'],progress:['green','In progress'],review:['blue','In review'],done:['blue','Done']};
-    const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
-    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&(w.status==='progress'||w.status==='review')).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
-      const willCount = Number(w.actualHours) || Number(w.hours) || 0;
-      return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
-        // Handed over and waiting on the client. Approving is what counts the
-        // hours, so the card says how many before it is pressed.
-        needsSignoff: w.status==='review',
-        signoffHours: willCount? willCount+(Number(w.actualHours)?' hours':' hours (estimated)') : 'no hours recorded',
-        approve: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
+    // Finished work the team has handed over. Approving is what counts the
+    // hours, so the card says how many before it is pressed.
+    const approvalWork=D.work.filter(w=>w.clientId===client.id&&w.status==='review').map(w=>{
+      const willCount=Number(w.actualHours)||Number(w.hours)||0;
+      const ts=w.approvalRequestedAt||w.ts;
+      return {sortTs:ts, when:this.fmt(ts), text:w.title,
+        files:(w.files||[]).map(f=>fileRow(f)),
+        hasHoursNote:true,
+        hoursNote: willCount
+          ? ('Approving counts '+willCount+(Number(w.actualHours)?' hours':' hours (estimated)')+' against this month.')
+          : 'No hours were recorded on this one.',
+        open:openDetail('work',w.id), openFb:stopThen(openDetail('work',w.id)),
+        approve:stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           markApproved(it);
           if(it.requestId){ const rq=x.requests.find(y=>y.id===it.requestId); if(rq) rq.status='done'; }
           this.logEv(x,it.clientId,cname(it.clientId)+' approved "'+it.title+'" ('
-            +(Number(it.hoursApproved)||0)+'h counted)'); return x; })),
+            +(Number(it.hoursApproved)||0)+'h counted)'); return x; }))};
+    });
+    const homeApprovals=approvalUpdates.concat(approvalWork).sort((a,b)=>b.sortTs-a.sortTs);
+    const stMap={queued:['gray','Queued'],progress:['green','In progress'],review:['blue','In review'],done:['blue','Done']};
+    const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
+    // Once the team hands an item over it belongs in Awaiting approval, not in
+    // the in-progress list — that is where the client already signs things off.
+    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&w.status==='progress').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+      return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
         dateBits(w.needBy,w.projectedFinish)); });
 
@@ -2895,7 +2944,21 @@ class Component extends DCLogic {
       }
     }
     const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
-    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
+    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
+      const [badgeStyle,statusLabel]=wBadge(w.status);
+      const willCount=Number(w.actualHours)||Number(w.hours)||0;
+      return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,
+        commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
+        // Handing an item to the client is the common move, so it does not
+        // need a trip to the Workboard.
+        canSubmit: w.status==='progress',
+        submitNote: willCount? ('Sends it to the client to approve — '+willCount+(Number(w.actualHours)?' hours recorded.':' hours estimated.'))
+                             : 'Sends it to the client to approve. No hours recorded yet.',
+        submit: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
+          it.status='review'; it.approvalRequestedAt=Date.now();
+          this.logEv(x,it.clientId,'Sent for approval: '+it.title); return x; })),
+        waiting: w.status==='review'};
+    });
     const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),dot:clientDot(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
     const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:m.who,when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
     // The tile opens the file when one is stored, and falls back to the Files
@@ -3482,14 +3545,31 @@ class Component extends DCLogic {
         this.setState(s=>({syncError:null,
           reqLinks:(s.reqLinks||[]).concat([{url:u,label:linkLabel(u)}]),
           d:{...s.d,reqLink:''}})); },
+      // Files can be attached before the request exists, so its id is minted
+      // when the first file is picked and reused on submit — that way the
+      // upload path already points at the request it belongs to.
+      onReqFile:e=>{
+        const picked=takeFiles(e); if(!picked.length) return;
+        const id=reqDraftId();
+        startUploads(picked, {clientId:client.id, kind:'requests', itemId:id}, meta=>{
+          this.setState(s2=>({reqFiles:(s2.reqFiles||[]).concat([meta])}));
+        });
+      },
+      reqFileLabel: uploading? 'Uploading\u2026' : '+ Attach a file',
+      reqFiles:(S.reqFiles||[]).map((f,i)=>Object.assign(fileRow(f),{
+        drop:()=>this.setState(s2=>({reqFiles:(s2.reqFiles||[]).filter((_,j)=>j!==i)}))})),
+      hasReqFiles:(S.reqFiles||[]).length>0,
       submitReq:()=>{ const title=(d.reqTitle||'').trim(); if(!title) return;
         const links=(S.reqLinks||[]).slice();
-        this.set(x=>{ x.requests.unshift({id:this.uid(),clientId:client.id,title,desc:(d.reqDesc||'').trim(),
+        const files=(S.reqFiles||[]).slice();
+        const id=reqDraftId();
+        this.set(x=>{ x.requests.unshift({id,clientId:client.id,title,desc:(d.reqDesc||'').trim(),
           status:'new',ts:Date.now(),category:d.reqCat||CATS[0],
           urgency:d.reqUrgency||'Normal', needBy:d.reqNeedBy||'', links,
-          comments:[],files:[]});
+          comments:[],files});
           this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
-        this.setState(s=>({reqLinks:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
+        this.__reqDraftId=null;
+        this.setState(s=>({reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, noMyRequests:myRequests.length===0,
       clientTodos, noClientTodos:clientTodos.length===0,
       completedWork, noCompletedWork,

@@ -39,9 +39,14 @@ update public.profiles set is_accountant = true where email = 'books@example.com
 
 Clients submit requests from their dashboard or the Requests tab, with a
 category, urgency, an optional "need completed by" date, and attachments. Files
-can be uploaded directly, or shared by link (Dropbox, Drive, WeTransfer) when
-they are too big or already live somewhere else. Both travel with the request
-onto the work item.
+can be uploaded directly on the form, or shared by link (Dropbox, Drive,
+WeTransfer) when they are too big or already live somewhere else. Both travel
+with the request onto the work item.
+
+A file can be attached before the request exists, so the request's id is minted
+when the first file is picked and reused on submit — the upload already sits in
+the folder belonging to the request it becomes, rather than somewhere that has
+to be reconciled later.
 
 Approving a request creates a work item that carries its context — attachments
 and links included — through a `requestId` back-reference. Anything the team
@@ -195,7 +200,11 @@ creating the client and stored on `clients.businesses`.
 Hours on a retainer are counted when a finished item is **approved**, into the
 month it was approved in. The team sets an estimate when approving a request,
 records the hours it actually took when handing the item over (optional — blank
-means the estimate stands), and the client approves. Approving is what counts:
+means the estimate stands), and hands it to the client with **Submit for
+approval** — from the Workboard card or straight from the Overview. It then
+leaves the client's *In progress* list and appears under **Awaiting approval**
+alongside updates, which is where they sign work off. Approving is what counts
+the hours, and the card says how many before it is pressed. Approving is what counts:
 `hoursApproved` and `approvedAt` are stamped on the work item, and the month's
 total is the sum over items approved in that month. Nothing resets on the 1st,
 and earlier months stay visible on the client's Billing tab.
