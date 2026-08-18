@@ -51,10 +51,21 @@ Workboard card or in the item's detail view, and the client sees it on their
 open-request and in-progress cards. Completed work appears on the client's
 Updates tab, newest first, each opening to its details, comments and files.
 
+Every card carries a **description** — what the work is, in plain words —
+editable from the card by either side. A request's submitted details land
+there, so the client's own wording is the starting point rather than a note
+filed somewhere else. It is held as a draft with an explicit Save, so typing
+does not write a row per keystroke.
+
 What a client can change inside a shared row is enforced by triggers, not the
-form: they may comment, attach files and links, tick their own to-dos and
-approve updates. They cannot move a projected finish date, change a status, approve
+form: they may comment, edit the description, attach files and links, tick
+their own to-dos and approve updates. They cannot move a projected finish date, change a status, approve
 their own request, or post a message as the team.
+
+Comments take more than one line: the box is a textarea (Enter for a new line,
+⌘/Ctrl+Enter to send) and the rendered comment keeps the breaks that were typed
+into it. Long unbroken text — a pasted URL, usually — wraps rather than running
+off the side of a phone.
 
 ## Strategy
 
