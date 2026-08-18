@@ -24,6 +24,10 @@
     billingType: 'billing_type', hourlyRate: 'hourly_rate', color: 'color'
   };
 
+  // Per-reader marker for message threads. Composite key, so the app-side id
+  // is synthesised from both halves.
+  const READ_COLS = { profileId: 'profile_id', clientId: 'client_id', lastReadTs: 'last_read_ts' };
+
   // Hours worked for a client, billed monthly for 'hourly' clients.
   const TIME_COLS = {
     clientId: 'client_id', profileId: 'profile_id', entryDate: 'entry_date',
@@ -35,6 +39,12 @@
   const TEAM_COLS = {
     name: 'name', email: 'email', isAdmin: 'is_admin',
     isAccountant: 'is_accountant', active: 'active'
+  };
+
+  // Everyone with a login, team and client alike, for the member lists.
+  const PEOPLE_COLS = {
+    name: 'name', email: 'email', role: 'role', clientId: 'client_id',
+    isAdmin: 'is_admin', isAccountant: 'is_accountant', active: 'active'
   };
 
   // Rates are admin-only, so they are a separate table with their own policy;
@@ -124,6 +134,16 @@
   const teamFromRow = r => mapFromRow(r, TEAM_COLS);
   const teamToRow   = t => mapToRow(t, TEAM_COLS);
 
+  const readFromRow = r => ({
+    id: r.profile_id + ':' + r.client_id,
+    profileId: r.profile_id, clientId: r.client_id,
+    lastReadTs: Number(r.last_read_ts || 0)
+  });
+  const readToRow = r => ({
+    profile_id: r.profileId, client_id: r.clientId,
+    last_read_ts: Number(r.lastReadTs) || 0
+  });
+
   const timeFromRow = r => mapFromRow(r, TIME_COLS);
   const timeToRow   = t => mapToRow(t, TIME_COLS);
 
@@ -199,7 +219,11 @@
       // Hours worked. Staff see every client's; a client sees only its own.
       db.from('time_entries').select('*').order('entry_date', { ascending: false }),
       // Pay rates. Admin gets everyone, a member gets only their own row.
-      db.from('team_rates').select('*')
+      db.from('team_rates').select('*'),
+      // Everyone who can sign in, so both sides can list portal members.
+      db.from('profiles').select('*'),
+      // This reader's own message markers.
+      db.from('message_reads').select('*')
     ];
     for (const t of TABLES) {
       jobs.push(db.from(t).select('*').order('ts', { ascending: ORDER[t] === 'asc' }));
@@ -216,7 +240,9 @@
     data.payments = results[3].data.map(payFromRow);
     data.time = results[4].data.map(timeFromRow);
     data.rates = results[5].data.map(rateFromRow);
-    TABLES.forEach((t, i) => { data[t] = results[i + 6].data.map(fromRow); });
+    data.people = results[6].data.map(r => mapFromRow(r, PEOPLE_COLS));
+    data.reads = results[7].data.map(readFromRow);
+    TABLES.forEach((t, i) => { data[t] = results[i + 8].data.map(fromRow); });
 
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
@@ -285,6 +311,15 @@
       if (deletes.length) ops.push(db.from('time_entries').delete().in('id', deletes));
     }
 
+    // message read markers
+    {
+      const { upserts } = diffList(prev.reads, next.reads);
+      if (upserts.length) {
+        ops.push(db.from('message_reads')
+          .upsert(upserts.map(readToRow), { onConflict: 'profile_id,client_id' }));
+      }
+    }
+
     // pay rates (admin-only writes; RLS rejects anyone else)
     {
       const { upserts } = diffList(prev.rates, next.rates);
@@ -343,9 +378,22 @@
     if (error) throw error;
   }
 
+  async function invitePortalMember(email, password, name) {
+    const { error } = await client().rpc('client_invite_member', {
+      p_email: String(email || '').trim().toLowerCase(),
+      p_password: password, p_name: name || ''
+    });
+    if (error) throw error;
+  }
+
+  async function deleteUser(userId) {
+    const { error } = await client().rpc('admin_delete_user', { p_user: userId });
+    if (error) throw error;
+  }
+
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, sync,
-    createClientLogin, createTeamMember,
+    createClientLogin, createTeamMember, invitePortalMember, deleteUser,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
   };

@@ -54,6 +54,24 @@ form: they may comment, attach links, tick their own to-dos and approve
 updates. They cannot move a projected finish date, change a status, approve
 their own request, or post a message as the team.
 
+## Portal access
+
+A client is a tenant, not a single login. Clients add their own colleagues from
+the **Portal access** card on their dashboard — the tenant comes from the
+caller, so an invite can only ever land on their own portal. The team sees and
+manages the same list when editing a client, and admins can remove a member.
+Removal is deliberately one-way: it only accepts client accounts, never a team
+account and never your own, so it cannot be used to remove a colleague or lock
+the owner out.
+
+## Messages
+
+Unread counts are per reader, held in `message_reads` — two people on the same
+board track their own unread independently, and a marker is only ever readable
+or writable by the person it belongs to. Only the *other* side's messages count
+as unread, and opening a board (or switching thread) is what marks it read.
+The count shows on the Messages menu item and again per thread.
+
 ## Clients and businesses
 
 A client is the tenant and the unit of isolation. A client may cover several

@@ -45,11 +45,11 @@
   #su-login label{color:rgba(255,255,255,.7);font-size:12px;font-weight:600;
     letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:block}
   #su-login input{width:100%;box-sizing:border-box;padding:11px 13px;font-size:14px;
-    border-radius:6px;border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;border:1px solid rgba(255,255,255,.18);
     background:rgba(255,255,255,.06);color:#fff;outline:none}
   #su-login input:focus{border-color:#4F8DF5;background:rgba(255,255,255,.1)}
   #su-login button{margin-top:4px;padding:12px 16px;font-size:14px;font-weight:600;
-    border:none;border-radius:999px;background:#3BB273;color:#fff;cursor:pointer}
+    border:none;border-radius:12px;background:#3BB273;color:#fff;cursor:pointer}
   #su-login button:hover:not(:disabled){background:#33a066}
   #su-login-msg{min-height:18px;font-size:13px;visibility:hidden;line-height:1.4}
 </style>
@@ -120,23 +120,23 @@
       <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
         <button onClick="{{ n.select }}" style="{{ n.style }}" style-hover="background:rgba(255,255,255,.08)">
           <span>{{ n.label }}</span>
-          <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 8px">{{ n.badge }}</span></sc-if>
+          <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 8px">{{ n.badge }}</span></sc-if>
         </button>
       </sc-for>
     </nav>
     <div style="padding:16px 22px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:10px">
       <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}">
         <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600">Preview portal as</div>
-        <select value="{{ viewClient }}" onChange="{{ onViewClient }}" style="background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:8px 10px;font-size:13px">
+        <select value="{{ viewClient }}" onChange="{{ onViewClient }}" style="background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 10px;font-size:13px">
           <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
         </select>
-        <button onClick="{{ goClient }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Open client portal</button>
+        <button onClick="{{ goClient }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Open client portal</button>
       </sc-if>
       <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}">
-        <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
+        <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
       </sc-if>
       <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ userName }}</strong></div>
-      <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:999px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
+      <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
       <div style="font-size:9px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:500">Based in the United States · Since 2014</div>
     </div>
   </aside>
@@ -148,22 +148,22 @@
   </div>
   <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ toggleMore }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:70"></div>
-    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:14px 14px 0 0">
+    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:12px 14px 0 0">
       <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.5);padding-bottom:10px">{{ hubLabel }}</div>
       <sc-for list="{{ sheetItems }}" as="n" hint-placeholder-count="7">
         <button onClick="{{ n.select }}" style="{{ n.style }}">{{ n.label }}</button>
       </sc-for>
       <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:12px">
-        <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button></sc-if>
-        <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
-        <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:999px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
+        <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}"><button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button></sc-if>
+        <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
+        <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
       </div>
     </div>
   </sc-if>
   <main class="su-main" style="flex:1;overflow-y:auto;padding:36px 44px 72px;position:relative">
     <div style="max-width:1720px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
       <sc-if value="{{ syncError }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#FDECEA;border:1px solid #F3B9B4;color:#8E2B24;border-radius:6px;padding:12px 16px;font-size:13.5px;line-height:1.45">{{ syncError }}</div>
+        <div style="background:#FDECEA;border:1px solid #F3B9B4;color:#8E2B24;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45">{{ syncError }}</div>
       </sc-if>
       <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
         <div style="display:flex;flex-direction:column;gap:5px">
@@ -171,12 +171,12 @@
           <h1 style="font-family:var(--font-display);font-weight:800;font-size:32px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);line-height:1.1;margin:0">{{ heading }}</h1>
         </div>
         <div style="position:relative">
-          <button onClick="{{ toggleNotif }}" style="background:#fff;border:1px solid var(--border-card);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:8px" style-hover="background:var(--gray-100)">
+          <button onClick="{{ toggleNotif }}" style="background:#fff;border:1px solid var(--border-card);border-radius:12px;padding:9px 18px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:8px" style-hover="background:var(--gray-100)">
             <span>Notifications</span>
-            <sc-if value="{{ unseen }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 8px">{{ unseen }}</span></sc-if>
+            <sc-if value="{{ unseen }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 8px">{{ unseen }}</span></sc-if>
           </button>
           <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
-            <div style="position:absolute;right:0;top:44px;width:340px;background:#fff;border:1px solid var(--border-card);box-shadow:0 16px 40px rgba(15,22,51,.14);z-index:40;display:flex;flex-direction:column">
+            <div style="position:absolute;right:0;top:44px;width:340px;background:#fff;border:1px solid var(--border-card);box-shadow:0 16px 40px rgba(15,22,51,.14);z-index:40;display:flex;flex-direction:column;border-radius:12px">
               <div style="padding:12px 16px;border-bottom:1px solid var(--border-hairline);font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Notifications</div>
               <div style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column">
                 <sc-for list="{{ notifs }}" as="ev" hint-placeholder-count="4">
@@ -224,7 +224,7 @@
             <sc-if value="{{ canSetProjected }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;align-items:center;gap:10px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
-                <input value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:7px 10px;font-size:13px">
+                <input value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
               </div>
             </sc-if>
 
@@ -233,7 +233,7 @@
                 <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Shared links</div>
                 <sc-for list="{{ detailLinks }}" as="dl" hint-placeholder-count="1">
                   <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px">
-                    <span style="background:#fff;color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ dl.label }}</span>
+                    <span style="background:#fff;color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ dl.label }}</span>
                     <a href="{{ dl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ dl.url }}</a>
                   </div>
                 </sc-for>
@@ -248,7 +248,13 @@
               </div>
             </sc-for>
             <sc-if value="{{ detailCanAttach }}" hint-placeholder-val="{{ false }}">
-              <label style="align-self:flex-start;border:1px solid var(--gray-200);padding:8px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" onChange="{{ onAttachFile }}" style="display:none">+ Attach a file</label>
+              <label style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:12px;padding:8px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" onChange="{{ onAttachFile }}" style="display:none">+ Attach a file</label>
+            </sc-if>
+            <sc-if value="{{ detailCanLink }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <input value="{{ dDetailLink }}" onChange="{{ onDetailLink }}" placeholder="Paste a Dropbox or Drive link" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <button onClick="{{ addDetailLink }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
+              </div>
             </sc-if>
             <sc-if value="{{ detailApprove }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ detailApproveFn }}" style="align-self:flex-start;background:var(--green);color:#fff;border:none;padding:9px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
@@ -268,14 +274,14 @@
                   <span style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ c.who }} · {{ c.when }}</span>
                   <span style="flex:1"></span>
                   <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen — on it</span></sc-if>
-                  <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
+                  <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
                 </div>
                 <div style="font-size:14px;color:var(--text-body);line-height:1.5">{{ c.text }}</div>
               </div>
             </sc-for>
             <sc-if value="{{ noDetailComments }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted);padding:4px 0">No comments yet.</div></sc-if>
             <div style="display:flex;gap:8px;margin-top:10px">
-              <input value="{{ dComment }}" onChange="{{ onComment }}" placeholder="Add a comment" style="flex:1;min-width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+              <input value="{{ dComment }}" onChange="{{ onComment }}" placeholder="Add a comment" style="flex:1;min-width:120px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px">
               <button onClick="{{ sendComment }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
             </div>
           </div>
@@ -290,7 +296,7 @@
               <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
             </div>
             <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
-              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
@@ -307,7 +313,7 @@
               <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
             </div>
             <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
-              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
@@ -323,7 +329,7 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval ({{ tApprCount }})</h3>
             </div>
             <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
-              <button onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+              <button onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.when }}</div></div>
                 <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
               </button>
@@ -333,7 +339,7 @@
         </div>
         <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:20px">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team to-dos</h3>
               <div style="display:flex;flex-direction:column">
                 <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
@@ -346,25 +352,25 @@
                 </sc-for>
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="Add a to-do" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="Add a to-do" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <option value="">Internal</option>
                   <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
                 </select>
-                <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <option value="team">For team</option>
                   <option value="client">For client</option>
                 </select>
-                <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
                 </select>
                 <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
               </div>
             </div>
-            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">My to-dos</h3>
-                <span style="background:var(--blue);color:#fff;border-radius:999px;font-size:11px;font-weight:600;padding:1px 9px">{{ myTodoCount }}</span>
+                <span style="background:var(--blue);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 9px">{{ myTodoCount }}</span>
               </div>
               <sc-if value="{{ noMyTodos }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13.5px;color:var(--text-muted)">Nothing assigned to you right now.</div>
@@ -377,22 +383,22 @@
                 </div>
               </sc-for>
             </div>
-            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Post a client update</h3>
               <div style="display:flex;gap:8px">
-                <select value="{{ dUpdClient }}" onChange="{{ onUpdClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dUpdClient }}" onChange="{{ onUpdClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
                 </select>
                 <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-body);cursor:pointer"><input type="checkbox" checked="{{ dUpdApproval }}" onChange="{{ onUpdApproval }}">Needs client approval</label>
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <input value="{{ dUpdText }}" onChange="{{ onUpdText }}" placeholder="What did we ship or work on?" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dUpdText }}" onChange="{{ onUpdText }}" placeholder="What did we ship or work on?" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                 <button onClick="{{ postUpdate }}" style="background:var(--grad-brand);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.1)">Post</button>
               </div>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:20px">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:6px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Messages</h3>
               <sc-for list="{{ lastMsgs }}" as="lm" hint-placeholder-count="2">
                 <button onClick="{{ lm.open }}" style="text-align:left;background:none;border:none;border-bottom:1px solid var(--border-hairline);padding:9px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;width:100%" style-hover="background:var(--gray-100)">
@@ -403,7 +409,7 @@
                 </button>
               </sc-for>
             </div>
-          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Activity</h3>
             <div style="display:flex;flex-direction:column">
               <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
@@ -422,12 +428,12 @@
       </sc-if>
 
       <sc-if value="{{ secBoard }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border:1px solid var(--border-card);padding:18px 22px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input value="{{ dWork }}" onChange="{{ onWork }}" placeholder="Add a work item" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-          <select value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:18px 22px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-radius:12px">
+          <input value="{{ dWork }}" onChange="{{ onWork }}" placeholder="Add a work item" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+          <select value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
             <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
           </select>
-          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 10px;font-size:13px">
+          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13px">
           <button onClick="{{ addWork }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to queue</button>
         </div>
         <div class="su-cols" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
@@ -437,7 +443,7 @@
               <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ boardReqCount }}</div>
             </div>
             <sc-for list="{{ boardReqs }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid #D68F2E;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+              <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid #D68F2E;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border-radius:12px">
                 <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="display:flex;gap:6px">
@@ -454,7 +460,7 @@
                 <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
               </div>
               <sc-for list="{{ col.items }}" as="w" hint-placeholder-count="2">
-                <div style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+                <div onClick="{{ w.openComments }}" style="background:#fff;border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.12)">
                   <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span></span>
@@ -470,7 +476,7 @@
                        and in-progress cards. -->
                   <div style="display:flex;flex-direction:column;gap:3px">
                     <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
-                    <input value="{{ w.projected }}" onChange="{{ w.onProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:5px 8px;font-size:12px;width:100%;box-sizing:border-box">
+                    <input value="{{ w.projected }}" onChange="{{ w.onProjected }}" onClick="{{ swallow }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:5px 8px;font-size:12px;width:100%;box-sizing:border-box">
                   </div>
                   <button onClick="{{ w.openComments }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">{{ w.commentsLabel }}</button>
                   <div style="display:flex;gap:6px">
@@ -482,11 +488,11 @@
             </div>
           </sc-for>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Done ({{ doneCount }})</h3>
           <sc-for list="{{ doneItems }}" as="dn" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
-              <span style="width:18px;height:18px;min-width:18px;background:var(--check);color:#fff;font-size:12px;line-height:18px;text-align:center;border-radius:3px">✓</span>
+              <span style="width:18px;height:18px;min-width:18px;background:var(--check);color:#fff;font-size:12px;line-height:18px;text-align:center;border-radius:12px">✓</span>
               <div style="flex:1;font-size:14px;color:var(--text-body)">{{ dn.title }}</div>
               <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ dn.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ dn.clientName }}</span></span>
               <span style="font-size:12px;color:var(--text-muted)">{{ dn.hoursLabel }}</span>
@@ -501,56 +507,56 @@
           <button onClick="{{ toggleNewClient }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">+ New client</button>
         </div>
         <sc-if value="{{ newClientOpen }}" hint-placeholder-val="{{ true }}">
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:16px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">New client</h3>
             <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Client name</label>
-                <input value="{{ dNewClientName }}" onChange="{{ onNewClientName }}" placeholder="Double Ops Inc" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientName }}" onChange="{{ onNewClientName }}" placeholder="Double Ops Inc" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Domain</label>
-                <input value="{{ dNewClientDomain }}" onChange="{{ onNewClientDomain }}" placeholder="doubleops.com" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientDomain }}" onChange="{{ onNewClientDomain }}" placeholder="doubleops.com" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label>
-                <input value="{{ dNewClientService }}" onChange="{{ onNewClientService }}" placeholder="Web platform + marketing" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientService }}" onChange="{{ onNewClientService }}" placeholder="Web platform + marketing" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
-                <select value="{{ dNewClientBilling }}" onChange="{{ onNewClientBilling }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dNewClientBilling }}" onChange="{{ onNewClientBilling }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <option value="retainer">Monthly plan</option>
                   <option value="hourly">Hourly · custom invoices</option>
                 </select>
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
-                <input value="{{ dNewClientRate }}" onChange="{{ onNewClientRate }}" type="number" placeholder="0" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientRate }}" onChange="{{ onNewClientRate }}" type="number" placeholder="0" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label>
-                <input value="{{ dNewClientPlan }}" onChange="{{ onNewClientPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientPlan }}" onChange="{{ onNewClientPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label>
-                <input value="{{ dNewClientPrice }}" onChange="{{ onNewClientPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientPrice }}" onChange="{{ onNewClientPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label>
-                <input value="{{ dNewClientHours }}" onChange="{{ onNewClientHours }}" type="number" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientHours }}" onChange="{{ onNewClientHours }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px">
               <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Additional businesses (comma separated)</label>
-              <input value="{{ dNewClientBrands }}" onChange="{{ onNewClientBrands }}" placeholder="Bravo Boxing" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dNewClientBrands }}" onChange="{{ onNewClientBrands }}" placeholder="Bravo Boxing" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               <div style="font-size:12px;color:var(--text-muted)">Extra brands run under the same umbrella account, so one login covers them all.</div>
             </div>
             <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:12px">
               <div style="font-size:12px;color:var(--text-muted)">Optional — create the client's portal login now.</div>
               <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
-                <input value="{{ dNewClientContact }}" onChange="{{ onNewClientContact }}" placeholder="Contact name" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                <input value="{{ dNewClientEmail }}" onChange="{{ onNewClientEmail }}" placeholder="chris@doubleops.com" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                <input value="{{ dNewClientPass }}" onChange="{{ onNewClientPass }}" type="password" placeholder="Password (12+ chars)" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientContact }}" onChange="{{ onNewClientContact }}" placeholder="Contact name" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientEmail }}" onChange="{{ onNewClientEmail }}" placeholder="chris@doubleops.com" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <input value="{{ dNewClientPass }}" onChange="{{ onNewClientPass }}" type="password" placeholder="Password (12+ chars)" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
             </div>
             <div style="display:flex;gap:10px">
@@ -561,17 +567,82 @@
         </sc-if>
         <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px">
           <sc-for list="{{ clientCards }}" as="c" hint-placeholder-count="2">
-            <div style="background:#fff;border:1px solid var(--border-card);border-top:4px solid {{ c.accent }};padding:24px;display:flex;flex-direction:column;gap:14px">
+            <div style="background:#fff;border:1px solid var(--border-card);border-top:4px solid {{ c.accent }};padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
                 <div style="display:flex;flex-direction:column;gap:2px">
                   <div style="display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)"><span style="{{ c.dot }}"></span>{{ c.name }}</div>
                   <div style="font-size:12px;color:var(--text-muted)">{{ c.domain }} · {{ c.service }}</div>
                 </div>
-                <span style="background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ c.plan }}</span>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:12px">{{ c.plan }}</span>
+                  <button onClick="{{ c.startEdit }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Edit</button>
+                </div>
               </div>
+
+              <sc-if value="{{ c.editing }}" hint-placeholder-val="{{ false }}">
+                <div style="background:var(--gray-100);border:1px solid var(--border-hairline);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+                  <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Name</label><input value="{{ ecName }}" onChange="{{ onEcName }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Domain</label><input value="{{ ecDomain }}" onChange="{{ onEcDomain }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label><input value="{{ ecService }}" onChange="{{ onEcService }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label><input value="{{ ecPlan }}" onChange="{{ onEcPlan }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label><input value="{{ ecPrice }}" onChange="{{ onEcPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
+                      <select value="{{ ecBillingType }}" onChange="{{ onEcBillingType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:#fff">
+                        <option value="retainer">Monthly plan</option><option value="hourly">Hourly</option>
+                      </select></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label><input value="{{ ecHourlyRate }}" onChange="{{ onEcHourlyRate }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours used</label><input value="{{ ecHoursUsed }}" onChange="{{ onEcHoursUsed }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label><input value="{{ ecHoursTotal }}" onChange="{{ onEcHoursTotal }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Businesses (comma separated)</label>
+                    <input value="{{ ecBrands }}" onChange="{{ onEcBrands }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Colour</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                      <sc-for list="{{ colorChoices }}" as="cc" hint-placeholder-count="8">
+                        <button onClick="{{ cc.set }}" style="{{ cc.style }}"></button>
+                      </sc-for>
+                    </div>
+                  </div>
+
+                  <div style="border-top:1px solid var(--border-hairline);padding-top:12px;display:flex;flex-direction:column;gap:8px">
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Portal members</label>
+                    <sc-if value="{{ c.noMembers }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:12.5px;color:var(--text-muted)">Nobody can sign in to this portal yet.</div>
+                    </sc-if>
+                    <sc-for list="{{ c.members }}" as="pm" hint-placeholder-count="2">
+                      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-hairline)">
+                        <div style="flex:1;display:flex;flex-direction:column">
+                          <span style="font-size:13px;color:var(--navy);font-weight:500">{{ pm.name }}</span>
+                          <span style="font-size:11.5px;color:var(--text-muted)">{{ pm.email }}</span>
+                        </div>
+                        <sc-if value="{{ pm.canRemove }}" hint-placeholder-val="{{ true }}">
+                          <button onClick="{{ pm.remove }}" style="background:#fff;border:1px solid #D8564E;border-radius:12px;color:#a8352d;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{ canManageMembers }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <input value="{{ dCmName }}" onChange="{{ onCmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                        <input value="{{ dCmEmail }}" onChange="{{ onCmEmail }}" placeholder="email@client.com" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                        <input value="{{ dCmPass }}" onChange="{{ onCmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                        <button onClick="{{ addClientMember }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer">Add</button>
+                      </div>
+                    </sc-if>
+                  </div>
+
+                  <div style="display:flex;gap:10px;border-top:1px solid var(--border-hairline);padding-top:12px">
+                    <button onClick="{{ saveClientEdit }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
+                    <button onClick="{{ cancelClientEdit }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
+                  </div>
+                </div>
+              </sc-if>
               <div style="display:flex;flex-direction:column;gap:6px">
                 <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours</span><span>{{ c.hoursLabel }}</span></div>
-                <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ c.barStyle }}"></div></div>
+                <div style="height:6px;background:var(--gray-200);border-radius:12px;overflow:hidden"><div style="{{ c.barStyle }}"></div></div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
                 <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ c.openWork }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">In progress</span></div>
@@ -587,10 +658,10 @@
 
       <sc-if value="{{ secRequests }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:20px">
-          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Awaiting review</h3>
             <sc-for list="{{ newRequests }}" as="r" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+              <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:14px;padding:12px 6px;border-bottom:1px solid var(--border-hairline);border-radius:12px;cursor:pointer" style-hover="background:var(--gray-100)">
                 <div style="flex:1;display:flex;flex-direction:column;gap:2px">
                   <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ r.title }}</div>
                   <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:12px;color:var(--text-muted)">{{ r.clientName }} · {{ r.when }}</div></div>
@@ -602,7 +673,7 @@
             </sc-for>
             <sc-if value="{{ noNewRequests }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
           </div>
-          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">History</h3>
             <sc-for list="{{ pastRequests }}" as="r" hint-placeholder-count="3">
               <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
@@ -616,10 +687,14 @@
       </sc-if>
 
       <sc-if value="{{ secMessages }}" hint-placeholder-val="{{ false }}">
-        <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:#fff;border:1px solid var(--border-card);min-height:480px">
+        <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:#fff;border:1px solid var(--border-card);min-height:480px;border-radius:12px">
           <div class="su-tabs" style="border-right:1px solid var(--border-hairline);display:flex;flex-direction:column;padding:12px 0">
             <sc-for list="{{ msgTabs }}" as="tab" hint-placeholder-count="2">
-              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)"><span style="{{ tab.dot }}"></span>{{ tab.name }}</button>
+              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)">
+                <span style="{{ tab.dot }}"></span>
+                <span style="{{ tab.nameStyle }}">{{ tab.name }}</span>
+                <sc-if value="{{ tab.unread }}" hint-placeholder-val="{{ 2 }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 8px">{{ tab.unread }}</span></sc-if>
+              </button>
             </sc-for>
           </div>
           <div style="display:flex;flex-direction:column">
@@ -634,7 +709,7 @@
               </sc-for>
             </div>
             <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
-              <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+              <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}…" style="flex:1;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px">
               <button onClick="{{ sendMsg }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
             </div>
           </div>
@@ -649,7 +724,7 @@
               <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
             </div>
             <sc-for list="{{ homeReqCards }}" as="r" hint-placeholder-count="2">
-              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
@@ -672,7 +747,7 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ progCount }})</h3>
             </div>
             <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
-              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <button onClick="{{ w.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <sc-if value="{{ w.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ w.projected }}</div>
@@ -695,7 +770,7 @@
               <button onClick="{{ goUpdates }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All updates →</button>
             </div>
             <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
-              <div onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+              <div onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
                 <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
                 <div style="font-size:14px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
                 <sc-for list="{{ u.files }}" as="f" hint-placeholder-count="0">
@@ -715,7 +790,7 @@
           </div>
         </div>
         <div class="su-half" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ todosTitle }}</h3>
                 <button onClick="{{ goTodos }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
@@ -728,7 +803,7 @@
               </sc-for>
               <sc-if value="{{ noClientTodos }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing needed from you.</div></sc-if>
             </div>
-            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Latest messages</h3>
                 <button onClick="{{ goMessages }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Open board →</button>
@@ -742,48 +817,71 @@
             </div>
         </div>
 
-        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Submit a request</h3>
             <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All requests →</button>
           </div>
           <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-            <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+            <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:#fff">
               <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
             </select>
-            <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+            <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:#fff">
               <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
             </select>
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by</label>
-              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
             </div>
           </div>
-          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px">
-          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details or examples" rows="2" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
+          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details or examples" rows="2" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <a href="{{ dropboxUrl }}" target="_blank" rel="noopener noreferrer" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;text-decoration:none" style-hover="background:rgba(15,22,51,.06)">Open Dropbox ↗</a>
-            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste a file link" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste a file link" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
             <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
           </div>
           <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="1">
             <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-hairline)">
-              <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
+              <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
               <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
               <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
             </div>
           </sc-for>
-          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:999px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#000">Submit request</button>
+          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#000">Submit request</button>
         </div>
 
-        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Portal access</h3>
+            <div style="font-size:12px;color:var(--text-muted)">Anyone you add here can sign in and see this portal.</div>
+          </div>
+          <sc-for list="{{ portalPeople }}" as="pp" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
+              <div style="flex:1;display:flex;flex-direction:column">
+                <span style="font-size:13.5px;color:var(--navy);font-weight:500">{{ pp.name }}</span>
+                <span style="font-size:11.5px;color:var(--text-muted)">{{ pp.email }}</span>
+              </div>
+              <sc-if value="{{ pp.isMe }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--text-muted)">You</span></sc-if>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input value="{{ dPmName }}" onChange="{{ onPmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <input value="{{ dPmEmail }}" onChange="{{ onPmEmail }}" placeholder="colleague@company.com" style="flex:1;min-width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <input value="{{ dPmPass }}" onChange="{{ onPmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-muted)">Ask Social Upgrades if you need someone removed.</div>
+        </div>
+
+        <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Brand files</h3>
             <button onClick="{{ goFiles }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">View all files →</button>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap">
             <sc-for list="{{ brandFiles }}" as="f" hint-placeholder-count="3">
-              <button onClick="{{ goFiles }}" style="width:150px;background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;cursor:pointer;text-align:left" style-hover="border-color:var(--navy)">
+              <button onClick="{{ goFiles }}" style="width:150px;background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;cursor:pointer;text-align:left;border-radius:12px" style-hover="border-color:var(--navy)">
                 <div style="width:34px;height:34px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:10px">{{ f.ext }}</div>
                 <div style="font-size:12.5px;font-weight:500;color:var(--navy);line-height:1.35">{{ f.name }}</div>
                 <div style="font-size:11px;color:var(--text-muted)">{{ f.size }}</div>
@@ -796,18 +894,18 @@
       <sc-if value="{{ secTime }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:18px">
 
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
             <div style="display:flex;flex-direction:column;gap:3px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Log hours</h3>
               <div style="font-size:12px;color:var(--text-muted)">Hourly clients see these hours and their running bill in their own portal.</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <select value="{{ dTimeClient }}" onChange="{{ onTimeClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+              <select value="{{ dTimeClient }}" onChange="{{ onTimeClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                 <sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
               </select>
-              <input value="{{ dTimeDate }}" onChange="{{ onTimeDate }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-              <input value="{{ dTimeHours }}" onChange="{{ onTimeHours }}" type="number" step="0.25" placeholder="Hours" style="width:100px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-              <input value="{{ dTimeDesc }}" onChange="{{ onTimeDesc }}" placeholder="What was worked on" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+              <input value="{{ dTimeDate }}" onChange="{{ onTimeDate }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <input value="{{ dTimeHours }}" onChange="{{ onTimeHours }}" type="number" step="0.25" placeholder="Hours" style="width:100px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <input value="{{ dTimeDesc }}" onChange="{{ onTimeDesc }}" placeholder="What was worked on" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-body)">
                 <input type="checkbox" checked="{{ dTimeBillable }}" onChange="{{ onTimeBillable }}"> Billable
               </label>
@@ -815,7 +913,7 @@
             </div>
           </div>
 
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">This month by client</h3>
             <sc-for list="{{ timeSummary }}" as="s" hint-placeholder-count="3">
               <div onClick="{{ s.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer">
@@ -828,7 +926,7 @@
             </sc-for>
           </div>
 
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Recent entries</h3>
             <sc-if value="{{ noRecentTime }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:13.5px;color:var(--text-muted)">No hours logged yet.</div>
@@ -852,7 +950,7 @@
       <sc-if value="{{ secTeam }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:18px">
 
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team members</h3>
             <sc-for list="{{ teamRows }}" as="m" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
@@ -860,18 +958,18 @@
                   <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ m.name }}</div>
                   <div style="font-size:12px;color:var(--text-muted)">{{ m.email }}</div>
                 </div>
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 11px">{{ m.role }}</span>
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 11px">{{ m.role }}</span>
                 <!-- Rates render only for an admin. Previously this was a
                      disabled attribute bound to a value, which HTML treats as
                      disabled whatever the value is, so the field never saved. -->
                 <sc-if value="{{ m.showRate }}" hint-placeholder-val="{{ true }}">
                   <div style="display:flex;align-items:center;gap:6px">
-                    <select value="{{ m.payType }}" onChange="{{ m.onPayType }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px;background:#fff">
+                    <select value="{{ m.payType }}" onChange="{{ m.onPayType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 9px;font-size:13px;background:#fff">
                       <option value="hourly">Hourly</option>
                       <option value="project">Per project</option>
                     </select>
                     <span style="font-size:12px;color:var(--text-muted)">$</span>
-                    <input value="{{ m.rate }}" onChange="{{ m.onRate }}" type="number" step="0.01" style="width:80px;border:1px solid var(--gray-200);border-radius:4px;padding:7px 9px;font-size:13px">
+                    <input value="{{ m.rate }}" onChange="{{ m.onRate }}" type="number" step="0.01" style="width:80px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 9px;font-size:13px">
                     <span style="font-size:12px;color:var(--text-muted)">/hr</span>
                   </div>
                 </sc-if>
@@ -881,10 +979,10 @@
               <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:10px">
                 <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Add a team member</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <input value="{{ dMemberName }}" onChange="{{ onMemberName }}" placeholder="Name" style="flex:1;min-width:130px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dMemberEmail }}" onChange="{{ onMemberEmail }}" placeholder="name@socialupgrades.com" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dMemberPass }}" onChange="{{ onMemberPass }}" type="password" placeholder="Password (12+)" style="min-width:150px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dMemberRate }}" onChange="{{ onMemberRate }}" type="number" placeholder="Rate" style="width:90px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberName }}" onChange="{{ onMemberName }}" placeholder="Name" style="flex:1;min-width:130px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberEmail }}" onChange="{{ onMemberEmail }}" placeholder="name@socialupgrades.com" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberPass }}" onChange="{{ onMemberPass }}" type="password" placeholder="Password (12+)" style="min-width:150px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dMemberRate }}" onChange="{{ onMemberRate }}" type="number" placeholder="Rate" style="width:90px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-body)">
                     <input type="checkbox" checked="{{ dMemberAcct }}" onChange="{{ onMemberAcct }}"> Accountant
                   </label>
@@ -901,7 +999,7 @@
         <div style="display:flex;flex-direction:column;gap:18px">
 
           <!-- Submit your own pay -->
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
             <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
               <div style="display:flex;flex-direction:column;gap:3px">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Submit for payment</h3>
@@ -916,7 +1014,7 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Type</label>
-                <select value="{{ dPayKind }}" onChange="{{ onPayKind }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dPayKind }}" onChange="{{ onPayKind }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <option value="hours">Hours</option>
                   <option value="invoice">Invoice (per project)</option>
                   <option value="expense">One-time payment</option>
@@ -924,21 +1022,21 @@
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
-                <input value="{{ dPayStart }}" onChange="{{ onPayStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dPayStart }}" onChange="{{ onPayStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
-                <input value="{{ dPayEnd }}" onChange="{{ onPayEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dPayEnd }}" onChange="{{ onPayEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <sc-if value="{{ payKindIsFlat }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:5px">
                   <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
-                  <input value="{{ dPayAmount }}" onChange="{{ onPayAmount }}" type="number" step="0.01" placeholder="0.00" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dPayAmount }}" onChange="{{ onPayAmount }}" type="number" step="0.01" placeholder="0.00" style="width:120px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                 </div>
               </sc-if>
               <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
-                <input value="{{ dPayNote }}" onChange="{{ onPayNote }}" placeholder="What this covers" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dPayNote }}" onChange="{{ onPayNote }}" placeholder="What this covers" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
             </div>
 
@@ -946,12 +1044,12 @@
               <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:10px">
                 <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Break your hours down by client</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-                  <select value="{{ dLineClient }}" onChange="{{ onLineClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                  <select value="{{ dLineClient }}" onChange="{{ onLineClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                     <option value="">Social Upgrades (internal)</option>
                     <sc-for list="{{ clients }}" as="c" hint-placeholder-count="4"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
                   </select>
-                  <input value="{{ dLineHours }}" onChange="{{ onLineHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dLineMinutes }}" onChange="{{ onLineMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dLineHours }}" onChange="{{ onLineHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dLineMinutes }}" onChange="{{ onLineMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <button onClick="{{ addLine }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add line</button>
                 </div>
                 <sc-for list="{{ draftLines }}" as="l" hint-placeholder-count="3">
@@ -966,8 +1064,8 @@
                 </sc-if>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
                   <span style="font-size:12.5px;color:var(--text-muted)">Total</span>
-                  <input value="{{ dPayHours }}" onChange="{{ onPayHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dPayMinutes }}" onChange="{{ onPayMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dPayHours }}" onChange="{{ onPayHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dPayMinutes }}" onChange="{{ onPayMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <span style="font-size:12.5px;color:var(--text-muted)">or from lines: <strong style="color:var(--navy)">{{ draftLinesTotal }}</strong></span>
                 </div>
               </div>
@@ -979,7 +1077,7 @@
           </div>
 
           <!-- Your own submissions -->
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your submissions</h3>
             <sc-if value="{{ noMyPayRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:13.5px;color:var(--text-muted)">Nothing submitted yet.</div>
@@ -999,46 +1097,46 @@
                   </sc-if>
                 </div>
                 <sc-if value="{{ p.changeRequested }}" hint-placeholder-val="{{ false }}">
-                  <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:6px;padding:10px 14px;font-size:13px;line-height:1.45">
+                  <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.45">
                     <strong>Changes requested:</strong> {{ p.changeNote }}
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
                   <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
                     <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
-                      <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
+                      <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
                     </sc-for>
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}">
-                  <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px">
+                  <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
                     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
                       <div style="display:flex;flex-direction:column;gap:4px">
                         <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
-                        <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                       </div>
                       <div style="display:flex;flex-direction:column;gap:4px">
                         <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
-                        <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                       </div>
                       <sc-if value="{{ p.isHoursKind }}" hint-placeholder-val="{{ true }}">
                         <div style="display:flex;flex-direction:column;gap:4px">
                           <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Total</label>
                           <div style="display:flex;gap:6px;align-items:center">
-                            <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
-                            <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                            <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
+                            <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                           </div>
                         </div>
                       </sc-if>
                       <sc-if value="{{ p.isFlatKind }}" hint-placeholder-val="{{ false }}">
                         <div style="display:flex;flex-direction:column;gap:4px">
                           <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
-                          <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                         </div>
                       </sc-if>
                       <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px">
                         <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
-                        <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                        <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                       </div>
                     </div>
                     <sc-if value="{{ hasEdLines }}" hint-placeholder-val="{{ true }}">
@@ -1047,8 +1145,8 @@
                         <sc-for list="{{ edLines }}" as="el" hint-placeholder-count="3">
                           <div style="display:flex;align-items:center;gap:8px">
                             <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
-                            <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
-                            <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                            <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
+                            <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
                             <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
                           </div>
                         </sc-for>
@@ -1068,7 +1166,7 @@
 
           <!-- Everything, for finance -->
           <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
               <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">All submissions</h3>
                 <div style="display:flex;gap:22px">
@@ -1113,7 +1211,7 @@
                   </div>
 
                   <sc-if value="{{ p.changeRequested }}" hint-placeholder-val="{{ false }}">
-                    <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:6px;padding:10px 14px;font-size:13px;line-height:1.45">
+                    <div style="background:#FDF6EC;border:1px solid #EBD6B4;color:#8A6116;border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.45">
                       <strong>Changes requested:</strong> {{ p.changeNote }}
                     </div>
                   </sc-if>
@@ -1121,7 +1219,7 @@
                   <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
                       <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
-                        <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
+                        <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
                       </sc-for>
                     </div>
                   </sc-if>
@@ -1129,7 +1227,7 @@
                   <sc-if value="{{ p.askingChange }}" hint-placeholder-val="{{ false }}">
                     <div style="background:#FDF6EC;border:1px solid #EBD6B4;padding:14px;display:flex;flex-direction:column;gap:10px">
                       <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:#8A6116">What needs changing?</label>
-                      <input value="{{ dChangeNote }}" onChange="{{ onChangeNote }}" placeholder="e.g. the AIS MGMT hours look high, can you double check" style="border:1px solid #EBD6B4;border-radius:4px;padding:9px 12px;font-size:13px">
+                      <input value="{{ dChangeNote }}" onChange="{{ onChangeNote }}" placeholder="e.g. the AIS MGMT hours look high, can you double check" style="border:1px solid #EBD6B4;border-radius:12px;padding:9px 12px;font-size:13px">
                       <div style="display:flex;gap:10px">
                         <button onClick="{{ confirmChange }}" style="background:#D68F2E;color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer">Send back</button>
                         <button onClick="{{ cancelChange }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
@@ -1138,40 +1236,40 @@
                   </sc-if>
 
                   <sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}">
-                    <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px">
+                    <div style="background:var(--gray-100);border:1px solid var(--border-hairline);padding:16px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
                       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
                         <div style="display:flex;flex-direction:column;gap:4px">
                           <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period start</label>
-                          <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          <input value="{{ edPeriodStart }}" onChange="{{ onEdPeriodStart }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                         </div>
                         <div style="display:flex;flex-direction:column;gap:4px">
                           <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Period end</label>
-                          <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          <input value="{{ edPeriodEnd }}" onChange="{{ onEdPeriodEnd }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                         </div>
                         <sc-if value="{{ p.isHoursKind }}" hint-placeholder-val="{{ true }}">
                           <div style="display:flex;flex-direction:column;gap:4px">
                             <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Total</label>
                             <div style="display:flex;gap:6px;align-items:center">
-                              <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
-                              <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                              <input value="{{ edHours }}" onChange="{{ onEdHours }}" type="number" placeholder="h" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
+                              <input value="{{ edMinutes }}" onChange="{{ onEdMinutes }}" type="number" placeholder="m" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                             </div>
                           </div>
                         </sc-if>
                         <sc-if value="{{ p.isFlatKind }}" hint-placeholder-val="{{ false }}">
                           <div style="display:flex;flex-direction:column;gap:4px">
                             <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
-                            <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                            <input value="{{ edAmount }}" onChange="{{ onEdAmount }}" type="number" step="0.01" style="width:120px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                           </div>
                         </sc-if>
                         <sc-if value="{{ edCanAdjust }}" hint-placeholder-val="{{ true }}">
                           <div style="display:flex;flex-direction:column;gap:4px">
                             <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Adjustment</label>
-                            <input value="{{ edAdjustment }}" onChange="{{ onEdAdjustment }}" type="number" step="0.01" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                            <input value="{{ edAdjustment }}" onChange="{{ onEdAdjustment }}" type="number" step="0.01" style="width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                           </div>
                         </sc-if>
                         <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:4px">
                           <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Note</label>
-                          <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:8px 10px;font-size:13px">
+                          <input value="{{ edNote }}" onChange="{{ onEdNote }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
                         </div>
                       </div>
                       <sc-if value="{{ hasEdLines }}" hint-placeholder-val="{{ true }}">
@@ -1180,8 +1278,8 @@
                           <sc-for list="{{ edLines }}" as="el" hint-placeholder-count="3">
                             <div style="display:flex;align-items:center;gap:8px">
                               <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
-                              <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
-                              <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:4px;padding:6px 8px;font-size:12.5px">
+                              <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
+                              <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
                               <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
                             </div>
                           </sc-for>
@@ -1206,7 +1304,7 @@
       <sc-if value="{{ pUpdates }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:14px">
           <sc-for list="{{ portalUpdates }}" as="u" hint-placeholder-count="3">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 24px;display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
                 <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
                 <sc-if value="{{ u.showApprove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;padding:7px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button></sc-if>
@@ -1218,7 +1316,7 @@
               </sc-for>
               <sc-if value="{{ u.showInput }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;gap:8px">
-                  <input value="{{ dFeedback }}" onChange="{{ onFeedback }}" placeholder="Your feedback" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                  <input value="{{ dFeedback }}" onChange="{{ onFeedback }}" placeholder="Your feedback" style="flex:1;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <button onClick="{{ u.sendFeedback }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Send</button>
                 </div>
               </sc-if>
@@ -1228,7 +1326,7 @@
             </div>
           </sc-for>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
           <div style="display:flex;flex-direction:column;gap:3px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Completed work</h3>
             <div style="font-size:12px;color:var(--text-muted)">Everything we have finished, newest first. Open any item for its details, comments and files.</div>
@@ -1243,7 +1341,7 @@
                 <div style="font-size:12px;color:var(--text-muted)">Completed {{ cw.completed }} · {{ cw.ago }}</div>
               </div>
               <sc-if value="{{ cw.hasCat }}" hint-placeholder-val="{{ true }}">
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ cw.cat }}</span>
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ cw.cat }}</span>
               </sc-if>
               <sc-if value="{{ cw.hasFiles }}" hint-placeholder-val="{{ false }}">
                 <span style="font-size:12px;color:var(--text-muted)">{{ cw.fileCount }} file(s)</span>
@@ -1253,7 +1351,7 @@
           </sc-for>
         </div>
 
-        <div style="background:var(--navy);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div style="background:var(--navy);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-radius:12px">
           <div style="display:flex;flex-direction:column;gap:2px">
             <div style="font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:var(--ls-caps)">How are we doing this month?</div>
             <div style="font-size:13px;color:rgba(255,255,255,.65)">{{ pulsePrompt }}</div>
@@ -1267,24 +1365,24 @@
       </sc-if>
 
       <sc-if value="{{ pRequests }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Request work</h3>
           <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time — everything else waits in your queue.</div>
-          <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+          <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:#fff">
             <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
           </select>
-          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px">
-          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:4px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
+          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
+          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
           <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
             <div style="display:flex;flex-direction:column;gap:5px">
               <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Urgency</label>
-              <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px;background:#fff">
+              <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:#fff">
                 <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
               </select>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px">
               <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by (optional)</label>
-              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
             </div>
           </div>
           <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
@@ -1292,20 +1390,20 @@
             <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Upload to your own Dropbox or Drive, copy the share link, and paste it below.</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
               <a href="{{ dropboxUrl }}" target="_blank" rel="noopener noreferrer" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;text-decoration:none" style-hover="background:rgba(15,22,51,.06)">Open Dropbox ↗</a>
-              <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="https://www.dropbox.com/scl/..." style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:13px">
+              <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="https://www.dropbox.com/scl/..." style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
               <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
             </div>
             <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-hairline)">
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:999px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
+                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
                 <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
                 <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
               </div>
             </sc-for>
           </div>
-          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:999px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:12px" style-hover="background:#000">Submit request <span style="width:24px;height:24px;border-radius:50%;background:#fff;color:#111;display:inline-flex;align-items:center;justify-content:center;font-size:12px">↗</span></button>
+          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:12px" style-hover="background:#000">Submit request <span style="width:24px;height:24px;border-radius:50%;background:#fff;color:#111;display:inline-flex;align-items:center;justify-content:center;font-size:12px">↗</span></button>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Your requests</h3>
           <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
             <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1px solid var(--border-hairline);cursor:pointer" style-hover="background:var(--gray-100)">
@@ -1327,7 +1425,7 @@
       </sc-if>
 
       <sc-if value="{{ pTodos }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:6px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
           <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Things our team needs from you. Check them off when done.</div>
           <sc-for list="{{ clientTodos }}" as="t" hint-placeholder-count="3">
             <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
@@ -1340,7 +1438,7 @@
       </sc-if>
 
       <sc-if value="{{ pMessages }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#fff;border:1px solid var(--border-card);display:flex;flex-direction:column;min-height:460px">
+        <div style="background:#fff;border:1px solid var(--border-card);display:flex;flex-direction:column;min-height:460px;border-radius:12px">
           <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
             <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
               <div style="{{ m.rowStyle }}">
@@ -1352,7 +1450,7 @@
             </sc-for>
           </div>
           <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
-            <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message the team…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
+            <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message the team…" style="flex:1;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px">
             <button onClick="{{ sendMsg }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
           </div>
         </div>
@@ -1364,7 +1462,7 @@
             <button onClick="{{ ch.select }}" style="{{ ch.style }}" style-hover="border-color:var(--navy)">{{ ch.label }}</button>
           </sc-for>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card)">
+        <div style="background:#fff;border:1px solid var(--border-card);border-radius:12px">
           <sc-for list="{{ portalFiles }}" as="f" hint-placeholder-count="5">
             <div style="display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid var(--border-hairline)">
               <div style="width:34px;height:34px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.02em">{{ f.ext }}</div>
@@ -1381,14 +1479,14 @@
       <sc-if value="{{ pReports }}" hint-placeholder-val="{{ false }}">
         <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
           <sc-for list="{{ reportStats }}" as="s" hint-placeholder-count="4">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:2px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:2px;border-radius:12px">
               <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--navy)">{{ s.value }}</div>
               <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ s.label }}</div>
               <div style="font-size:12px;font-weight:600;color:{{ s.deltaColor }}">{{ s.delta }}</div>
             </div>
           </sc-for>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px">
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
           <div style="font-size:14px;line-height:1.65;color:var(--text-body)">{{ reportNote }}</div>
           <div style="font-size:12px;color:var(--text-muted)">Snapshot generated {{ reportDate }} · full analytics available on request</div>
@@ -1397,17 +1495,17 @@
 
       <sc-if value="{{ pBilling }}" hint-placeholder-val="{{ false }}">
         <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px;align-items:start">
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
             <sc-if value="{{ isRetainer }}" hint-placeholder-val="{{ true }}">
-              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">{{ planName }}</span>
+              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:12px">{{ planName }}</span>
               <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ planPrice }}<span style="font-size:15px;font-weight:600;color:var(--text-muted)">/month</span></div>
               <div style="display:flex;flex-direction:column;gap:6px">
                 <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours this month</span><span>{{ planHours }}</span></div>
-                <div style="height:6px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
+                <div style="height:6px;background:var(--gray-200);border-radius:12px;overflow:hidden"><div style="{{ planBarStyle }}"></div></div>
               </div>
             </sc-if>
             <sc-if value="{{ isHourly }}" hint-placeholder-val="{{ false }}">
-              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:999px">Hourly · {{ clientRate }}/hr</span>
+              <span style="align-self:flex-start;background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:12px">Hourly · {{ clientRate }}/hr</span>
               <div style="display:flex;flex-direction:column;gap:2px">
                 <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ thisMonthLabel }} so far</div>
                 <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--navy)">{{ currentBill }}</div>
@@ -1426,7 +1524,7 @@
             </sc-if>
             <div style="font-size:12px;color:var(--text-muted);border-top:1px solid var(--border-hairline);padding-top:12px">No contracts. Pause or cancel anytime.</div>
           </div>
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Invoices</h3>
             <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
               <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
@@ -1446,7 +1544,7 @@
 
         <sc-if value="{{ isHourly }}" hint-placeholder-val="{{ false }}">
           <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start">
-            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Hours this month</h3>
               <sc-if value="{{ noMonthEntries }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13.5px;color:var(--text-muted)">No hours logged yet this month.</div>
@@ -1462,7 +1560,7 @@
                 </div>
               </sc-for>
             </div>
-            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Previous months</h3>
               <sc-if value="{{ noMonthHistory }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13.5px;color:var(--text-muted)">Nothing billed yet.</div>
@@ -1479,7 +1577,7 @@
         </sc-if>
 
         <sc-if value="{{ manageInvoices }}" hint-placeholder-val="{{ false }}">
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
             <div style="display:flex;flex-direction:column;gap:3px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Billing admin</h3>
               <div style="font-size:12px;color:var(--text-muted)">Visible to admins and accountants only. Invoices are raised in Stripe — paste the hosted invoice link so the client can open it.</div>
@@ -1488,14 +1586,14 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
-                <select value="{{ dBillingType }}" onChange="{{ onBillingType }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                <select value="{{ dBillingType }}" onChange="{{ onBillingType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                   <option value="retainer">Monthly plan</option>
                   <option value="hourly">Hourly</option>
                 </select>
               </div>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
-                <input value="{{ dClientRate }}" onChange="{{ onClientRate }}" type="number" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dClientRate }}" onChange="{{ onClientRate }}" type="number" style="width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <button onClick="{{ saveBilling }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save billing</button>
             </div>
@@ -1503,16 +1601,16 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
               <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stripe billing portal link</label>
-                <input value="{{ dPortalUrl }}" onChange="{{ onPortalUrl }}" placeholder="https://billing.stripe.com/p/session/..." style="border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
+                <input value="{{ dPortalUrl }}" onChange="{{ onPortalUrl }}" placeholder="https://billing.stripe.com/p/session/..." style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
               <button onClick="{{ savePortalUrl }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save</button>
             </div>
 
             <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <input value="{{ dInvNum }}" onChange="{{ onInvNum }}" placeholder="INV-2026-091" style="min-width:150px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-              <input value="{{ dInvAmount }}" onChange="{{ onInvAmount }}" type="number" placeholder="Amount" style="width:110px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-              <input value="{{ dInvUrl }}" onChange="{{ onInvUrl }}" placeholder="Stripe invoice link" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:13px">
-              <select value="{{ dInvStatus }}" onChange="{{ onInvStatus }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+              <input value="{{ dInvNum }}" onChange="{{ onInvNum }}" placeholder="INV-2026-091" style="min-width:150px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <input value="{{ dInvAmount }}" onChange="{{ onInvAmount }}" type="number" placeholder="Amount" style="width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <input value="{{ dInvUrl }}" onChange="{{ onInvUrl }}" placeholder="Stripe invoice link" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <select value="{{ dInvStatus }}" onChange="{{ onInvStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                 <option value="Due">Due</option>
                 <option value="Paid">Paid</option>
               </select>
@@ -1557,7 +1655,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[],rates:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -1631,19 +1729,37 @@ class Component extends DCLogic {
   draft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value; this.setState(s=>({d:{...s.d,[k]:v}})); }; }
   // Same idea as draft(), but for the payment row being edited. Held apart from
   // `d` so cancelling an edit cannot disturb the other forms on the page.
+  clientDraft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
+    this.setState(s=>({ecDraft:{...(s.ecDraft||{}),[k]:v}})); }; }
   editDraft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
     this.setState(s=>({editDraft:{...(s.editDraft||{}),[k]:v}})); }; }
-  box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:3}; }
+  box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:12}; }
   badge(kind){
     const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],red:['rgba(216,86,78,.14)','#a8352d']};
     const [bg,fg]=map[kind]||map.gray;
-    return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:999,whiteSpace:'nowrap'};
+    return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:12,whiteSpace:'nowrap'};
   }
   renderVals(){
     const S=this.state, D=S.data, d=S.d;
     // Whether the signed-in *account* is staff, as opposed to which view is
     // currently open. A client account can never reach the team view.
     const isStaff = !!(S.profile && S.profile.role==='team');
+    // ===== who is signed in =====
+    // Declared up here because unread counts, colours and permissions all
+    // depend on it, and several of those are computed well before the
+    // people section further down.
+    const me = S.profile || {};
+    // Cross-checked against the staff directory as well as the session profile:
+    // if either says admin, treat as admin. A single missing column here
+    // silently strips approvals, rate editing and the billing panel, and that
+    // failure is invisible — the controls simply are not drawn.
+    const meRow = (D.team||[]).find(t=>t.id===me.id) || {};
+    const isAdmin = !!(me.is_admin || meRow.isAdmin);
+    // Finance visibility: owner or accountant. Ordinary staff never see client
+    // invoices or anyone else's pay. The database enforces this too — these
+    // flags only decide what is worth rendering.
+    const canBilling = isStaff && (isAdmin || !!me.is_accountant || !!meRow.isAccountant);
+
     const isTeam = isStaff && S.role==='team';
     // Placeholder keeps render total during the pre-auth frame, when no rows
     // have loaded yet and the login overlay is still covering the page.
@@ -1678,7 +1794,7 @@ class Component extends DCLogic {
     // keeps its edge when it lands on a tinted row.
     const clientDot=id=>({width:10,height:10,minWidth:10,borderRadius:'50%',
       background:clientColor(id),boxShadow:'0 0 0 2px rgba(255,255,255,.9)',display:'inline-block'});
-    const clientBar=id=>({width:3,alignSelf:'stretch',minHeight:18,borderRadius:2,
+    const clientBar=id=>({width:3,alignSelf:'stretch',minHeight:18,borderRadius:12,
       background:clientColor(id),display:'inline-block'});
     const URGENCIES=['Low','Normal','High','Urgent'];
     const urgStyle=u=> u==='Urgent'? this.badge('red') : u==='High'? this.badge('amber')
@@ -1709,7 +1825,23 @@ class Component extends DCLogic {
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
+    // ===== unread messages =====
+    // The marker belongs to the reader, so two people on the same board track
+    // their own unread independently. "Unread" only ever counts the other
+    // side's messages — your own replies are not news to you.
+    const otherSide = isStaff ? 'client' : 'team';
+    const readTs = cid=>{ const r=(D.reads||[]).find(x=>x.clientId===cid&&x.profileId===me.id);
+      return r?Number(r.lastReadTs||0):0; };
+    const unreadFor = cid=>D.messages.filter(m=>m.clientId===cid&&m.from===otherSide&&m.ts>readTs(cid)).length;
+    const unreadTotal = isStaff ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0) : unreadFor(client.id);
+    const markRead = cid=>{ if(!cid||!me.id) return; this.set(x=>{
+      x.reads=(x.reads||[]).slice();
+      const rid=me.id+':'+cid, row=x.reads.find(r=>r.id===rid), now=Date.now();
+      if(row) row.lastReadTs=now;
+      else x.reads.push({id:rid,profileId:me.id,clientId:cid,lastReadTs:now});
+      return x; }); };
+
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
     const navItems = nav.map(([id,label])=>{
@@ -1717,8 +1849,12 @@ class Component extends DCLogic {
       let badge=false;
       if(isTeam&&id==='requests'&&newReqCount) badge=newReqCount;
       if(!isTeam&&id==='todos'&&clientTodoCount) badge=clientTodoCount;
-      return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
-        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
+      if(id==='messages'&&unreadTotal) badge=unreadTotal;
+      return {label,badge,select:()=>{
+        // Opening the board is what marks it read.
+        if(id==='messages') markRead(isStaff? S.msgClient : client.id);
+        this.setState({section:id,notifOpen:false,moreOpen:false}); },
+        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}};
     });
     const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team'],
       home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
@@ -1733,7 +1869,7 @@ class Component extends DCLogic {
       const mine = isTeam? m.from==='team' : m.from==='client';
       return {who:m.who,when:this.fmt(m.ts),text:m.text,
         rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
-        bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--navy)':'var(--gray-100)',color:mine?'#fff':'var(--text-body)',borderRadius:mine?'10px 10px 2px 10px':'10px 10px 10px 2px'}};
+        bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--navy)':'var(--gray-100)',color:mine?'#fff':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
     });
     const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
       this.set(x=>{ x.messages.push({id:this.uid(),clientId:msgCid,from:isTeam?'team':'client',who:isTeam?'Social Upgrades':cname(msgCid),text,ts:Date.now()}); this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
@@ -1752,7 +1888,7 @@ class Component extends DCLogic {
             this.logEv(x,it.clientId,'Work item completed: '+it.title); }
           else { it.completedAt=null; }
           return x; });
-        return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:move(-1),fwd:move(1),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id),
+        return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h',canBack:i>0,canFwd:i<3,back:stopThen(move(-1)),fwd:stopThen(move(1)),fwdLabel:i===2?'Mark done':(i===0?'Start ▸':'▸'),commentsLabel:cLabel((w.comments||[]).length),openComments:openDetail('work',w.id),
           // Projected finish is what the client sees on their request card.
           projected:w.projectedFinish||'',
           onProjected:e=>{ const v=e.target.value; this.set(x=>{ x.work.find(y=>y.id===w.id).projectedFinish=v; return x; }); },
@@ -1773,9 +1909,11 @@ class Component extends DCLogic {
     // requests
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
     const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
+      open:openDetail('request',r.id),
       // Same path as everywhere else, so context is never dropped on this route.
-      approve:()=>approveReq(r.id),
-      decline:()=>declineReq(r.id)}));
+      // stopThen keeps the row's own click from also opening the detail.
+      approve:stopThen(()=>approveReq(r.id)),
+      decline:stopThen(()=>declineReq(r.id))}));
     const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),badgeStyle,statusLabel}; });
     const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
@@ -1797,7 +1935,7 @@ class Component extends DCLogic {
     const month=new Date().toLocaleDateString('en-US',{month:'long'});
     const rated=(client.pulseMonth===month);
     const pulseBtns=[1,2,3,4,5].map(n=>({n,rate:()=>this.set(x=>{ const c2=x.clients.find(c=>c.id===client.id); c2.pulse.push(n); c2.pulseMonth=month; this.logEv(x,client.id,cname(client.id)+' rated the month '+n+'/5'); return x; }),
-      style:{width:40,height:40,borderRadius:999,border:'1px solid rgba(255,255,255,.5)',background:'transparent',color:'#fff',fontFamily:'var(--font-display)',fontWeight:700,fontSize:15,cursor:'pointer'}}));
+      style:{width:40,height:40,borderRadius:12,border:'1px solid rgba(255,255,255,.5)',background:'transparent',color:'#fff',fontFamily:'var(--font-display)',fontWeight:700,fontSize:15,cursor:'pointer'}}));
     // clients (team)
     const clientCards=D.clients.map(c=>{
       const pct=Math.round(100*c.hoursUsed/c.hoursTotal);
@@ -1805,6 +1943,23 @@ class Component extends DCLogic {
       const act=D.work.find(w=>w.clientId===c.id&&w.status==='progress');
       return {name:c.name,domain:c.domain,service:c.service,plan:c.plan,
         dot:clientDot(c.id), accent:clientColor(c.id),
+        editing:S.editClient===c.id,
+        startEdit:()=>this.setState({editClient:c.id, syncError:null, ecDraft:{
+          name:c.name||'', domain:c.domain||'', service:c.service||'', plan:c.plan||'',
+          price:c.price||0, hoursUsed:c.hoursUsed||0, hoursTotal:c.hoursTotal||0,
+          billingType:c.billingType||'retainer', hourlyRate:c.hourlyRate||0,
+          color:c.color||clientColor(c.id),
+          brands:(c.businesses||[]).map(b=>b.name).join(', ')
+        }}),
+        members:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===c.id)
+          .map(pp=>({name:pp.name||pp.email, email:pp.email||'',
+            remove:()=>{ if(!isAdmin) return;
+              window.SUData.deleteUser(pp.id)
+                .then(()=>window.SUData.load())
+                .then(data=>{ this.__synced=structuredClone(data); this.setState({data}); })
+                .catch(err=>this.setState({syncError:'Could not remove: '+(err.message||err)})); },
+            canRemove:isAdmin})),
+        noMembers:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===c.id).length===0,
         hoursLabel:c.hoursUsed+' / '+c.hoursTotal+' hrs',
         barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
         openWork:D.work.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
@@ -1818,7 +1973,7 @@ class Component extends DCLogic {
     const myFiles=D.files.filter(f=>f.clientId===client.id);
     const fileChips=types.map(t=>{ const n=t==='All'?myFiles.length:myFiles.filter(f=>f.type===t).length; const active=S.fileFilter===t;
       return {label:t+' ('+n+')',select:()=>this.setState({fileFilter:t}),
-        style:{background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:999,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
+        style:{background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:12,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
     const portalFiles=myFiles.filter(f=>S.fileFilter==='All'||f.type===S.fileFilter).sort((a,b)=>b.ts-a.ts).map(f=>({name:f.name,type:f.type,size:f.size,when:this.fmt(f.ts),ext:(f.name.split('.').pop()||'').toUpperCase().slice(0,4)}));
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
@@ -1945,7 +2100,16 @@ class Component extends DCLogic {
           detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
           detailReqApproveFn:()=>approveReq(item.id),
           detailReqDeclineFn:()=>declineReq(item.id),
-          detailCanAttach: ty==='request'&&!isTeam,
+          detailCanAttach: (ty==='request'&&!isTeam) || (isTeam&&(ty==='work'||ty==='request')),
+          // Links are how files are shared here, so both sides can add one.
+          detailCanLink: (ty==='request'||ty==='work'),
+          dDetailLink: d.detailLink||'', onDetailLink:this.draft('detailLink'),
+          addDetailLink:()=>{ const u=(d.detailLink||'').trim(); if(!u) return;
+            if(!/^https?:\/\//i.test(u)) return this.setState({syncError:'A file link needs to start with http:// or https://'});
+            this.setState({syncError:null});
+            this.set(x=>{ const it=findIt(x); it.links=(it.links||[]).concat([{url:u,label:linkLabel(u)}]);
+              this.logEv(x,item.clientId,(isTeam?'Team':cname(item.clientId))+' added a file link to "'+(it.title||'an item')+'"'); return x; });
+            this.setState(s2=>({d:{...s2.d,detailLink:''}})); },
           onAttachFile:e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return;
             this.set(x=>{ const it=findIt(x); it.files=it.files||[]; it.files.push({name:f.name}); this.logEv(x,item.clientId,cname(item.clientId)+' attached a file to "'+it.title+'"'); return x; }); },
           detailComments:list.map((c,i)=>({who:c.who||c.name||'—', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
@@ -1971,7 +2135,7 @@ class Component extends DCLogic {
     const mobStyle=active=>({flex:1,background:'transparent',border:'none',borderTop:active?'2px solid var(--green)':'2px solid transparent',color:active?'#fff':'rgba(255,255,255,.65)',fontSize:11.5,fontWeight:active?600:500,padding:'10px 4px',cursor:'pointer',fontFamily:'var(--font-body)'});
     const bottomItems=nav.slice(0,4).map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),style:mobStyle(S.section===id)}));
     const sheetItems=nav.map(([id,label])=>({label,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
-      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?600:400,cursor:'pointer',borderRadius:6,fontFamily:'var(--font-body)'}}));
+      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
     // stats & activity (team overview)
     const stats=[
       {label:'Active clients',value:D.clients.length},
@@ -1981,18 +2145,6 @@ class Component extends DCLogic {
     ];
     const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts),dot:clientDot(l.clientId)}));
 
-    // ===== people, assignment and money =====
-    const me = S.profile || {};
-    // Cross-checked against the staff directory as well as the session profile:
-    // if either says admin, treat as admin. A single missing column here
-    // silently strips approvals, rate editing and the billing panel, and that
-    // failure is invisible — the controls simply are not drawn.
-    const meRow = (D.team||[]).find(t=>t.id===me.id) || {};
-    const isAdmin = !!(me.is_admin || meRow.isAdmin);
-    // Finance visibility: owner or accountant. Ordinary staff never see client
-    // invoices or anyone else's pay. The database enforces this too — these
-    // flags only decide what is worth rendering.
-    const canBilling = isStaff && (isAdmin || !!me.is_accountant || !!meRow.isAccountant);
     const members = (D.team||[]).filter(t=>t.active!==false);
     const memberName = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?m.name:''; };
 
@@ -2131,6 +2283,8 @@ class Component extends DCLogic {
       // refuse to hand over another tenant's rows regardless.
       goTeam:()=>{ if(!isStaff) return; this.setState({role:'team',section:'overview',notifOpen:false,moreOpen:false}); },
       showBackToTeam: isStaff && !isTeam,
+      // Stops a control inside a clickable card from also opening the card.
+      swallow: e=>{ if(e&&e.stopPropagation) e.stopPropagation(); },
 
       // ----- roles -----
       isAdmin, canBilling, notBilling:isTeam&&!canBilling,
@@ -2321,6 +2475,80 @@ class Component extends DCLogic {
           .catch(err=>this.setState({syncError:'Could not add team member: '+(err.message||err)}));
       },
 
+      // ----- editing an existing client -----
+      ecName:(S.ecDraft||{}).name||'', onEcName:this.clientDraft('name'),
+      ecDomain:(S.ecDraft||{}).domain||'', onEcDomain:this.clientDraft('domain'),
+      ecService:(S.ecDraft||{}).service||'', onEcService:this.clientDraft('service'),
+      ecPlan:(S.ecDraft||{}).plan||'', onEcPlan:this.clientDraft('plan'),
+      ecPrice:(S.ecDraft||{}).price===undefined?'':(S.ecDraft||{}).price, onEcPrice:this.clientDraft('price'),
+      ecHoursUsed:(S.ecDraft||{}).hoursUsed===undefined?'':(S.ecDraft||{}).hoursUsed, onEcHoursUsed:this.clientDraft('hoursUsed'),
+      ecHoursTotal:(S.ecDraft||{}).hoursTotal===undefined?'':(S.ecDraft||{}).hoursTotal, onEcHoursTotal:this.clientDraft('hoursTotal'),
+      ecBillingType:(S.ecDraft||{}).billingType||'retainer', onEcBillingType:this.clientDraft('billingType'),
+      ecHourlyRate:(S.ecDraft||{}).hourlyRate===undefined?'':(S.ecDraft||{}).hourlyRate, onEcHourlyRate:this.clientDraft('hourlyRate'),
+      ecBrands:(S.ecDraft||{}).brands||'', onEcBrands:this.clientDraft('brands'),
+      ecColor:(S.ecDraft||{}).color||'', onEcColor:this.clientDraft('color'),
+      colorChoices:CLIENT_PALETTE.map(hex=>({hex,
+        set:()=>this.setState(s2=>({ecDraft:{...(s2.ecDraft||{}),color:hex}})),
+        style:{width:26,height:26,borderRadius:12,background:hex,cursor:'pointer',
+          border:((S.ecDraft||{}).color===hex)?'3px solid var(--navy)':'1px solid rgba(15,22,51,.15)'}})),
+      cancelClientEdit:()=>this.setState({editClient:null,ecDraft:null,syncError:null}),
+      saveClientEdit:()=>{
+        const id=S.editClient, dr=S.ecDraft||{};
+        if(!id) return;
+        const nm=(dr.name||'').trim();
+        if(!nm) return this.setState({syncError:'Client name cannot be empty.'});
+        this.setState({syncError:null});
+        this.set(x=>{ const c=x.clients.find(y=>y.id===id); if(!c) return x;
+          c.name=nm; c.domain=(dr.domain||'').trim(); c.service=(dr.service||'').trim();
+          c.plan=(dr.plan||'').trim(); c.price=Number(dr.price)||0;
+          c.hoursUsed=Number(dr.hoursUsed)||0; c.hoursTotal=Number(dr.hoursTotal)||0;
+          c.billingType=dr.billingType||'retainer'; c.hourlyRate=Number(dr.hourlyRate)||0;
+          if(dr.color) c.color=dr.color;
+          // Keep the ids of businesses that survive the rename, so anything
+          // already tagged to one does not lose its reference.
+          const names=(dr.brands||'').split(',').map(t=>t.trim()).filter(Boolean);
+          const old=c.businesses||[];
+          c.businesses=names.map((n2,i)=>({id:(old[i]&&old[i].id)||id+'-b'+(i+1),name:n2,domain:(old[i]&&old[i].domain)||''}));
+          if(!c.businesses.length) c.businesses=[{id:id+'-main',name:nm,domain:c.domain}];
+          return x; });
+        this.setState({editClient:null,ecDraft:null});
+      },
+      // Adding a portal login for the client being edited (admins only).
+      dCmName:d.cmName||'', onCmName:this.draft('cmName'),
+      dCmEmail:d.cmEmail||'', onCmEmail:this.draft('cmEmail'),
+      dCmPass:d.cmPass||'', onCmPass:this.draft('cmPass'),
+      canManageMembers:isAdmin,
+      addClientMember:()=>{
+        const id=S.editClient; if(!id) return;
+        const nm=(d.cmName||'').trim(), em=(d.cmEmail||'').trim(), pw=d.cmPass||'';
+        if(!em) return this.setState({syncError:'An email is required.'});
+        if(pw.length<12) return this.setState({syncError:'Password must be at least 12 characters.'});
+        this.setState({syncError:null});
+        window.SUData.createClientLogin(id,em,pw,nm||em)
+          .then(()=>window.SUData.load())
+          .then(data=>{ this.__synced=structuredClone(data);
+            this.setState({data,d:{...this.state.d,cmName:'',cmEmail:'',cmPass:''}}); })
+          .catch(err=>this.setState({syncError:'Could not add member: '+(err.message||err)}));
+      },
+
+      // ----- the client's own portal access list -----
+      portalPeople:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===client.id)
+        .map(pp=>({name:pp.name||pp.email,email:pp.email||'',isMe:pp.id===me.id})),
+      dPmName:d.pmName||'', onPmName:this.draft('pmName'),
+      dPmEmail:d.pmEmail||'', onPmEmail:this.draft('pmEmail'),
+      dPmPass:d.pmPass||'', onPmPass:this.draft('pmPass'),
+      invitePortalMember:()=>{
+        const nm=(d.pmName||'').trim(), em=(d.pmEmail||'').trim(), pw=d.pmPass||'';
+        if(!em) return this.setState({syncError:'An email is required.'});
+        if(pw.length<12) return this.setState({syncError:'Password must be at least 12 characters.'});
+        this.setState({syncError:null});
+        window.SUData.invitePortalMember(em,pw,nm||em)
+          .then(()=>window.SUData.load())
+          .then(data=>{ this.__synced=structuredClone(data);
+            this.setState({data,d:{...this.state.d,pmName:'',pmEmail:'',pmPass:''}}); })
+          .catch(err=>this.setState({syncError:'Could not add: '+(err.message||err)}));
+      },
+
       // ----- new client -----
       dNewClientName:d.ncName||'', onNewClientName:this.draft('ncName'),
       dNewClientDomain:d.ncDomain||'', onNewClientDomain:this.draft('ncDomain'),
@@ -2389,7 +2617,7 @@ class Component extends DCLogic {
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
       homeProgCards, progCount:homeProgCards.length, noProgCards:homeProgCards.length===0,
-      todosTitle:client.name+' to-dos', ...dv, closeDetail,
+      todosTitle:client.name+' To-Dos', ...dv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
       teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
       teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
@@ -2421,7 +2649,11 @@ class Component extends DCLogic {
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
       clientCards, newRequests, noNewRequests:newRequests.length===0, pastRequests,
       msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;
-        return {name:c.name,dot:clientDot(c.id),select:()=>this.setState({msgClient:c.id}),
+        const un=unreadFor(c.id);
+        return {name:c.name,dot:clientDot(c.id),unread:un>0?un:false,
+          // Selecting a thread is what marks it read.
+          select:()=>{ markRead(c.id); this.setState({msgClient:c.id}); },
+          nameStyle:{flex:1,fontWeight:un?700:(active?600:400)},
           style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(active?clientColor(c.id):'transparent'),padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}}; }),
       thread, threadName:isTeam?cname(msgCid):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
       onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
