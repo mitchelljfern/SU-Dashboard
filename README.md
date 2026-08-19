@@ -229,9 +229,16 @@ columns, and it appears in exactly one of them at a time:
 | Open requests | Awaiting review | the team approves it, setting an estimate |
 | In queue | Queued | the team presses **Start** |
 | In progress | In progress | the team presses **Submit for approval** |
-| Awaiting approval | In review | the client presses **Approve** |
+| Awaiting approval | Awaiting approval | the client presses **Approve** |
 
-Approving counts the hours and moves it to completed work, off all four.
+Approving counts the hours and takes it off all four: the work item shows under
+completed work in the portal, and the request it came from under **Completed
+Requests** on the team's Requests page.
+
+The team's *Awaiting approval* holds both the work handed over and any updates
+sent for sign-off — both are waiting on the same person. A handed-over item used
+to stay in *In progress* wearing an "In review" badge, so the column the team
+watches for what is still theirs to do included work that was not.
 
 Open requests used to hold approved requests too, so a card sat there *and* in
 whatever column its work item had reached — the same job listed twice. Open

@@ -669,9 +669,6 @@
                     <button onClick="{{ w.submit }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
                   </div>
                 </sc-if>
-                <sc-if value="{{ w.waiting }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border-hairline);padding-top:10px;width:100%">Waiting on the client to approve.</div>
-                </sc-if>
               </div>
             </sc-for>
             <sc-if value="{{ noTeamProg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress.</div></sc-if>
@@ -682,8 +679,11 @@
             </div>
             <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
               <button onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.when }}</div></div>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.kind }} · {{ u.when }}</div></div>
                 <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
+                <sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted);line-height:1.45">{{ u.hoursNote }}</div>
+                </sc-if>
               </button>
             </sc-for>
             <sc-if value="{{ noTeamAppr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on clients.</div></sc-if>
@@ -3931,22 +3931,45 @@ class Component extends DCLogic {
           it.status='progress'; it.startedAt=Date.now();
           this.logEv(x,it.clientId,'Started work: '+it.title); return x; }))
       }));
-    const teamProgCards=liveWork.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
+    // Submitting for approval hands the item over, so it leaves In progress.
+    // It used to stay there wearing an "In review" badge, which made the
+    // column the team watches for what is still theirs to do include work
+    // that was not — the client's board had this right and ours did not.
+    const teamProgCards=liveWork.filter(w=>w.status==='progress').map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
       return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,
         commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         // Handing an item to the client is the common move, so it does not
         // need a trip to the Workboard.
-        canSubmit: w.status==='progress',
+        canSubmit: true,
         submitNote: willCount? ('Sends it to the client to approve — '+willCount+(Number(w.actualHours)?' hours recorded.':' hours estimated.'))
                              : 'Sends it to the client to approve. No hours recorded yet.',
         submit: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           it.status='review'; it.approvalRequestedAt=Date.now();
-          this.logEv(x,it.clientId,'Sent for approval: '+it.title); return x; })),
-        waiting: w.status==='review'};
+          this.logEv(x,it.clientId,'Sent for approval: '+it.title); return x; }))};
     });
-    const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),dot:clientDot(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
+    // Everything sitting with the client: work we have handed over, and
+    // updates we have asked them to sign off. Both are waiting on the same
+    // person, so both belong in the same column.
+    const teamApprCards=[]
+      .concat(D.updates.filter(u=>u.needsApproval&&!u.approved).map(u=>({
+        kind:'Update', sortTs:u.ts, text:u.text,
+        clientName:cname(u.clientId), dot:clientDot(u.clientId),
+        when:this.fmt(u.ts), open:openDetail('update',u.id),
+        hasHoursNote:false, hoursNote:''})))
+      .concat(liveWork.filter(w=>w.status==='review').map(w=>{
+        const willCount=Number(w.actualHours)||Number(w.hours)||0;
+        const ts=w.approvalRequestedAt||w.ts;
+        return {kind:'Work item', sortTs:ts, text:w.title,
+          clientName:cname(w.clientId), dot:clientDot(w.clientId),
+          when:this.fmt(ts), open:openDetail('work',w.id),
+          hasHoursNote:true,
+          hoursNote: willCount
+            ? ('Approving counts '+willCount+(Number(w.actualHours)?'h':'h estimated')+' against their month.')
+            : 'No hours recorded on this one.'};
+      }))
+      .sort((a,b)=>(b.sortTs||0)-(a.sortTs||0));
     const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:msgSigner(m),when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
     // The tile opens the file when one is stored, and falls back to the Files
     // tab for the seeded rows that never had bytes behind them.
