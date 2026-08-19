@@ -219,6 +219,20 @@ businesses — Double Ops Inc and Bravo Boxing sit under one account, so one
 login serves the whole group. Extra businesses are entered comma-separated when
 creating the client and stored on `clients.businesses`.
 
+### Requests
+
+Both Requests pages split the same way, because a request is either still
+moving or it is closed and those are two different questions:
+
+- **Awaiting review** (team only) — new requests, with the approve/decline
+  controls and the optional estimate.
+- **Current Requests** — approved and in flight. On the client's page this also
+  covers what they have submitted and we have not triaged yet.
+- **Completed Requests** — finished and declined, each carrying its own badge.
+
+One mapper renders the card for both sides, so they are the same card; the team
+version adds the client's name, which a client does not need on their own.
+
 ## Money
 
 **Billing type** is per client:

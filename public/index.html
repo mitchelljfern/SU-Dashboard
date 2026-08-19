@@ -1006,14 +1006,66 @@
             <sc-if value="{{ noNewRequests }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
           </div>
           <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">History</h3>
-            <sc-for list="{{ pastRequests }}" as="r" hint-placeholder-count="3">
-              <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
-                <span style="{{ r.dot }}"></span>
-              <div style="flex:1;font-size:13px;color:var(--text-body)">{{ r.title }} <span style="color:var(--text-muted)">· {{ r.clientName }}</span></div>
-                <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-              </div>
-            </sc-for>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Current Requests</h3>
+            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+              <sc-for list="{{ teamCurrentReqs }}" as="tc" hint-placeholder-count="3">
+              <button onClick="{{ tc.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ tc.showClient }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ tc.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ tc.clientName }}</span></div>
+                </sc-if>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ tc.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ tc.title }}</div>
+                <sc-if value="{{ tc.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ tc.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ tc.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ tc.needBy }}</div>
+                </sc-if>
+                <sc-if value="{{ tc.hasFiles }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ tc.filesLabel }}</div>
+                </sc-if>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ tc.badgeStyle }}">{{ tc.statusLabel }}</span>
+                  <sc-if value="{{ tc.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ tc.urgencyStyle }}">{{ tc.urgency }}</span></sc-if>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ tc.when }}</span>
+                </div>
+              </button>
+              </sc-for>
+              <sc-if value="{{ noTeamCurrentReqs }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13px;color:var(--text-muted)">Nothing approved and in flight.</div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed Requests</h3>
+            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+              <sc-for list="{{ teamDoneReqs }}" as="td" hint-placeholder-count="3">
+              <button onClick="{{ td.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ td.showClient }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ td.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ td.clientName }}</span></div>
+                </sc-if>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ td.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ td.title }}</div>
+                <sc-if value="{{ td.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ td.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ td.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ td.needBy }}</div>
+                </sc-if>
+                <sc-if value="{{ td.hasFiles }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ td.filesLabel }}</div>
+                </sc-if>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ td.badgeStyle }}">{{ td.statusLabel }}</span>
+                  <sc-if value="{{ td.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ td.urgencyStyle }}">{{ td.urgency }}</span></sc-if>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ td.when }}</span>
+                </div>
+              </button>
+              </sc-for>
+              <sc-if value="{{ noTeamDoneReqs }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
+              </sc-if>
+            </div>
           </div>
         </div>
       </sc-if>
@@ -2020,12 +2072,15 @@
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 8px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your requests</h3>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Current Requests</h3>
             <button onClick="{{ exportRequests }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
           </div>
           <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
             <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
               <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
+                </sc-if>
                 <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
@@ -2045,7 +2100,38 @@
               </button>
             </sc-for>
             <sc-if value="{{ noMyRequests }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13px;color:var(--text-muted)">Nothing submitted yet.</div>
+              <div style="font-size:13px;color:var(--text-muted)">Nothing open right now.</div>
+            </sc-if>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed Requests</h3>
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+            <sc-for list="{{ myDoneRequests }}" as="r" hint-placeholder-count="3">
+              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
+                </sc-if>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
+                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
+                </sc-if>
+                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
+                </sc-if>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
+                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ noMyDoneRequests }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
             </sc-if>
           </div>
         </div>
@@ -3004,13 +3090,31 @@ class Component extends DCLogic {
       approve:stopThen(()=>{ approveReq(r.id, d['est_'+r.id]);
         this.setState(s2=>({d:{...s2.d,['est_'+r.id]:undefined}})); }),
       decline:stopThen(()=>declineReq(r.id))}));
-    const pastRequests=D.requests.filter(r=>r.status!=='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),badgeStyle,statusLabel}; });
-    const myRequests=D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+    // A request is either still moving or it is closed, and those are two
+    // different questions. One list answered neither: the team's History put
+    // approved, finished and declined together as bare rows, and the client's
+    // list ran finished work in among what is still open.
+    //
+    // One mapper serves both sides so the cards are the same card. The team
+    // needs the client's name on it; a client already knows whose it is.
+    const reqClosed = r => r.status==='done' || r.status==='declined';
+    const byNewest = (a,b)=>b.ts-a.ts;
+    const reqCard = (r, withClient) => {
+      const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
-      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,
+        cat:r.category||'General', open:openDetail('request',r.id),
+        clientName:cname(r.clientId), dot:clientDot(r.clientId), showClient:!!withClient,
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
-        urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
-        dateBits(r.needBy, w&&w.projectedFinish)); });
+        urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),
+        isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
+        dateBits(r.needBy, w&&w.projectedFinish)); };
+    const teamCurrentReqs=D.requests.filter(r=>r.status==='approved')
+      .sort(byNewest).map(r=>reqCard(r,true));
+    const teamDoneReqs=D.requests.filter(reqClosed).sort(byNewest).map(r=>reqCard(r,true));
+    const myReqAll=D.requests.filter(r=>r.clientId===client.id);
+    const myRequests=myReqAll.filter(r=>!reqClosed(r)).sort(byNewest).map(r=>reqCard(r,false));
+    const myDoneRequests=myReqAll.filter(reqClosed).sort(byNewest).map(r=>reqCard(r,false));
     // updates (portal)
     const portalUpdates=D.updates.filter(u=>u.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(u=>({
       when:this.fmt(u.ts),text:u.text,feedback:u.feedback,
@@ -4147,7 +4251,9 @@ class Component extends DCLogic {
         this.set(x=>{ x.work.unshift({id:this.uid(),clientId:d.workClient,title,
           status:'queued',hours:Math.max(0,Number(d.workHours)||0),ts:Date.now()}); return x; });
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
-      clientCards, newRequests, noNewRequests:newRequests.length===0, pastRequests,
+      clientCards, newRequests, noNewRequests:newRequests.length===0,
+      teamCurrentReqs, noTeamCurrentReqs:teamCurrentReqs.length===0,
+      teamDoneReqs, noTeamDoneReqs:teamDoneReqs.length===0,
       msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;
         const un=unreadFor(c.id);
         return {name:c.name,dot:clientDot(c.id),unread:un>0?un:false,
@@ -4201,6 +4307,7 @@ class Component extends DCLogic {
         this.__reqDraftId=null;
         this.setState(s=>({reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, noMyRequests:myRequests.length===0,
+      myDoneRequests, noMyDoneRequests:myDoneRequests.length===0,
       exportRequests: ()=>saveCsv(
         (client.name||'requests').replace(/[^\w-]+/g,'-').toLowerCase()+'-requests.csv',
         ['Title','Category','Status','Urgency','Needed by','Projected finish','Submitted','Description','Links','Files'],
