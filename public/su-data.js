@@ -452,7 +452,21 @@
 
   // Where an invitation link lands. The person arrives with a recovery token
   // in the URL, sets a password, and carries on into the app.
-  const inviteRedirect = () => window.location.origin + '/';
+  //
+  // Deliberately not window.location.origin. Invitations are sent by whoever
+  // is signed in as an admin, and an admin working against a local copy was
+  // minting links that read redirect_to=http://localhost:3000 — dead on
+  // arrival for the person who received the mail. The configured site is the
+  // one address that is right for every recipient. A deploy preview still
+  // redirects to itself, since only the real thing is ever pinned here.
+  const inviteRedirect = () => {
+    const cfg = window.SU_CONFIG || {};
+    const here = window.location.origin;
+    const local = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|$)/i.test(here)
+      || window.location.protocol === 'file:';
+    const site = String(cfg.site || '').replace(/\/+$/, '');
+    return (local && site ? site : here) + '/';
+  };
 
   // Sends the "set your password" mail. Also what Forgot password calls —
   // it is the same link either way, which is why one function serves both.
