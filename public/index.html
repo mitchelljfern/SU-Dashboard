@@ -317,9 +317,14 @@
             </div>
 
             <sc-if value="{{ canSetProjected }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
                 <input value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Estimated hours</label>
+                <input value="{{ detailEst }}" onChange="{{ onDetailEst }}" onBlur="{{ saveDetailEst }}" type="number" min="0" step="0.25" placeholder="Not estimated yet" style="width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
+                <span style="font-size:11.5px;color:var(--text-muted)">Internal. Change it whenever the scope does.</span>
               </div>
             </sc-if>
 
@@ -554,7 +559,7 @@
       </sc-if>
 
       <sc-if value="{{ secOverview }}" hint-placeholder-val="{{ true }}">
-        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;align-items:center;justify-content:space-between">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ tReqCount }})</h3>
@@ -571,6 +576,30 @@
               </button>
             </sc-for>
             <sc-if value="{{ noTeamReqs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Queued ({{ tQueueCount }})</h3>
+              <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
+            </div>
+            <sc-for list="{{ teamQueueCards }}" as="q" hint-placeholder-count="2">
+              <div onClick="{{ q.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ q.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ q.clientName }}</div></div>
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
+                  <span style="font-size:11.5px;color:var(--text-muted)">{{ q.hoursLabel }}</span>
+                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ q.commentsLabel }}</span>
+                </div>
+                <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}">
+                  <span style="{{ q.urgencyStyle }};align-self:flex-start">{{ q.urgency }}</span>
+                </sc-if>
+                <sc-if value="{{ q.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:11.5px;color:var(--text-muted)">Client needs it by {{ q.needBy }}</div>
+                </sc-if>
+                <button onClick="{{ q.start }}" style="width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;margin-top:2px" style-hover="background:var(--navy-800)">Start ▸</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noTeamQueue }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing queued.</div></sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;align-items:center;justify-content:space-between">
@@ -707,7 +736,7 @@
           <select value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
             <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
           </select>
-          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13px">
+          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs (optional)" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13px">
           <button onClick="{{ addWork }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to queue</button>
         </div>
         <div class="su-cols" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
@@ -966,7 +995,7 @@
                   <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
                     <div style="display:flex;flex-direction:column;gap:3px">
                       <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Estimated hours</label>
-                      <input value="{{ r.estHours }}" onChange="{{ r.onEstHours }}" onClick="{{ swallow }}" type="number" min="0" step="0.25" placeholder="e.g. 4" style="width:150px;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:12.5px">
+                      <input value="{{ r.estHours }}" onChange="{{ r.onEstHours }}" onClick="{{ swallow }}" type="number" min="0" step="0.25" placeholder="Optional" style="width:150px;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:12.5px">
                     </div>
                     <button onClick="{{ r.approve }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Approve → queue</button>
                     <button onClick="{{ r.decline }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;color:var(--text-body);padding:9px 18px;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--gray-100)">Decline</button>
@@ -1020,7 +1049,7 @@
       </sc-if>
 
       <sc-if value="{{ pHome }}" hint-placeholder-val="{{ false }}">
-        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start">
+        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;align-items:center;justify-content:space-between">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ reqCount }})</h3>
@@ -2452,9 +2481,9 @@ class Component extends DCLogic {
       {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
     const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,
-      d:{...s2.d,detailDesc:undefined,comment:''}}));
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined,comment:''}}));
     const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,
-      d:{...s2.d,detailDesc:undefined}}));
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production','Blog','Events'];
@@ -3275,6 +3304,20 @@ class Component extends DCLogic {
           // Team sets the projected finish from inside the detail view too.
           canSetProjected: isTeam&&ty==='work',
           detailProjectedRaw: (ty==='work'? item.projectedFinish : '')||'',
+          // The estimate is a working number, not a decision made once at
+          // approval: scope arrives late, and 0 entered to get moving has to
+          // be correctable. Team only — the client is never shown this field.
+          // Held as a draft and written on blur, so typing "12" does not pass
+          // through 1 on its way.
+          detailEst: d.detailEst===undefined
+            ? (ty==='work'&&Number(item.hours)? String(item.hours) : '')
+            : d.detailEst,
+          onDetailEst: this.draft('detailEst'),
+          saveDetailEst: ()=>{ if(!(isTeam&&ty==='work')) return;
+            const v=d.detailEst; if(v===undefined) return;
+            this.set(x=>{ const it=findIt(x);
+              it.hours = v===''? 0 : Math.max(0,Number(v)||0); return x; });
+            this.setState(s2=>({d:{...s2.d,detailEst:undefined}})); },
           onDetailProjected: e=>{ const v=e.target.value; this.set(x=>{ const it=findIt(x); it.projectedFinish=v; return x; }); },
           copyCard: ()=>copyText(cardMarkdown(item, ty), 'Card'),
           detailApprove: (ty==='update'&&item.needsApproval&&!item.approved&&!isTeam)
@@ -3482,6 +3525,24 @@ class Component extends DCLogic {
     const invSaveable=isTeam&&canBilling&&!!invSel;
 
     const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
+    // The queue was only ever visible by opening the Workboard, so the next
+    // job to pick up was always one click out of sight. Oldest first: a queue
+    // that surfaces the newest thing is not a queue.
+    const teamQueueCards=D.work.filter(w=>w.status==='queued')
+      .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>({
+        title:w.title, clientName:cname(w.clientId), dot:clientDot(w.clientId),
+        hoursLabel: Number(w.hours)? Number(w.hours)+'h estimated' : 'No estimate yet',
+        urgency:w.urgency||'Normal', urgencyStyle:urgStyle(w.urgency),
+        isUrgent: w.urgency==='Urgent'||w.urgency==='High',
+        hasNeedBy: !!w.needBy, needBy: niceDate(w.needBy),
+        commentsLabel:cLabel((w.comments||[]).length),
+        open:openDetail('work',w.id),
+        // Starting is the whole point of the column, so it does not need a
+        // trip to the board. The client sees it move into their In progress.
+        start: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
+          it.status='progress'; it.startedAt=Date.now();
+          this.logEv(x,it.clientId,'Started work: '+it.title); return x; }))
+      }));
     const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
@@ -4054,6 +4115,7 @@ class Component extends DCLogic {
       todosTitle:client.name+' To-Dos', ...dv, ...pv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
       teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
+      teamQueueCards, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
       teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
       teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
       goTeamRequests:go('requests'), goBoard:go('board'), lastMsgs,
@@ -4078,8 +4140,12 @@ class Component extends DCLogic {
         this.set(x=>{ x.updates.unshift({id:this.uid(),clientId:d.updClient,text,ts:Date.now(),needsApproval:!!d.updApproval,approved:false,feedback:[]}); this.logEv(x,d.updClient,'Update posted for '+cname(d.updClient)); return x; });
         this.setState(s=>({d:{...s.d,updText:''}})); },
       boardCols, dWork:d.work||'', onWork:this.draft('work'), dWorkClient:d.workClient, onWorkClient:this.draft('workClient'), dWorkHours:d.workHours||'', onWorkHours:this.draft('workHours'),
+      // A blank estimate used to become 2 hours, which is a number nobody
+      // chose and which the client is eventually billed against. Blank means
+      // no estimate; it can be filled in from the card once it is known.
       addWork:()=>{ const title=(d.work||'').trim(); if(!title) return;
-        this.set(x=>{ x.work.unshift({id:this.uid(),clientId:d.workClient,title,status:'queued',hours:Number(d.workHours)||2}); return x; });
+        this.set(x=>{ x.work.unshift({id:this.uid(),clientId:d.workClient,title,
+          status:'queued',hours:Math.max(0,Number(d.workHours)||0),ts:Date.now()}); return x; });
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
       clientCards, newRequests, noNewRequests:newRequests.length===0, pastRequests,
       msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;

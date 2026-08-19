@@ -233,10 +233,18 @@ creating the client and stored on `clients.businesses`.
 ### Retainer hours
 
 Hours on a retainer are counted when a finished item is **approved**, into the
-month it was approved in. The team sets an estimate when approving a request,
-records the hours it actually took when handing the item over (optional — blank
-means the estimate stands), and hands it to the client with **Submit for
-approval** — from the Workboard card or straight from the Overview. It then
+month it was approved in. The team may set an estimate when approving a request
+— it is optional, and nothing is invented when it is left blank. The estimate
+stays editable from the work item's card, team side only, for as long as the
+item is open: scope arrives late, and a 0 entered to get moving has to be
+correctable. The team records the hours it actually took when handing the item
+over (also optional — blank means the estimate stands), and hands it to the
+client with **Submit for approval** — from the Workboard card or straight from the Overview.
+
+The Overview carries the whole pipeline left to right — open requests, the
+queue, in progress, awaiting approval. **Start** on a queued card moves it into
+progress without a trip to the Workboard, and the client sees it move into their
+own *In progress* list. It then
 leaves the client's *In progress* list and appears under **Awaiting approval**
 alongside updates, which is where they sign work off. Approving is what counts
 the hours, and the card says how many before it is pressed. Approving is what counts:
