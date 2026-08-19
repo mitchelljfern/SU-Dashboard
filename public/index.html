@@ -277,7 +277,7 @@
 
       <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
-        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:84vh;overflow-y:auto;background:#fff;z-index:81;display:flex;flex-direction:column">
+        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:84vh;overflow-y:auto;background:#fff;z-index:81;display:flex;flex-direction:column;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
             <span style="flex:1"></span>
@@ -374,8 +374,8 @@
               </div>
             </sc-if>
             <sc-if value="{{ detailCanAttach }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                <label style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onAttachFile }}" style="display:none">{{ attachLabel }}</label>
+              <div style="{{ dropStyle }}" onDragOver="{{ onDetailDragOver }}" onDragLeave="{{ onDetailDragLeave }}" onDrop="{{ onDetailDrop }}">
+                <label style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 16px;font-size:13px;color:var(--text-body);cursor:pointer;background:#fff" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onAttachFile }}" style="display:none">{{ attachLabel }}</label>
                 <span style="font-size:12px;color:var(--text-muted)">{{ attachHint }}</span>
               </div>
             </sc-if>
@@ -394,6 +394,21 @@
                 <button onClick="{{ detailReqDeclineFn }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:13px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
               </div>
             </sc-if>
+
+            <sc-if value="{{ canArchive }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid var(--border-hairline);padding-top:12px">
+                <button onClick="{{ askArchive }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-muted);border-radius:12px;padding:7px 16px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:#D8564E;color:#a8352d">Archive card</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid var(--border-hairline);padding-top:12px;display:flex;flex-direction:column;gap:10px">
+                <div style="font-size:13px;color:#a8352d;font-weight:600">{{ archiveWarning }}</div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button onClick="{{ doArchive }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Yes, archive it</button>
+                  <button onClick="{{ cancelArchive }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);border-radius:12px;padding:9px 18px;font-size:13px;cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
           </div>
           <div style="padding:6px 26px 22px;display:flex;flex-direction:column;gap:4px">
             <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 6px">Comments</h4>
@@ -404,6 +419,12 @@
                   <span style="flex:1"></span>
                   <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen — on it</span></sc-if>
                   <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
+                  <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button></sc-if>
+                  <sc-if value="{{ c.confirming }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:11.5px;color:#a8352d;font-weight:600">Delete this comment?</span>
+                    <button onClick="{{ c.doDelete }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                    <button onClick="{{ c.cancelDelete }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="border-color:var(--navy)">Keep</button>
+                  </sc-if>
                 </div>
                 <div style="font-size:14px;color:var(--text-body);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0">{{ c.text }}</div>
               </div>
@@ -812,6 +833,23 @@
           </sc-for>
           <sc-if value="{{ noDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing completed yet.</div></sc-if>
         </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedWorkCount }})</h3>
+          <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Hidden from the client entirely. Restore one and it comes back where it was.</div>
+          <sc-for list="{{ archivedWork }}" as="aw" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer" onClick="{{ aw.open }}" style-hover="background:var(--gray-100)">
+              <span style="{{ aw.dot }}"></span>
+              <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:13.5px;color:var(--text-body)">{{ aw.title }}</div>
+                <div style="font-size:11.5px;color:var(--text-muted)">{{ aw.kind }} · {{ aw.clientName }} · archived {{ aw.when }}</div>
+              </div>
+              <button onClick="{{ aw.restore }}" style="background:#fff;border:1px solid var(--ink-40);color:var(--navy);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Restore</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noArchivedWork }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:13px;color:var(--text-muted)">Nothing archived.</div>
+          </sc-if>
+        </div>
       </sc-if>
 
       <sc-if value="{{ secClients }}" hint-placeholder-val="{{ false }}">
@@ -1066,6 +1104,23 @@
                 <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
               </sc-if>
             </div>
+          </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedReqsCount }})</h3>
+            <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Hidden from the client entirely. Restore one and it comes back where it was.</div>
+            <sc-for list="{{ archivedReqs }}" as="ar" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer" onClick="{{ ar.open }}" style-hover="background:var(--gray-100)">
+                <span style="{{ ar.dot }}"></span>
+                <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:13.5px;color:var(--text-body)">{{ ar.title }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ ar.kind }} · {{ ar.clientName }} · archived {{ ar.when }}</div>
+                </div>
+                <button onClick="{{ ar.restore }}" style="background:#fff;border:1px solid var(--ink-40);color:var(--navy);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Restore</button>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noArchivedReqs }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13px;color:var(--text-muted)">Nothing archived.</div>
+            </sc-if>
           </div>
         </div>
       </sc-if>
@@ -2348,7 +2403,7 @@ class Component extends DCLogic {
       invClient:null, invoice:null,
       // Attachment lightbox, how many uploads are in flight, and which
       // attachment is mid-way through its delete confirmation.
-      preview:null, uploading:0, delFile:null,
+      preview:null, uploading:0, delFile:null, delComment:null, archiveAsk:null, dragOn:false,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
       profile:null, syncError:null, booted:false,
@@ -2541,6 +2596,14 @@ class Component extends DCLogic {
   }
   renderVals(){
     const S=this.state, D=S.data, d=S.d;
+    // Archived cards are gone from every list, on both sides. The client
+    // cannot even read one — the row is invisible to them in Postgres — so the
+    // team's lists have to drop them too, or the two sides would disagree
+    // about what exists. Everything below reads these, not D.work/D.requests;
+    // the raw collections are still what the archive itself and the file
+    // reference count look at.
+    const liveWork = (S.data.work||[]).filter(r=>!r.archived);
+    const liveReqs = (S.data.requests||[]).filter(r=>!r.archived);
     // Whether the signed-in *account* is staff, as opposed to which view is
     // currently open. A client account can never reach the team view.
     const isStaff = !!(S.profile && S.profile.role==='team');
@@ -2566,9 +2629,9 @@ class Component extends DCLogic {
     const client = D.clients.find(c=>c.id===S.viewClient) || D.clients[0] ||
       {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
-    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,
+    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined,comment:''}}));
-    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,
+    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
@@ -2837,7 +2900,7 @@ class Component extends DCLogic {
     }
     // An approved request becomes a work item; look it up so the client sees
     // the projected finish date the team set, without leaving their own view.
-    const workForReq=id=>D.work.find(w=>w.requestId===id);
+    const workForReq=id=>liveWork.find(w=>w.requestId===id);
     const dateBits=(needBy,projected)=>({
       needBy:niceDate(needBy), hasNeedBy:!!needBy,
       projected:niceDate(projected), hasProjected:!!projected
@@ -2850,7 +2913,7 @@ class Component extends DCLogic {
     const ymOf = ts => { const dte=new Date(Number(ts)||0);
       return dte.getUTCFullYear()+'-'+String(dte.getUTCMonth()+1).padStart(2,'0'); };
     const thisYm = ymOf(Date.now());
-    const approvedHours = (cid, ym) => (D.work||[])
+    const approvedHours = (cid, ym) => (liveWork||[])
       .filter(w=>w.clientId===cid && w.approvedAt && ymOf(w.approvedAt)===ym)
       .reduce((n,w)=>n+(Number(w.hoursApproved)||0), 0);
     const roundH = n => Math.round(n*100)/100;
@@ -2858,7 +2921,7 @@ class Component extends DCLogic {
     // Earlier months, so a client can see where the retainer went.
     const hoursHistory = cid => {
       const by = {};
-      for(const w of (D.work||[])){
+      for(const w of (liveWork||[])){
         if(w.clientId!==cid || !w.approvedAt) continue;
         const ym=ymOf(w.approvedAt);
         if(ym===thisYm) continue;
@@ -2957,7 +3020,7 @@ class Component extends DCLogic {
       return {label,accent,count:items.length,items,noItems:items.length===0};
     });
 
-    const newReqCount = D.requests.filter(r=>r.status==='new').length;
+    const newReqCount = liveReqs.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
     // The sidebar is hidden on a phone, and the mobile bars carried no badges
     // at all — so an unread message was invisible there. One rule, three bars.
@@ -3016,7 +3079,7 @@ class Component extends DCLogic {
     const order=['queued','progress','review','done'];
     const cols=[['queued','Queued','var(--gray-400)'],['progress','In Progress','var(--blue)'],['review','In Review','var(--teal)']];
     const boardCols=cols.map(([st,label,accent])=>{
-      const items=D.work.filter(w=>w.status===st).map(w=>{
+      const items=liveWork.filter(w=>w.status===st).map(w=>{
         const i=order.indexOf(st);
         const move=dir=>()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id); it.status=order[i+dir];
           // Reaching 'done' is an approval, whoever performs it, so it stamps
@@ -3053,9 +3116,9 @@ class Component extends DCLogic {
       });
       return {label,accent,count:items.length,items};
     });
-    const boardReqs=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+    const boardReqs=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
       approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
-    const doneItems=D.work.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
+    const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
     const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),dot:clientDot(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
       assignee:t.assigneeName||'', hasAssignee:!!t.assigneeName,
@@ -3071,7 +3134,7 @@ class Component extends DCLogic {
       return bits.join(' \u00b7 ');
     };
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
-    const newRequests=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,
+    const newRequests=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,
       desc:r.desc||'', hasDesc:!!r.desc,
       clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
       cat:r.category||'General',
@@ -3109,10 +3172,10 @@ class Component extends DCLogic {
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),
         isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
         dateBits(r.needBy, w&&w.projectedFinish)); };
-    const teamCurrentReqs=D.requests.filter(r=>r.status==='approved')
+    const teamCurrentReqs=liveReqs.filter(r=>r.status==='approved')
       .sort(byNewest).map(r=>reqCard(r,true));
-    const teamDoneReqs=D.requests.filter(reqClosed).sort(byNewest).map(r=>reqCard(r,true));
-    const myReqAll=D.requests.filter(r=>r.clientId===client.id);
+    const teamDoneReqs=liveReqs.filter(reqClosed).sort(byNewest).map(r=>reqCard(r,true));
+    const myReqAll=liveReqs.filter(r=>r.clientId===client.id);
     const myRequests=myReqAll.filter(r=>!reqClosed(r)).sort(byNewest).map(r=>reqCard(r,false));
     const myDoneRequests=myReqAll.filter(reqClosed).sort(byNewest).map(r=>reqCard(r,false));
     // updates (portal)
@@ -3123,7 +3186,7 @@ class Component extends DCLogic {
       showInput:S.feedbackFor===u.id, showFbBtn:S.feedbackFor!==u.id,
       openFeedback:()=>this.setState({feedbackFor:u.id}),
       sendFeedback:()=>{ const text=(d.feedback||'').trim(); if(!text) return;
-        this.set(x=>{ x.updates.find(y=>y.id===u.id).feedback.push({name:cname(client.id),text}); this.logEv(x,client.id,cname(client.id)+' left feedback on an update'); return x; });
+        this.set(x=>{ x.updates.find(y=>y.id===u.id).feedback.push({id:this.uid(),by:me.id,name:cname(client.id),text,ts:Date.now()}); this.logEv(x,client.id,cname(client.id)+' left feedback on an update'); return x; });
         this.setState(s=>({feedbackFor:null,d:{...s.d,feedback:''}})); }
     }));
     // pulse
@@ -3136,7 +3199,7 @@ class Component extends DCLogic {
       const usedThisMonth=hoursThisMonth(c.id);
       const pct=c.hoursTotal>0?Math.min(100,Math.round(100*usedThisMonth/c.hoursTotal)):0;
       const avg=c.pulse.length? (c.pulse.reduce((a,b)=>a+b,0)/c.pulse.length):0;
-      const act=D.work.find(w=>w.clientId===c.id&&w.status==='progress');
+      const act=liveWork.find(w=>w.clientId===c.id&&w.status==='progress');
       return {name:c.name,domain:c.domain,service:c.service,plan:c.plan,
         dot:clientDot(c.id), accent:clientColor(c.id),
         editing:S.editClient===c.id,
@@ -3158,8 +3221,8 @@ class Component extends DCLogic {
         noMembers:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===c.id).length===0,
         hoursLabel:usedThisMonth+' / '+c.hoursTotal+' hrs',
         barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
-        openWork:D.work.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
-        pendingReqs:D.requests.filter(r=>r.clientId===c.id&&r.status==='new').length,
+        openWork:liveWork.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
+        pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
         pulse:avg?avg.toFixed(1):'—', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
         activeTitle:act?act.title:'Nothing in progress',
         openPortal:()=>this.setState({role:'client',viewClient:c.id,section:'home',notifOpen:false})};
@@ -3276,7 +3339,7 @@ class Component extends DCLogic {
       approve:stopThen(()=>this.set(x=>{ const it=x.updates.find(y=>y.id===u.id); it.approved=true; this.logEv(x,u.clientId,cname(u.clientId)+' approved: '+it.text.slice(0,60)+'…'); return x; }))}));
     // Finished work the team has handed over. Approving is what counts the
     // hours, so the card says how many before it is pressed.
-    const approvalWork=D.work.filter(w=>w.clientId===client.id&&w.status==='review').map(w=>{
+    const approvalWork=liveWork.filter(w=>w.clientId===client.id&&w.status==='review').map(w=>{
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
       const ts=w.approvalRequestedAt||w.ts;
       return {sortTs:ts, when:this.fmt(ts), text:w.title,
@@ -3297,12 +3360,12 @@ class Component extends DCLogic {
     const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
     // Once the team hands an item over it belongs in Awaiting approval, not in
     // the in-progress list — that is where the client already signs things off.
-    const homeProgCards=D.work.filter(w=>w.clientId===client.id&&w.status==='progress').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+    const homeProgCards=liveWork.filter(w=>w.clientId===client.id&&w.status==='progress').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
       return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
         dateBits(w.needBy,w.projectedFinish)); });
 
-    const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+    const homeReqCards=liveReqs.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
@@ -3310,7 +3373,7 @@ class Component extends DCLogic {
         dateBits(r.needBy, w&&w.projectedFinish)); });
 
     // Finished work, newest first, for the client's Updates tab.
-    const completedWork=D.work.filter(w=>w.clientId===client.id&&w.status==='done')
+    const completedWork=liveWork.filter(w=>w.clientId===client.id&&w.status==='done')
       .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
       .map(w=>({title:w.title,
         completed: w.completedAt? new Date(w.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—',
@@ -3324,7 +3387,7 @@ class Component extends DCLogic {
     const exportCompleted = ()=>saveCsv(
       (client.name||'work').replace(/[^\w-]+/g,'-').toLowerCase()+'-completed-work.csv',
       ['Title','Category','Completed','Hours counted','Description','Links','Files'],
-      D.work.filter(w=>w.clientId===client.id&&w.status==='done')
+      liveWork.filter(w=>w.clientId===client.id&&w.status==='done')
         .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
         .map(w=>[w.title||'', w.category||'',
           w.completedAt? new Date(w.completedAt).toISOString().slice(0,10) : '',
@@ -3358,6 +3421,27 @@ class Component extends DCLogic {
               this.logEv(x,item.clientId,
                 'Social Upgrades removed '+(f.name||'a file')+' from "'+(it.title||'an item')+'"');
               return x; }));
+        // One upload path, whether the file arrived through the picker or
+        // was dropped on the card.
+        const attachPicked=picked=>{
+          if(!picked || !picked.length) return;
+          const kind= ty==='work'?'work' : ty==='strategy'?'strategy' : 'requests';
+          const who = isTeam? 'Social Upgrades' : cname(item.clientId);
+          startUploads(picked, {clientId:item.clientId, kind, itemId:item.id}, meta=>{
+            this.set(x=>{ const it=findIt(x);
+              it.files=(it.files||[]).concat([meta]);
+              // Approving a request copies its attachments onto the work item,
+              // so anything added *before* approval travels. Anything added
+              // after used to stop at the request — the work card the team
+              // actually works from never saw it. Carry it across.
+              if(ty==='request'){
+                const w=x.work.find(y=>y.requestId===item.id);
+                if(w) w.files=(w.files||[]).concat([meta]);
+              }
+              this.logEv(x,item.clientId,who+' attached '+meta.name+' to "'+(it.title||'an item')+'"');
+              return x; });
+          });
+        };
         dv={detailOpen:true,
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Strategy':'Update',
           detailTitle: ty==='update'?item.text:item.title,
@@ -3440,6 +3524,23 @@ class Component extends DCLogic {
               this.logEv(x,item.clientId,cname(item.clientId)+' approved: '+it.text.slice(0,60)+'…');
             }
             return x; }),
+          // Archiving is a two-step on purpose: the card leaves the client's
+          // portal entirely, and that should not be one stray click away. It
+          // is reversible from Archived, which the warning says.
+          canArchive: isTeam && (ty==='work'||ty==='request') && S.archiveAsk!==item.id,
+          archiveAsking: isTeam && S.archiveAsk===item.id,
+          archiveWarning: (ty==='work'&&item.approvedAt)
+            ? ('Are you sure? It disappears from the client\u2019s portal, and the '
+               +(Number(item.hoursApproved)||0)+'h it counted comes off their month. You can restore it from Archived.')
+            : 'Are you sure? It disappears from the client\u2019s portal as though it had been deleted. You can restore it from Archived.',
+          askArchive: ()=>this.setState({archiveAsk:item.id}),
+          cancelArchive: ()=>this.setState({archiveAsk:null}),
+          doArchive: ()=>{ if(!isTeam) return;
+            this.set(x=>{ const it=findIt(x); it.archived=true; it.archivedAt=Date.now(); return x; });
+            // No log entry: the activity feed is the client's, and an entry
+            // about a card they can no longer see explains nothing to them.
+            this.setState({detail:null,archiveAsk:null,
+              flash:'Archived. It is under Archived on this board.'}); },
           detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
           detailReqApproveFn:()=>approveReq(item.id),
           detailReqDeclineFn:()=>declineReq(item.id),
@@ -3462,35 +3563,52 @@ class Component extends DCLogic {
           // why nothing could ever be downloaded. The bytes go to storage now
           // and the item keeps the object path.
           attachLabel: uploading? 'Uploading\u2026' : '+ Attach a file',
-          attachHint: 'Up to 50 MB a file',
-          onAttachFile:e=>{
-            const picked=takeFiles(e); if(!picked.length) return;
-            const kind= ty==='work'?'work' : ty==='strategy'?'strategy' : 'requests';
-            const who = isTeam? 'Social Upgrades' : cname(item.clientId);
-            startUploads(picked, {clientId:item.clientId, kind, itemId:item.id}, meta=>{
-              this.set(x=>{ const it=findIt(x);
-                it.files=(it.files||[]).concat([meta]);
-                // Approving a request copies its attachments onto the work item,
-                // so anything added *before* approval travels. Anything added
-                // after used to stop at the request — the work card the team
-                // actually works from never saw it. Carry it across.
-                if(ty==='request'){
-                  const w=x.work.find(y=>y.requestId===item.id);
-                  if(w) w.files=(w.files||[]).concat([meta]);
-                }
-                this.logEv(x,item.clientId,who+' attached '+meta.name+' to "'+(it.title||'an item')+'"');
+          attachHint: 'or drop files here \u2014 up to 50 MB each',
+          onAttachFile:e=>{ attachPicked(takeFiles(e)); },
+          // Dropping a file on the card is the same upload, reached the other
+          // way. dragOn is set only on a change, because dragover fires
+          // continuously and every set would re-render the whole board.
+          dropStyle: S.dragOn
+            ? {display:'flex',alignItems:'center',gap:12,flexWrap:'wrap',border:'1px dashed var(--navy)',
+               background:'rgba(15,22,51,.04)',borderRadius:12,padding:'10px 12px'}
+            : {display:'flex',alignItems:'center',gap:12,flexWrap:'wrap',border:'1px dashed var(--gray-200)',
+               borderRadius:12,padding:'10px 12px'},
+          onDetailDragOver:e=>{ e.preventDefault(); if(!S.dragOn) this.setState({dragOn:true}); },
+          onDetailDragLeave:()=>{ if(S.dragOn) this.setState({dragOn:false}); },
+          onDetailDrop:e=>{ e.preventDefault();
+            if(S.dragOn) this.setState({dragOn:false});
+            const dt=e.dataTransfer;
+            attachPicked(Array.from((dt&&dt.files)||[])); },
+          // Staff may remove any comment; anybody else only their own. The
+          // same rule is enforced by the trigger on the table, because the
+          // whole comment array is client-writable and a rule the browser
+          // keeps to itself is not a rule.
+          detailComments:list.map((c,i)=>{
+            const key=c.id||('at-'+i);
+            const confirming=S.delComment===key;
+            return {who:c.who||c.name||'—', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
+            showAck:isTeam&&c.from!=='team'&&!c.ack&&!confirming,
+            ack:()=>this.set(x=>{ const it=findIt(x); const L=(it[listKey]=it[listKey]||[]); if(L[i]) L[i].ack=true; this.logEv(x,item.clientId,'Team acknowledged a comment'); return x; }),
+            canDelete: (isTeam || (!!c.by && c.by===me.id)) && !confirming,
+            confirming,
+            askDelete:()=>this.setState({delComment:key}),
+            cancelDelete:()=>this.setState({delComment:null}),
+            doDelete:()=>{ this.set(x=>{ const it=findIt(x);
+                const L=it[listKey]||[];
+                it[listKey]= c.id? L.filter(y=>y.id!==c.id) : L.filter((y,j)=>j!==i);
                 return x; });
-            });
-          },
-          detailComments:list.map((c,i)=>({who:c.who||c.name||'—', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
-            showAck:isTeam&&c.from!=='team'&&!c.ack,
-            ack:()=>this.set(x=>{ const it=findIt(x); const L=(it[listKey]=it[listKey]||[]); if(L[i]) L[i].ack=true; this.logEv(x,item.clientId,'Team acknowledged a comment'); return x; })})),
+              this.setState({delComment:null}); }};
+          }),
           noDetailComments:list.length===0,
           onCommentKey:e=>{ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)){ e.preventDefault(); dv.sendComment(); } },
           sendComment:()=>{ const text=(d.comment||'').trim(); if(!text) return;
             this.set(x=>{ const it=findIt(x);
               const nm=isTeam?'Social Upgrades':cname(item.clientId);
-              const entry={id:this.uid(),from:isTeam?'team':'client',who:nm,name:nm,text,ts:Date.now(),ack:false};
+              // `by` is what makes "delete your own" answerable, here and in
+              // the Postgres trigger. Comments written before it existed have
+              // no author on record and stay staff-only to remove.
+              const entry={id:this.uid(),by:me.id,from:isTeam?'team':'client',
+                who:nm,name:nm,text,ts:Date.now(),ack:false};
               (it[listKey]=it[listKey]||[]).push(entry);
               this.logEv(x,item.clientId,nm+' commented on '+(ty==='update'?'an update':'"'+it.title+'"')); return x; });
             this.setState(s=>({d:{...s.d,comment:''}})); }
@@ -3628,11 +3746,25 @@ class Component extends DCLogic {
       return m[1]+String(Number(m[2])+1).padStart(m[2].length,'0'); };
     const invSaveable=isTeam&&canBilling&&!!invSel;
 
-    const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
+    const teamReqCards=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
     // The queue was only ever visible by opening the Workboard, so the next
     // job to pick up was always one click out of sight. Oldest first: a queue
     // that surfaces the newest thing is not a queue.
-    const teamQueueCards=D.work.filter(w=>w.status==='queued')
+    // The archive itself reads the raw collections, since everything else
+    // deliberately cannot see these rows. Restoring is one click: it is
+    // archiving that needed the guard rail, not undoing it.
+    const archRow=(coll,label)=>(r)=>({
+      title:r.title||'Untitled', clientName:cname(r.clientId), dot:clientDot(r.clientId),
+      kind:label, when:r.archivedAt? this.fmt(r.archivedAt) : '',
+      open:openDetail(coll==='work'?'work':'request', r.id),
+      restore:stopThen(()=>this.set(x=>{ const it=x[coll].find(y=>y.id===r.id);
+        it.archived=false; it.archivedAt=null; return x; }))});
+    const byArchivedAt=(a,b)=>(b.archivedAt||0)-(a.archivedAt||0);
+    const archivedWork=(D.work||[]).filter(w=>w.archived).sort(byArchivedAt)
+      .map(archRow('work','Work item'));
+    const archivedReqs=(D.requests||[]).filter(r=>r.archived).sort(byArchivedAt)
+      .map(archRow('requests','Request'));
+    const teamQueueCards=liveWork.filter(w=>w.status==='queued')
       .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>({
         title:w.title, clientName:cname(w.clientId), dot:clientDot(w.clientId),
         hoursLabel: Number(w.hours)? Number(w.hours)+'h estimated' : 'No estimate yet',
@@ -3647,7 +3779,7 @@ class Component extends DCLogic {
           it.status='progress'; it.startedAt=Date.now();
           this.logEv(x,it.clientId,'Started work: '+it.title); return x; }))
       }));
-    const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
+    const teamProgCards=liveWork.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
       return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,
@@ -3689,7 +3821,7 @@ class Component extends DCLogic {
     // stats & activity (team overview)
     const stats=[
       {label:'Active clients',value:D.clients.length},
-      {label:'Open work items',value:D.work.filter(w=>w.status!=='done').length},
+      {label:'Open work items',value:liveWork.filter(w=>w.status!=='done').length},
       {label:'New requests',value:newReqCount},
       {label:'Open to-dos',value:D.todos.filter(t=>!t.done).length}
     ];
@@ -4219,6 +4351,8 @@ class Component extends DCLogic {
       todosTitle:client.name+' To-Dos', ...dv, ...pv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
       teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
+      archivedWork, archivedWorkCount:archivedWork.length, noArchivedWork:archivedWork.length===0,
+      archivedReqs, archivedReqsCount:archivedReqs.length, noArchivedReqs:archivedReqs.length===0,
       teamQueueCards, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
       teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
       teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
@@ -4311,7 +4445,7 @@ class Component extends DCLogic {
       exportRequests: ()=>saveCsv(
         (client.name||'requests').replace(/[^\w-]+/g,'-').toLowerCase()+'-requests.csv',
         ['Title','Category','Status','Urgency','Needed by','Projected finish','Submitted','Description','Links','Files'],
-        D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{
+        liveReqs.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{
           const w=workForReq(r.id);
           return [r.title||'', r.category||'', (reqBadge(r.status)[1]||''), r.urgency||'Normal',
             niceDate(r.needBy), niceDate(w&&w.projectedFinish),

@@ -233,6 +233,27 @@ moving or it is closed and those are two different questions:
 One mapper renders the card for both sides, so they are the same card; the team
 version adds the client's name, which a client does not need on their own.
 
+### Archiving and comments
+
+A card (work item or request) can be **archived** from its own pop-up, team
+side only, behind a confirmation that says what it does. The client stops
+seeing it entirely — the row is invisible to them in Postgres, not merely
+hidden in the UI — and the team finds it under **Archived** at the foot of the
+Workboard and the Requests page, one click from being restored. Archived cards
+drop out of every list on both sides, including retainer hours, so the two
+sides never disagree about what exists; the confirmation says so when the card
+had approved hours on it.
+
+**Comments** can be deleted by the person who wrote them, and by any staff
+member. That is enforced by the trigger on the table, not just in the browser:
+the comment array has to be client-writable for a client to comment at all, so
+a rule the browser keeps to itself is not a rule. Ownership is `by`, the
+author's profile id, stamped when the comment is written — comments from before
+that field existed have no author on record and are staff-only to remove.
+
+Files can be dropped straight onto an open card as well as picked through the
+button; both take the same upload path.
+
 ## Money
 
 **Billing type** is per client:
