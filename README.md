@@ -282,6 +282,13 @@ when. It is one list in two places on purpose: archiving a work item and then
 looking for it under Requests, where it was never going to be, made the card
 look deleted.
 
+**Titles** are editable from the card by either side — a request typed in a
+hurry keeps its typo otherwise, and the person best placed to fix it is whoever
+wrote it. A request and the work item it became share a title, so renaming one
+renames the other; the change goes on the activity log. Updates and strategy
+cards are not covered: an update is a paragraph rather than a title, and
+strategy is not client-writable at all.
+
 **Comments** can be deleted by the person who wrote them, and by any staff
 member. That is enforced by the trigger on the table, not just in the browser:
 the comment array has to be client-writable for a client to comment at all, so

@@ -312,7 +312,23 @@
                 </div>
               </div>
             </sc-if>
-            <div style="font-size:16px;font-weight:500;color:var(--navy);line-height:1.5">{{ detailTitle }}</div>
+            <sc-if value="{{ titleReading }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:flex-start;gap:10px;min-width:0">
+                <div style="flex:1;font-size:16px;font-weight:500;color:var(--navy);line-height:1.5;overflow-wrap:anywhere">{{ detailTitle }}</div>
+                <sc-if value="{{ canEditTitle }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ startEditTitle }}" title="Edit the title" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Edit</button>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ titleEditing }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                <input value="{{ dTitle }}" onChange="{{ onTitle }}" onKeyDown="{{ onTitleKey }}" placeholder="What this card is" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:16px;font-weight:500;color:var(--navy);font-family:var(--font-body)">
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button onClick="{{ saveTitle }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:6px 18px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="filter:brightness(1.08)">Save title</button>
+                  <button onClick="{{ cancelTitle }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 16px;font-size:12.5px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
             <div style="display:flex;align-items:center;gap:12px">
               <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
               <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
@@ -431,7 +447,7 @@
                   <span style="flex:1"></span>
                   <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen — on it</span></sc-if>
                   <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
-                  <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button></sc-if>
+                  <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:22px;height:22px;min-width:22px;padding:0;color:var(--text-muted);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="border-color:#D8564E;color:#a8352d;background:#FDECEA">×</button></sc-if>
                   <sc-if value="{{ c.confirming }}" hint-placeholder-val="{{ false }}">
                     <span style="font-size:11.5px;color:#a8352d;font-weight:600">Delete this comment?</span>
                     <button onClick="{{ c.doDelete }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
@@ -2437,7 +2453,7 @@ class Component extends DCLogic {
       invClient:null, invoice:null,
       // Attachment lightbox, how many uploads are in flight, and which
       // attachment is mid-way through its delete confirmation.
-      preview:null, uploading:0, delFile:null, delComment:null, archiveAsk:null, dragOn:false,
+      preview:null, uploading:0, delFile:null, delComment:null, archiveAsk:null, editTitle:null, dragOn:false,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
       profile:null, syncError:null, booted:false,
@@ -2663,10 +2679,10 @@ class Component extends DCLogic {
     const client = D.clients.find(c=>c.id===S.viewClient) || D.clients[0] ||
       {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
-    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,
-      d:{...s2.d,detailDesc:undefined,detailEst:undefined,comment:''}}));
-    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,
-      d:{...s2.d,detailDesc:undefined,detailEst:undefined}}));
+    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,comment:''}}));
+    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production','Blog','Events'];
@@ -3520,6 +3536,35 @@ class Component extends DCLogic {
         dv={detailOpen:true,
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Strategy':'Update',
           detailTitle: ty==='update'?item.text:item.title,
+          // A title typed in a hurry keeps its typo unless somebody can fix
+          // it, and the person best placed to is whoever wrote it. Both sides
+          // may; the trigger allows `title` for a client on these two kinds.
+          // An update is a paragraph rather than a title, and a strategy card
+          // is not client-writable at all, so neither is offered here.
+          canEditTitle: (ty==='work'||ty==='request') && S.editTitle!==item.id,
+          titleEditing: (ty==='work'||ty==='request') && S.editTitle===item.id,
+          titleReading: !((ty==='work'||ty==='request') && S.editTitle===item.id),
+          dTitle: d.title===undefined? (item.title||'') : d.title,
+          onTitle: this.draft('title'),
+          onTitleKey: e=>{ if(e.key==='Enter'){ e.preventDefault(); dv.saveTitle(); }
+                           if(e.key==='Escape') dv.cancelTitle(); },
+          startEditTitle: ()=>this.setState(s2=>({editTitle:item.id,
+            d:{...s2.d,title:undefined}})),
+          cancelTitle: ()=>this.setState(s2=>({editTitle:null,d:{...s2.d,title:undefined}})),
+          saveTitle: ()=>{
+            const v=String(d.title===undefined? (item.title||'') : d.title).trim();
+            if(!v) return this.setState({syncError:'A card needs a title.'});
+            this.setState({syncError:null});
+            this.set(x=>{ const it=findIt(x); const was=it.title; it.title=v;
+              // A request and the work item it became share a title, since one
+              // was copied from the other. Renaming one and not the other
+              // leaves the two sides talking about different cards.
+              if(ty==='request'){ const w=x.work.find(y=>y.requestId===item.id); if(w) w.title=v; }
+              else if(it.requestId){ const rq=x.requests.find(y=>y.id===it.requestId); if(rq) rq.title=v; }
+              if(was!==v) this.logEv(x,item.clientId,
+                (isTeam?'Social Upgrades':cname(item.clientId))+' renamed "'+was+'" to "'+v+'"');
+              return x; });
+            this.setState(s2=>({editTitle:null,d:{...s2.d,title:undefined}})); },
           detailBadgeStyle:bs, detailStatus:sl,
           detailMeta: cname(item.clientId)+(ty==='work'
             ? ' · '+(item.approvedAt
