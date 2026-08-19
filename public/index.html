@@ -151,7 +151,22 @@
          Flipping to a column flexbox keeps it, and in that direction it stops
          the cards stretching — they shrank to the width of their own text. */
       .su-grid3{display:flex !important;flex-direction:column-reverse;gap:18px;align-items:stretch !important}
-      .su-tabs{flex-direction:row !important;overflow-x:auto;border-right:none !important;border-bottom:1px solid var(--border-hairline)}
+      /* The client switcher is a column of full-width rows on a desktop. Laid
+         out as a row on a phone it kept both of those properties: it stretched
+         to the height of the whole panel and the names wrapped onto three
+         lines, so the list of companies took the screen and the messages had
+         none of it. As a row it needs to be a row of chips — one line each,
+         only as tall as its own content. */
+      .su-tabs{flex-direction:row !important;overflow-x:auto;overflow-y:hidden;
+        align-items:center !important;align-self:start;gap:6px;
+        padding:8px 10px !important;border-right:none !important;
+        border-bottom:1px solid var(--border-hairline)}
+      .su-tabs>button{white-space:nowrap;flex:0 0 auto;
+        padding:7px 12px !important;font-size:13px !important;border-radius:12px}
+      .su-tabs>button>span{flex:0 0 auto !important}
+      /* With the switcher out of the way the thread gets the height back. */
+      .su-msg{min-height:0 !important}
+      .su-msg .su-thread{max-height:none !important;min-height:46vh}
       /* iOS zooms the page in when a focused field is under 16px, and does not
          zoom back out afterwards. Bumping the fields is the fix that keeps
          pinch-zoom working, unlike locking maximum-scale. */
@@ -831,19 +846,19 @@
           <sc-if value="{{ noDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing completed yet.</div></sc-if>
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedWorkCount }})</h3>
-          <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Hidden from the client entirely. Restore one and it comes back where it was.</div>
-          <sc-for list="{{ archivedWork }}" as="aw" hint-placeholder-count="2">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedCount }})</h3>
+          <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Everything archived by either side, newest first. Hidden from the client entirely; restore one and it comes back where it was.</div>
+          <sc-for list="{{ archivedAll }}" as="aw" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer" onClick="{{ aw.open }}" style-hover="background:var(--gray-100)">
               <span style="{{ aw.dot }}"></span>
               <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
                 <div style="font-size:13.5px;color:var(--text-body)">{{ aw.title }}</div>
-                <div style="font-size:11.5px;color:var(--text-muted)">{{ aw.kind }} · {{ aw.clientName }} · archived {{ aw.when }}</div>
+                <div style="font-size:11.5px;color:var(--text-muted)">{{ aw.kind }} · {{ aw.clientName }} · archived by {{ aw.who }} · {{ aw.when }}</div>
               </div>
               <button onClick="{{ aw.restore }}" style="background:#fff;border:1px solid var(--ink-40);color:var(--navy);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Restore</button>
             </div>
           </sc-for>
-          <sc-if value="{{ noArchivedWork }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ noArchived }}" hint-placeholder-val="{{ true }}">
             <div style="font-size:13px;color:var(--text-muted)">Nothing archived.</div>
           </sc-if>
         </div>
@@ -1103,19 +1118,19 @@
             </div>
           </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedReqsCount }})</h3>
-            <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Hidden from the client entirely. Restore one and it comes back where it was.</div>
-            <sc-for list="{{ archivedReqs }}" as="ar" hint-placeholder-count="2">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedCount }})</h3>
+            <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Everything archived by either side, newest first. Hidden from the client entirely; restore one and it comes back where it was.</div>
+            <sc-for list="{{ archivedAll }}" as="ar" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer" onClick="{{ ar.open }}" style-hover="background:var(--gray-100)">
                 <span style="{{ ar.dot }}"></span>
                 <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px">
                   <div style="font-size:13.5px;color:var(--text-body)">{{ ar.title }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ ar.kind }} · {{ ar.clientName }} · archived {{ ar.when }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ ar.kind }} · {{ ar.clientName }} · archived by {{ ar.who }} · {{ ar.when }}</div>
                 </div>
                 <button onClick="{{ ar.restore }}" style="background:#fff;border:1px solid var(--ink-40);color:var(--navy);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Restore</button>
               </div>
             </sc-for>
-            <sc-if value="{{ noArchivedReqs }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ noArchived }}" hint-placeholder-val="{{ true }}">
               <div style="font-size:13px;color:var(--text-muted)">Nothing archived.</div>
             </sc-if>
           </div>
@@ -1134,7 +1149,7 @@
             </sc-for>
           </div>
           <div style="display:flex;flex-direction:column">
-            <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
+            <div class="su-thread" style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
               <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
                 <div style="{{ m.rowStyle }}">
                   <div style="{{ m.bubbleStyle }}">
@@ -3085,14 +3100,38 @@ class Component extends DCLogic {
     const unseenN = notifSrc.filter(l=>l.ts>S.seenTs).length;
     // messages
     const msgCid = isTeam? S.msgClient : client.id;
+    // Older messages stored the company alone. Where the sender is known they
+    // are signed properly on the way out; where they are not, the company is
+    // still better than nothing.
+    const msgSigner = m => {
+      if (m.who && m.who.indexOf(' @ ') > -1) return m.who;
+      const p = (D.people||[]).find(x=>x.id===m.by);
+      const org = m.from==='team' ? 'Social Upgrades' : cname(m.clientId);
+      const person = p ? String(p.name||p.email||'').trim() : '';
+      return person ? person + ' @ ' + org : (m.who || org);
+    };
     const thread = D.messages.filter(m=>m.clientId===msgCid).sort((a,b)=>a.ts-b.ts).map(m=>{
       const mine = isTeam? m.from==='team' : m.from==='client';
-      return {who:m.who,when:this.fmt(m.ts),text:m.text,
+      return {who:msgSigner(m),when:this.fmt(m.ts),text:m.text,
         rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
         bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--navy)':'var(--gray-100)',color:mine?'#fff':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
     });
+    // A message used to be signed by the company — every one from us read
+    // "Social Upgrades", so a thread with three people on it looked like one
+    // voice. It is signed by the person now, with the company after it, and
+    // the composed name is stored rather than resolved on the way out: a
+    // client cannot read our profiles, and the name has to survive that.
+    const orgOf = side => side==='team' ? 'Social Upgrades' : cname(msgCid);
+    const signature = side => {
+      const person = String(me.name || meRow.name || me.email || '').trim();
+      const org = orgOf(side);
+      return person ? person + ' @ ' + org : org;
+    };
     const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
-      this.set(x=>{ x.messages.push({id:this.uid(),clientId:msgCid,from:isTeam?'team':'client',who:isTeam?'Social Upgrades':cname(msgCid),text,ts:Date.now()}); this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
+      const side = isTeam? 'team' : 'client';
+      this.set(x=>{ x.messages.push({id:this.uid(),clientId:msgCid,from:side,by:me.id,
+        who:signature(side),text,ts:Date.now()});
+        this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
       this.setState(s=>({d:{...s.d,msg:''}})); };
     // board
     const order=['queued','progress','review','done'];
@@ -3452,6 +3491,11 @@ class Component extends DCLogic {
               this.logEv(x,item.clientId,
                 'Social Upgrades removed '+(f.name||'a file')+' from "'+(it.title||'an item')+'"');
               return x; }));
+        // Only these two kinds are cards in the sense that can be archived.
+        // A client may clear a request of their own, and work that has not
+        // been approved; approved work carries counted hours, so it stays.
+        const archivable = (ty==='work'||ty==='request');
+        const clientMayArchive = archivable && (ty==='request' || !item.approvedAt);
         // One upload path, whether the file arrived through the picker or
         // was dropped on the card.
         const attachPicked=picked=>{
@@ -3556,22 +3600,39 @@ class Component extends DCLogic {
             }
             return x; }),
           // Archiving is a two-step on purpose: the card leaves the client's
-          // portal entirely, and that should not be one stray click away. It
-          // is reversible from Archived, which the warning says.
-          canArchive: isTeam && (ty==='work'||ty==='request') && S.archiveAsk!==item.id,
-          archiveAsking: isTeam && S.archiveAsk===item.id,
-          archiveWarning: (ty==='work'&&item.approvedAt)
-            ? ('Are you sure? It disappears from the client\u2019s portal, and the '
-               +(Number(item.hoursApproved)||0)+'h it counted comes off their month. You can restore it from Archived.')
-            : 'Are you sure? It disappears from the client\u2019s portal as though it had been deleted. You can restore it from Archived.',
+          // portal entirely, and that should not be one stray click away.
+          //
+          // A client can archive too — a request submitted by mistake is
+          // theirs to clear — but not work that has already been approved:
+          // those hours count toward their retainer, and the party being
+          // billed does not get to take a card out of the total. Restoring is
+          // staff-only either way. Both rules are enforced by the trigger.
+          canArchive: archivable && (isTeam || clientMayArchive) && S.archiveAsk!==item.id,
+          archiveAsking: archivable && (isTeam || clientMayArchive) && S.archiveAsk===item.id,
+          archiveWarning: !isTeam
+            ? 'Are you sure? It comes off your dashboard. Social Upgrades keeps it on file and can bring it back if you change your mind.'
+            : (ty==='work'&&item.approvedAt)
+              ? ('Are you sure? It disappears from the client\u2019s portal, and the '
+                 +(Number(item.hoursApproved)||0)+'h it counted comes off their month. You can restore it from Archived.')
+              : 'Are you sure? It disappears from the client\u2019s portal as though it had been deleted. You can restore it from Archived.',
           askArchive: ()=>this.setState({archiveAsk:item.id}),
           cancelArchive: ()=>this.setState({archiveAsk:null}),
-          doArchive: ()=>{ if(!isTeam) return;
-            this.set(x=>{ const it=findIt(x); it.archived=true; it.archivedAt=Date.now(); return x; });
-            // No log entry: the activity feed is the client's, and an entry
+          doArchive: ()=>{ if(!(isTeam||clientMayArchive)) return;
+            this.set(x=>{
+              // A request and the work item it became are one job. Archiving
+              // one and leaving the other puts half of it back on the board.
+              const stamp=r=>{ if(!r) return; r.archived=true;
+                r.archivedAt=Date.now(); r.archivedBy=me.id; };
+              const it=findIt(x); stamp(it);
+              if(ty==='request'){ const w=x.work.find(y=>y.requestId===item.id);
+                if(w && !w.approvedAt) stamp(w); }
+              else if(it.requestId){ stamp(x.requests.find(y=>y.id===it.requestId)); }
+              return x; });
+            // No log entry: the activity feed is the client's, and a line
             // about a card they can no longer see explains nothing to them.
             this.setState({detail:null,archiveAsk:null,
-              flash:'Archived. It is under Archived on this board.'}); },
+              flash: isTeam? 'Archived. It is under Archived on either board.'
+                           : 'Archived. Ask us if you need it back.'}); },
           detailReqApprove: ty==='request'&&isTeam&&item.status==='new',
           detailReqApproveFn:()=>approveReq(item.id),
           detailReqDeclineFn:()=>declineReq(item.id),
@@ -3784,17 +3845,32 @@ class Component extends DCLogic {
     // The archive itself reads the raw collections, since everything else
     // deliberately cannot see these rows. Restoring is one click: it is
     // archiving that needed the guard rail, not undoing it.
-    const archRow=(coll,label)=>(r)=>({
-      title:r.title||'Untitled', clientName:cname(r.clientId), dot:clientDot(r.clientId),
-      kind:label, when:r.archivedAt? this.fmt(r.archivedAt) : '',
-      open:openDetail(coll==='work'?'work':'request', r.id),
-      restore:stopThen(()=>this.set(x=>{ const it=x[coll].find(y=>y.id===r.id);
-        it.archived=false; it.archivedAt=null; return x; }))});
-    const byArchivedAt=(a,b)=>(b.archivedAt||0)-(a.archivedAt||0);
-    const archivedWork=(D.work||[]).filter(w=>w.archived).sort(byArchivedAt)
-      .map(archRow('work','Work item'));
-    const archivedReqs=(D.requests||[]).filter(r=>r.archived).sort(byArchivedAt)
-      .map(archRow('requests','Request'));
+    // One archive, not two. Splitting it by kind meant archiving a work item
+    // from the Workboard and then looking for it under the Requests page,
+    // where it was never going to be — the card just looked deleted. Both
+    // kinds are listed together and the same list is shown on both boards, so
+    // wherever you archived from, that is where you find it.
+    const personName=id=>{ const p=(D.people||[]).find(x=>x.id===id);
+      return p? (p.name||p.email||null) : null; };
+    const unArchive=(x,coll,id)=>{ const it=x[coll].find(y=>y.id===id); if(!it) return;
+      it.archived=false; it.archivedAt=null; it.archivedBy=null;
+      // Archiving takes the request and the work item it became together, so
+      // restoring has to bring both back or half the job stays hidden.
+      if(coll==='work'&&it.requestId) unArchive(x,'requests',it.requestId);
+      if(coll==='requests'){ const w=x.work.find(y=>y.requestId===id);
+        if(w&&w.archived) unArchive(x,'work',w.id); } };
+    const archivedAll=[]
+      .concat((D.work||[]).filter(w=>w.archived).map(w=>({r:w,coll:'work',kind:'Work item'})))
+      .concat((D.requests||[]).filter(r=>r.archived).map(r=>({r,coll:'requests',kind:'Request'})))
+      .sort((a,b)=>(b.r.archivedAt||0)-(a.r.archivedAt||0))
+      .map(({r,coll,kind})=>({
+        title:r.title||'Untitled', clientName:cname(r.clientId), dot:clientDot(r.clientId),
+        kind, when:r.archivedAt? this.fmt(r.archivedAt) : 'at some point',
+        // Who archived it is the point of keeping the history: a client
+        // clearing their own request reads very differently from us doing it.
+        who: personName(r.archivedBy) || (r.archivedBy? 'someone since removed' : 'Social Upgrades'),
+        open:openDetail(coll==='work'?'work':'request', r.id),
+        restore:stopThen(()=>this.set(x=>{ unArchive(x,coll,r.id); return x; }))}));
     const teamQueueCards=liveWork.filter(w=>w.status==='queued')
       .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>({
         title:w.title, clientName:cname(w.clientId), dot:clientDot(w.clientId),
@@ -3826,7 +3902,7 @@ class Component extends DCLogic {
         waiting: w.status==='review'};
     });
     const teamApprCards=D.updates.filter(u=>u.needsApproval&&!u.approved).sort((a,b)=>b.ts-a.ts).map(u=>({text:u.text,clientName:cname(u.clientId),dot:clientDot(u.clientId),when:this.fmt(u.ts),open:openDetail('update',u.id)}));
-    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:m.who,when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
+    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:msgSigner(m),when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
     // The tile opens the file when one is stored, and falls back to the Files
     // tab for the seeded rows that never had bytes behind them.
     const brandFiles=myFiles.filter(f=>f.brand).map(f=>{ const r=fileRow(f);
@@ -4383,8 +4459,7 @@ class Component extends DCLogic {
       todosTitle:client.name+' To-Dos', ...dv, ...pv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
       teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
-      archivedWork, archivedWorkCount:archivedWork.length, noArchivedWork:archivedWork.length===0,
-      archivedReqs, archivedReqsCount:archivedReqs.length, noArchivedReqs:archivedReqs.length===0,
+      archivedAll, archivedCount:archivedAll.length, noArchived:archivedAll.length===0,
       teamQueueCards, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
       teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
       teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
