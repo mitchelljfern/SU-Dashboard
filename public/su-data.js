@@ -469,6 +469,22 @@
   // that exists but whose mail bounced is a different problem from one that
   // was never created, and telling them apart is the difference between
   // "try again" and "check the address".
+  // Mail providers refuse a sender they do not recognise, and the raw SMTP
+  // reply is the one piece of information that actually explains it.
+  function mailAdvice(err) {
+    const raw = String((err && err.message) || err || '');
+    if (/not verified|domain/i.test(raw)) {
+      return 'the mail provider rejected the sender address. Check that the '
+        + 'domain in your Supabase sender email is verified with your provider, '
+        + 'in the same account the API key came from';
+    }
+    if (/rate limit/i.test(raw)) {
+      return 'the hourly limit on auth emails was reached. Raise it under '
+        + 'Auth \u2192 Rate Limits, or wait';
+    }
+    return raw;
+  }
+
   async function inviteUser(rpc, params) {
     const { error } = await client().rpc(rpc, params);
     if (error) throw error;
@@ -476,7 +492,8 @@
       await sendPasswordLink(params.p_email);
     } catch (mailErr) {
       const e = new Error('The account was created, but the invitation email '
-        + 'could not be sent: ' + (mailErr.message || mailErr));
+        + 'could not be sent \u2014 ' + mailAdvice(mailErr)
+        + '. Fix that, then use Resend invite on their row.');
       e.accountCreated = true;
       throw e;
     }

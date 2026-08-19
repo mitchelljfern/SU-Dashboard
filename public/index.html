@@ -1583,6 +1583,9 @@
                 <span style="font-size:11.5px;color:var(--text-muted)">{{ pp.email }}</span>
               </div>
               <sc-if value="{{ pp.isMe }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--text-muted)">You</span></sc-if>
+              <sc-if value="{{ pp.canResend }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ pp.resend }}" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Resend invite</button>
+              </sc-if>
             </div>
           </sc-for>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -3553,8 +3556,19 @@ class Component extends DCLogic {
       },
 
       // ----- the client's own portal access list -----
+      // An invitation can fail after the account is made — the mail provider
+      // rejecting the sender domain does exactly that — so the invite has to
+      // be repeatable without recreating anybody.
       portalPeople:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===client.id)
-        .map(pp=>({name:pp.name||pp.email,email:pp.email||'',isMe:pp.id===me.id})),
+        .map(pp=>({name:pp.name||pp.email,email:pp.email||'',isMe:pp.id===me.id,
+          canResend:!!pp.email,
+          resend:()=>{
+            this.setState({syncError:null,flash:'Sending an invitation to '+pp.email+'\u2026'});
+            window.SUData.sendPasswordLink(pp.email)
+              .then(()=>this.setState({flash:'Invitation sent to '+pp.email+'.'}))
+              .catch(err=>this.setState({flash:null,
+                syncError:'Could not send to '+pp.email+': '+(err.message||err)}));
+          }})),
       dPmName:d.pmName||'', onPmName:this.draft('pmName'),
       dPmEmail:d.pmEmail||'', onPmEmail:this.draft('pmEmail'),
       // Staff have no tenant of their own, so client_invite_member — which
