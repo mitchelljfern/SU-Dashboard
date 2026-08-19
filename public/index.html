@@ -190,9 +190,11 @@
       <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
       </sc-if>
+      <sc-if value="{{ showPortalName }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;line-height:1.3">{{ portalName }}</div>
+      </sc-if>
       <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ userName }}</strong></div>
       <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
-      <div style="font-size:9px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:500">Based in the United States · Since 2014</div>
     </div>
   </aside>
   <div class="su-bottom" style="position:fixed;bottom:0;left:0;right:0;background:var(--navy);z-index:60;justify-content:space-around;align-items:stretch;padding:6px 4px 10px;border-top:1px solid rgba(255,255,255,.12)">
@@ -229,6 +231,9 @@
           <button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button>
         </sc-if>
         <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
+        <sc-if value="{{ showPortalName }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;padding:10px 2px 0">{{ portalName }}</div>
+        </sc-if>
         <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
       </div>
     </div>
@@ -2859,7 +2864,7 @@ class Component extends DCLogic {
       navItems.push({label,badge,
         arrow: id==='strategy' ? (active?'▾':'▸') : false,
         select:openSection(id),
-        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       // Strategy opens into its three channels rather than being one long board.
       if(id==='strategy'&&active){
         CHANNELS.forEach(ch=>{
@@ -3515,7 +3520,7 @@ class Component extends DCLogic {
     const moreBadge=nav.filter(([id])=>bottomIds.indexOf(id)<0)
       .reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
     const sheetItems=nav.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
-      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
+      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
     // stats & activity (team overview)
     const stats=[
       {label:'Active clients',value:D.clients.length},
@@ -4028,6 +4033,9 @@ class Component extends DCLogic {
       },
       signOut:()=>window.SUSignOut(),
       userName: (S.profile && (S.profile.name || S.profile.email)) || '',
+      // Which portal you are in, for anyone whose own name is not the company's.
+      // The team side says "Internal Dashboard" on every page, so it needs none.
+      showPortalName: !isTeam, portalName: client.name || '',
       syncError: S.syncError || false,
       flash: S.flash || false,
       clearFlash: ()=>this.setState({flash:null}),
