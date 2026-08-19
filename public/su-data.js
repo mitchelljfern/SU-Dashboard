@@ -450,32 +450,68 @@
   // thin calls onto SECURITY DEFINER functions that re-check is_admin() in the
   // database. A non-admin gets a permission error from Postgres, not from here.
 
-  async function createClientLogin(clientId, email, password, name) {
-    const { error } = await client().rpc('admin_create_client_login', {
-      p_client_id: clientId,
-      p_email: String(email || '').trim().toLowerCase(),
-      p_password: password,
-      p_name: name || ''
-    });
+  // Where an invitation link lands. The person arrives with a recovery token
+  // in the URL, sets a password, and carries on into the app.
+  const inviteRedirect = () => window.location.origin + '/';
+
+  // Sends the "set your password" mail. Also what Forgot password calls —
+  // it is the same link either way, which is why one function serves both.
+  async function sendPasswordLink(email) {
+    const { error } = await client().auth.resetPasswordForEmail(
+      String(email || '').trim().toLowerCase(),
+      { redirectTo: inviteRedirect() }
+    );
     if (error) throw error;
   }
 
-  async function createTeamMember(email, password, name, rate, isAccountant) {
-    const { error } = await client().rpc('admin_create_team_member', {
+  // The account is created with a random password nobody ever sees, then the
+  // invitation goes out. The two steps are reported separately: an account
+  // that exists but whose mail bounced is a different problem from one that
+  // was never created, and telling them apart is the difference between
+  // "try again" and "check the address".
+  async function inviteUser(rpc, params) {
+    const { error } = await client().rpc(rpc, params);
+    if (error) throw error;
+    try {
+      await sendPasswordLink(params.p_email);
+    } catch (mailErr) {
+      const e = new Error('The account was created, but the invitation email '
+        + 'could not be sent: ' + (mailErr.message || mailErr));
+      e.accountCreated = true;
+      throw e;
+    }
+  }
+
+  async function createClientLogin(clientId, email, name) {
+    await inviteUser('admin_create_client_login', {
+      p_client_id: clientId,
       p_email: String(email || '').trim().toLowerCase(),
-      p_password: password,
+      p_password: null,
+      p_name: name || ''
+    });
+  }
+
+  async function createTeamMember(email, name, rate, isAccountant) {
+    await inviteUser('admin_create_team_member', {
+      p_email: String(email || '').trim().toLowerCase(),
+      p_password: null,
       p_name: name || '',
       p_rate: Number(rate) || 20,
       p_is_accountant: !!isAccountant
     });
-    if (error) throw error;
   }
 
-  async function invitePortalMember(email, password, name) {
-    const { error } = await client().rpc('client_invite_member', {
+  async function invitePortalMember(email, name) {
+    await inviteUser('client_invite_member', {
       p_email: String(email || '').trim().toLowerCase(),
-      p_password: password, p_name: name || ''
+      p_password: null,
+      p_name: name || ''
     });
+  }
+
+  // Used by the set-a-password screen the invitation link lands on.
+  async function setPassword(password) {
+    const { error } = await client().auth.updateUser({ password });
     if (error) throw error;
   }
 
@@ -489,6 +525,7 @@
     uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
+    sendPasswordLink, setPassword,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
   };

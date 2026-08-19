@@ -52,6 +52,24 @@
     border:none;border-radius:12px;background:#3BB273;color:#fff;cursor:pointer}
   #su-login button:hover:not(:disabled){background:#33a066}
   #su-login-msg{min-height:18px;font-size:13px;visibility:hidden;line-height:1.4}
+  #su-reset-form,#su-set-form{display:none;flex-direction:column;gap:12px}
+  #su-login .su-pw{position:relative;display:block}
+  #su-login .su-pw input{padding-right:46px}
+  /* Scoped to #su-login: the panel styles buttons by element, which outranks
+     a bare class and turned both of these into full green buttons. */
+  #su-login .su-eye{position:absolute;right:5px;top:50%;transform:translateY(-50%);
+    width:34px;height:34px;margin:0;padding:0;border:none;border-radius:8px;
+    background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  #su-login .su-eye:hover:not(:disabled){background:rgba(255,255,255,.10)}
+  #su-login .su-eye svg{width:19px;height:19px;fill:none;stroke:rgba(255,255,255,.7);
+    stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  #su-login .su-eye .eye-shut{display:none}
+  #su-login .su-eye[aria-pressed="true"] .eye-open{display:none}
+  #su-login .su-eye[aria-pressed="true"] .eye-shut{display:block}
+  #su-login button.su-link{background:none;border:none;color:rgba(255,255,255,.6);
+    font-size:12.5px;font-weight:400;cursor:pointer;padding:2px;margin:0;
+    text-align:center;text-decoration:underline}
+  #su-login button.su-link:hover:not(:disabled){background:none;color:#fff}
 </style>
 </head>
 <body>
@@ -70,9 +88,36 @@
       </div>
       <div>
         <label for="su-login-password">Password</label>
-        <input id="su-login-password" type="password" name="password" autocomplete="current-password" required>
+        <div class="su-pw">
+          <input id="su-login-password" type="password" name="password" autocomplete="current-password" required>
+          <button type="button" class="su-eye" data-for="su-login-password" aria-label="Show password" aria-pressed="false"><svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/></svg><svg class="eye-shut" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/><path d="M4 20 20 4"/></svg></button>
+        </div>
       </div>
       <button id="su-login-btn" type="submit">Sign in</button>
+      <button id="su-forgot" type="button" class="su-link">Forgot your password?</button>
+    </form>
+
+    <!-- Asking for a reset link. Same screen, different question. -->
+    <form id="su-reset-form" autocomplete="on">
+      <div>
+        <label for="su-reset-email">Email</label>
+        <input id="su-reset-email" type="email" name="email" autocomplete="username" required>
+      </div>
+      <button id="su-reset-btn" type="submit">Email me a link</button>
+      <button id="su-reset-back" type="button" class="su-link">Back to sign in</button>
+    </form>
+
+    <!-- Where an invitation or a reset link lands. -->
+    <form id="su-set-form" autocomplete="on">
+      <div>
+        <label for="su-set-password">Choose a password</label>
+        <div class="su-pw">
+          <input id="su-set-password" type="password" name="new-password" autocomplete="new-password" required>
+          <button type="button" class="su-eye" data-for="su-set-password" aria-label="Show password" aria-pressed="false"><svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/></svg><svg class="eye-shut" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/><path d="M4 20 20 4"/></svg></button>
+        </div>
+        <p class="sub" style="margin-top:6px">At least 12 characters.</p>
+      </div>
+      <button id="su-set-btn" type="submit">Set password and continue</button>
     </form>
     <div id="su-login-msg"></div>
   </div>
@@ -193,6 +238,12 @@
       <sc-if value="{{ syncError }}" hint-placeholder-val="{{ false }}">
         <div style="background:#FDECEA;border:1px solid #F3B9B4;color:#8E2B24;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45">{{ syncError }}</div>
       </sc-if>
+      <sc-if value="{{ flash }}" hint-placeholder-val="{{ false }}">
+        <div style="background:rgba(31,178,100,.10);border:1px solid rgba(31,178,100,.35);color:#158a4d;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45;display:flex;align-items:center;gap:12px">
+          <span style="flex:1">{{ flash }}</span>
+          <button onClick="{{ clearFlash }}" style="background:none;border:none;color:#158a4d;font-size:16px;cursor:pointer;padding:0 4px;line-height:1">×</button>
+        </div>
+      </sc-if>
       <header style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
         <div style="display:flex;flex-direction:column;gap:5px">
           <div style="font-size:12px;font-weight:600;letter-spacing:var(--ls-wide);text-transform:uppercase;color:{{ kickerColor }}">{{ kicker }}</div>
@@ -224,6 +275,8 @@
         <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:84vh;overflow-y:auto;background:#fff;z-index:81;display:flex;flex-direction:column">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
+            <span style="flex:1"></span>
+            <button onClick="{{ copyCard }}" title="Copy as Markdown for Asana, Trello, Jira…" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:10px;white-space:nowrap" style-hover="border-color:var(--navy)">Copy</button>
             <button onClick="{{ closeDetail }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
           </div>
           <div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
@@ -679,7 +732,7 @@
               <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
                 <input value="{{ dNewClientContact }}" onChange="{{ onNewClientContact }}" placeholder="Contact name" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                 <input value="{{ dNewClientEmail }}" onChange="{{ onNewClientEmail }}" placeholder="chris@doubleops.com" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                <input value="{{ dNewClientPass }}" onChange="{{ onNewClientPass }}" type="password" placeholder="Password (12+ chars)" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                
               </div>
             </div>
             <div style="display:flex;gap:10px">
@@ -751,7 +804,7 @@
                       <div style="display:flex;gap:8px;flex-wrap:wrap">
                         <input value="{{ dCmName }}" onChange="{{ onCmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                         <input value="{{ dCmEmail }}" onChange="{{ onCmEmail }}" placeholder="email@client.com" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                        <input value="{{ dCmPass }}" onChange="{{ onCmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                        
                         <button onClick="{{ addClientMember }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer">Add</button>
                       </div>
                     </sc-if>
@@ -1197,7 +1250,7 @@
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
                   <input value="{{ dMemberName }}" onChange="{{ onMemberName }}" placeholder="Name" style="flex:1;min-width:130px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <input value="{{ dMemberEmail }}" onChange="{{ onMemberEmail }}" placeholder="name@socialupgrades.com" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                  <input value="{{ dMemberPass }}" onChange="{{ onMemberPass }}" type="password" placeholder="Password (12+)" style="min-width:150px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  
                   <input value="{{ dMemberRate }}" onChange="{{ onMemberRate }}" type="number" placeholder="Rate" style="width:90px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-body)">
                     <input type="checkbox" checked="{{ dMemberAcct }}" onChange="{{ onMemberAcct }}"> Accountant
@@ -1535,7 +1588,7 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <input value="{{ dPmName }}" onChange="{{ onPmName }}" placeholder="Name" style="flex:1;min-width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
             <input value="{{ dPmEmail }}" onChange="{{ onPmEmail }}" placeholder="colleague@company.com" style="flex:1;min-width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            <input value="{{ dPmPass }}" onChange="{{ onPmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            
             <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
           </div>
           <div style="font-size:11.5px;color:var(--text-muted)">{{ inviteHint }}</div>
@@ -1569,9 +1622,12 @@
           </sc-for>
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
-          <div style="display:flex;flex-direction:column;gap:3px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Completed work</h3>
-            <div style="font-size:12px;color:var(--text-muted)">Everything we have finished, newest first. Open any item for its details, comments and files.</div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:200px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Completed work</h3>
+              <div style="font-size:12px;color:var(--text-muted)">Everything we have finished, newest first. Open any item for its details, comments and files.</div>
+            </div>
+            <button onClick="{{ exportCompleted }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
           </div>
           <sc-if value="{{ noCompletedWork }}" hint-placeholder-val="{{ false }}">
             <div style="font-size:13.5px;color:var(--text-muted)">Nothing completed yet.</div>
@@ -1664,7 +1720,10 @@
           <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:10px" style-hover="background:#000">Submit request <span style="color:#fff;font-size:14px;line-height:1">↗</span></button>
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Your requests</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 8px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your requests</h3>
+            <button onClick="{{ exportRequests }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
+          </div>
           <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
             <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
               <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
@@ -2340,6 +2399,78 @@ class Component extends DCLogic {
     // Picking the same file twice in a row has to fire onChange again, and it
     // only does if the input is cleared first.
     const takeFiles=e=>{ const input=e.target; const picked=Array.from(input.files||[]); input.value=''; return picked; };
+
+    // ===== leaving the dashboard =====
+    // Plenty of clients already run Asana, Trello or Jira. Rather than three
+    // integrations to keep alive, a card can be copied as Markdown and a list
+    // downloaded as CSV — every one of those tools takes both, and neither
+    // needs an account, a token, or anything to maintain.
+    const csvCell = v => {
+      const t = (v===null||v===undefined) ? '' : String(v);
+      return /[",\r\n]/.test(t) ? '"'+t.replace(/"/g,'""')+'"' : t;
+    };
+    const saveCsv = (name, headers, rows) => {
+      const body = [headers].concat(rows).map(r=>r.map(csvCell).join(',')).join('\r\n');
+      // The BOM is what makes Excel read it as UTF-8 rather than mangling
+      // anything with an accent in it.
+      const blob = new Blob(['\ufeff'+body], {type:'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download=name; a.rel='noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      this.setState({flash:'Downloaded '+name+'.'});
+    };
+    const copyFallback = text => {
+      const ta=document.createElement('textarea');
+      ta.value=text; ta.setAttribute('readonly',''); 
+      ta.style.position='fixed'; ta.style.top='-1000px';
+      document.body.appendChild(ta); ta.select();
+      let ok=false;
+      try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      ta.remove();
+      return ok;
+    };
+    const copyText = (text, what) => {
+      const done = ()=>this.setState({flash:what+' copied — paste it into Asana, Trello, Jira, anywhere.'});
+      const failed = ()=>this.setState({syncError:'Could not copy to the clipboard. Your browser may be blocking it.'});
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done, ()=>{ copyFallback(text)? done() : failed(); });
+      } else { copyFallback(text)? done() : failed(); }
+    };
+    // A card as Markdown: headings and bullets, which every task tool either
+    // renders or degrades gracefully into.
+    const cardMarkdown = (it, kind) => {
+      const L=[];
+      const title = kind==='update' ? (it.text||'Update') : (it.title||'Untitled');
+      L.push('# '+title);
+      const meta=[cname(it.clientId)];
+      if(it.category) meta.push(it.category);
+      if(it.urgency && it.urgency!=='Normal') meta.push(it.urgency);
+      if(it.needBy) meta.push('needed by '+niceDate(it.needBy));
+      if(it.projectedFinish) meta.push('projected '+niceDate(it.projectedFinish));
+      L.push('_'+meta.join(' · ')+'_','');
+      const body = kind==='strategy' ? (it.body||'') : (it.desc||'');
+      if(body) L.push(body,'');
+      if((it.links||[]).length){
+        L.push('## Links');
+        (it.links||[]).forEach(l=>L.push('- '+(l.label||'Link')+': '+l.url));
+        L.push('');
+      }
+      if((it.files||[]).length){
+        L.push('## Attachments');
+        (it.files||[]).forEach(f=>L.push('- '+(f.name||'File')+(f.path?'':' (no file stored)')));
+        L.push('');
+      }
+      const notes = it.feedback || it.comments || [];
+      if(notes.length){
+        L.push('## Comments');
+        notes.forEach(c=>L.push('- **'+(c.who||c.name||'—')+'**'+(c.ts?' ('+niceDate(new Date(c.ts).toISOString().slice(0,10))+')':'')+': '+(c.text||'')));
+        L.push('');
+      }
+      return L.join('\n').trim();
+    };
+    const listOf = arr => (arr||[]).map(x=>x.url||x.name||'').filter(Boolean).join(' | ');
     // Held off state deliberately: two quick picks would otherwise race and
     // mint two ids, scattering one request's files across two folders.
     const reqDraftId=()=> this.__reqDraftId || (this.__reqDraftId=this.uid());
@@ -2696,10 +2827,13 @@ class Component extends DCLogic {
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
     const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
+    // Real invoices run to four figures, and "$1567.64" reads as a typo.
+    const invAmount=v=>'$'+Number(v||0).toLocaleString('en-US',
+      {minimumFractionDigits:2, maximumFractionDigits:2});
     // Invoices are raised in Stripe; we store the hosted link so both sides can
     // open the real invoice. Rows with no link still render, just without one.
     const invoices=D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts)
-      .map(i=>({num:i.num,date:i.date,amount:'$'+i.amount,status:i.status,badgeStyle:invBadge(i.status),
+      .map(i=>({num:i.num,date:i.date,amount:invAmount(i.amount),status:i.status,badgeStyle:invBadge(i.status),
         url:i.url||'',hasUrl:!!i.url}));
     // Guarded: a client on no retainer has hoursTotal 0, which would render NaN%.
     const planPct=client.hoursTotal>0?Math.min(100,Math.round(100*clientHoursUsed/client.hoursTotal)):0;
@@ -2800,6 +2934,14 @@ class Component extends DCLogic {
         hasFiles:((w.files||[]).length+(w.links||[]).length)>0,
         open:openDetail('work',w.id)}));
     const noCompletedWork=completedWork.length===0;
+    const exportCompleted = ()=>saveCsv(
+      (client.name||'work').replace(/[^\w-]+/g,'-').toLowerCase()+'-completed-work.csv',
+      ['Title','Category','Completed','Hours counted','Description','Links','Files'],
+      D.work.filter(w=>w.clientId===client.id&&w.status==='done')
+        .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
+        .map(w=>[w.title||'', w.category||'',
+          w.completedAt? new Date(w.completedAt).toISOString().slice(0,10) : '',
+          (Number(w.hoursApproved)||0), w.desc||'', listOf(w.links), listOf(w.files)]));
     let dv={detailOpen:false};
     if(S.detail){
       const ty=S.detail.type;
@@ -2880,6 +3022,7 @@ class Component extends DCLogic {
           canSetProjected: isTeam&&ty==='work',
           detailProjectedRaw: (ty==='work'? item.projectedFinish : '')||'',
           onDetailProjected: e=>{ const v=e.target.value; this.set(x=>{ const it=findIt(x); it.projectedFinish=v; return x; }); },
+          copyCard: ()=>copyText(cardMarkdown(item, ty), 'Card'),
           detailApprove: (ty==='update'&&item.needsApproval&&!item.approved&&!isTeam)
                       || (ty==='work'&&item.status==='review'),
           detailApproveLabel: ty==='work'
@@ -3338,19 +3481,18 @@ class Component extends DCLogic {
       },
       dMemberName:d.memberName||'', onMemberName:this.draft('memberName'),
       dMemberEmail:d.memberEmail||'', onMemberEmail:this.draft('memberEmail'),
-      dMemberPass:d.memberPass||'', onMemberPass:this.draft('memberPass'),
       dMemberRate:d.memberRate===undefined?20:d.memberRate, onMemberRate:this.draft('memberRate'),
       dMemberAcct:!!d.memberAcct, onMemberAcct:this.draft('memberAcct'),
       addMember:()=>{
-        const nm=(d.memberName||'').trim(), em=(d.memberEmail||'').trim(), pw=d.memberPass||'';
+        const nm=(d.memberName||'').trim(), em=(d.memberEmail||'').trim();
         if(!nm||!em) return this.setState({syncError:'Name and email are required to add a team member.'});
-        if(pw.length<12) return this.setState({syncError:'Team member password must be at least 12 characters.'});
-        this.setState({syncError:null});
-        window.SUData.createTeamMember(em,pw,nm,Number(d.memberRate)||20,!!d.memberAcct)
+        this.setState({syncError:null,flash:'Sending an invitation to '+em+'\u2026'});
+        window.SUData.createTeamMember(em,nm,Number(d.memberRate)||20,!!d.memberAcct)
           .then(()=>window.SUData.load())
           .then(data=>{ this.__synced=structuredClone(data);
-            this.setState({data,d:{...this.state.d,memberName:'',memberEmail:'',memberPass:'',memberRate:20,memberAcct:false}}); })
-          .catch(err=>this.setState({syncError:'Could not add team member: '+(err.message||err)}));
+            this.setState({data,flash:'Invitation sent to '+em+'. They set their own password from the link.',
+              d:{...this.state.d,memberName:'',memberEmail:'',memberRate:20,memberAcct:false}}); })
+          .catch(err=>this.setState({flash:null,syncError:'Could not add team member: '+(err.message||err)}));
       },
 
       // ----- editing an existing client -----
@@ -3396,19 +3538,18 @@ class Component extends DCLogic {
       // Adding a portal login for the client being edited (admins only).
       dCmName:d.cmName||'', onCmName:this.draft('cmName'),
       dCmEmail:d.cmEmail||'', onCmEmail:this.draft('cmEmail'),
-      dCmPass:d.cmPass||'', onCmPass:this.draft('cmPass'),
       canManageMembers:isAdmin,
       addClientMember:()=>{
         const id=S.editClient; if(!id) return;
-        const nm=(d.cmName||'').trim(), em=(d.cmEmail||'').trim(), pw=d.cmPass||'';
+        const nm=(d.cmName||'').trim(), em=(d.cmEmail||'').trim();
         if(!em) return this.setState({syncError:'An email is required.'});
-        if(pw.length<12) return this.setState({syncError:'Password must be at least 12 characters.'});
-        this.setState({syncError:null});
-        window.SUData.createClientLogin(id,em,pw,nm||em)
+        this.setState({syncError:null,flash:'Sending an invitation to '+em+'\u2026'});
+        window.SUData.createClientLogin(id,em,nm||em)
           .then(()=>window.SUData.load())
           .then(data=>{ this.__synced=structuredClone(data);
-            this.setState({data,d:{...this.state.d,cmName:'',cmEmail:'',cmPass:''}}); })
-          .catch(err=>this.setState({syncError:'Could not add member: '+(err.message||err)}));
+            this.setState({data,flash:'Invitation sent to '+em+'. They set their own password from the link.',
+              d:{...this.state.d,cmName:'',cmEmail:''}}); })
+          .catch(err=>this.setState({flash:null,syncError:'Could not add member: '+(err.message||err)}));
       },
 
       // ----- the client's own portal access list -----
@@ -3416,7 +3557,6 @@ class Component extends DCLogic {
         .map(pp=>({name:pp.name||pp.email,email:pp.email||'',isMe:pp.id===me.id})),
       dPmName:d.pmName||'', onPmName:this.draft('pmName'),
       dPmEmail:d.pmEmail||'', onPmEmail:this.draft('pmEmail'),
-      dPmPass:d.pmPass||'', onPmPass:this.draft('pmPass'),
       // Staff have no tenant of their own, so client_invite_member — which
       // takes the tenant from the caller — cannot work for them and refused
       // outright. An admin inviting from a portal goes through the RPC that
@@ -3427,19 +3567,19 @@ class Component extends DCLogic {
                    : 'Only an admin can add a portal login from here.')
         : 'They will be able to sign in to this portal.',
       invitePortalMember:()=>{
-        const nm=(d.pmName||'').trim(), em=(d.pmEmail||'').trim(), pw=d.pmPass||'';
+        const nm=(d.pmName||'').trim(), em=(d.pmEmail||'').trim();
         if(!em) return this.setState({syncError:'An email is required.'});
-        if(pw.length<12) return this.setState({syncError:'Password must be at least 12 characters.'});
         if(isStaff && !isAdmin) return this.setState({syncError:'Only an admin can add a portal login.'});
         if(isStaff && !client.id) return this.setState({syncError:'Pick a client portal first.'});
-        this.setState({syncError:null});
+        this.setState({syncError:null,flash:'Sending an invitation to '+em+'\u2026'});
         (isStaff
-          ? window.SUData.createClientLogin(client.id, em, pw, nm||em)
-          : window.SUData.invitePortalMember(em, pw, nm||em))
+          ? window.SUData.createClientLogin(client.id, em, nm||em)
+          : window.SUData.invitePortalMember(em, nm||em))
           .then(()=>window.SUData.load())
           .then(data=>{ this.__synced=structuredClone(data);
-            this.setState({data,d:{...this.state.d,pmName:'',pmEmail:'',pmPass:''}}); })
-          .catch(err=>this.setState({syncError:'Could not add: '+(err.message||err)}));
+            this.setState({data,flash:'Invitation sent to '+em+'. They set their own password from the link.',
+              d:{...this.state.d,pmName:'',pmEmail:''}}); })
+          .catch(err=>this.setState({flash:null,syncError:'Could not add: '+(err.message||err)}));
       },
 
       // ----- new client -----
@@ -3453,7 +3593,6 @@ class Component extends DCLogic {
       dNewClientBilling:d.ncBilling||'retainer', onNewClientBilling:this.draft('ncBilling'),
       dNewClientRate:d.ncRate===undefined?0:d.ncRate, onNewClientRate:this.draft('ncRate'),
       dNewClientEmail:d.ncEmail||'', onNewClientEmail:this.draft('ncEmail'),
-      dNewClientPass:d.ncPass||'', onNewClientPass:this.draft('ncPass'),
       dNewClientContact:d.ncContact||'', onNewClientContact:this.draft('ncContact'),
       newClientOpen:!!S.newClientOpen,
       toggleNewClient:()=>this.setState({newClientOpen:!S.newClientOpen,syncError:null}),
@@ -3468,7 +3607,7 @@ class Component extends DCLogic {
         const extra=(d.ncBrands||'').split(',').map(s=>s.trim()).filter(Boolean);
         const businesses=[{id:id+'-main',name:nm,domain:(d.ncDomain||'').trim()}]
           .concat(extra.map((b,i)=>({id:id+'-b'+(i+1),name:b,domain:''})));
-        const email=(d.ncEmail||'').trim(), pass=d.ncPass||'';
+        const email=(d.ncEmail||'').trim();
         if(email && pass.length<12) return this.setState({syncError:'Client password must be at least 12 characters.'});
         this.setState({syncError:null});
         this.set(x=>{
@@ -3491,14 +3630,16 @@ class Component extends DCLogic {
           d:{...this.state.d,ncName:'',ncDomain:'',ncService:'',ncBrands:'',ncEmail:'',ncPass:'',ncContact:''}});
         if(email){
           // The board exists either way; only the login can fail here.
-          window.SUData.createClientLogin(id,email,pass,(d.ncContact||nm))
-            .then(done)
-            .catch(err=>this.setState({syncError:'Client board created, but the login failed: '+(err.message||err)}));
+          window.SUData.createClientLogin(id,email,(d.ncContact||nm))
+            .then(()=>{ done(); this.setState({flash:'Invitation sent to '+email+'.'}); })
+            .catch(err=>this.setState({syncError:'Client board created, but the invitation failed: '+(err.message||err)}));
         } else done();
       },
       signOut:()=>window.SUSignOut(),
       userName: (S.profile && (S.profile.name || S.profile.email)) || '',
       syncError: S.syncError || false,
+      flash: S.flash || false,
+      clearFlash: ()=>this.setState({flash:null}),
       toggleNotif:()=>{ const opening=!S.notifOpen; this.setState({notifOpen:opening}); if(opening){ const ts=Date.now(); localStorage.setItem('su_hub_seen',String(ts)); this.setState({seenTs:ts}); } },
       notifOpen:S.notifOpen, unseen:unseenN>0?unseenN:false,
       notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
@@ -3594,8 +3735,18 @@ class Component extends DCLogic {
         this.__reqDraftId=null;
         this.setState(s=>({reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, noMyRequests:myRequests.length===0,
+      exportRequests: ()=>saveCsv(
+        (client.name||'requests').replace(/[^\w-]+/g,'-').toLowerCase()+'-requests.csv',
+        ['Title','Category','Status','Urgency','Needed by','Projected finish','Submitted','Description','Links','Files'],
+        D.requests.filter(r=>r.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(r=>{
+          const w=workForReq(r.id);
+          return [r.title||'', r.category||'', (reqBadge(r.status)[1]||''), r.urgency||'Normal',
+            niceDate(r.needBy), niceDate(w&&w.projectedFinish),
+            new Date(r.ts).toISOString().slice(0,10), r.desc||'',
+            listOf(r.links), listOf(r.files)];
+        })),
       clientTodos, noClientTodos:clientTodos.length===0,
-      completedWork, noCompletedWork,
+      completedWork, noCompletedWork, exportCompleted,
       fileChips, portalFiles, noPortalFiles:portalFiles.length===0,
       // The library is the team's to fill — clients read it, staff add to it,
       // which is exactly what the `files` table policy allows.
@@ -3644,7 +3795,7 @@ class Component extends DCLogic {
         this.setState(s=>({d:{...s.d,invNum:'',invAmount:'',invUrl:''}})); },
       manageInvoices: canBilling && isTeam,
       teamInvoices: canBilling ? D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(i=>({
-        num:i.num, date:i.date, amount:'$'+i.amount, status:i.status,
+        num:i.num, date:i.date, amount:invAmount(i.amount), status:i.status,
         badgeStyle:invBadge(i.status), url:i.url||'', hasUrl:!!i.url,
         toggle:()=>this.set(x=>{ const r=x.invoices.find(y=>y.id===i.id); r.status = r.status==='Paid'?'Due':'Paid'; return x; }),
         remove:()=>this.set(x=>{ x.invoices=x.invoices.filter(y=>y.id!==i.id); return x; })

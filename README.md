@@ -27,6 +27,20 @@ Admins add people from the dashboard (Clients → New client, Team → Add a tea
 member). Those forms call `admin_create_client_login` /
 `admin_create_team_member`, which re-check `is_admin()` in the database.
 
+**Nobody picks a password for anybody.** Adding a person creates the account
+with a long random password that is never shown, sent or stored anywhere
+readable, then emails them an invitation. The link lands on a *set your
+password* screen, and choosing one is what lets them in — the recovery session
+the link carries does not by itself open the dashboard. **Forgot password** on
+the sign-in screen sends the same link, and answers identically whether or not
+the address has an account, so the screen cannot be used to discover who has
+one.
+
+This needs SMTP configured under Auth → SMTP Settings, the Site URL set to the
+deployed address (otherwise links point at localhost), and the *Reset Password*
+email template worded to suit an invitation as well as a reset — Supabase sends
+the same template for both.
+
 From the Supabase SQL editor:
 
 ```sql
@@ -90,6 +104,16 @@ between lists. Cards carry a title, notes, an optional scheduled date, links
 and comments. Deleting is team-only — it is the one destructive action, and
 RLS still pins every card to its own tenant, so neither side can add to or read
 another client's board.
+
+## Taking work elsewhere
+
+Clients often already run Asana, Trello or Jira. Rather than an integration per
+tool, a card copies as Markdown (**Copy**, in the card header) and a list
+downloads as CSV (**Export CSV** on Your requests and on Completed work). All
+three tools accept both, and neither needs an account, a token, or anything to
+keep working. If someone eventually wants live sync, an outbound webhook per
+client would cover every tool at once and is the next step worth taking — not
+three separate OAuth integrations.
 
 ## Attachments
 
