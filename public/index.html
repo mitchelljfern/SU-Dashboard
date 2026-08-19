@@ -1538,6 +1538,7 @@
             <input value="{{ dPmPass }}" onChange="{{ onPmPass }}" type="password" placeholder="Password (12+)" style="min-width:140px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
             <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
           </div>
+          <div style="font-size:11.5px;color:var(--text-muted)">{{ inviteHint }}</div>
           <div style="font-size:11.5px;color:var(--text-muted)">Ask Social Upgrades if you need someone removed.</div>
         </div>
       </sc-if>
@@ -2022,10 +2023,14 @@ class Component extends DCLogic {
   componentDidUpdate(){
     const S=this.state, me=S.profile;
     if(!S.booted || !me || S.section!=='messages') return;
-    const isStaff = me.role==='team';
-    const cid = isStaff ? S.msgClient : me.client_id;
+    // Only while this window is actually in front. Marking read on arrival
+    // regardless meant a message that landed in a background tab was read
+    // before anyone saw it, and the unread count never appeared at all.
+    if(typeof document.hasFocus === 'function' && !document.hasFocus()) return;
+    const inTeamView = me.role==='team' && S.role==='team';
+    const cid = inTeamView ? S.msgClient : (me.client_id || S.viewClient);
     if(!cid) return;
-    const other = isStaff ? 'client' : 'team';
+    const other = inTeamView ? 'client' : 'team';
     const r = (S.data.reads||[]).find(x=>x.clientId===cid && x.profileId===me.id);
     const last = r ? Number(r.lastReadTs||0) : 0;
     // Only the other side's messages count, and marking read pushes the marker
@@ -2427,11 +2432,16 @@ class Component extends DCLogic {
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
     // side's messages — your own replies are not news to you.
-    const otherSide = isStaff ? 'client' : 'team';
+    // Keyed off the *view*, not the account. Staff previewing a client portal
+    // were still being shown staff-side unread — the team's own messages could
+    // never count there, so a team -> client message never badged in preview,
+    // which is exactly how this reads when tested by switching views.
+    const otherSide = isTeam ? 'client' : 'team';
     const readTs = cid=>{ const r=(D.reads||[]).find(x=>x.clientId===cid&&x.profileId===me.id);
       return r?Number(r.lastReadTs||0):0; };
     const unreadFor = cid=>D.messages.filter(m=>m.clientId===cid&&m.from===otherSide&&m.ts>readTs(cid)).length;
-    const unreadTotal = isStaff ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0) : unreadFor(client.id);
+    // Same reason: in the portal the count is this client's, not every client's.
+    const unreadTotal = isTeam ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0) : unreadFor(client.id);
     const markRead = cid=>this.markRead(cid);
 
     // ===== strategy boards =====
@@ -2488,7 +2498,7 @@ class Component extends DCLogic {
     };
     // Opening a board is what marks it read, wherever it is opened from.
     const openSection = id=>()=>{
-      if(id==='messages') markRead(isStaff? S.msgClient : client.id);
+      if(id==='messages') markRead(isTeam? S.msgClient : client.id);
       this.setState({section:id,notifOpen:false,moreOpen:false});
     };
     const navItems = [];
@@ -3407,12 +3417,25 @@ class Component extends DCLogic {
       dPmName:d.pmName||'', onPmName:this.draft('pmName'),
       dPmEmail:d.pmEmail||'', onPmEmail:this.draft('pmEmail'),
       dPmPass:d.pmPass||'', onPmPass:this.draft('pmPass'),
+      // Staff have no tenant of their own, so client_invite_member — which
+      // takes the tenant from the caller — cannot work for them and refused
+      // outright. An admin inviting from a portal goes through the RPC that
+      // names the client explicitly and re-checks is_admin() in the database.
+      canInviteMember: !isStaff || isAdmin,
+      inviteHint: isStaff
+        ? (isAdmin ? 'Adds a login to '+client.name+'\u2019s portal.'
+                   : 'Only an admin can add a portal login from here.')
+        : 'They will be able to sign in to this portal.',
       invitePortalMember:()=>{
         const nm=(d.pmName||'').trim(), em=(d.pmEmail||'').trim(), pw=d.pmPass||'';
         if(!em) return this.setState({syncError:'An email is required.'});
         if(pw.length<12) return this.setState({syncError:'Password must be at least 12 characters.'});
+        if(isStaff && !isAdmin) return this.setState({syncError:'Only an admin can add a portal login.'});
+        if(isStaff && !client.id) return this.setState({syncError:'Pick a client portal first.'});
         this.setState({syncError:null});
-        window.SUData.invitePortalMember(em,pw,nm||em)
+        (isStaff
+          ? window.SUData.createClientLogin(client.id, em, pw, nm||em)
+          : window.SUData.invitePortalMember(em, pw, nm||em))
           .then(()=>window.SUData.load())
           .then(data=>{ this.__synced=structuredClone(data);
             this.setState({data,d:{...this.state.d,pmName:'',pmEmail:'',pmPass:''}}); })
