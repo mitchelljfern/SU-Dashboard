@@ -219,6 +219,25 @@ businesses — Double Ops Inc and Bravo Boxing sit under one account, so one
 login serves the whole group. Extra businesses are entered comma-separated when
 creating the client and stored on `clients.businesses`.
 
+### The pipeline
+
+One card, one place. The client's dashboard follows a job through four
+columns, and it appears in exactly one of them at a time:
+
+| Client sees | Team sees | Moves on when |
+|---|---|---|
+| Open requests | Awaiting review | the team approves it, setting an estimate |
+| In queue | Queued | the team presses **Start** |
+| In progress | In progress | the team presses **Submit for approval** |
+| Awaiting approval | In review | the client presses **Approve** |
+
+Approving counts the hours and moves it to completed work, off all four.
+
+Open requests used to hold approved requests too, so a card sat there *and* in
+whatever column its work item had reached — the same job listed twice. Open
+requests is now what the team has not triaged yet, and the queue is its own
+column.
+
 ### Requests
 
 Both Requests pages split the same way, because a request is either still
@@ -235,8 +254,8 @@ version adds the client's name, which a client does not need on their own.
 
 ### Archiving and comments
 
-A card (work item or request) can be **archived** from its own pop-up, team
-side only, behind a confirmation that says what it does. The client stops
+A card (work item or request) can be **archived** from the header of its own
+pop-up, team side only, behind a confirmation that says what it does. The client stops
 seeing it entirely — the row is invisible to them in Postgres, not merely
 hidden in the UI — and the team finds it under **Archived** at the foot of the
 Workboard and the Requests page, one click from being restored. Archived cards

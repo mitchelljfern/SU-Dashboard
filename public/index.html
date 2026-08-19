@@ -281,10 +281,22 @@
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
             <span style="flex:1"></span>
+            <sc-if value="{{ canArchive }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ askArchive }}" title="Hide this card from the client" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:8px;white-space:nowrap" style-hover="border-color:#D8564E;color:#a8352d">Archive</button>
+            </sc-if>
             <button onClick="{{ copyCard }}" title="Copy as Markdown for Asana, Trello, Jira…" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:10px;white-space:nowrap" style-hover="border-color:var(--navy)">Copy</button>
             <button onClick="{{ closeDetail }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
           </div>
           <div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
+            <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#FDECEA;border:1px solid #EBBDB9;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                <div style="font-size:13px;color:#a8352d;font-weight:600;line-height:1.5">{{ archiveWarning }}</div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button onClick="{{ doArchive }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#fff5f4">Yes, archive it</button>
+                  <button onClick="{{ cancelArchive }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);border-radius:12px;padding:9px 18px;font-size:13px;cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
             <div style="font-size:16px;font-weight:500;color:var(--navy);line-height:1.5">{{ detailTitle }}</div>
             <div style="display:flex;align-items:center;gap:12px">
               <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
@@ -392,21 +404,6 @@
               <div style="display:flex;gap:10px">
                 <button onClick="{{ detailReqApproveFn }}" style="background:var(--green);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
                 <button onClick="{{ detailReqDeclineFn }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:13px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
-              </div>
-            </sc-if>
-
-            <sc-if value="{{ canArchive }}" hint-placeholder-val="{{ false }}">
-              <div style="border-top:1px solid var(--border-hairline);padding-top:12px">
-                <button onClick="{{ askArchive }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-muted);border-radius:12px;padding:7px 16px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="border-color:#D8564E;color:#a8352d">Archive card</button>
-              </div>
-            </sc-if>
-            <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
-              <div style="border-top:1px solid var(--border-hairline);padding-top:12px;display:flex;flex-direction:column;gap:10px">
-                <div style="font-size:13px;color:#a8352d;font-weight:600">{{ archiveWarning }}</div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                  <button onClick="{{ doArchive }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Yes, archive it</button>
-                  <button onClick="{{ cancelArchive }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);border-radius:12px;padding:9px 18px;font-size:13px;cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
-                </div>
               </div>
             </sc-if>
           </div>
@@ -1179,7 +1176,29 @@
                 </div>
               </button>
             </sc-for>
-            <sc-if value="{{ noReqCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No open requests.</div></sc-if>
+            <sc-if value="{{ noReqCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on us to review.</div></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In queue ({{ queueCount }})</h3>
+            </div>
+            <sc-for list="{{ homeQueueCards }}" as="q" hint-placeholder-count="2">
+              <div onClick="{{ q.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
+                <sc-if value="{{ q.hasProjected }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ q.projected }}</div>
+                </sc-if>
+                <sc-if value="{{ q.hasNeedBy }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ q.needBy }}</div>
+                </sc-if>
+                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
+                  <span style="{{ q.badgeStyle }}">{{ q.statusLabel }}</span>
+                  <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ q.urgencyStyle }}">{{ q.urgency }}</span></sc-if>
+                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ q.commentsLabel }}</span>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noQueueCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing queued up.</div></sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px">
             <div style="display:flex;align-items:center;justify-content:space-between">
@@ -3365,7 +3384,19 @@ class Component extends DCLogic {
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
         dateBits(w.needBy,w.projectedFinish)); });
 
-    const homeReqCards=liveReqs.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+    // The client's dashboard follows one card through the pipeline, so each
+    // column has to be a different stage of it. Open requests used to hold
+    // approved ones too, which meant a card sat there *and* in whatever column
+    // its work item had reached — the same job listed twice. Open requests is
+    // now what we have not triaged yet, and the queue is its own column.
+    const homeQueueCards=liveWork.filter(w=>w.clientId===client.id&&w.status==='queued')
+      .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+      return Object.assign({title:w.title,badgeStyle,statusLabel,
+        commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
+        urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),
+        isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
+        dateBits(w.needBy, w.projectedFinish)); });
+    const homeReqCards=liveReqs.filter(r=>r.clientId===client.id&&r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
@@ -4347,6 +4378,7 @@ class Component extends DCLogic {
       pHome:!isTeam&&secKey('home'),
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
+      homeQueueCards, queueCount:homeQueueCards.length, noQueueCards:homeQueueCards.length===0,
       homeProgCards, progCount:homeProgCards.length, noProgCards:homeProgCards.length===0,
       todosTitle:client.name+' To-Dos', ...dv, ...pv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
