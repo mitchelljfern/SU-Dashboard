@@ -473,14 +473,24 @@
   // reply is the one piece of information that actually explains it.
   function mailAdvice(err) {
     const raw = String((err && err.message) || err || '');
+    if (/rate limit/i.test(raw)) {
+      return 'the hourly limit on auth emails was reached. Raise it under '
+        + 'Auth \u2192 Rate Limits, or wait';
+    }
     if (/not verified|domain/i.test(raw)) {
       return 'the mail provider rejected the sender address. Check that the '
         + 'domain in your Supabase sender email is verified with your provider, '
         + 'in the same account the API key came from';
     }
-    if (/rate limit/i.test(raw)) {
-      return 'the hourly limit on auth emails was reached. Raise it under '
-        + 'Auth \u2192 Rate Limits, or wait';
+    // GoTrue reports every provider failure as the same generic line; the real
+    // reason \u2014 a 550, a bad key, an unverified domain \u2014 only reaches the
+    // project's auth logs. Say where to look rather than repeat a sentence
+    // that carries nothing.
+    if (/error sending/i.test(raw)) {
+      return 'the mail provider refused it. The reason is in Supabase '
+        + '\u2192 Logs \u2192 Auth against this request; the usual one is a sender '
+        + 'domain that is not verified with the provider, in the same account '
+        + 'the API key came from';
     }
     return raw;
   }
@@ -542,7 +552,7 @@
     uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
-    sendPasswordLink, setPassword,
+    sendPasswordLink, setPassword, mailAdvice,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
   };

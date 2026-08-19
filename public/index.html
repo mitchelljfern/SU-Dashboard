@@ -3949,7 +3949,8 @@ class Component extends DCLogic {
             window.SUData.sendPasswordLink(pp.email)
               .then(()=>this.setState({flash:'Invitation sent to '+pp.email+'.'}))
               .catch(err=>this.setState({flash:null,
-                syncError:'Could not send to '+pp.email+': '+(err.message||err)}));
+                syncError:'Could not send to '+pp.email+' \u2014 '
+                  +window.SUData.mailAdvice(err)+'.'}));
           }})),
       dPmName:d.pmName||'', onPmName:this.draft('pmName'),
       dPmEmail:d.pmEmail||'', onPmEmail:this.draft('pmEmail'),
