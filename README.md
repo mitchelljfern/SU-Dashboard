@@ -254,14 +254,33 @@ version adds the client's name, which a client does not need on their own.
 
 ### Archiving and comments
 
-A card (work item or request) can be **archived** from the header of its own
-pop-up, team side only, behind a confirmation that says what it does. The client stops
-seeing it entirely — the row is invisible to them in Postgres, not merely
-hidden in the UI — and the team finds it under **Archived** at the foot of the
-Workboard and the Requests page, one click from being restored. Archived cards
-drop out of every list on both sides, including retainer hours, so the two
-sides never disagree about what exists; the confirmation says so when the card
-had approved hours on it.
+A card (work item or request) is **archived** from the header of its own pop-up,
+behind a confirmation that says what it does. The client stops seeing it
+entirely — the row is invisible to them in Postgres, not merely hidden in the
+UI. Archived cards drop out of every list on both sides, including retainer
+hours, so the two sides never disagree about what exists; the confirmation says
+so when the card had approved hours on it.
+
+A request and the work item it became are archived and restored together, since
+they are one job and leaving half of it on the board helps nobody.
+
+**Either side can archive.** A client who submits a request by mistake, or stops
+needing one, clears it themselves. Three rules are enforced by the trigger, not
+the browser:
+
+- A client may set `archived`, never clear it. Restoring is staff-only, so an
+  archive is always undone by someone who can see the whole history.
+- A client cannot archive work that has been approved — those hours count toward
+  the month, and the party being billed does not get to take a card out of the
+  total.
+- `archivedAt` and `archivedBy` are stamped in Postgres, not accepted from the
+  browser, because they are the history the team reads.
+
+The team's **Archived** list holds both kinds together and appears at the foot
+of both the Workboard and the Requests page, saying who archived each card and
+when. It is one list in two places on purpose: archiving a work item and then
+looking for it under Requests, where it was never going to be, made the card
+look deleted.
 
 **Comments** can be deleted by the person who wrote them, and by any staff
 member. That is enforced by the trigger on the table, not just in the browser:
@@ -272,6 +291,20 @@ that field existed have no author on record and are staff-only to remove.
 
 Files can be dropped straight onto an open card as well as picked through the
 button; both take the same upload path.
+
+### Messages
+
+A message is signed by the person who sent it and the company they are at —
+"Mitchell @ Social Upgrades", "Alec @ Afore Beauty". It used to be signed by the
+company alone, so a thread with three people on it read as one voice. The
+composed name is stored on the message rather than resolved when it is read,
+because a client cannot read our profiles and the name has to survive that;
+messages sent before this still show the company.
+
+On a phone the team's client switcher is a row of chips rather than the column
+it is on a desktop. Laid out as a row it had kept the column's full-width rows,
+stretching to the height of the panel and wrapping company names onto three
+lines, so the list of companies took the screen and the thread had none of it.
 
 ## Money
 
