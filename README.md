@@ -122,7 +122,10 @@ referenced it, so nothing is left pointing at a row that is gone.
 
 A client is a tenant, not a single login. Clients add their own colleagues from
 their **Team** tab — the tenant comes from the
-caller, so an invite can only ever land on their own portal. The team sees and
+caller, so an invite can only ever land on their own portal. Staff have no
+tenant of their own, so that path cannot work for them: an admin adding a login
+from inside a client's portal goes through `admin_create_client_login`, which
+names the client explicitly and re-checks `is_admin()` in the database. The team sees and
 manages the same list when editing a client, and admins can remove a member.
 Removal is deliberately one-way: it only accepts client accounts, never a team
 account and never your own, so it cannot be used to remove a colleague or lock
@@ -130,11 +133,19 @@ the owner out.
 
 ## Messages
 
+Unread is counted from the **view you are in**, not the account you signed in
+with. Staff previewing a client portal used to be shown staff-side unread
+there, so a team → client message could never register in the preview, and
+opening Messages in the preview advanced the staff marker and wiped the team's
+own count for that client.
+
 Unread counts are per reader, held in `message_reads` — two people on the same
 board track their own unread independently, and a marker is only ever readable
 or writable by the person it belongs to. Only the *other* side's messages count
 as unread, and opening a board (or switching thread) is what marks it read, as
-does a message arriving while you already have that board open. The count shows
+does a message arriving while you already have that board open **and that window
+is in front** — without the focus check, a message landing in a background
+window was marked read before anyone saw it. The count shows
 on the Messages menu item and again per thread.
 
 The app used to pull new rows only when the tab regained focus, so two windows
