@@ -407,6 +407,108 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ invOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeInvoice }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
+        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,92vw);max-height:86vh;overflow-y:auto;background:#fff;z-index:81;display:flex;flex-direction:column;border-radius:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
+            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Invoice</div>
+            <button onClick="{{ closeInvoice }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
+          </div>
+          <div style="padding:22px 26px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+                <div style="font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--navy);overflow-wrap:anywhere">{{ invNum }}</div>
+                <div style="font-size:12.5px;color:var(--text-muted)">{{ invClientLabel }}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--navy)">{{ invAmountLabel }}</div>
+                <span style="{{ invBadgeStyle }}">{{ invStatusLabel }}</span>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-hairline);padding-top:14px">
+              <sc-for list="{{ invFacts }}" as="iq" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;gap:14px;font-size:13.5px"><span style="color:var(--text-muted)">{{ iq.label }}</span><span style="color:var(--navy);font-weight:500;text-align:right;overflow-wrap:anywhere">{{ iq.value }}</span></div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ invHasNote }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--border-hairline);padding-top:14px;min-width:0">
+                <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What this covers</span>
+                <div style="font-size:14px;color:var(--text-body);line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere">{{ invNote }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ invHasUrl }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ invUrl }}" target="_blank" rel="noopener noreferrer" style="align-self:stretch;text-align:center;background:var(--cta-bg);color:#fff;padding:12px 20px;font-family:var(--font-display);font-weight:600;font-size:14px;text-decoration:none;border-radius:12px" style-hover="background:#000">{{ invOpenLabel }}</a>
+            </sc-if>
+            <sc-if value="{{ invNoUrl }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:12.5px;color:var(--text-muted);background:var(--gray-100);border-radius:12px;padding:11px 14px">No payment link on this invoice yet. {{ invNoUrlHint }}</div>
+            </sc-if>
+
+            <sc-if value="{{ invCanEdit }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid var(--border-hairline);padding-top:16px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Edit this invoice</span>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <div style="flex:1;min-width:130px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Number</label>
+                    <input value="{{ eiNum }}" onChange="{{ onEiNum }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                  <div style="width:120px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
+                    <input value="{{ eiAmount }}" onChange="{{ onEiAmount }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <div style="flex:1;min-width:130px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Issued</label>
+                    <input value="{{ eiIssue }}" onChange="{{ onEiIssue }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                  <div style="flex:1;min-width:130px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Due</label>
+                    <input value="{{ eiDue }}" onChange="{{ onEiDue }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <div style="flex:1;min-width:120px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Status</label>
+                    <select value="{{ eiStatus }}" onChange="{{ onEiStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                      <option value="Due">Due</option>
+                      <option value="Paid">Paid</option>
+                    </select>
+                  </div>
+                  <div style="flex:1;min-width:120px;display:flex;flex-direction:column;gap:4px">
+                    <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Paid by</label>
+                    <select value="{{ eiMethod }}" onChange="{{ onEiMethod }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                      <option value="Stripe">Stripe</option>
+                      <option value="PayPal">PayPal</option>
+                      <option value="Bank transfer">Bank transfer</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Payment link</label>
+                  <input value="{{ eiUrl }}" onChange="{{ onEiUrl }}" placeholder="https://invoice.stripe.com/… or a PayPal link" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <label style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What this covers</label>
+                  <textarea value="{{ eiNote }}" onChange="{{ onEiNote }}" placeholder="The work this invoice is for" rows="3" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6;resize:vertical;font-family:var(--font-body)"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                  <button onClick="{{ saveInvoice }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
+                  <button onClick="{{ sendInvoice }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Send to client</button>
+                  <a href="{{ invMailto }}" style="font-size:12.5px;font-weight:500">Email instead</a>
+                  <span style="flex:1"></span>
+                  <button onClick="{{ deleteInvoice }}" style="background:#fff;border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Sending posts the invoice on the client's message board, which is what raises their unread count. It stays in their Billing tab either way.</div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ previewOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closePreview }}" style="position:fixed;inset:0;background:rgba(15,22,51,.78);z-index:90"></div>
         <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(980px,94vw);max-height:90vh;background:#fff;z-index:91;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(15,22,51,.35)">
@@ -1570,6 +1672,166 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secInvoicing }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:3px;border-radius:12px">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy)">{{ invTotalOwed }}</div>
+              <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Outstanding</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:3px;border-radius:12px">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy)">{{ invTotalOverdue }}</div>
+              <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Overdue</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:3px;border-radius:12px">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy)">{{ invPaidYear }}</div>
+              <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ invYearLabel }}</div>
+            </div>
+          </div>
+
+          <div class="su-bill" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:18px;align-items:start">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:9px;border-radius:12px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Clients</h3>
+              <sc-for list="{{ invClientRows }}" as="ic" hint-placeholder-count="3">
+                <div onClick="{{ ic.select }}" style="{{ ic.style }}">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                    <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ ic.name }}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ ic.plan }} · {{ ic.count }}</div>
+                  </div>
+                  <sc-if value="{{ ic.hasOwed }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:13.5px;color:#a2691a;white-space:nowrap">{{ ic.owed }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <sc-if value="{{ invNoSel }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13px;color:var(--text-muted)">No clients yet.</div>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ invHasSel }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:18px">
+
+                <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:13px;border-radius:12px">
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ invSelName }} · plan</h3>
+                    <div style="font-size:12px;color:var(--text-muted)">What the client is on. A monthly plan shows its price and retainer hours in their portal; hourly bills the logged hours instead.</div>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
+                      <select value="{{ ipType }}" onChange="{{ onIpType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                        <option value="retainer">Monthly plan</option>
+                        <option value="hourly">Hourly</option>
+                      </select>
+                    </div>
+                    <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan name</label>
+                      <input value="{{ ipPlan }}" onChange="{{ onIpPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:110px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Per month</label>
+                      <input value="{{ ipPrice }}" onChange="{{ onIpPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:110px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours/mo</label>
+                      <input value="{{ ipHours }}" onChange="{{ onIpHours }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:110px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
+                      <input value="{{ ipRate }}" onChange="{{ onIpRate }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+                    <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stripe billing portal link</label>
+                      <input value="{{ ipPortal }}" onChange="{{ onIpPortal }}" placeholder="https://billing.stripe.com/p/session/…" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <button onClick="{{ invSavePlan }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save plan</button>
+                  </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:13px;border-radius:12px">
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">New invoice</h3>
+                    <div style="font-size:12px;color:var(--text-muted)">Raise the invoice in Stripe or PayPal, then record it here with its link. The number follows on from the last one.</div>
+                  </div>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+                    <div style="min-width:140px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Number</label>
+                      <input value="{{ niNum }}" onChange="{{ onNiNum }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:120px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Amount</label>
+                      <input value="{{ niAmount }}" onChange="{{ onNiAmount }}" type="number" placeholder="0.00" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:150px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Issued</label>
+                      <input value="{{ niIssue }}" onChange="{{ onNiIssue }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:150px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Due</label>
+                      <input value="{{ niDue }}" onChange="{{ onNiDue }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                    </div>
+                    <div style="width:130px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Paid by</label>
+                      <select value="{{ niMethod }}" onChange="{{ onNiMethod }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                        <option value="Stripe">Stripe</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Bank transfer">Bank transfer</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div style="width:110px;display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Status</label>
+                      <select value="{{ niStatus }}" onChange="{{ onNiStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                        <option value="Due">Due</option>
+                        <option value="Paid">Paid</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:5px">
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Payment link</label>
+                    <input value="{{ niUrl }}" onChange="{{ onNiUrl }}" placeholder="https://invoice.stripe.com/… or a PayPal link" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:5px">
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What this covers</label>
+                    <textarea value="{{ niNote }}" onChange="{{ onNiNote }}" placeholder="The work this invoice is for — the client reads this inside the card" rows="2" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6;resize:vertical;font-family:var(--font-body)"></textarea>
+                  </div>
+                  <button onClick="{{ invAdd }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add invoice</button>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:13px;border-radius:12px">
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ invSelName }} · invoices</h3>
+                    <div style="font-size:12px;color:var(--text-muted)">Open one to edit it, send it to the client, or mark it paid.</div>
+                  </div>
+                  <sc-if value="{{ invNoAdminCards }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:13px;color:var(--text-muted)">No invoices for this client yet.</div>
+                  </sc-if>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px">
+                    <sc-for list="{{ invAdminCards }}" as="ai" hint-placeholder-count="4">
+                      <div onClick="{{ ai.open }}" style="border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;cursor:pointer" style-hover="border-color:var(--navy);background:var(--gray-100)">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                          <div style="font-size:13px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ ai.num }}</div>
+                          <span style="{{ ai.badgeStyle }}">{{ ai.status }}</span>
+                        </div>
+                        <div style="font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--navy)">{{ ai.amount }}</div>
+                        <div style="font-size:11.5px;color:var(--text-muted)">{{ ai.date }}</div>
+                        <sc-if value="{{ ai.hasDue }}" hint-placeholder-val="{{ true }}">
+                          <div style="font-size:11.5px;color:var(--text-muted)">{{ ai.due }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ pTeam }}" hint-placeholder-val="{{ false }}">
         <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <div style="display:flex;flex-direction:column;gap:3px">
@@ -1891,19 +2153,27 @@
           </div>
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Invoices</h3>
-            <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
-              <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
-                <div style="flex:1;display:flex;flex-direction:column;gap:1px">
-                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ inv.num }}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ inv.date }}</div>
+            <sc-if value="{{ noInvoices }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted)">No invoices yet.</div>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
+              <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
+                <div onClick="{{ inv.open }}" style="border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;cursor:pointer" style-hover="border-color:var(--navy);background:var(--gray-100)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <div style="font-size:13px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ inv.num }}</div>
+                    <span style="{{ inv.badgeStyle }}">{{ inv.status }}</span>
+                  </div>
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--navy)">{{ inv.amount }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ inv.date }}</div>
+                  <sc-if value="{{ inv.hasDue }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ inv.due }}</div>
+                  </sc-if>
+                  <sc-if value="{{ inv.hasUrl }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:12px;font-weight:600;color:var(--blue)">{{ inv.payLabel }}</div>
+                  </sc-if>
                 </div>
-                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ inv.amount }}</div>
-                <span style="{{ inv.badgeStyle }}">{{ inv.status }}</span>
-                <sc-if value="{{ inv.hasUrl }}" hint-placeholder-val="{{ true }}">
-                  <a href="{{ inv.url }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">View</a>
-                </sc-if>
-              </div>
-            </sc-for>
+              </sc-for>
+            </div>
           </div>
         </div>
 
@@ -1941,64 +2211,6 @@
           </div>
         </sc-if>
 
-        <sc-if value="{{ manageInvoices }}" hint-placeholder-val="{{ false }}">
-          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Billing admin</h3>
-              <div style="font-size:12px;color:var(--text-muted)">Visible to admins and accountants only. Invoices are raised in Stripe — paste the hosted invoice link so the client can open it.</div>
-            </div>
-
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
-                <select value="{{ dBillingType }}" onChange="{{ onBillingType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
-                  <option value="retainer">Monthly plan</option>
-                  <option value="hourly">Hourly</option>
-                </select>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
-                <input value="{{ dClientRate }}" onChange="{{ onClientRate }}" type="number" style="width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              </div>
-              <button onClick="{{ saveBilling }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save billing</button>
-            </div>
-
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
-              <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stripe billing portal link</label>
-                <input value="{{ dPortalUrl }}" onChange="{{ onPortalUrl }}" placeholder="https://billing.stripe.com/p/session/..." style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              </div>
-              <button onClick="{{ savePortalUrl }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Save</button>
-            </div>
-
-            <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <input value="{{ dInvNum }}" onChange="{{ onInvNum }}" placeholder="INV-2026-091" style="min-width:150px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              <input value="{{ dInvAmount }}" onChange="{{ onInvAmount }}" type="number" placeholder="Amount" style="width:110px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              <input value="{{ dInvUrl }}" onChange="{{ onInvUrl }}" placeholder="Stripe invoice link" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              <select value="{{ dInvStatus }}" onChange="{{ onInvStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
-                <option value="Due">Due</option>
-                <option value="Paid">Paid</option>
-              </select>
-              <button onClick="{{ addInvoice }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add invoice</button>
-            </div>
-
-            <sc-for list="{{ teamInvoices }}" as="ti" hint-placeholder-count="3">
-              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline)">
-                <div style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:1px">
-                  <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ ti.num }}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ ti.date }}</div>
-                </div>
-                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ ti.amount }}</div>
-                <span style="{{ ti.badgeStyle }}">{{ ti.status }}</span>
-                <sc-if value="{{ ti.hasUrl }}" hint-placeholder-val="{{ true }}">
-                  <a href="{{ ti.url }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">Open in Stripe</a>
-                </sc-if>
-                <button onClick="{{ ti.toggle }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:7px 15px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Toggle status</button>
-                <button onClick="{{ ti.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
-              </div>
-            </sc-for>
-          </div>
-        </sc-if>
       </sc-if>
     </div>
   </main>
@@ -2013,6 +2225,7 @@ class Component extends DCLogic {
     this.state = {
       role:'team', section:'overview', viewClient:'af',
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
+      invClient:null, invoice:null,
       // Attachment lightbox, how many uploads are in flight, and which
       // attachment is mid-way through its delete confirmation.
       preview:null, uploading:0, delFile:null,
@@ -2559,8 +2772,12 @@ class Component extends DCLogic {
       this.logEv(x,it.clientId,'Request approved and queued: '+it.title
         +(Number(est)>0? ' ('+Number(est)+'h estimated)' : '')); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
+    // Payments is the team's own payroll and always was; client invoicing had
+    // no home at all. They are separate boards, and the payroll one is renamed
+    // so nobody goes looking for a client's invoice under it.
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['payments','Payments'],['team','Team']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['time','Time'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team']]
+          .filter(([id])=>id!=='invoicing'||canBilling)
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
@@ -2654,7 +2871,7 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],payments:['Internal Dashboard','Payments'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
@@ -2829,15 +3046,44 @@ class Component extends DCLogic {
       .map(f=>Object.assign(fileRow(f, libraryDrop(f)),{type:f.type||'File',when:this.fmt(f.ts)}));
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
-    const invBadge=st=> st==='Paid'? this.badge('green') : this.badge('amber');
+    // ===== invoicing =====
+    // An invoice used to be one line in a list: a number, an amount, a link.
+    // What it actually covered lived in somebody's email. It is a card now,
+    // with the terms on the front and the detail inside, and it is managed
+    // from a board of its own rather than by previewing a client's portal.
     // Real invoices run to four figures, and "$1567.64" reads as a typo.
-    const invAmount=v=>'$'+Number(v||0).toLocaleString('en-US',
+    const invMoney=v=>'$'+Number(v||0).toLocaleString('en-US',
       {minimumFractionDigits:2, maximumFractionDigits:2});
-    // Invoices are raised in Stripe; we store the hosted link so both sides can
-    // open the real invoice. Rows with no link still render, just without one.
-    const invoices=D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts)
-      .map(i=>({num:i.num,date:i.date,amount:invAmount(i.amount),status:i.status,badgeStyle:invBadge(i.status),
-        url:i.url||'',hasUrl:!!i.url}));
+    const todayIso=new Date().toISOString().slice(0,10);
+    // Dates arrive as 'YYYY-MM-DD' from the date fields and as free text on
+    // the rows that predate them, so both have to render.
+    const dayLabel=s=>{ if(!s) return '';
+      const t=new Date(String(s).length<=10? String(s)+'T00:00:00' : String(s));
+      return isNaN(t.getTime())? String(s)
+        : t.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
+    const invIsPaid=i=>String(i.status||'').toLowerCase()==='paid';
+    // Overdue is derived, never stored — a due date that has passed says it.
+    const invIsLate=i=>!invIsPaid(i)&&!!i.dueDate&&String(i.dueDate)<todayIso;
+    const invStatusOf=i=>invIsPaid(i)?'Paid':invIsLate(i)?'Overdue':(i.status||'Due');
+    const invBadge=i=>invIsPaid(i)?this.badge('green'):invIsLate(i)?this.badge('red'):this.badge('amber');
+    const invDateOf=i=>i.issueDate? dayLabel(i.issueDate) : (i.date||'');
+    const invsFor=cid=>D.invoices.filter(i=>i.clientId===cid).sort((a,b)=>(b.ts||0)-(a.ts||0));
+    // A draft field falls back to what is stored, so the form is the row until
+    // somebody types — the same contract the card description uses.
+    const dVal=(k,stored)=>d[k]===undefined? stored : d[k];
+    const invMailTo=cid=>(D.people||[]).filter(p=>p.role==='client'&&p.clientId===cid&&p.email)
+      .map(p=>p.email).join(',');
+    const openInvoice=id=>()=>this.setState(s2=>({invoice:id,notifOpen:false,moreOpen:false,
+      d:{...s2.d,eiNum:undefined,eiIssue:undefined,eiDue:undefined,eiAmount:undefined,
+         eiStatus:undefined,eiMethod:undefined,eiUrl:undefined,eiNote:undefined}}));
+    const invCard=i=>({num:i.num||'Invoice', amount:invMoney(i.amount), date:invDateOf(i),
+      status:invStatusOf(i), badgeStyle:invBadge(i), hasUrl:!!i.url,
+      due:i.dueDate? 'Due '+dayLabel(i.dueDate) : '', hasDue:!!i.dueDate,
+      // A settled invoice is a receipt, not a bill.
+      payLabel: invIsPaid(i)? 'View invoice \u2192' : 'Open to pay \u2192',
+      open:openInvoice(i.id)});
+    const invoices=invsFor(client.id).map(invCard);
+    const noInvoices=invoices.length===0;
     // Guarded: a client on no retainer has hoursTotal 0, which would render NaN%.
     const planPct=client.hoursTotal>0?Math.min(100,Math.round(100*clientHoursUsed/client.hoursTotal)):0;
 
@@ -3099,6 +3345,137 @@ class Component extends DCLogic {
         };
       }
     }
+    // ----- an invoice, opened -----
+    // Everything about the invoice lives in the overlay, the editing included,
+    // so there is one place to look rather than a row here and a form there.
+    let iv={invOpen:false};
+    if(S.invoice){
+      const inv=D.invoices.find(x=>x.id===S.invoice);
+      if(inv){
+        const findInv=x=>x.invoices.find(y=>y.id===inv.id);
+        const method=inv.method||'Stripe';
+        const facts=[{label:'Issued',value:invDateOf(inv)||'—'}];
+        if(inv.dueDate) facts.push({label:'Due',value:dayLabel(inv.dueDate)});
+        facts.push({label:'Billed to',value:cname(inv.clientId)});
+        facts.push({label:'Paid by',value:method});
+        if(inv.paidOn) facts.push({label:'Paid on',value:dayLabel(inv.paidOn)});
+        if(inv.sentAt) facts.push({label:'Sent',value:this.fmt(inv.sentAt)});
+        const canInv=isTeam&&canBilling;
+        iv={invOpen:true,
+          invNum:inv.num||'Invoice', invAmountLabel:invMoney(inv.amount),
+          invStatusLabel:invStatusOf(inv), invBadgeStyle:invBadge(inv),
+          invClientLabel:cname(inv.clientId), invFacts:facts,
+          invNote:inv.note||'', invHasNote:!!String(inv.note||'').trim(),
+          invUrl:inv.url||'', invHasUrl:!!inv.url, invNoUrl:!inv.url,
+          // Most invoices are raised in Stripe and some in PayPal, so the
+          // button says which one the client is about to land in.
+          invOpenLabel: method==='PayPal'? 'Open the PayPal invoice'
+                      : method==='Stripe'? 'Open the Stripe invoice'
+                      : 'Open the invoice',
+          invNoUrlHint: canInv? 'Add one below and the client gets a pay button.'
+                              : 'Message us and we will send it over.',
+          closeInvoice:()=>this.setState({invoice:null}),
+          invCanEdit: canInv,
+          eiNum:dVal('eiNum',inv.num||''), onEiNum:this.draft('eiNum'),
+          eiIssue:dVal('eiIssue',inv.issueDate||''), onEiIssue:this.draft('eiIssue'),
+          eiDue:dVal('eiDue',inv.dueDate||''), onEiDue:this.draft('eiDue'),
+          eiAmount:dVal('eiAmount',inv.amount==null?'':String(inv.amount)), onEiAmount:this.draft('eiAmount'),
+          eiStatus:dVal('eiStatus',invIsPaid(inv)?'Paid':'Due'), onEiStatus:this.draft('eiStatus'),
+          eiMethod:dVal('eiMethod',method), onEiMethod:this.draft('eiMethod'),
+          eiUrl:dVal('eiUrl',inv.url||''), onEiUrl:this.draft('eiUrl'),
+          eiNote:dVal('eiNote',inv.note||''), onEiNote:this.draft('eiNote'),
+          saveInvoice:()=>{ if(!canInv) return;
+            const num=String(dVal('eiNum',inv.num||'')||'').trim();
+            if(!num) return this.setState({syncError:'An invoice needs a number.'});
+            this.setState({syncError:null});
+            this.set(x=>{ const r=findInv(x);
+              r.num=num;
+              r.issueDate=dVal('eiIssue',inv.issueDate||'');
+              r.dueDate=dVal('eiDue',inv.dueDate||'');
+              r.amount=Number(dVal('eiAmount',inv.amount))||0;
+              r.status=dVal('eiStatus',invIsPaid(inv)?'Paid':'Due');
+              r.method=dVal('eiMethod',method);
+              r.url=String(dVal('eiUrl',inv.url||'')||'').trim();
+              r.note=dVal('eiNote',inv.note||'');
+              if(r.issueDate) r.date=dayLabel(r.issueDate);
+              // Marking it paid without saying when leaves a hole in the
+              // history, so today is the sensible answer.
+              r.paidOn = String(r.status).toLowerCase()==='paid' ? (r.paidOn||todayIso) : '';
+              return x; });
+            this.setState(s2=>({flash:'Invoice '+num+' saved.',
+              d:{...s2.d,eiNum:undefined,eiIssue:undefined,eiDue:undefined,eiAmount:undefined,
+                 eiStatus:undefined,eiMethod:undefined,eiUrl:undefined,eiNote:undefined}})); },
+          // "Send" puts it where the client already looks — their message
+          // board — which is also what raises their unread count.
+          sendInvoice:()=>{ if(!canInv) return;
+            const to=cname(inv.clientId);
+            this.set(x=>{ const r=findInv(x); r.sentAt=Date.now();
+              x.messages.push({id:this.uid(),clientId:r.clientId,from:'team',who:'Social Upgrades',
+                text:'Invoice '+(r.num||'')+' for '+invMoney(r.amount)+' is ready.'
+                  +(r.dueDate? ' Due '+dayLabel(r.dueDate)+'.' : '')
+                  +(r.note? '\n'+r.note : '')
+                  +(r.url? '\n'+r.url : ''), ts:Date.now()});
+              this.logEv(x,r.clientId,'Invoice '+(r.num||'')+' sent to '+to+' ('+invMoney(r.amount)+')');
+              return x; });
+            this.setState({flash:'Invoice sent to '+to+' — it is on their message board and in their Billing tab.'}); },
+          // The client's own mail client, for anyone who would rather send it
+          // that way. Nothing here can send mail on its own.
+          invMailto:'mailto:'+invMailTo(inv.clientId)
+            +'?subject='+encodeURIComponent('Invoice '+(inv.num||'')+' from Social Upgrades')
+            +'&body='+encodeURIComponent('Hi,\n\nInvoice '+(inv.num||'')+' for '+invMoney(inv.amount)
+              +(inv.dueDate? ' is due '+dayLabel(inv.dueDate) : ' is ready')+'.\n\n'
+              +(inv.note? inv.note+'\n\n' : '')+(inv.url? inv.url+'\n\n' : '')
+              +'Thank you,\nSocial Upgrades'),
+          deleteInvoice:()=>{ if(!canInv) return;
+            this.set(x=>{ x.invoices=x.invoices.filter(y=>y.id!==inv.id); return x; });
+            this.setState({invoice:null,flash:'Invoice removed.'}); }
+        };
+      }
+    }
+
+    // ----- the invoicing board -----
+    // Client billing used to be reachable only by previewing a portal, which
+    // meant switching context to raise an invoice. This is the same work, on
+    // one board, one client at a time.
+    const billClients=D.clients.slice()
+      .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    const invSel=billClients.find(c=>c.id===S.invClient)||billClients[0]||null;
+    const invSelId=invSel? invSel.id : '';
+    const owedFor=cid=>invsFor(cid).filter(i=>!invIsPaid(i)).reduce((s,i)=>s+Number(i.amount||0),0);
+    const thisYearN=new Date().getFullYear();
+    // Paid rows that predate the paid-on field fall back to when they were
+    // raised, so the year's total is not silently short.
+    const paidThisYear=D.invoices.filter(i=>invIsPaid(i)&&(i.paidOn
+        ? String(i.paidOn).slice(0,4)===String(thisYearN)
+        : new Date(i.ts||0).getFullYear()===thisYearN))
+      .reduce((s,i)=>s+Number(i.amount||0),0);
+    const invClientRows=billClients.map(c=>{
+      const on=c.id===invSelId, owed=owedFor(c.id), n=invsFor(c.id).length;
+      return {name:c.name, owed:invMoney(owed), hasOwed:owed>0,
+        plan: c.billingType==='hourly'
+          ? ('Hourly · $'+(Number(c.hourlyRate)||0)+'/hr')
+          : ((c.plan||'Plan')+' · $'+(Number(c.price)||0)+'/mo'),
+        count: n+(n===1?' invoice':' invoices'),
+        // Drafts are per-client, so switching clients has to drop them or the
+        // form would show the last client's numbers over this one's.
+        select:()=>this.setState(s2=>({invClient:c.id, d:{...s2.d,
+          ipType:undefined,ipPlan:undefined,ipPrice:undefined,ipHours:undefined,
+          ipRate:undefined,ipPortal:undefined,niNum:undefined,niIssue:undefined,
+          niDue:undefined,niAmount:undefined,niStatus:undefined,niMethod:undefined,
+          niUrl:undefined,niNote:undefined}})),
+        style:{display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',
+          background:on?'var(--gray-100)':'#fff',
+          border:'1px solid '+(on?'var(--navy)':'var(--border-hairline)'),
+          borderRadius:12,padding:'11px 14px',cursor:'pointer',fontFamily:'var(--font-body)'}};
+    });
+    // Numbering follows whatever scheme the last invoice used — SP-0058 leads
+    // to SP-0059 — rather than imposing one.
+    const nextInvNum=cid=>{ const last=invsFor(cid)[0];
+      const m=last&&String(last.num||'').match(/^(.*?)(\d+)$/);
+      if(!m) return 'INV-'+thisYearN+'-001';
+      return m[1]+String(Number(m[2])+1).padStart(m[2].length,'0'); };
+    const invSaveable=isTeam&&canBilling&&!!invSel;
+
     const teamReqCards=D.requests.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
     const teamProgCards=D.work.filter(w=>w.status==='progress'||w.status==='review').map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
@@ -3782,43 +4159,75 @@ class Component extends DCLogic {
       // Stripe billing portal — only meaningful for recurring plans.
       managePlanUrl: client.billingPortalUrl||'',
       canManagePlan: !isHourly && !!client.billingPortalUrl,
-      // Finance can switch a client between a monthly plan and hourly billing.
-      dBillingType: d.billingType===undefined?(client.billingType||'retainer'):d.billingType,
-      onBillingType:this.draft('billingType'),
-      dClientRate: d.clientRate===undefined?(client.hourlyRate||0):d.clientRate,
-      onClientRate:this.draft('clientRate'),
-      saveBilling:()=>{ if(!canBilling) return;
-        const bt=(d.billingType===undefined?client.billingType:d.billingType)||'retainer';
-        const rt=Number(d.clientRate===undefined?client.hourlyRate:d.clientRate)||0;
-        this.set(x=>{ const c=x.clients.find(y=>y.id===client.id); c.billingType=bt; c.hourlyRate=rt; return x; }); },
-      // Finance-only controls for wiring the client up to Stripe.
-      dPortalUrl: d.portalUrl===undefined?(client.billingPortalUrl||''):d.portalUrl,
-      onPortalUrl:this.draft('portalUrl'),
-      savePortalUrl:()=>{ if(!canBilling) return; const u=(d.portalUrl||'').trim();
-        this.set(x=>{ x.clients.find(c=>c.id===client.id).billingPortalUrl=u; return x; }); },
-      dInvNum:d.invNum||'', onInvNum:this.draft('invNum'),
-      dInvAmount:d.invAmount||'', onInvAmount:this.draft('invAmount'),
-      dInvUrl:d.invUrl||'', onInvUrl:this.draft('invUrl'),
-      dInvStatus:d.invStatus||'Due', onInvStatus:this.draft('invStatus'),
-      addInvoice:()=>{ if(!canBilling) return;
-        const num=(d.invNum||'').trim(), amt=Number(d.invAmount)||0, url=(d.invUrl||'').trim();
-        if(!num) return this.setState({syncError:'Invoice number is required.'});
+      // ----- invoicing (team) -----
+      // Billing used to be administered from inside a client's portal preview.
+      // It has its own board now, so all of it — the plan, the invoices and
+      // sending them — is here rather than two clicks into a preview.
+      secInvoicing: isTeam&&canBilling&&secKey('invoicing'),
+      invClientRows,
+      invHasSel: !!invSel, invNoSel: !invSel,
+      invSelName: invSel? invSel.name : '',
+      invTotalOwed: invMoney(D.clients.reduce((s,c)=>s+owedFor(c.id),0)),
+      invTotalOverdue: String(D.invoices.filter(invIsLate).length),
+      invPaidYear: invMoney(paidThisYear),
+      invYearLabel: 'Paid in '+thisYearN,
+      // The plan itself is editable here — a client moving from hourly onto a
+      // retainer is a billing change, not a settings change.
+      ipType: dVal('ipType',(invSel&&invSel.billingType)||'retainer'), onIpType:this.draft('ipType'),
+      ipPlan: dVal('ipPlan',(invSel&&invSel.plan)||''), onIpPlan:this.draft('ipPlan'),
+      ipPrice: dVal('ipPrice',invSel? String(Number(invSel.price)||0) : '0'), onIpPrice:this.draft('ipPrice'),
+      ipHours: dVal('ipHours',invSel? String(Number(invSel.hoursTotal)||0) : '0'), onIpHours:this.draft('ipHours'),
+      ipRate: dVal('ipRate',invSel? String(Number(invSel.hourlyRate)||0) : '0'), onIpRate:this.draft('ipRate'),
+      ipPortal: dVal('ipPortal',(invSel&&invSel.billingPortalUrl)||''), onIpPortal:this.draft('ipPortal'),
+      invSavePlan:()=>{ if(!invSaveable) return;
+        this.set(x=>{ const c=x.clients.find(y=>y.id===invSelId);
+          c.billingType=dVal('ipType',invSel.billingType||'retainer');
+          c.plan=dVal('ipPlan',invSel.plan||'');
+          c.price=Number(dVal('ipPrice',invSel.price))||0;
+          c.hoursTotal=Number(dVal('ipHours',invSel.hoursTotal))||0;
+          c.hourlyRate=Number(dVal('ipRate',invSel.hourlyRate))||0;
+          c.billingPortalUrl=String(dVal('ipPortal',invSel.billingPortalUrl||'')||'').trim();
+          return x; });
+        this.setState(s2=>({flash:'Plan saved for '+invSel.name, d:{...s2.d,
+          ipType:undefined,ipPlan:undefined,ipPrice:undefined,
+          ipHours:undefined,ipRate:undefined,ipPortal:undefined}})); },
+      niNum: dVal('niNum',invSel? nextInvNum(invSelId) : ''), onNiNum:this.draft('niNum'),
+      niIssue: dVal('niIssue',todayIso), onNiIssue:this.draft('niIssue'),
+      niDue: dVal('niDue',''), onNiDue:this.draft('niDue'),
+      niAmount: dVal('niAmount',''), onNiAmount:this.draft('niAmount'),
+      niStatus: dVal('niStatus','Due'), onNiStatus:this.draft('niStatus'),
+      niMethod: dVal('niMethod','Stripe'), onNiMethod:this.draft('niMethod'),
+      niUrl: dVal('niUrl',''), onNiUrl:this.draft('niUrl'),
+      niNote: dVal('niNote',''), onNiNote:this.draft('niNote'),
+      invAdd:()=>{ if(!invSaveable) return;
+        const num=String(dVal('niNum',nextInvNum(invSelId))||'').trim();
+        if(!num) return this.setState({syncError:'An invoice needs a number.'});
+        const amt=Number(dVal('niAmount',''))||0;
+        const issue=dVal('niIssue',todayIso);
+        const status=dVal('niStatus','Due');
         this.setState({syncError:null});
-        this.set(x=>{ x.invoices.unshift({id:this.uid(),clientId:client.id,num,amount:amt,url,
-          status:d.invStatus||'Due',date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),ts:Date.now()}); return x; });
-        this.setState(s=>({d:{...s.d,invNum:'',invAmount:'',invUrl:''}})); },
-      manageInvoices: canBilling && isTeam,
-      teamInvoices: canBilling ? D.invoices.filter(i=>i.clientId===client.id).sort((a,b)=>b.ts-a.ts).map(i=>({
-        num:i.num, date:i.date, amount:invAmount(i.amount), status:i.status,
-        badgeStyle:invBadge(i.status), url:i.url||'', hasUrl:!!i.url,
-        toggle:()=>this.set(x=>{ const r=x.invoices.find(y=>y.id===i.id); r.status = r.status==='Paid'?'Due':'Paid'; return x; }),
-        remove:()=>this.set(x=>{ x.invoices=x.invoices.filter(y=>y.id!==i.id); return x; })
-      })) : [],
+        this.set(x=>{ x.invoices.unshift({id:this.uid(),clientId:invSelId,num,amount:amt,
+          issueDate:issue, date:dayLabel(issue)||dayLabel(todayIso),
+          dueDate:dVal('niDue',''), status,
+          method:dVal('niMethod','Stripe'),
+          url:String(dVal('niUrl','')||'').trim(),
+          note:dVal('niNote',''),
+          paidOn: String(status).toLowerCase()==='paid'? todayIso : '',
+          // Ordering follows the issue date, so back-dating an invoice files
+          // it where it belongs rather than at the top.
+          ts: (issue&&Date.parse(issue+'T00:00:00Z'))||Date.now()});
+          this.logEv(x,invSelId,'Invoice '+num+' raised for '+cname(invSelId)+' ('+invMoney(amt)+')');
+          return x; });
+        this.setState(s2=>({flash:'Invoice '+num+' added. Open it to send it.', d:{...s2.d,
+          niNum:undefined,niAmount:undefined,niUrl:undefined,niNote:undefined,
+          niDue:undefined,niStatus:undefined}})); },
+      invAdminCards: invSel? invsFor(invSelId).map(invCard) : [],
+      invNoAdminCards: !invSel || invsFor(invSelId).length===0,
       planName:client.plan, planPrice:'$'+client.price,
       planHours:clientHoursUsed+' / '+client.hoursTotal+' used',
       hoursHistory:hoursHistory(client.id), noHoursHistory:hoursHistory(client.id).length===0,
       planBarStyle:{width:planPct+'%',height:'100%',background:'var(--grad-brand)'},
-      invoices
+      invoices, noInvoices, ...iv
     };
   }
 }

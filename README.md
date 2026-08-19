@@ -14,7 +14,7 @@ Every user signs in with email + password. The account decides what they see:
 |---|---|
 | Team — admin | Everything: all clients, staff directory, rates, client invoices, payroll |
 | Team — accountant | Everything a member sees, plus client invoices and all payroll |
-| Team — member | All clients and work; **no** client invoices, only their own pay |
+| Team — member | All clients and work; **no** Invoicing board, only their own pay |
 | Client | Only their own tenant, portal only — cannot reach the team view |
 
 Isolation is enforced in Postgres by row-level security, not in the browser.
@@ -259,15 +259,46 @@ its own but cannot create, edit or delete them, so the number behind a bill
 can't be altered by the party being billed. Entries can be marked non-billable,
 in which case they show on the client's list but are excluded from the total.
 
-**Client invoices** are raised in Stripe. The team pastes the hosted invoice
-link (Billing admin panel, visible to admins and accountants only) and the
-client opens the real invoice from their own Billing tab. Nothing is charged by
-this app; it stores links, hours and status.
+### Client invoices
 
-**Team pay** runs on the 1st and the 16th: the 16th covers the 1st–15th of that
-month, the 1st covers the 16th–end of the previous month.
+Nothing is charged by this app. Invoices are raised in Stripe or PayPal and
+recorded here with their hosted link, so both sides open the real one.
 
-Members submit their own pay from the **Payments** tab, in three kinds:
+The **Invoicing** board (admins and accountants only) is where that happens.
+Pick a client down the left and the right-hand side carries three things:
+
+- **Plan** — billing type, plan name, monthly price, retainer hours, hourly rate
+  and the Stripe billing portal link. Moving a client between a monthly plan and
+  hourly is a billing change, so it is made here rather than in client settings.
+- **New invoice** — number, amount, issue and due date, how it is paid, its
+  payment link, and what it covers. The number carries on from the client's last
+  one, so `SP-0058` suggests `SP-0059`; back-dating the issue date files the
+  invoice by that date rather than at the top.
+- **The client's invoices**, as cards.
+
+An invoice is a card on both sides and opens into the same overlay: the amount,
+who it is billed to, when it was issued and due, how it is paid, when it was
+paid, and what it covers. A client gets a button straight through to the Stripe
+or PayPal invoice; the team gets the editing, and **Send to client**.
+
+Sending posts the invoice on the client's message board — which is what raises
+their unread count — and stamps `sentAt`. There is also **Email instead**, which
+opens a pre-filled message to the client's portal members in your own mail
+client. The app never sends mail of its own here.
+
+Status is `Due` or `Paid`; **Overdue** is derived from a due date that has passed
+and is never stored. Marking an invoice paid without saying when stamps today.
+
+Invoicing sits beside **Team Pay** — the payroll board, which was called
+Payments. They are separate: one is what clients owe us, the other is what we
+owe the team.
+
+### Team pay
+
+Pay runs on the 1st and the 16th: the 16th covers the 1st–15th of that month,
+the 1st covers the 16th–end of the previous month.
+
+Members submit their own pay from the **Team Pay** tab, in three kinds:
 
 | Kind | For |
 |---|---|
