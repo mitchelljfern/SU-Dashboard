@@ -1423,6 +1423,16 @@
             </sc-for>
           </div>
         </div>
+        <div style="background:#fff;border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+          <div style="padding:22px 24px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border-hairline)">
+            <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:3px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Book a call</h3>
+              <div style="font-size:12.5px;color:var(--text-muted)">Something easier said than typed? Grab a time.</div>
+            </div>
+            <button onClick="{{ goSchedule }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Full page →</button>
+          </div>
+          <iframe sc-camel-src="{{ calUrl }}" height="700" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" title="Book a call with Social Upgrades" style="width:100%;border:none;display:block;background:#fff"></iframe>
+        </div>
       </sc-if>
 
       <sc-if value="{{ secReports }}" hint-placeholder-val="{{ false }}">
@@ -2444,6 +2454,16 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ pSchedule }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+          <div style="padding:22px 24px;display:flex;flex-direction:column;gap:3px;border-bottom:1px solid var(--border-hairline)">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Book a call</h3>
+            <div style="font-size:12.5px;color:var(--text-muted)">Pick a time that suits you and it lands in both calendars.</div>
+          </div>
+          <iframe sc-camel-src="{{ calUrl }}" height="780" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" title="Book a call with Social Upgrades" style="width:100%;border:none;display:block;background:#fff"></iframe>
+          <div style="padding:12px 24px;border-top:1px solid var(--border-hairline);font-size:12px;color:var(--text-muted)">Not loading? <a sc-camel-href="{{ calUrl }}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);font-weight:500">Open the booking page in a new tab</a>.</div>
+        </div>
+      </sc-if>
       <sc-if value="{{ pFiles }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <sc-for list="{{ fileChips }}" as="ch" hint-placeholder-count="5">
@@ -3193,7 +3213,7 @@ class Component extends DCLogic {
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team']]
           .filter(([id])=>id!=='invoicing'||canBilling)
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -3290,7 +3310,7 @@ class Component extends DCLogic {
     });
     const headings = isTeam
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
-      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
@@ -3545,6 +3565,14 @@ class Component extends DCLogic {
     };
     const portalFiles=myFiles.filter(f=>S.fileFilter==='All'||f.type===S.fileFilter).sort((a,b)=>b.ts-a.ts)
       .map(f=>Object.assign(fileRow(f, libraryDrop(f)),{type:f.type||'File',when:this.fmt(f.ts)}));
+    // Booking a call. It is an <iframe> rather than cal.com's embed.js on
+    // purpose: a script tag would run inside this page, which holds the
+    // signed-in Supabase session, and a booking widget has no business
+    // being able to reach it. A cross-origin frame the browser isolates
+    // costs a fixed height and buys that separation.
+    // month_view and the calendar overlay match the embed settings chosen on
+    // cal.com's side; unknown params are ignored, so this stays safe to edit.
+    const CAL_URL='https://cal.com/socialupgrades/client-call?overlayCalendar=true&layout=month_view';
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
     // A report is written by hand on the team's Reports board. There was no
@@ -4906,7 +4934,7 @@ class Component extends DCLogic {
       dTdStatus:tdS, onTdStatus:e=>this.setState({tdStatus:e.target.value,todoEdit:null,todoDel:null}),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
-      pMessages:!isTeam&&secKey('messages'), pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
+      pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL, pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
@@ -4923,7 +4951,7 @@ class Component extends DCLogic {
       boardReqs, boardReqCount:boardReqs.length, doneItems, doneCount:doneItems.length, noDone:doneItems.length===0,
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
-      goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'),
+      goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'), goSchedule:go('schedule'),
       bottomItems, sheetItems, moreBadge:moreBadge>0?moreBadge:false, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
       stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
       dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),

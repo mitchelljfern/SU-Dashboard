@@ -173,6 +173,27 @@ The mixed approval lists are deliberately left alone. They hold work items and
 updates together and read by time; a shared position across two different kinds
 of record would not mean anything.
 
+## Booking a call
+
+A **Schedule Call** tab in the client portal, and the same booking form at the
+foot of their dashboard, both pointed at the cal.com link in `CAL_URL`.
+
+It is an `<iframe>` rather than cal.com's `embed.js`. The script version would
+run inside this page, which holds the signed-in Supabase session, and a
+booking widget has no business being able to reach it; a cross-origin frame is
+isolated by the browser instead. The cost is a fixed height rather than one
+that resizes itself, which is why there is a plain link underneath for anyone
+the frame fails.
+
+The frame is sandboxed to what cal.com actually needs — scripts, its own
+origin, forms, and popups for the Google Calendar overlay. If the embed ever
+misbehaves after a cal.com change, the `sandbox` attribute is the first thing
+to widen.
+
+Only one frame is ever in the page: sections render conditionally, so the
+dashboard copy and the tab copy never both exist, and cal.com is not contacted
+at all until a client opens one of them.
+
 ## Taking work elsewhere
 
 Clients often already run Asana, Trello or Jira. Rather than an integration per
