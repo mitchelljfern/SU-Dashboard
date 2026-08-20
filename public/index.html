@@ -615,14 +615,18 @@
               <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
             </div>
             <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
-              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
                   <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
                   <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
                 </div>
-              </button>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+                </div>
+              </div>
             </sc-for>
             <sc-if value="{{ noTeamReqs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
           </div>
@@ -646,6 +650,10 @@
                   <div style="font-size:11.5px;color:var(--text-muted)">Client needs it by {{ q.needBy }}</div>
                 </sc-if>
                 <button onClick="{{ q.start }}" style="width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;margin-top:2px" style-hover="background:var(--navy-800)">Start ▸</button>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+                </div>
               </div>
             </sc-for>
             <sc-if value="{{ noTeamQueue }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing queued.</div></sc-if>
@@ -669,6 +677,10 @@
                     <button onClick="{{ w.submit }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
                   </div>
                 </sc-if>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+                </div>
               </div>
             </sc-for>
             <sc-if value="{{ noTeamProg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress.</div></sc-if>
@@ -802,6 +814,10 @@
                   <button onClick="{{ r.approve }}" style="flex:1;background:var(--green);border:none;color:#fff;padding:5px 0;font-size:12px;cursor:pointer;font-family:var(--font-display);font-weight:600" style-hover="filter:brightness(1.08)">Approve ▸</button>
                   <button onClick="{{ r.decline }}" style="flex:1;background:#fff;border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">Decline</button>
                 </div>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+                </div>
               </div>
             </sc-for>
           </div>
@@ -843,6 +859,10 @@
                   <div style="display:flex;gap:6px;flex-wrap:wrap">
                     <sc-if value="{{ w.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.back }}" style="flex:0 0 auto;min-width:36px;background:#fff;border:1px solid var(--gray-200);border-radius:12px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button></sc-if>
                     <sc-if value="{{ w.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.fwd }}" style="flex:1 1 120px;background:var(--navy);border:none;border-radius:12px;color:#fff;padding:6px 10px;font-size:12px;font-weight:500;cursor:pointer" style-hover="background:var(--navy-800)">{{ w.fwdLabel }}</button></sc-if>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                    <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                    <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -1191,7 +1211,7 @@
               <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
             </div>
             <sc-for list="{{ homeReqCards }}" as="r" hint-placeholder-count="2">
-              <button onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ r.open }}" style="background:#fff;border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
                 <div style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
@@ -1205,7 +1225,11 @@
                   <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
                   <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
                 </div>
-              </button>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+                </div>
+              </div>
             </sc-for>
             <sc-if value="{{ noReqCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on us to review.</div></sc-if>
           </div>
@@ -1226,6 +1250,10 @@
                   <span style="{{ q.badgeStyle }}">{{ q.statusLabel }}</span>
                   <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ q.urgencyStyle }}">{{ q.urgency }}</span></sc-if>
                   <span style="font-size:12px;color:var(--blue);font-weight:500">{{ q.commentsLabel }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
               </div>
             </sc-for>
@@ -1248,6 +1276,10 @@
                   <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
                   <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ w.urgencyStyle }}">{{ w.urgency }}</span></sc-if>
                   <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
+                  <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:#fff;border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
               </div>
             </sc-for>
@@ -3251,11 +3283,48 @@ class Component extends DCLogic {
         who:signature(side),text,ts:Date.now()});
         this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
       this.setState(s=>({d:{...s.d,msg:''}})); };
+    // ===== manual card order =====
+    // A column used to show whatever order the rows arrived in, so the card
+    // that mattered most could be anywhere in it and the only way to raise one
+    // was to talk about it. `sort` is a position within a column, and both
+    // sides read and write the same one: the client's queue and ours are the
+    // same list, so a card moved on either side moves for everyone.
+    //
+    // A card with no position sorts last and keeps its natural order, so a
+    // column nobody has arranged reads exactly as it did before, and new work
+    // joins the back of the queue instead of jumping cards already placed.
+    const POS = it => (typeof it.sort==='number' ? it.sort : Infinity);
+    const ordered = (list, nat) => list.slice().sort((a,b)=>(POS(a)-POS(b)) || nat(a,b));
+    // The natural orders, named once because both sides have to agree on them.
+    // Work is oldest-first — a queue — and requests newest-first, which is how
+    // each already read on the side that sorted them.
+    const natWork = (a,b)=>(a.ts||0)-(b.ts||0);
+    const natReq  = (a,b)=>(b.ts||0)-(a.ts||0);
+    // Moving normalises the whole column before the swap: a column with
+    // positions on some cards and not others reshuffles on the next render.
+    const moveCard = (coll, ids, id, dir) => this.set(x=>{
+      const list = ids.map(i=>x[coll].find(y=>y.id===i)).filter(Boolean);
+      const i = list.findIndex(y=>y.id===id), j = i+dir;
+      if(i<0 || j<0 || j>=list.length) return x;
+      list.forEach((it,k)=>{ it.sort = k; });
+      const t=list[i].sort; list[i].sort=list[j].sort; list[j].sort=t;
+      return x;
+    });
+    // The up/down pair for one card, given its column in display order.
+    const moveBits = (coll, ids, id) => {
+      const i = ids.indexOf(id);
+      return {canUp:i>0, canDown:i>=0&&i<ids.length-1,
+        moveUp:stopThen(()=>moveCard(coll,ids,id,-1)),
+        moveDown:stopThen(()=>moveCard(coll,ids,id,1))};
+    };
+
     // board
     const order=['queued','progress','review','done'];
     const cols=[['queued','Queued','var(--gray-400)'],['progress','In Progress','var(--blue)'],['review','In Review','var(--teal)']];
     const boardCols=cols.map(([st,label,accent])=>{
-      const items=liveWork.filter(w=>w.status===st).map(w=>{
+      const inCol=ordered(liveWork.filter(w=>w.status===st), natWork);
+      const colIds=inCol.map(w=>w.id);
+      const items=inCol.map(w=>{
         const i=order.indexOf(st);
         const move=dir=>()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id); it.status=order[i+dir];
           // Reaching 'done' is an approval, whoever performs it, so it stamps
@@ -3288,11 +3357,15 @@ class Component extends DCLogic {
           projected:w.projectedFinish||'',
           onProjected:e=>{ const v=e.target.value; this.set(x=>{ x.work.find(y=>y.id===w.id).projectedFinish=v; return x; }); },
           needBy:w.needBy||'', hasNeedBy:!!w.needBy,
-          urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent')};
+          urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent'),
+          ...moveBits('work',colIds,w.id)};
       });
       return {label,accent,count:items.length,items};
     });
-    const boardReqs=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+    const boardReqOrder=ordered(liveReqs.filter(r=>r.status==='new'), natReq);
+    const boardReqIds=boardReqOrder.map(r=>r.id);
+    const boardReqs=boardReqOrder.map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+      ...moveBits('requests',boardReqIds,r.id),
       approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
     const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
@@ -3536,9 +3609,12 @@ class Component extends DCLogic {
     const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
     // Once the team hands an item over it belongs in Awaiting approval, not in
     // the in-progress list — that is where the client already signs things off.
-    const homeProgCards=liveWork.filter(w=>w.clientId===client.id&&w.status==='progress').map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+    const homeProg=ordered(liveWork.filter(w=>w.clientId===client.id&&w.status==='progress'), natWork);
+    const homeProgIds=homeProg.map(w=>w.id);
+    const homeProgCards=homeProg.map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
       return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
+        moveBits('work',homeProgIds,w.id),
         dateBits(w.needBy,w.projectedFinish)); });
 
     // The client's dashboard follows one card through the pipeline, so each
@@ -3546,18 +3622,23 @@ class Component extends DCLogic {
     // approved ones too, which meant a card sat there *and* in whatever column
     // its work item had reached — the same job listed twice. Open requests is
     // now what we have not triaged yet, and the queue is its own column.
-    const homeQueueCards=liveWork.filter(w=>w.clientId===client.id&&w.status==='queued')
-      .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
+    const homeQueue=ordered(liveWork.filter(w=>w.clientId===client.id&&w.status==='queued'), natWork);
+    const homeQueueIds=homeQueue.map(w=>w.id);
+    const homeQueueCards=homeQueue.map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
       return Object.assign({title:w.title,badgeStyle,statusLabel,
         commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),
         isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
+        moveBits('work',homeQueueIds,w.id),
         dateBits(w.needBy, w.projectedFinish)); });
-    const homeReqCards=liveReqs.filter(r=>r.clientId===client.id&&r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
+    const homeReq=ordered(liveReqs.filter(r=>r.clientId===client.id&&r.status==='new'), natReq);
+    const homeReqIds=homeReq.map(r=>r.id);
+    const homeReqCards=homeReq.map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
+        moveBits('requests',homeReqIds,r.id),
         dateBits(r.needBy, w&&w.projectedFinish)); });
 
     // Finished work, newest first, for the client's Updates tab.
@@ -3986,7 +4067,9 @@ class Component extends DCLogic {
       return m[1]+String(Number(m[2])+1).padStart(m[2].length,'0'); };
     const invSaveable=isTeam&&canBilling&&!!invSel;
 
-    const teamReqCards=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)}));
+    const teamReqOrder=ordered(liveReqs.filter(r=>r.status==='new'), natReq);
+    const teamReqIds=teamReqOrder.map(r=>r.id);
+    const teamReqCards=teamReqOrder.map(r=>Object.assign({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)},moveBits('requests',teamReqIds,r.id)));
     // The queue was only ever visible by opening the Workboard, so the next
     // job to pick up was always one click out of sight. Oldest first: a queue
     // that surfaces the newest thing is not a queue.
@@ -4019,8 +4102,9 @@ class Component extends DCLogic {
         who: personName(r.archivedBy) || (r.archivedBy? 'someone since removed' : 'Social Upgrades'),
         open:openDetail(coll==='work'?'work':'request', r.id),
         restore:stopThen(()=>this.set(x=>{ unArchive(x,coll,r.id); return x; }))}));
-    const teamQueueCards=liveWork.filter(w=>w.status==='queued')
-      .sort((a,b)=>(a.ts||0)-(b.ts||0)).map(w=>({
+    const teamQueue=ordered(liveWork.filter(w=>w.status==='queued'), natWork);
+    const teamQueueIds=teamQueue.map(w=>w.id);
+    const teamQueueCards=teamQueue.map(w=>({
         title:w.title, clientName:cname(w.clientId), dot:clientDot(w.clientId),
         hoursLabel: Number(w.hours)? Number(w.hours)+'h estimated' : 'No estimate yet',
         urgency:w.urgency||'Normal', urgencyStyle:urgStyle(w.urgency),
@@ -4032,13 +4116,16 @@ class Component extends DCLogic {
         // trip to the board. The client sees it move into their In progress.
         start: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           it.status='progress'; it.startedAt=Date.now();
-          this.logEv(x,it.clientId,'Started work: '+it.title); return x; }))
+          this.logEv(x,it.clientId,'Started work: '+it.title); return x; })),
+        ...moveBits('work',teamQueueIds,w.id)
       }));
     // Submitting for approval hands the item over, so it leaves In progress.
     // It used to stay there wearing an "In review" badge, which made the
     // column the team watches for what is still theirs to do include work
     // that was not — the client's board had this right and ours did not.
-    const teamProgCards=liveWork.filter(w=>w.status==='progress').map(w=>{
+    const teamProg=ordered(liveWork.filter(w=>w.status==='progress'), natWork);
+    const teamProgIds=teamProg.map(w=>w.id);
+    const teamProgCards=teamProg.map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
       return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,
@@ -4050,7 +4137,8 @@ class Component extends DCLogic {
                              : 'Sends it to the client to approve. No hours recorded yet.',
         submit: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           it.status='review'; it.approvalRequestedAt=Date.now();
-          this.logEv(x,it.clientId,'Sent for approval: '+it.title); return x; }))};
+          this.logEv(x,it.clientId,'Sent for approval: '+it.title); return x; })),
+        ...moveBits('work',teamProgIds,w.id)};
     });
     // Everything sitting with the client: work we have handed over, and
     // updates we have asked them to sign off. Both are waiting on the same
