@@ -86,6 +86,29 @@ Comments take more than one line: the box is a textarea (Enter for a new line,
 into it. Long unbroken text — a pasted URL, usually — wraps rather than running
 off the side of a phone.
 
+## To-Dos
+
+A **To-Dos** board in the team menu: every to-do across every client in one
+list, grouped by the client it belongs to with the team's own pile last, and
+filterable by client, side and status. Before it, to-dos lived in two
+half-views — the overview's top seven team items and whatever a single client
+saw of its own — so nothing answered "what is outstanding, and who is it on",
+and nothing anywhere could correct a typo or take one back. Ticking it done
+was the only way to retire a to-do, which says something different.
+
+A to-do is either **for the client** — it shows on their To-Dos tab and their
+dashboard, and they tick it off — or **for the team**, which stays internal and
+can be assigned to a member. Rows retitle in place, and removing takes two
+clicks, because a to-do is small enough to lose to a mis-click and there is no
+undo. Removing or retitling one the client can see is logged; internal ones are
+nobody else's news.
+
+Adding one "for client" without picking a client is refused: it would file the
+row under Internal, which no portal lists — a to-do addressed to nobody.
+
+The sidebar badge counts what is assigned to *you*, not the size of the board.
+A count of everyone's to-dos is not a number anyone can act on.
+
 ## Strategy
 
 A **Strategy** tab in the client portal, opening into three channel boards. It
@@ -104,6 +127,31 @@ between lists. Cards carry a title, notes, an optional scheduled date, links
 and comments. Deleting is team-only — it is the one destructive action, and
 RLS still pins every card to its own tenant, so neither side can add to or read
 another client's board.
+
+## Card order
+
+Cards carry a position within their column, moved with the arrows on the card.
+A column used to show whatever order its rows arrived in, so the card that
+mattered most could sit anywhere in it and the only way to raise one was to
+mention it in a message.
+
+The position is one field that both sides read and write: the client's queue
+and ours are the same list seen twice, so a card moved on either side moves for
+everyone. A client may write it because it is a position and nothing else — it
+cannot move a card between columns, between tenants, or change a word of it,
+and a position that is not a number is rejected rather than stored as something
+every later sort would read as absent.
+
+A card with no position sorts last and keeps its natural order, so a column
+nobody has arranged reads as it always did, and new work joins the back of the
+queue rather than jumping cards already placed. Moving normalises the whole
+column first — half a column with positions and half without reshuffles on the
+next render. Work sorts oldest-first and requests newest-first, the same on
+both sides: a shared position is worth nothing if the fallback differs.
+
+The mixed approval lists are deliberately left alone. They hold work items and
+updates together and read by time; a shared position across two different kinds
+of record would not mean anything.
 
 ## Taking work elsewhere
 
