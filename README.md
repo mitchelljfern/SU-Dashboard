@@ -128,6 +128,26 @@ and comments. Deleting is team-only — it is the one destructive action, and
 RLS still pins every card to its own tenant, so neither side can add to or read
 another client's board.
 
+## Reports
+
+A **Reports** board in the team menu writes the monthly report a client sees.
+Before it there was no way to write one at all: every client got an empty
+shell on creation and it stayed empty, so the only reports that existed were
+seeded ones.
+
+Four tiles — label, value, change, and whether the change is good news — plus
+a summary paragraph. The labels are typed rather than fixed, because
+`Sessions / Conversion / Orders / AOV` is an ecommerce set and a law firm has
+no AOV. Leave a tile blank to publish three figures instead of four.
+
+The client is told when it was last written. The date used to be today's,
+whatever the figures were and however old they got, so a report from March
+told the client it was generated this morning. A client with no report yet is
+told that, rather than being shown an empty grid.
+
+Filling the tiles from an analytics API later means filling this same shape;
+the tab does not need to change for it.
+
 ## Card order
 
 Cards carry a position within their column, moved with the arrows on the card.

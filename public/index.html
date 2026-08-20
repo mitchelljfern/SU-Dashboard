@@ -1292,7 +1292,6 @@
             </div>
             <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
               <div onClick="{{ u.open }}" style="background:#fff;border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
-                <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
                 <div style="font-size:14px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
                 <sc-for list="{{ u.files }}" as="f" hint-placeholder-count="0">
                   <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
@@ -1422,6 +1421,49 @@
                 <div style="font-size:11px;color:var(--text-muted)">{{ f.meta }}</div>
               </button>
             </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secReports }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:16px;border-radius:12px">
+            <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+              <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly report</h3>
+                <div style="font-size:12px;color:var(--text-muted)">What {{ repClientName }} sees on their Reports tab. Leave a tile blank to publish fewer than four.</div>
+              </div>
+              <select value="{{ dRepClient }}" onChange="{{ onRepClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                <sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+              </select>
+            </div>
+
+            <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+              <sc-for list="{{ repTiles }}" as="t" hint-placeholder-count="4">
+                <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Tile {{ t.n }}</div>
+                  <input value="{{ t.dLabel }}" onChange="{{ t.onLabel }}" placeholder="Label — e.g. Sessions" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <input value="{{ t.dValue }}" onChange="{{ t.onValue }}" placeholder="Value — e.g. 12.4K" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <input value="{{ t.dDelta }}" onChange="{{ t.onDelta }}" placeholder="Change — e.g. +18% vs Jul" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <select value="{{ t.dUp }}" onChange="{{ t.onUp }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
+                    <option value="up">Good news</option>
+                    <option value="down">Bad news</option>
+                  </select>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Summary</div>
+              <textarea value="{{ dRepNote }}" onChange="{{ onRepNote }}" rows="4" placeholder="What the numbers mean, in plain words." style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box;resize:vertical;line-height:1.6"></textarea>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <button onClick="{{ saveReport }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;border-radius:12px" style-hover="background:#000">Publish report</button>
+              <sc-if value="{{ hasRepWhen }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:12px;color:var(--text-muted)">Last updated {{ repWhen }}<sc-if value="{{ hasRepBy }}" hint-placeholder-val="{{ true }}"> by {{ repBy }}</sc-if></div>
+              </sc-if>
+            </div>
           </div>
         </div>
       </sc-if>
@@ -2462,11 +2504,18 @@
             </div>
           </sc-for>
         </div>
-        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
-          <div style="font-size:14px;line-height:1.65;color:var(--text-body)">{{ reportNote }}</div>
-          <div style="font-size:12px;color:var(--text-muted)">Snapshot generated {{ reportDate }} · full analytics available on request</div>
-        </div>
+        <sc-if value="{{ noReport }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">Your first report will appear here once we publish it.</div>
+        </sc-if>
+        <sc-if value="{{ hasReportNote }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px;border-radius:12px">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
+            <div style="font-size:14px;line-height:1.65;color:var(--text-body);white-space:pre-wrap">{{ reportNote }}</div>
+            <sc-if value="{{ hasReportDate }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:12px;color:var(--text-muted)">Updated {{ reportDate }} · full analytics available on request</div>
+            </sc-if>
+          </div>
+        </sc-if>
       </sc-if>
 
       <sc-if value="{{ pBilling }}" hint-placeholder-val="{{ false }}">
@@ -2585,6 +2634,8 @@ class Component extends DCLogic {
       // Which to-do is being retitled, which is mid-delete, and how the
       // board is filtered. Open-only by default: the list is a worklist.
       todoEdit:null, todoDel:null, tdClient:'all', tdWho:'all', tdStatus:'open',
+      // Which client's monthly report is being written.
+      repClient:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
       profile:null, syncError:null, booted:false,
@@ -3140,7 +3191,7 @@ class Component extends DCLogic {
     // no home at all. They are separate boards, and the payroll one is renamed
     // so nobody goes looking for a client's invoice under it.
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team']]
           .filter(([id])=>id!=='invoicing'||canBilling)
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
     // ===== unread messages =====
@@ -3238,7 +3289,7 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
@@ -3496,6 +3547,50 @@ class Component extends DCLogic {
       .map(f=>Object.assign(fileRow(f, libraryDrop(f)),{type:f.type||'File',when:this.fmt(f.ts)}));
     // reports & billing
     const rep=D.reports[client.id]||{stats:[],note:''};
+    // A report is written by hand on the team's Reports board. There was no
+    // way to write one at all before: every client got an empty shell on
+    // creation and it stayed empty, so the only reports that existed were
+    // seeded. Four tiles and a paragraph, and the client is told when it was
+    // last touched rather than being shown today's date over old numbers.
+    const repCid = S.repClient || (D.clients[0] && D.clients[0].id) || '';
+    const repFor = D.reports[repCid] || {stats:[],note:''};
+    const repStat = i => (repFor.stats||[])[i] || {};
+    // Drafts start undefined so a field shows what is stored; switching client
+    // clears them, otherwise one client's figures would be typed over another.
+    const rd = (k, fallback) => (d[k]===undefined ? fallback : d[k]);
+    const repTiles = [0,1,2,3].map(i=>({
+      n: String(i+1),
+      dLabel: rd('rpL'+i, repStat(i).label||''), onLabel: this.draft('rpL'+i),
+      dValue: rd('rpV'+i, repStat(i).value||''), onValue: this.draft('rpV'+i),
+      dDelta: rd('rpD'+i, repStat(i).delta||''), onDelta: this.draft('rpD'+i),
+      dUp:    String(rd('rpU'+i, (repStat(i).up===false?'down':'up'))), onUp: this.draft('rpU'+i)
+    }));
+    const repClearDrafts = o => { const n={...o};
+      [0,1,2,3].forEach(i=>{ delete n['rpL'+i]; delete n['rpV'+i]; delete n['rpD'+i]; delete n['rpU'+i]; });
+      delete n.rpNote; return n; };
+    const repWhen = repFor.updatedAt
+      ? new Date(repFor.updatedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+      : '';
+    // Looked up here rather than through personName, which is not defined
+    // until further down this function.
+    const repBy = repFor.updatedBy
+      ? (p2=>p2? (p2.name||p2.email||'') : '')((D.people||[]).find(x=>x.id===repFor.updatedBy))
+      : '';
+    const saveReport = ()=>{
+      // A tile with nothing in the two fields that make it a tile is not a
+      // tile: it is one of the four boxes left blank, and blanks are how you
+      // publish three figures instead of four.
+      const stats=[0,1,2,3].map(i=>({
+        label:String(rd('rpL'+i, repStat(i).label||'')).trim(),
+        value:String(rd('rpV'+i, repStat(i).value||'')).trim(),
+        delta:String(rd('rpD'+i, repStat(i).delta||'')).trim(),
+        up: String(rd('rpU'+i, (repStat(i).up===false?'down':'up')))!=='down'
+      })).filter(x=>x.label||x.value);
+      const note=String(rd('rpNote', repFor.note||'')).trim();
+      this.set(x=>{ x.reports[repCid]={stats,note,updatedAt:Date.now(),updatedBy:me.id||''};
+        this.logEv(x,repCid,'Monthly report updated for '+cname(repCid)); return x; });
+      this.setState(s2=>({d:repClearDrafts(s2.d), syncError:null}));
+    };
     // ===== invoicing =====
     // An invoice used to be one line in a list: a number, an amount, a link.
     // What it actually covered lived in somebody's email. It is a card now,
@@ -3593,10 +3688,13 @@ class Component extends DCLogic {
       const ts=w.approvalRequestedAt||w.ts;
       return {sortTs:ts, when:this.fmt(ts), text:w.title,
         files:(w.files||[]).map(f=>fileRow(f)),
-        hasHoursNote:true,
-        hoursNote: willCount
-          ? ('Approving counts '+willCount+(Number(w.actualHours)?' hours':' hours (estimated)')+' against this month.')
-          : 'No hours were recorded on this one.',
+        // Just the figure. The old line explained that approving counts the
+        // hours against the month, which on the card where the client is
+        // deciding read as a warning about pressing the button. Nothing at all
+        // when there are no hours: "no hours were recorded" is a sentence about
+        // our bookkeeping, not something they need to read before approving.
+        hasHoursNote: willCount>0,
+        hoursNote: willCount>0 ? (willCount+' billing hours') : '',
         open:openDetail('work',w.id), openFb:stopThen(openDetail('work',w.id)),
         approve:stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           markApproved(it);
@@ -4799,6 +4897,10 @@ class Component extends DCLogic {
       notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
       secTodos:isTeam&&secKey('todos'), tdGroups, noTdGroups:tdGroups.length===0, tdStats, tdClientOpts,
+      secReports:isTeam&&secKey('reports'), repTiles, repWhen, repBy, hasRepWhen:!!repWhen, hasRepBy:!!repBy,
+      dRepClient:repCid, onRepClient:e=>this.setState(s2=>({repClient:e.target.value,d:repClearDrafts(s2.d)})),
+      dRepNote:(d.rpNote===undefined? (repFor.note||'') : d.rpNote), onRepNote:this.draft('rpNote'),
+      saveReport, repClientName:cname(repCid),
       dTdClient:tdC, onTdClient:e=>this.setState({tdClient:e.target.value,todoEdit:null,todoDel:null}),
       dTdWho:tdW, onTdWho:e=>this.setState({tdWho:e.target.value,todoEdit:null,todoDel:null}),
       dTdStatus:tdS, onTdStatus:e=>this.setState({tdStatus:e.target.value,todoEdit:null,todoDel:null}),
@@ -4936,8 +5038,16 @@ class Component extends DCLogic {
             this.logEv(x,client.id,'Social Upgrades added a file: '+meta.name); return x; });
         });
       },
-      reportStats:rep.stats.map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E'})), reportNote:rep.note,
-      reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
+      reportStats:(rep.stats||[]).map(s2=>({...s2,deltaColor:s2.up?'var(--green)':'#D68F2E',hasDelta:!!s2.delta})),
+      reportNote:rep.note, hasReportNote:!!rep.note,
+      // The date used to be today's, whatever the figures were and however old
+      // they got — a report from March told the client it was generated this
+      // morning. It is the day somebody actually wrote it, or nothing.
+      reportDate: rep.updatedAt
+        ? new Date(rep.updatedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
+        : '',
+      hasReportDate: !!rep.updatedAt,
+      noReport: !(rep.stats||[]).length && !rep.note,
       // Stripe billing portal — only meaningful for recurring plans.
       managePlanUrl: client.billingPortalUrl||'',
       canManagePlan: !isHourly && !!client.billingPortalUrl,
