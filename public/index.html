@@ -2874,6 +2874,13 @@ class Component extends DCLogic {
     // invoices or anyone else's pay. The database enforces this too — these
     // flags only decide what is worth rendering.
     const canBilling = isStaff && (isAdmin || !!me.is_accountant || !!meRow.isAccountant);
+    // The client's own Billing tab is their commercial terms — plan price,
+    // retainer hours, hourly rate, invoices. A client always sees their own,
+    // and finance sees anyone's; ordinary staff see nobody's. The database
+    // already refuses them the invoice rows, but the rest of that tab is read
+    // from the client record they can read, so the tab has to be gone rather
+    // than merely come up empty.
+    const canSeeClientBilling = !isStaff || canBilling;
 
     const isTeam = isStaff && S.role==='team';
     // Placeholder keeps render total during the pre-auth frame, when no rows
@@ -3213,7 +3220,12 @@ class Component extends DCLogic {
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team']]
           .filter(([id])=>id!=='invoicing'||canBilling)
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']];
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['files','Files'],['team','Team'],['reports','Reports'],['billing','Billing']]
+          .filter(([id])=>id!=='billing'||canSeeClientBilling);
+    // Hiding the tab is not enough on its own: a member already sitting on
+    // Billing — or returning to it — would be left staring at a blank page,
+    // because no section would match. The view falls back to the dashboard.
+    const sectionNow = (S.section==='billing' && !canSeeClientBilling) ? 'home' : S.section;
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -3292,7 +3304,7 @@ class Component extends DCLogic {
     };
     const navItems = [];
     nav.forEach(([id,label])=>{
-      const active=S.section===id, muted=id==='billing';
+      const active=sectionNow===id, muted=id==='billing';
       const badge=badgeFor(id);
       navItems.push({label,badge,
         arrow: id==='strategy' ? (active?'▾':'▸') : false,
@@ -3311,8 +3323,8 @@ class Component extends DCLogic {
     const headings = isTeam
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
-    const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
-    const secKey=k=>S.section===k;
+    const hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
+    const secKey=k=>sectionNow===k;
     // notifications
     // Your own actions are not news to you, so they never reach the bell. The
     // overview's activity list is separate and still shows everything.
@@ -4303,13 +4315,13 @@ class Component extends DCLogic {
     const bottomIds = BAR.filter(id=>nav.some(([n])=>n===id));
     const bottomItems = bottomIds.map(id=>{
       const label=(nav.find(([n])=>n===id)||[id,id])[1];
-      return {label,badge:badgeFor(id),select:openSection(id),style:mobStyle(S.section===id)};
+      return {label,badge:badgeFor(id),select:openSection(id),style:mobStyle(sectionNow===id)};
     });
     // Whatever is left behind More still reports its own count.
     const moreBadge=nav.filter(([id])=>bottomIds.indexOf(id)<0)
       .reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
     const sheetItems=nav.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
-      style:{width:'100%',textAlign:'left',background:S.section===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:S.section===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:S.section===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
+      style:{width:'100%',textAlign:'left',background:sectionNow===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:sectionNow===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:sectionNow===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
     // stats & activity (team overview)
     const stats=[
       {label:'Active clients',value:D.clients.length},
@@ -4934,7 +4946,7 @@ class Component extends DCLogic {
       dTdStatus:tdS, onTdStatus:e=>this.setState({tdStatus:e.target.value,todoEdit:null,todoDel:null}),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
-      pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL, pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
+      pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL, pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,

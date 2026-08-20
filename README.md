@@ -14,8 +14,17 @@ Every user signs in with email + password. The account decides what they see:
 |---|---|
 | Team — admin | Everything: all clients, staff directory, rates, client invoices, payroll |
 | Team — accountant | Everything a member sees, plus client invoices and all payroll |
-| Team — member | All clients and work; **no** Invoicing board, only their own pay |
+| Team — member | All clients and work; **no** Invoicing board, **no** client Billing tab, only their own pay |
 | Client | Only their own tenant, portal only — cannot reach the team view |
+
+A client's **Billing** tab — their plan price, retainer hours, rate and
+invoices — follows the same line as the Invoicing board: the client sees their
+own, admins and accountants see anyone's, ordinary staff see nobody's. The
+database already refuses a member the invoice rows, but the rest of that tab
+reads from the client record they *can* read, so the tab is removed rather
+than left to come up empty. Hiding the menu item is not the whole fix: the
+section itself is gated, and a member who was sitting on Billing lands on the
+dashboard instead of a blank page.
 
 Isolation is enforced in Postgres by row-level security, not in the browser.
 A client cannot read another client's data, move rows between tenants, delete
