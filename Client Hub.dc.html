@@ -222,7 +222,10 @@
         <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:20px">
             <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team to-dos</h3>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Team to-dos</h3>
+                <button onClick="{{ goTeamTodos }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Manage all →</button>
+              </div>
               <div style="display:flex;flex-direction:column">
                 <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
                   <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
@@ -403,6 +406,89 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secTodos }}" hint-placeholder-val="{{ false }}">
+        <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
+          <sc-for list="{{ todoStats }}" as="s" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:2px">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--navy)">{{ s.value }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ s.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Add a to-do</h3>
+          <div style="font-size:13px;color:var(--text-muted)">Client to-dos appear in that client's portal straight away. Team to-dos stay internal.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="What needs doing?" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:10px 13px;font-size:14px">
+            <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px;font-size:13px;background:#fff">
+              <option value="">Internal (no client)</option>
+              <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+            </select>
+            <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:10px;font-size:13px;background:#fff">
+              <option value="team">For team</option>
+              <option value="client">For client</option>
+            </select>
+            <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to-do</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <sc-for list="{{ todoAudChips }}" as="ch" hint-placeholder-count="3">
+            <button onClick="{{ ch.select }}" style="{{ ch.style }}" style-hover="border-color:var(--navy)">{{ ch.label }}</button>
+          </sc-for>
+          <select value="{{ dTodoCli }}" onChange="{{ onTodoCli }}" style="border:1px solid var(--gray-200);border-radius:999px;padding:7px 14px;font-size:13px;background:#fff">
+            <option value="all">All clients</option>
+            <option value="">Internal (no client)</option>
+            <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+          </select>
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-body);cursor:pointer"><input type="checkbox" checked="{{ dTodoDone }}" onChange="{{ onTodoDone }}">Show completed</label>
+        </div>
+        <sc-for list="{{ todoGroups }}" as="g" hint-placeholder-count="2">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ g.name }}</h3>
+              <span style="font-size:12px;color:var(--text-muted)">{{ g.openLabel }}</span>
+            </div>
+            <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="3">
+              <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-hairline);flex-wrap:wrap">
+                  <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                  <div style="flex:1;min-width:180px;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                  <span style="{{ t.whoStyle }}">{{ t.whoLabel }}</span>
+                  <span style="font-size:11px;color:var(--text-muted)">{{ t.when }}</span>
+                  <button onClick="{{ t.startEdit }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:6px 14px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Edit</button>
+                  <button onClick="{{ t.askDelete }}" style="background:#fff;border:1px solid var(--gray-200);color:#B3261E;padding:6px 14px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Remove</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px;margin:6px 0;background:var(--gray-100);border:1px solid var(--border-hairline)">
+                  <input value="{{ dTodoEdit }}" onChange="{{ onTodoEdit }}" placeholder="To-do" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:4px;padding:9px 12px;font-size:14px;background:#fff">
+                  <select value="{{ dTodoEditCli }}" onChange="{{ onTodoEditCli }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                    <option value="">Internal (no client)</option>
+                    <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                  </select>
+                  <select value="{{ dTodoEditWho }}" onChange="{{ onTodoEditWho }}" style="border:1px solid var(--gray-200);border-radius:4px;padding:9px;font-size:13px;background:#fff">
+                    <option value="team">For team</option>
+                    <option value="client">For client</option>
+                  </select>
+                  <button onClick="{{ t.saveEdit }}" style="background:var(--green);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Save</button>
+                  <button onClick="{{ t.cancelEdit }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:12px;cursor:pointer" style-hover="background:#fff">Cancel</button>
+                </div>
+              </sc-if>
+              <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;margin:6px 0;background:rgba(179,38,30,.06);border:1px solid rgba(179,38,30,.25)">
+                  <div style="flex:1;min-width:180px;font-size:14px;color:var(--navy)">Remove “{{ t.title }}”? This can't be undone.</div>
+                  <button onClick="{{ t.confirmDelete }}" style="background:#B3261E;color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Remove</button>
+                  <button onClick="{{ t.cancelDelete }}" style="background:#fff;border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Cancel</button>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noTodos }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid var(--border-card);padding:22px;font-size:13px;color:var(--text-muted)">No to-dos match this filter.</div>
+        </sc-if>
+      </sc-if>
+
       <sc-if value="{{ secMessages }}" hint-placeholder-val="{{ false }}">
         <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:#fff;border:1px solid var(--border-card);min-height:480px">
           <div class="su-tabs" style="border-right:1px solid var(--border-hairline);display:flex;flex-direction:column;padding:12px 0">
@@ -420,6 +506,7 @@
                   </div>
                 </div>
               </sc-for>
+              <sc-if value="{{ noThread }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No messages on this board yet.</div></sc-if>
             </div>
             <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
               <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
@@ -513,6 +600,7 @@
                   <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ m.text }}</div>
                 </div>
               </sc-for>
+              <sc-if value="{{ noThread }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No messages yet.</div></sc-if>
             </div>
         </div>
         <div style="background:#fff;border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px">
@@ -528,6 +616,7 @@
                 <div style="font-size:11px;color:var(--text-muted)">{{ f.size }}</div>
               </button>
             </sc-for>
+            <sc-if value="{{ noBrandFiles }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No brand files uploaded yet.</div></sc-if>
           </div>
         </div>
       </sc-if>
@@ -556,6 +645,9 @@
               </sc-if>
             </div>
           </sc-for>
+          <sc-if value="{{ noPortalUpdates }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:22px;font-size:13px;color:var(--text-muted)">No updates yet — we'll post here as soon as work goes out.</div>
+          </sc-if>
         </div>
         <div style="background:var(--navy);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
           <div style="display:flex;flex-direction:column;gap:2px">
@@ -592,6 +684,7 @@
               <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
             </div>
           </sc-for>
+          <sc-if value="{{ noMyRequests }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">You haven't submitted any requests yet.</div></sc-if>
         </div>
       </sc-if>
 
@@ -619,6 +712,7 @@
                 </div>
               </div>
             </sc-for>
+            <sc-if value="{{ noThread }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No messages yet. Say hello — the team gets notified.</div></sc-if>
           </div>
           <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
             <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message the team…" style="flex:1;border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font-size:14px">
@@ -644,6 +738,7 @@
               <a href="#" style="font-size:13px;font-weight:500">Download</a>
             </div>
           </sc-for>
+          <sc-if value="{{ noPortalFiles }}" hint-placeholder-val="{{ false }}"><div style="padding:20px 22px;font-size:13px;color:var(--text-muted)">No files here yet.</div></sc-if>
         </div>
       </sc-if>
 
@@ -660,6 +755,7 @@
         <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
           <div style="font-size:14px;line-height:1.65;color:var(--text-body)">{{ reportNote }}</div>
+          <sc-if value="{{ noReportStats }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Your first monthly report lands at the end of the month.</div></sc-if>
           <div style="font-size:12px;color:var(--text-muted)">Snapshot generated {{ reportDate }} · full analytics available on request</div>
         </div>
       </sc-if>
@@ -688,6 +784,7 @@
                 <a href="#" style="font-size:13px;font-weight:500">PDF</a>
               </div>
             </sc-for>
+            <sc-if value="{{ noInvoices }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No invoices yet.</div></sc-if>
           </div>
         </div>
       </sc-if>
@@ -705,82 +802,71 @@ class Component extends DCLogic {
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
-      data: saved ? JSON.parse(saved) : this.seed()
+      data: saved ? this.migrate(JSON.parse(saved)) : this.seed()
     };
+  }
+  // One-time purge of the original Afore Beauty demo content from a browser that
+  // already has saved state. Only the seeded records are matched by id — anything
+  // added through the UI gets a random id and is left alone, as is ViewSlipstream.
+  migrate(data){
+    if(!data || data.cleanVersion>=1) return data;
+    const drop={todos:['t1','t4','t5'],work:['w1','w2','w5'],requests:['r1','r3'],updates:['u1','u2','u5'],
+      messages:['m1','m2'],files:['f1','f2','f3','f4','f5','f10','f11','f12'],invoices:['i1','i2','i3'],log:['l1','l4']};
+    Object.keys(drop).forEach(k=>{ if(Array.isArray(data[k])) data[k]=data[k].filter(it=>drop[k].indexOf(it.id)<0); });
+    if(data.reports) delete data.reports.af;
+    const af=(data.clients||[]).find(c=>c.id==='af');
+    if(af){ af.hoursUsed=0; af.pulse=[]; delete af.pulseMonth; }
+    data.cleanVersion=1;
+    localStorage.setItem('su_hub_v5', JSON.stringify(data));
+    return data;
   }
   seed(){
     const now=Date.now(), h=3600e3, d=24*h;
     return {
+      cleanVersion:1,
       clients:[
-        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4]},
+        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:0,hoursTotal:25,pulse:[]},
         {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4]}
       ],
       todos:[
-        {id:'t1',clientId:'af',title:'QA new PDP template on mobile Safari',who:'team',done:false,ts:now-2*h},
         {id:'t2',clientId:'vs',title:'Set up staging env for RSVP v2',who:'team',done:false,ts:now-5*h},
         {id:'t3',clientId:'',title:'Send August retainer summaries',who:'team',done:true,ts:now-d},
-        {id:'t4',clientId:'af',title:'Send us 6–8 product photos for the fall collection page',who:'client',done:false,ts:now-d},
-        {id:'t5',clientId:'af',title:'Confirm shipping rates for Canada zone',who:'client',done:false,ts:now-2*d},
         {id:'t6',clientId:'vs',title:'Approve the RSVP confirmation email copy',who:'client',done:false,ts:now-8*h}
       ],
       work:[
-        {id:'w1',clientId:'af',title:'Fall collection landing page build',status:'progress',hours:8,comments:[{id:'cm1',from:'client',who:'Afore Beauty',text:'Can we also swap the hero photo for the new campaign shot?',ts:Date.now()-3*3600e3,ack:true},{id:'cm2',from:'team',who:'Social Upgrades',text:'Yes — adding it to this build.',ts:Date.now()-2.5*3600e3}]},
-        {id:'w2',clientId:'af',title:'Klaviyo abandoned-cart flow refresh',status:'queued',hours:4},
         {id:'w3',clientId:'vs',title:'RSVP reminder notifications (email + SMS)',status:'progress',hours:12,comments:[{id:'cm3',from:'client',who:'ViewSlipstream',text:'Reminder timing should be 24h and 2h before showtime.',ts:Date.now()-5*3600e3,ack:false}]},
         {id:'w4',clientId:'vs',title:'Screening room capacity dashboard',status:'review',hours:6},
-        {id:'w5',clientId:'af',title:'Speed pass: image compression + lazy load',status:'done',hours:3},
         {id:'w6',clientId:'vs',title:'Host onboarding flow polish',status:'queued',hours:5}
       ],
       requests:[
-        {id:'r1',clientId:'af',title:'Gift-with-purchase promo setup',desc:'Free mini serum over $75 — needs cart logic and a banner.',status:'new',ts:now-3*h,category:'E-Commerce Management',comments:[],files:[]},
         {id:'r2',clientId:'vs',title:'Add calendar export to RSVP confirmations',desc:'Guests keep asking for an "Add to calendar" button.',status:'new',ts:now-d,category:'Website Design',comments:[{id:'rc1',from:'client',who:'ViewSlipstream',text:'Google and Apple calendar are the priority.',ts:now-20*h,ack:false}],files:[]},
-        {id:'r3',clientId:'af',title:'Homepage hero refresh for fall',desc:'',status:'approved',ts:now-4*d,category:'Website Design',comments:[],files:[]},
         {id:'r4',clientId:'vs',title:'Dark mode for the guest view',desc:'',status:'declined',ts:now-6*d,category:'Website Design',comments:[],files:[]}
       ],
       updates:[
-        {id:'u1',clientId:'af',text:'Fall collection landing page is live on staging — hero, product grid, and email capture are in. Take a look before we push to production.',ts:now-4*h,needsApproval:true,approved:false,feedback:[],fileIds:['f2']},
-        {id:'u5',clientId:'af',text:'September social media kit is ready — 12 posts sized for Instagram and Facebook. Approve and we schedule them this week.',ts:now-6*h,needsApproval:true,approved:false,feedback:[],fileIds:['f10']},
-        {id:'u2',clientId:'af',text:'Abandoned-cart flow audit finished. Current recovery rate is 4.1% — refreshed sequence drafts go up this week.',ts:now-2*d,needsApproval:false,approved:false,feedback:[{name:'Afore Beauty',text:'Excited to see the new sequence!'}]},
         {id:'u3',clientId:'vs',text:'RSVP reminder notifications are in progress — email template done, SMS pending carrier approval.',ts:now-7*h,needsApproval:false,approved:false,feedback:[]},
         {id:'u4',clientId:'vs',text:'Capacity dashboard first pass ready for review — live headcount per screening plus waitlist overflow.',ts:now-1.5*d,needsApproval:true,approved:false,feedback:[],fileIds:['f6']}
       ],
       messages:[
-        {id:'m1',clientId:'af',from:'client',who:'Afore Beauty',text:'Hey team — can we get the promo live before Labor Day weekend?',ts:now-6*h},
-        {id:'m2',clientId:'af',from:'team',who:'Social Upgrades',text:'Yes — if the gift-with-purchase request is approved this week we can ship it by Thursday.',ts:now-5*h},
         {id:'m3',clientId:'vs',from:'team',who:'Social Upgrades',text:'SMS reminders are waiting on carrier approval, usually 2–3 business days. Email reminders can go live now if you want them separately.',ts:now-9*h},
         {id:'m4',clientId:'vs',from:'client',who:'ViewSlipstream',text:'Ship email now, SMS when ready. Thanks!',ts:now-8*h}
       ],
       files:[
-        {id:'f1',clientId:'af',name:'Fall collection — brand board.pdf',type:'Design',size:'4.2 MB',ts:now-3*d},
-        {id:'f2',clientId:'af',name:'PDP template v3.fig',type:'Design',size:'1.8 MB',ts:now-5*d},
-        {id:'f3',clientId:'af',name:'Q3 content calendar.xlsx',type:'Documents',size:'92 KB',ts:now-8*d},
-        {id:'f4',clientId:'af',name:'Email copy — abandoned cart.docx',type:'Content',size:'38 KB',ts:now-2*d},
-        {id:'f5',clientId:'af',name:'Product photos — summer batch.zip',type:'Assets',size:'214 MB',ts:now-20*d},
         {id:'f6',clientId:'vs',name:'RSVP flow map v2.pdf',type:'Design',size:'2.6 MB',ts:now-2*d},
         {id:'f7',clientId:'vs',name:'Reminder email copy.docx',type:'Content',size:'26 KB',ts:now-1*d},
         {id:'f8',clientId:'vs',name:'Platform SLA + scope.pdf',type:'Documents',size:'310 KB',ts:now-30*d},
         {id:'f9',clientId:'vs',name:'Brand assets — logos.zip',type:'Assets',size:'48 MB',ts:now-40*d,brand:true},
-        {id:'f10',clientId:'af',name:'Social media kit — September.zip',type:'Content',size:'86 MB',ts:now-6*h},
-        {id:'f11',clientId:'af',name:'Afore logo pack.zip',type:'Assets',size:'22 MB',ts:now-60*d,brand:true},
-        {id:'f12',clientId:'af',name:'Brand guide v2.pdf',type:'Design',size:'6.1 MB',ts:now-60*d,brand:true},
         {id:'f13',clientId:'vs',name:'ViewSlipstream brand guide.pdf',type:'Design',size:'3.4 MB',ts:now-50*d,brand:true}
       ],
       invoices:[
-        {id:'i1',clientId:'af',num:'INV-2026-081',amount:499,status:'Due',date:'Aug 1, 2026'},
-        {id:'i2',clientId:'af',num:'INV-2026-071',amount:499,status:'Paid',date:'Jul 1, 2026'},
-        {id:'i3',clientId:'af',num:'INV-2026-061',amount:499,status:'Paid',date:'Jun 1, 2026'},
         {id:'i4',clientId:'vs',num:'INV-2026-082',amount:999,status:'Paid',date:'Aug 1, 2026'},
         {id:'i5',clientId:'vs',num:'INV-2026-072',amount:999,status:'Paid',date:'Jul 1, 2026'}
       ],
       reports:{
-        af:{stats:[{label:'Sessions',value:'12.4K',delta:'+18% vs Jul',up:true},{label:'Conversion',value:'2.9%',delta:'+0.4 pts',up:true},{label:'Orders',value:'361',delta:'+22% vs Jul',up:true},{label:'AOV',value:'$68',delta:'−$3 vs Jul',up:false}],note:'Traffic is up on the back of the summer email pushes, and conversion improved after the speed pass. AOV dipped slightly with more single-item orders — the gift-with-purchase promo should help lift it in September.'},
         vs:{stats:[{label:'RSVPs',value:'1,842',delta:'+31% vs Jul',up:true},{label:'Show-up rate',value:'74%',delta:'+6 pts',up:true},{label:'New hosts',value:'19',delta:'+4 vs Jul',up:true},{label:'Avg fill rate',value:'82%',delta:'−2 pts',up:false}],note:'RSVP volume keeps climbing and show-up rate improved after we tightened the confirmation flow. Reminder notifications should push show-up rate further once SMS clears carrier approval.'}
       },
       log:[
-        {id:'l1',clientId:'af',text:'Afore Beauty submitted a request: Gift-with-purchase promo setup',ts:now-3*h},
         {id:'l2',clientId:'vs',text:'Update posted for ViewSlipstream: RSVP reminder notifications in progress',ts:now-7*h},
-        {id:'l3',clientId:'vs',text:'ViewSlipstream replied on the message board',ts:now-8*h},
-        {id:'l4',clientId:'af',text:'Work item completed: Speed pass — image compression + lazy load',ts:now-2*24*3600e3}
+        {id:'l3',clientId:'vs',text:'ViewSlipstream replied on the message board',ts:now-8*h}
       ]
     };
   }
@@ -814,20 +900,23 @@ class Component extends DCLogic {
     const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['messages','Messages']]
+      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages']]
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
+    const openTeamTodoCount = D.todos.filter(t=>t.who==='team'&&!t.done).length;
     const navItems = nav.map(([id,label])=>{
       const active=S.section===id, muted=id==='billing';
       let badge=false;
       if(isTeam&&id==='requests'&&newReqCount) badge=newReqCount;
+      if(isTeam&&id==='todos'&&openTeamTodoCount) badge=openTeamTodoCount;
       if(!isTeam&&id==='todos'&&clientTodoCount) badge=clientTodoCount;
       return {label,badge,select:()=>this.setState({section:id,notifOpen:false,moreOpen:false}),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?600:400,cursor:'pointer',borderRadius:4,fontFamily:'var(--font-body)'}};
     });
-    const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Work Board'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],
-      home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+    const headings = isTeam
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Work Board'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages']}
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],messages:[client.name,'Messages'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
@@ -865,6 +954,50 @@ class Component extends DCLogic {
       toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client') this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; })});
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
     const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
+    // to-do manager (team) — every to-do across every client, add / edit / remove
+    const todoAud=d.todoAud||'all', todoCli=d.todoCli===undefined?'all':d.todoCli, todoDone=!!d.todoDone;
+    const todoScope=D.todos.filter(t=>(todoAud==='all'||t.who===todoAud)&&(todoCli==='all'||(t.clientId||'')===todoCli));
+    const todoStats=[
+      {label:'Open for clients',value:D.todos.filter(t=>t.who==='client'&&!t.done).length},
+      {label:'Open for team',value:D.todos.filter(t=>t.who==='team'&&!t.done).length},
+      {label:'Completed',value:D.todos.filter(t=>t.done).length},
+      {label:'All to-dos',value:D.todos.length}
+    ];
+    const chipStyle=active=>({background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:999,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'});
+    const setD=patch=>this.setState(s2=>({d:{...s2.d,...patch}}));
+    const todoAudChips=[['all','All'],['client','For clients'],['team','For team']].map(([k,label])=>{
+      const n=D.todos.filter(t=>(k==='all'||t.who===k)&&(todoDone||!t.done)).length;
+      return {label:label+' ('+n+')',select:()=>setD({todoAud:k,editTodo:null,delTodo:null}),style:chipStyle(todoAud===k)};
+    });
+    const mkManaged=t=>{
+      const editing=d.editTodo===t.id, confirming=d.delTodo===t.id;
+      return {title:t.title,when:this.fmt(t.ts),mark:t.done?'\u2713':'',boxStyle:this.box(t.done),
+        titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
+        whoLabel:t.who==='client'?'Client':'Team',whoStyle:this.badge(t.who==='client'?'blue':'gray'),
+        editing,confirming,idle:!editing&&!confirming,
+        toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client'&&it.clientId) this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; }),
+        startEdit:()=>setD({editTodo:t.id,delTodo:null,todoEdit:t.title,todoEditWho:t.who,todoEditCli:t.clientId||''}),
+        cancelEdit:()=>setD({editTodo:null,todoEdit:''}),
+        saveEdit:()=>{ const title=(d.todoEdit||'').trim(); if(!title) return;
+          const who=d.todoEditWho||t.who, cid=d.todoEditCli===undefined?(t.clientId||''):d.todoEditCli;
+          this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); if(!it) return x;
+            const moved=(it.who!==who)||((it.clientId||'')!==cid), was=it.title;
+            it.title=title; it.who=who; it.clientId=cid;
+            if(who==='client'&&cid&&(moved||was!==title)) this.logEv(x,cid,'To-do updated for '+cname(cid)+': '+title);
+            return x; });
+          setD({editTodo:null,todoEdit:''}); },
+        askDelete:()=>setD({delTodo:t.id,editTodo:null}),
+        cancelDelete:()=>setD({delTodo:null}),
+        confirmDelete:()=>{ this.set(x=>{ x.todos=x.todos.filter(y=>y.id!==t.id);
+            if(t.who==='client'&&t.clientId) this.logEv(x,t.clientId,'To-do removed for '+cname(t.clientId)+': '+t.title);
+            return x; });
+          setD({delTodo:null}); }};
+    };
+    const todoGroups=D.clients.concat([{id:'',name:'Internal (no client)'}]).map(c=>{
+      const items=todoScope.filter(t=>(t.clientId||'')===c.id&&(todoDone||!t.done))
+        .sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts);
+      return {name:c.name,openLabel:items.filter(t=>!t.done).length+' open',items:items.map(mkManaged),has:items.length>0};
+    }).filter(g=>g.has);
     // requests
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
     const newRequests=D.requests.filter(r=>r.status==='new').map(r=>({title:r.title,desc:r.desc,clientName:cname(r.clientId),when:this.fmt(r.ts),
@@ -997,7 +1130,7 @@ class Component extends DCLogic {
       notifOpen:S.notifOpen, unseen:unseenN>0?unseenN:false,
       notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
-      secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
+      secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'), secTodos:isTeam&&secKey('todos'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
       pMessages:!isTeam&&secKey('messages'), pFiles:!isTeam&&secKey('files'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
@@ -1013,9 +1146,19 @@ class Component extends DCLogic {
       boardReqs, boardReqCount:boardReqs.length, doneItems, doneCount:doneItems.length, noDone:doneItems.length===0,
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
+      noPortalUpdates:portalUpdates.length===0, noMyRequests:myRequests.length===0, noThread:thread.length===0,
+      noPortalFiles:portalFiles.length===0, noInvoices:invoices.length===0, noReportStats:rep.stats.length===0,
+      noBrandFiles:brandFiles.length===0,
       goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'),
       bottomItems, sheetItems, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
       stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
+      goTeamTodos:()=>this.setState({section:'todos',notifOpen:false,moreOpen:false}),
+      todoGroups, noTodos:todoGroups.length===0, todoStats, todoAudChips,
+      dTodoCli:todoCli, onTodoCli:e=>setD({todoCli:e.target.value,editTodo:null,delTodo:null}),
+      dTodoDone:todoDone, onTodoDone:e=>setD({todoDone:e.target.checked}),
+      dTodoEdit:d.todoEdit||'', onTodoEdit:this.draft('todoEdit'),
+      dTodoEditWho:d.todoEditWho||'team', onTodoEditWho:this.draft('todoEditWho'),
+      dTodoEditCli:d.todoEditCli===undefined?'':d.todoEditCli, onTodoEditCli:this.draft('todoEditCli'),
       dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),
       addTodo:()=>{ const title=(d.todo||'').trim(); if(!title) return;
         this.set(x=>{ x.todos.unshift({id:this.uid(),clientId:d.todoClient,title,who:d.todoWho,done:false,ts:Date.now()}); if(d.todoWho==='client') this.logEv(x,d.todoClient,'New to-do for '+cname(d.todoClient)+': '+title); return x; });

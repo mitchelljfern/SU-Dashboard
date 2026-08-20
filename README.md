@@ -2,7 +2,7 @@
 
 Dual-view work dashboard for Social Upgrades — internal team view + client portal.
 
-- **Team view**: overview (open requests / in progress / awaiting approval, messages, to-dos, activity), kanban work board with request intake and retainer hours, client cards, request approvals, per-client message boards.
+- **Team view**: overview (open requests / in progress / awaiting approval, messages, to-dos, activity), kanban work board with request intake and retainer hours, client cards, request approvals, a cross-client to-do manager (add / edit / remove, for the team or for a client), per-client message boards.
 - **Client portal**: dashboard, updates with approvals + feedback, categorized work requests with comments and file attachments, client to-dos, messages, files, monthly reports, billing.
 
 ## Running it
