@@ -118,6 +118,22 @@ row under Internal, which no portal lists — a to-do addressed to nobody.
 The sidebar badge counts what is assigned to *you*, not the size of the board.
 A count of everyone's to-dos is not a number anyone can act on.
 
+Finished work has its own list under the board, most recently finished first,
+capped at eight with a **View all** for the rest — it only ever grows. It used
+to be reachable only by flipping the board to "Completed", which hid the open
+work in order to show it; a record and a worklist are different questions, so
+they are two lists. The client and side filters narrow both. Rows there name
+their client, since one flat run across every client would otherwise say
+nothing about whose it was.
+
+Ordering it by completion needed a completion date: a to-do only carried the
+day it was written, so "recently completed" quietly meant "recently created".
+Every checkbox in the app runs through one toggle that stamps `doneAt`, and
+un-ticking clears it. A client ticking their own to-do cannot write that field
+— `done` is the only key the guard lets them near — so the database stamps it
+for them, which also means the ordering of that list is not written by whoever
+is ticking the box.
+
 ## Strategy
 
 A **Strategy** tab in the client portal, opening into three channel boards. It

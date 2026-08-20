@@ -1514,7 +1514,7 @@
 
           <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:18px;border-radius:12px">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1;min-width:120px">Everything open</h3>
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1;min-width:120px">Open</h3>
               <select value="{{ dTdClient }}" onChange="{{ onTdClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
                 <sc-for list="{{ tdClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
               </select>
@@ -1522,11 +1522,6 @@
                 <option value="all">Everyone</option>
                 <option value="client">For clients</option>
                 <option value="team">For team</option>
-              </select>
-              <select value="{{ dTdStatus }}" onChange="{{ onTdStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:#fff">
-                <option value="open">Open</option>
-                <option value="done">Completed</option>
-                <option value="all">All</option>
               </select>
             </div>
 
@@ -1568,6 +1563,44 @@
                     </sc-if>
                   </div>
                 </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1;min-width:120px">{{ tdDoneHeading }}</h3>
+            <sc-if value="{{ tdHasMore }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ tdToggleAll }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">{{ tdMoreLabel }}</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{ noTdDone }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13.5px;color:var(--text-muted)">Nothing finished yet.</div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ tdDone }}" as="t" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-hairline);flex-wrap:wrap">
+                <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                <sc-if value="{{ t.reading }}" hint-placeholder-val="{{ true }}">
+                  <div style="flex:1;min-width:150px;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                </sc-if>
+                <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
+                  <input value="{{ t.dEdit }}" onChange="{{ t.onEdit }}" onKeyDown="{{ t.onEditKey }}" style="flex:1;min-width:150px;border:1px solid var(--blue);border-radius:12px;padding:7px 11px;font-size:13.5px;font-family:var(--font-body)">
+                  <button onClick="{{ t.saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:6px 14px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Save</button>
+                  <button onClick="{{ t.cancelEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Cancel</button>
+                </sc-if>
+                <span style="{{ t.whoStyle }}">{{ t.whoLabel }}</span>
+                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ t.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div></div>
+                <div style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</div>
+                <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ t.startEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Edit</button>
+                  <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:#D8564E">Remove</button>
+                </sc-if>
+                <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</div>
+                  <button onClick="{{ t.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 13px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">Yes, remove</button>
+                  <button onClick="{{ t.cancelRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Keep</button>
+                </sc-if>
               </div>
             </sc-for>
           </div>
@@ -2653,7 +2686,9 @@ class Component extends DCLogic {
       preview:null, uploading:0, delFile:null, delComment:null, archiveAsk:null, editTitle:null, dragOn:false,
       // Which to-do is being retitled, which is mid-delete, and how the
       // board is filtered. Open-only by default: the list is a worklist.
-      todoEdit:null, todoDel:null, tdClient:'all', tdWho:'all', tdStatus:'open',
+      todoEdit:null, todoDel:null, tdClient:'all', tdWho:'all',
+      // Whether the completed list is showing everything or just the recent few.
+      tdAll:false,
       // Which client's monthly report is being written.
       repClient:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
@@ -3452,9 +3487,20 @@ class Component extends DCLogic {
       approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
     const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
+    // Every checkbox in the app goes through here, so the completion stamp
+    // cannot be recorded in one list and forgotten in another. Without it the
+    // only date on a finished to-do is the day it was written, and "recently
+    // completed" would quietly mean "recently created".
+    const toggleTodo = id => this.set(x=>{
+      const it=x.todos.find(y=>y.id===id); if(!it) return x;
+      it.done=!it.done;
+      it.doneAt = it.done ? Date.now() : null;
+      if(it.done && it.who==='client')
+        this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title);
+      return x; });
     const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),dot:clientDot(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
       assignee:t.assigneeName||'', hasAssignee:!!t.assigneeName,
-      toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; if(it.done&&it.who==='client') this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title); return x; })});
+      toggle:()=>toggleTodo(t.id)});
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
     const clientTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id).sort((a,b)=>Number(a.done)-Number(b.done)).map(mkTodo);
     // requests
@@ -4337,7 +4383,7 @@ class Component extends DCLogic {
     // "My to-dos" — team work assigned to whoever is signed in.
     const myTodos = D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id)
       .map(t=>({title:t.title,client:t.clientId?cname(t.clientId):'Internal',when:this.fmt(t.ts),
-        toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); it.done=!it.done; return x; }),
+        toggle:()=>toggleTodo(t.id),
         boxStyle:this.box(false)}));
     const noMyTodos = myTodos.length===0;
 
@@ -4347,14 +4393,14 @@ class Component extends DCLogic {
     // answered "what is outstanding, and who is it on" across the book, and
     // nothing anywhere could correct a typo or take one back once written.
     // This is the whole list, grouped by the client it belongs to.
-    const tdC = S.tdClient||'all', tdW = S.tdWho||'all', tdS = S.tdStatus||'open';
+    const tdC = S.tdClient||'all', tdW = S.tdWho||'all';
+    // Who and which client, only. Finished work has a list of its own below the
+    // board, so a status filter here could put the same row in both at once.
     const tdMatch = t => {
       const cid = t.clientId||'';
       if(tdC==='internal'){ if(cid) return false; }
       else if(tdC!=='all' && cid!==tdC) return false;
       if(tdW!=='all' && (t.who||'team')!==tdW) return false;
-      if(tdS==='open' && t.done) return false;
-      if(tdS==='done' && !t.done) return false;
       return true;
     };
     // Retitling follows the card-title pattern: a draft that starts undefined
@@ -4382,12 +4428,15 @@ class Component extends DCLogic {
         whoStyle: 'font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;white-space:nowrap;padding:2px 9px;border-radius:12px;'
           + (forClient?'background:rgba(42,120,214,.12);color:var(--blue)':'background:var(--gray-100);color:var(--text-muted)'),
         assignee: t.assigneeName||'Unassigned', showAssignee: !forClient,
-        when: this.fmt(t.ts),
-        toggle:()=>this.set(x=>{ const it=x.todos.find(y=>y.id===t.id); if(!it) return x;
-          it.done=!it.done;
-          if(it.done&&it.who==='client')
-            this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title);
-          return x; }),
+        // The open board names the client once in the group heading above the
+        // rows. The completed list is one flat run across every client, so each
+        // row has to say whose it is or it says nothing at all.
+        clientName: t.clientId? cname(t.clientId) : 'Internal', dot: clientDot(t.clientId),
+        // Finished rows date themselves by when they were finished; open ones
+        // by when they were written. Older rows carry no stamp, so they fall
+        // back rather than reading as completed at the epoch.
+        when: this.fmt(t.done ? (t.doneAt||t.ts) : t.ts),
+        toggle:()=>toggleTodo(t.id),
         editing, reading:!editing, idle:!editing&&!confirming, confirming,
         dEdit: d.todoEditText===undefined? (t.title||'') : d.todoEditText,
         onEdit: this.draft('todoEditText'),
@@ -4413,15 +4462,23 @@ class Component extends DCLogic {
     // place to look. Internal sorts last — it is the team's own pile.
     const tdGroups = (()=>{
       const by = new Map();
-      D.todos.filter(tdMatch).forEach(t=>{ const k=t.clientId||'';
+      D.todos.filter(t=>!t.done && tdMatch(t)).forEach(t=>{ const k=t.clientId||'';
         if(!by.has(k)) by.set(k,[]); by.get(k).push(t); });
-      return Array.from(by.entries()).map(([cid,list])=>{
-        const open=list.filter(t=>!t.done).length;
-        return {name: cid? cname(cid):'Internal', dot: clientDot(cid), cid,
-          countLabel: open+' open'+(list.length-open? ' · '+(list.length-open)+' done':''),
-          items: list.slice().sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).map(tdRow)};
-      }).sort((a,b)=>(a.cid===''?1:0)-(b.cid===''?1:0) || a.name.localeCompare(b.name));
+      return Array.from(by.entries()).map(([cid,list])=>({
+        name: cid? cname(cid):'Internal', dot: clientDot(cid), cid,
+        countLabel: list.length+' open',
+        items: list.slice().sort((a,b)=>b.ts-a.ts).map(tdRow)
+      })).sort((a,b)=>(a.cid===''?1:0)-(b.cid===''?1:0) || a.name.localeCompare(b.name));
     })();
+    // Finished work, most recently finished first. It used to be reachable only
+    // by flipping the board to "Completed", which hid the open work to show it;
+    // it is a record, so it sits under the board rather than replacing it.
+    // Capped, because this list only ever grows.
+    const TD_RECENT = 8;
+    const tdDoneAll = D.todos.filter(t=>t.done && tdMatch(t))
+      .sort((a,b)=>((b.doneAt||b.ts)-(a.doneAt||a.ts)));
+    const tdShowAll = !!S.tdAll;
+    const tdDone = (tdShowAll ? tdDoneAll : tdDoneAll.slice(0,TD_RECENT)).map(tdRow);
     const tdOpen = D.todos.filter(t=>!t.done);
     const tdStats = [
       {label:'Waiting on clients', value:tdOpen.filter(t=>(t.who||'team')==='client').length},
@@ -4943,7 +5000,11 @@ class Component extends DCLogic {
       saveReport, repClientName:cname(repCid),
       dTdClient:tdC, onTdClient:e=>this.setState({tdClient:e.target.value,todoEdit:null,todoDel:null}),
       dTdWho:tdW, onTdWho:e=>this.setState({tdWho:e.target.value,todoEdit:null,todoDel:null}),
-      dTdStatus:tdS, onTdStatus:e=>this.setState({tdStatus:e.target.value,todoEdit:null,todoDel:null}),
+      tdDone, noTdDone:tdDoneAll.length===0,
+      tdDoneHeading:'Completed'+(tdDoneAll.length? ' ('+tdDoneAll.length+')' : ''),
+      tdHasMore: tdDoneAll.length>TD_RECENT,
+      tdMoreLabel: tdShowAll? 'Show fewer' : ('View all '+tdDoneAll.length+' →'),
+      tdToggleAll:()=>this.setState(s2=>({tdAll:!s2.tdAll,todoEdit:null,todoDel:null})),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
       pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL, pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
