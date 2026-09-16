@@ -452,10 +452,42 @@ recognisably theirs from the first load rather than Social Upgrades green, and
 the wordmark stands in for the logo until one is marked "On dark".
 
 Theming works by overriding the design system's custom properties on the app's
-root element for the portal only — `--navy`, `--green`, `--blue`, `--cloud`,
-`--cta-bg`, `--font-display` and the rest. Nothing downstream knows about
-brands: a card that reads `var(--navy)` is themed without being told. The team
-view sets none of them and stays Social Upgrades throughout.
+root element for the portal only — `--chrome`, `--surface-card`, `--navy`,
+`--cloud`, `--cta-bg`, `--font-display` and the rest. Nothing downstream knows
+about brands: a card that reads `var(--navy)` is themed without being told. The
+team view sets none of them and stays Social Upgrades throughout.
+
+### Dark backgrounds
+
+Seven colour roles, each doing one job: **primary** is the chrome (the sidebar
+and the dark buttons), **card** is the panel background, **heading** is titles
+and section labels, **text** is body copy, plus **accent**, **link** and
+**surface**. Primary and heading used to be the same colour, which is why a kit
+could not have light headings without a light sidebar.
+
+Everything incidental — borders, muted text, the greys, the pill tints — is
+mixed between the card colour and the text colour rather than assumed to be a
+tint of white. Set the card dark and the borders darken with it, so a black kit
+does not mean naming twenty more colours. Form fields are told to follow the
+card too, since a browser paints them white otherwise, and a dark kit sets
+`color-scheme: dark` so native widgets (the date picker, select arrows,
+scrollbars) come with it.
+
+**Light background** and **Dark background** on the Colors section move the four
+readability colours together in one click. They deliberately leave accent, link
+and the chrome alone — those are the brand; this is only about being able to
+read the page.
+
+Contrast is checked as you go and a warning appears on the same page when a
+combination has gone unreadable (3:1 for headings, 4.5:1 for body copy, both
+WCAG). It never blocks a choice — it is their brand — it just says so where the
+choice was made rather than letting it be discovered on the dashboard. Two
+things correct themselves: a status pill lightens its text on a dark card, and
+the primary button falls back to the accent where the chrome colour would
+disappear into the card behind it.
+
+One thing stays light on a dark portal: the cal.com booking iframe on Schedule
+Call is cross-origin, so its background is not ours to set.
 
 ### What the database allows
 
