@@ -3647,7 +3647,7 @@ class Component extends DCLogic {
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
           .filter(([id])=>id!=='invoicing'||canBilling)
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['files','Files'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           .filter(([id])=>id!=='billing'||canSeeClientBilling);
     // Hiding the tab is not enough on its own: a member already sitting on
     // Billing — or returning to it — would be left staring at a blank page,
@@ -3729,14 +3729,30 @@ class Component extends DCLogic {
       if(id==='messages') markRead(isTeam? S.msgClient : client.id);
       this.setState({section:id,notifOpen:false,moreOpen:false});
     };
+    // Brand Kit opens into the client's files: both are the client's own
+    // material, and Files on its own was a tab away from the kit it belongs to.
+    const SUBNAV = isTeam ? {} : {brand:[['files','Files']]};
+    // Everywhere that wants one flat list of reachable boards -- the phone's
+    // More sheet, the label lookup for the tab bar -- wants the children in it
+    // too, or a nested board simply cannot be opened on a phone.
+    const navFlat = nav.reduce((acc,[id,label])=>acc.concat([[id,label]], SUBNAV[id]||[]), []);
     const navItems = [];
     nav.forEach(([id,label])=>{
-      const active=sectionNow===id, muted=id==='billing';
+      const kids = SUBNAV[id]||[];
+      const kidOpen = kids.some(([kid])=>sectionNow===kid);
+      const active=sectionNow===id||kidOpen, muted=id==='billing';
       const badge=badgeFor(id);
       navItems.push({label,badge,
-        arrow: id==='strategy' ? (active?'▾':'▸') : false,
+        arrow: (id==='strategy'||kids.length) ? (active?'▾':'▸') : false,
         select:openSection(id),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+      kids.forEach(([kid,klabel])=>{
+        if(!active) return;
+        const on=sectionNow===kid;
+        navItems.push({label:klabel,badge:badgeFor(kid),
+          select:openSection(kid),
+          style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.62)',padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+      });
       // Strategy opens into its three channels rather than being one long board.
       if(id==='strategy'&&active){
         CHANNELS.forEach(ch=>{
@@ -4849,13 +4865,13 @@ class Component extends DCLogic {
                        : ['home','messages','requests','todos'];
     const bottomIds = BAR.filter(id=>nav.some(([n])=>n===id));
     const bottomItems = bottomIds.map(id=>{
-      const label=(nav.find(([n])=>n===id)||[id,id])[1];
+      const label=(navFlat.find(([n])=>n===id)||[id,id])[1];
       return {label,badge:badgeFor(id),select:openSection(id),style:mobStyle(sectionNow===id)};
     });
     // Whatever is left behind More still reports its own count.
     const moreBadge=nav.filter(([id])=>bottomIds.indexOf(id)<0)
       .reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
-    const sheetItems=nav.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
+    const sheetItems=navFlat.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
       style:{width:'100%',textAlign:'left',background:sectionNow===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:sectionNow===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:sectionNow===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
     // stats & activity (team overview)
     const stats=[
