@@ -38,10 +38,15 @@
     }
   </style>
 </helmet>
-<div style="display:flex;height:100vh;overflow:hidden">
+<div style="{{ rootStyle }}">
   <aside class="su-side" style="width:232px;min-width:232px;background:var(--navy);color:#fff;display:flex;flex-direction:column;padding:24px 0" data-screen-label="Sidebar">
     <div style="padding:0 22px 20px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)">
-      <img src="assets/logo-on-dark.svg" alt="Social Upgrades" style="height:28px;width:auto;align-self:flex-start">
+      <sc-if value="{{ hasTopLogo }}" hint-placeholder-val="{{ true }}">
+        <div role="img" aria-label="{{ topLogoAlt }}" style="{{ topLogoStyle }}"></div>
+      </sc-if>
+      <sc-if value="{{ noTopLogo }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ topWordmarkStyle }}">{{ topWordmark }}</div>
+      </sc-if>
       <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);color:rgba(255,255,255,.55)">{{ hubLabel }}</div>
     </div>
     <nav style="display:flex;flex-direction:column;gap:2px;padding:16px 12px;flex:1;overflow-y:auto">
@@ -63,6 +68,13 @@
       <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}">
         <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ portalName }}</strong></div>
         <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
+        <div style="display:flex;flex-direction:column;gap:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1)">
+          <div style="font-size:9px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.34);font-weight:600">Powered by</div>
+          <div style="display:flex;align-items:center;gap:8px;opacity:.78">
+            <img src="assets/logo-on-dark.svg" alt="" style="height:20px;width:20px;flex:none">
+            <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.03em;color:#fff">Social Upgrades</span>
+          </div>
+        </div>
       </sc-if>
       <div style="font-size:9px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:rgba(255,255,255,.3);font-weight:500">Based in the United States · Since 2014</div>
     </div>
@@ -691,6 +703,208 @@
           </div>
         </div>
       </sc-if>
+
+      <sc-if value="{{ secBrand }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ storeErr }}" hint-placeholder-val="{{ false }}">
+          <div style="background:rgba(214,143,46,.10);border:1px solid rgba(214,143,46,.42);color:#8A5A16;padding:12px 18px;font-size:13px;line-height:1.5">{{ storeErr }}</div>
+        </sc-if>
+
+        <div class="su-half" style="display:grid;grid-template-columns:minmax(0,268px) minmax(0,1fr);border:1px solid var(--border-card);background:#fff">
+          <div style="{{ brandPlateStyle }}">
+            <sc-if value="{{ brandHasLogo }}" hint-placeholder-val="{{ false }}">
+              <div role="img" aria-label="{{ brandName }}" style="{{ brandLogoStyle }}"></div>
+            </sc-if>
+            <sc-if value="{{ brandNoLogo }}" hint-placeholder-val="{{ true }}">
+              <div style="{{ brandWordmarkStyle }}">{{ brandWordmark }}</div>
+            </sc-if>
+            <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600">Portal sidebar</div>
+          </div>
+          <div style="padding:22px 26px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <h2 style="font-family:var(--font-display);font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ brandName }}<span style="color:{{ brandAccent }}">.</span></h2>
+              <div style="font-size:13px;color:var(--text-muted);line-height:1.6">{{ brandBlurb }}</div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <sc-for list="{{ brandChips }}" as="c" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="{{ c.dotStyle }}"></span>
+                  <div style="display:flex;flex-direction:column">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ c.label }}</span>
+                    <span style="font-size:11px;color:var(--text-muted)">{{ c.hex }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Logos</h3>
+            <span style="font-size:11.5px;color:var(--text-muted)">Pick which file the portal uses on dark and light backgrounds</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:14px">
+            <sc-for list="{{ brandLogos }}" as="l" hint-placeholder-count="3">
+              <div style="border:1px solid var(--border-card);background:#fff;display:flex;flex-direction:column;overflow:hidden">
+                <div style="{{ l.plateStyle }}"><div role="img" aria-label="{{ l.name }}" style="{{ l.artStyle }}"></div></div>
+                <div style="padding:11px 13px 13px;display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);line-height:1.4">{{ l.name }}</div>
+                    <span style="font-size:10px;font-weight:700;letter-spacing:.06em;color:{{ brandAccent }};white-space:nowrap">{{ l.ext }}</span>
+                  </div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button onClick="{{ l.useDark }}" style="{{ l.darkStyle }}">On dark</button>
+                    <button onClick="{{ l.useLight }}" style="{{ l.lightStyle }}">On light</button>
+                    <button onClick="{{ l.flip }}" style="{{ brandMiniStyle }}">Flip</button>
+                    <button onClick="{{ l.remove }}" style="{{ brandMiniStyle }}">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+            <label style="border:1px dashed var(--border-hairline);background:#fff;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;text-align:center;padding:16px" style-hover="border-color:var(--navy)">
+              <input type="file" accept="image/*" onChange="{{ onLogoFile }}" style="display:none">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:{{ brandAccent }};line-height:1">+</div>
+              <div style="font-size:12.5px;font-weight:600;color:var(--navy)">Add a logo</div>
+              <div style="font-size:11px;color:var(--text-muted);line-height:1.45">PNG, JPG or SVG<br>up to 1.2 MB</div>
+            </label>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border-card);padding:16px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:200px">
+              <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Wordmark fallback</div>
+              <div style="font-size:11.5px;color:var(--text-muted)">Shown in the sidebar until a logo is set for dark backgrounds</div>
+            </div>
+            <input value="{{ dWordmark }}" onChange="{{ onWordmark }}" onBlur="{{ saveWordmark }}" placeholder="{{ brandName }}" style="{{ brandInputStyle }}">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Colors</h3>
+            <span style="font-size:11.5px;color:var(--text-muted)">Click a swatch to change it — the portal re-skins straight away</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:14px">
+            <sc-for list="{{ brandRoles }}" as="r" hint-placeholder-count="5">
+              <div style="border:1px solid var(--border-card);background:#fff;display:flex;flex-direction:column;overflow:hidden">
+                <label style="{{ r.swatchStyle }}" style-hover="filter:brightness(1.06)">
+                  <input type="color" value="{{ r.hex }}" onChange="{{ r.onPick }}" style="position:absolute;opacity:0;width:1px;height:1px;border:none;padding:0">
+                  <span style="{{ r.editStyle }}">Edit</span>
+                </label>
+                <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy);text-transform:uppercase">{{ r.hex }}</div>
+                  <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.label }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">{{ r.note }}</div>
+                  <button onClick="{{ r.copy }}" style="{{ r.copyStyle }}">{{ r.copyLabel }}</button>
+                </div>
+              </div>
+            </sc-for>
+            <sc-for list="{{ brandPalette }}" as="c" hint-placeholder-count="0">
+              <div style="border:1px solid var(--border-card);background:#fff;display:flex;flex-direction:column;overflow:hidden">
+                <label style="{{ c.swatchStyle }}" style-hover="filter:brightness(1.06)">
+                  <input type="color" value="{{ c.hex }}" onChange="{{ c.onPick }}" style="position:absolute;opacity:0;width:1px;height:1px;border:none;padding:0">
+                  <span style="{{ c.editStyle }}">Edit</span>
+                </label>
+                <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy);text-transform:uppercase">{{ c.hex }}</div>
+                  <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ c.name }}</div>
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ c.copy }}" style="{{ c.copyStyle }}">{{ c.copyLabel }}</button>
+                    <button onClick="{{ c.remove }}" style="{{ brandMiniStyle }}">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="border:1px dashed var(--border-hairline);background:#fff;padding:14px;display:flex;flex-direction:column;gap:8px;justify-content:center">
+              <div style="font-size:12.5px;font-weight:600;color:var(--navy)">Add a color</div>
+              <input value="{{ dColorName }}" onChange="{{ onColorName }}" placeholder="Swatch name" style="{{ brandFieldStyle }}">
+              <div style="display:flex;gap:8px;align-items:center">
+                <label style="{{ newColorSwatchStyle }}"><input type="color" value="{{ dColorHex }}" onChange="{{ onColorHex }}" style="position:absolute;opacity:0;width:1px;height:1px;border:none;padding:0"></label>
+                <button onClick="{{ addColor }}" style="{{ brandBtnStyle }}">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Typography</h3>
+          </div>
+          <div class="su-half" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+            <sc-for list="{{ brandFonts }}" as="f" hint-placeholder-count="2">
+              <div style="border:1px solid var(--border-card);background:#fff;display:flex;flex-direction:column;overflow:hidden">
+                <div style="{{ f.previewStyle }}">Aa</div>
+                <div style="padding:16px 20px 18px;display:flex;flex-direction:column;gap:9px">
+                  <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ f.role }}</div>
+                  <div style="{{ f.sampleStyle }}">{{ f.sample }}</div>
+                  <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="{{ brandSelectStyle }}">
+                    <sc-for list="{{ fontOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o.name }}">{{ o.name }}</option></sc-for>
+                  </select>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Photography</h3>
+            <span style="font-size:11.5px;color:var(--text-muted)">Reference shots that show the look we should be matching</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:14px">
+            <sc-for list="{{ brandPhotos }}" as="ph" hint-placeholder-count="0">
+              <div style="border:1px solid var(--border-card);background:#fff;display:flex;flex-direction:column;overflow:hidden">
+                <div role="img" aria-label="{{ ph.name }}" style="{{ ph.artStyle }}"></div>
+                <div style="padding:11px 13px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ph.name }}</div>
+                    <span style="font-size:10px;font-weight:700;letter-spacing:.06em;color:{{ brandAccent }}">{{ ph.ext }}</span>
+                  </div>
+                  <button onClick="{{ ph.remove }}" style="{{ brandMiniStyle }}">Remove</button>
+                </div>
+              </div>
+            </sc-for>
+            <label style="border:1px dashed var(--border-hairline);background:#fff;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;text-align:center;padding:16px" style-hover="border-color:var(--navy)">
+              <input type="file" accept="image/*" onChange="{{ onPhotoFile }}" style="display:none">
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:{{ brandAccent }};line-height:1">+</div>
+              <div style="font-size:12.5px;font-weight:600;color:var(--navy)">Add a photo</div>
+              <div style="font-size:11px;color:var(--text-muted);line-height:1.45">JPG or PNG<br>up to 1.2 MB</div>
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Quick rules</h3>
+          </div>
+          <div class="su-cols" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start">
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;align-items:center;gap:14px">
+              <span style="{{ ruleSwatchStyle }}"></span>
+              <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
+                <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy);text-transform:uppercase">{{ brandAccent }}</div>
+                <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Accent color — the only highlight on the page</div>
+              </div>
+              <button onClick="{{ copyAccent }}" style="{{ accentCopyStyle }}">{{ accentCopyLabel }}</button>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+              <div style="{{ ruleFontStyle }}">{{ brandDisplayFont }}</div>
+              <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Headlines in caps · {{ brandBodyFont }} for body copy</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:7px">
+              <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy)">Voice</div>
+              <textarea value="{{ dVoice }}" onChange="{{ onVoice }}" onBlur="{{ saveVoice }}" placeholder="Short, direct sentences. No jargon." style="{{ brandAreaStyle }}"></textarea>
+              <div style="font-size:11px;color:var(--text-muted)">Saves when you click away</div>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ brandTeamNote }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.6">You're editing <strong style="color:var(--navy)">{{ brandName }}</strong>'s kit. Switch clients with the portal picker in the sidebar — each client keeps their own logos, colors and type.</div>
+        </sc-if>
+      </sc-if>
     </div>
   </main>
 </div>
@@ -704,16 +918,23 @@ class Component extends DCLogic {
       role: (props && props.startView) || 'team', section:'overview', viewClient:'af',
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
-      d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
-      data: saved ? JSON.parse(saved) : this.seed()
+      copied:'', storeErr:'',
+      d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af', colorHex:'#1FB264'},
+      data: this.normalize(this.load(saved))
     };
   }
   seed(){
     const now=Date.now(), h=3600e3, d=24*h;
     return {
       clients:[
-        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4]},
-        {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4]}
+        {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4],
+          brand:{wordmark:'Afore Beauty',logoDark:'',logoLight:'',primary:'#2A1B24',accent:'#C9705B',link:'#8A5A7A',surface:'#FAF6F3',text:'#4A3B42',
+            displayFont:'Playfair Display',bodyFont:'Poppins',voice:'Warm and unhurried. Short sentences, no hard sell.',
+            logos:[],photos:[],palette:[{id:'afp1',name:'Blush',hex:'#E8CFC6'},{id:'afp2',name:'Sand',hex:'#D8C3A5'}]}},
+        {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4],
+          brand:{wordmark:'ViewSlipstream',logoDark:'',logoLight:'',primary:'#12121A',accent:'#E5484D',link:'#5B6CFF',surface:'#F4F4F7',text:'#3B3B46',
+            displayFont:'Space Grotesk',bodyFont:'Inter',voice:'Short, stacked, one red line. No emoji.',
+            logos:[],photos:[],palette:[{id:'vsp1',name:'Screen black',hex:'#0A0A0F'}]}}
       ],
       todos:[
         {id:'t1',clientId:'af',title:'QA new PDP template on mobile Safari',who:'team',done:false,ts:now-2*h},
@@ -784,7 +1005,14 @@ class Component extends DCLogic {
       ]
     };
   }
-  save(){ localStorage.setItem('su_hub_v5', JSON.stringify(this.state.data)); }
+  save(){
+    try{
+      localStorage.setItem('su_hub_v5', JSON.stringify(this.state.data));
+      if(this.state.storeErr) this.setState({storeErr:''});
+    }catch(e){
+      if(!this.state.storeErr) this.setState({storeErr:'Browser storage is full, so that change was not saved. Remove a logo or photo from the brand kit and try again.'});
+    }
+  }
   set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
   uid(){ return Math.random().toString(36).slice(2,9); }
   logEv(data, clientId, text){ data.log.unshift({id:this.uid(),clientId,text,ts:Date.now()}); }
@@ -797,14 +1025,80 @@ class Component extends DCLogic {
   }
   draft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value; this.setState(s=>({d:{...s.d,[k]:v}})); }; }
   box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'#fff',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:3}; }
+  rgba(hex,a){ const c=this.rgb(hex); return c? 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')' : hex; }
   badge(kind){
     const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a']};
+    const t=this._theme;
+    if(t){
+      map.green=[this.rgba(t.accent,.13), this.mix(t.accent,'#000000',.30)];
+      map.blue =[this.rgba(t.link,.11),   this.mix(t.link,'#000000',.24)];
+    }
     const [bg,fg]=map[kind];
     return {background:bg,color:fg,fontSize:11,fontWeight:600,letterSpacing:'.04em',textTransform:'uppercase',padding:'3px 10px',borderRadius:999,whiteSpace:'nowrap'};
+  }
+  load(saved){ try{ return saved? JSON.parse(saved) : this.seed(); }catch(e){ return this.seed(); } }
+  defaultBrand(name){
+    return {wordmark:name||'', logoDark:'', logoLight:'',
+      primary:'#0F1633', accent:'#1FB264', link:'#2E3FD6', surface:'#F2F4F9', text:'#3A4160',
+      displayFont:'Outfit', bodyFont:'Poppins', voice:'',
+      logos:[], photos:[], palette:[]};
+  }
+  normalize(data){
+    (data.clients||[]).forEach(c=>{
+      const b=Object.assign(this.defaultBrand(c.name), c.brand||{});
+      ['logos','photos','palette'].forEach(k=>{ if(!Array.isArray(b[k])) b[k]=[]; });
+      c.brand=b;
+    });
+    return data;
+  }
+  componentDidMount(){ (this.state.data.clients||[]).forEach(c=>{ this.ensureFont(c.brand.displayFont); this.ensureFont(c.brand.bodyFont); }); }
+  ensureFont(fam){
+    if(!fam || typeof document==='undefined') return;
+    this._fonts = this._fonts || new Set();
+    if(this._fonts.has(fam)) return;
+    this._fonts.add(fam);
+    const id='su-font-'+fam.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    if(document.getElementById(id)) return;
+    const l=document.createElement('link');
+    l.id=id; l.rel='stylesheet';
+    l.href='https://fonts.googleapis.com/css2?family='+fam.trim().replace(/\s+/g,'+')+':wght@400;500;600;700;800&display=swap';
+    document.head.appendChild(l);
+  }
+  rgb(hex){
+    const m=String(hex||'').trim().replace('#','');
+    const h = m.length===3 ? m.split('').map(c=>c+c).join('') : m;
+    if(!/^[0-9a-f]{6}$/i.test(h)) return null;
+    return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));
+  }
+  mix(hex,target,amt){
+    const a=this.rgb(hex), b=this.rgb(target);
+    if(!a||!b) return hex;
+    return '#'+a.map((v,i)=>Math.round(v+(b[i]-v)*amt).toString(16).padStart(2,'0')).join('');
+  }
+  lum(hex){ const c=this.rgb(hex); return c? (0.2126*c[0]+0.7152*c[1]+0.0722*c[2])/255 : 0; }
+  readImage(file, cb){
+    if(!/^image\//.test(file.type||'')){ this.setState({storeErr:'“'+file.name+'” is not an image — upload a PNG, JPG or SVG.'}); return; }
+    if(file.size>1200000){ this.setState({storeErr:'“'+file.name+'” is '+(file.size/1048576).toFixed(1)+' MB. Brand files are kept in browser storage, so export it under 1.2 MB and try again.'}); return; }
+    const r=new FileReader();
+    r.onerror=()=>this.setState({storeErr:'Could not read “'+file.name+'”. Try another file.'});
+    r.onload=()=>cb(String(r.result), file.name.replace(/\.[^.]+$/,''), (file.name.split('.').pop()||'').toUpperCase().slice(0,4));
+    r.readAsDataURL(file);
+  }
+  copyText(id,text){
+    return ()=>{
+      try{
+        const w = navigator.clipboard && navigator.clipboard.writeText(text);
+        if(w && w.catch) w.catch(()=>{});
+      }catch(e){}
+      this.setState({copied:id});
+      clearTimeout(this._copyT);
+      this._copyT=setTimeout(()=>this.setState({copied:''}),1400);
+    };
   }
   renderVals(){
     const S=this.state, D=S.data, d=S.d, isTeam=S.role==='team';
     const client = D.clients.find(c=>c.id===S.viewClient)||D.clients[0];
+    this._theme = isTeam ? null : (client.brand||null);
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
     const openDetail=(type,id)=>()=>this.setState({detail:{type,id},notifOpen:false});
     const closeDetail=()=>this.setState({detail:null});
@@ -814,8 +1108,8 @@ class Component extends DCLogic {
     const approveReq=id=>this.set(x=>{ const it=x.requests.find(y=>y.id===id); it.status='approved'; x.work.unshift({id:this.uid(),clientId:it.clientId,title:it.title,status:'queued',hours:4,comments:[]}); this.logEv(x,it.clientId,'Request approved and queued: '+it.title); return x; });
     const declineReq=id=>this.set(x=>{ x.requests.find(y=>y.id===id).status='declined'; return x; });
     const nav = isTeam
-      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['messages','Messages']]
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['reports','Reports'],['billing','Billing']];
+      ? [['overview','Overview'],['board','Work board'],['clients','Clients'],['requests','Requests'],['messages','Messages'],['brand','Brand kit']]
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos',client.name+' to-dos'],['messages','Messages'],['files','Files'],['brand','Brand kit'],['reports','Reports'],['billing','Billing']];
     const newReqCount = D.requests.filter(r=>r.status==='new').length;
     const clientTodoCount = D.todos.filter(t=>t.who==='client'&&t.clientId===client.id&&!t.done).length;
     const navItems = nav.map(([id,label])=>{
@@ -828,6 +1122,7 @@ class Component extends DCLogic {
     });
     const headings={overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Work Board'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],messages:['Internal Dashboard','Messages'],
       home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],todos:[client.name,client.name+' To-Dos'],files:[client.name,'Files & Content'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+    headings.brand=['Logos · Colors · Rules','Brand Kit'];
     const hk = headings[S.section]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>S.section===k;
     // notifications
@@ -925,6 +1220,127 @@ class Component extends DCLogic {
     const wBadge=st=>{ const [k,l]=stMap[st]||stMap.queued; return [this.badge(k),l]; };
     const homeProgCards=D.work.filter(w=>w.clientId===client.id&&(w.status==='progress'||w.status==='review')).map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status); return {title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id)}; });
     const homeReqCards=D.requests.filter(r=>r.clientId===client.id&&(r.status==='new'||r.status==='approved')).sort((a,b)=>b.ts-a.ts).map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status); return {title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id)}; });
+    // ── brand kit ───────────────────────────────────────────────────────────
+    const B = client.brand || (client.brand=this.defaultBrand(client.name));
+    this.ensureFont(B.displayFont); this.ensureFont(B.bodyFont);
+    const brandLog = verb => (isTeam? 'Social Upgrades '+verb+' for '+client.name : client.name+' '+verb);
+    const setBrand = (fn,note) => this.set(x=>{
+      const c=x.clients.find(y=>y.id===client.id); if(!c) return x;
+      const b=(c.brand=c.brand||this.defaultBrand(c.name));
+      fn(b); if(note) this.logEv(x,c.id,note); return x;
+    });
+    const brandName = client.name;
+    const brandWordmark = (B.wordmark||'').trim() || client.name;
+    const editPill = hex => ({fontSize:10,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',padding:'3px 8px',borderRadius:999,
+      background: this.lum(hex)>0.6 ? 'rgba(15,22,51,.82)' : 'rgba(255,255,255,.9)',
+      color: this.lum(hex)>0.6 ? '#fff' : '#0F1633'});
+    const swatchStyle = hex => ({position:'relative',height:74,background:hex,borderBottom:'1px solid var(--border-hairline)',
+      display:'flex',alignItems:'flex-end',justifyContent:'flex-end',padding:8,cursor:'pointer'});
+    const brandMiniStyle = {background:'#fff',border:'1px solid var(--gray-200)',borderRadius:3,color:'var(--text-body)',fontSize:11,fontWeight:500,padding:'5px 10px',cursor:'pointer',lineHeight:1.4};
+    const toggleStyle = on => ({background:on?B.accent:'#fff',border:'1px solid '+(on?B.accent:'var(--gray-200)'),borderRadius:3,
+      color:on?'#fff':'var(--text-body)',fontSize:11,fontWeight:on?600:500,padding:'5px 10px',cursor:'pointer',lineHeight:1.4});
+    const copyStyle = on => ({...brandMiniStyle,alignSelf:'flex-start',borderColor:on?B.accent:'var(--gray-200)',color:on?B.accent:'var(--text-body)',fontWeight:on?600:500});
+    const copyLabel = on => on?'Copied':'Copy';
+
+    const ROLES=[['primary','Primary','Sidebar, headings and the portal frame'],
+      ['accent','Accent','Buttons, active states and highlights'],
+      ['link','Link','Links and secondary actions'],
+      ['surface','Surface','Page background behind the cards'],
+      ['text','Body text','Paragraphs and list copy']];
+    const brandRoles = ROLES.map(([key,label,note])=>({
+      label,note,hex:B[key],
+      swatchStyle:swatchStyle(B[key]), editStyle:editPill(B[key]),
+      onPick:e=>{ const v=e.target.value; setBrand(b=>{ b[key]=v; }); },
+      copy:this.copyText('role:'+key,B[key]), copyLabel:copyLabel(S.copied==='role:'+key), copyStyle:copyStyle(S.copied==='role:'+key)
+    }));
+    const brandChips = ROLES.slice(0,4).map(([key,label])=>({label,hex:B[key],
+      dotStyle:{width:14,height:14,minWidth:14,borderRadius:3,background:B[key],border:'1px solid var(--border-hairline)'}}));
+    const brandPalette = (B.palette||[]).map(c=>({
+      name:c.name,hex:c.hex,swatchStyle:swatchStyle(c.hex),editStyle:editPill(c.hex),
+      onPick:e=>{ const v=e.target.value; setBrand(b=>{ const it=b.palette.find(y=>y.id===c.id); if(it) it.hex=v; }); },
+      copy:this.copyText('pal:'+c.id,c.hex), copyLabel:copyLabel(S.copied==='pal:'+c.id), copyStyle:copyStyle(S.copied==='pal:'+c.id),
+      remove:()=>setBrand(b=>{ b.palette=b.palette.filter(y=>y.id!==c.id); })}));
+
+    const art = (srcUrl,extra) => Object.assign({backgroundImage:'url("'+srcUrl+'")',backgroundRepeat:'no-repeat',
+      backgroundPosition:'center',backgroundSize:'contain'}, extra||{});
+    const brandLogos = (B.logos||[]).map(l=>({
+      name:l.name,ext:l.ext,src:l.src,
+      artStyle:art(l.src,{width:'100%',height:52}),
+      plateStyle:{height:118,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px 18px',
+        background:l.plate==='dark'?B.primary:'#FFFFFF',borderBottom:'1px solid var(--border-hairline)'},
+      darkStyle:toggleStyle(B.logoDark===l.src), lightStyle:toggleStyle(B.logoLight===l.src),
+      useDark:()=>setBrand(b=>{ b.logoDark = b.logoDark===l.src ? '' : l.src; }, brandLog('set the portal sidebar logo')),
+      useLight:()=>setBrand(b=>{ b.logoLight = b.logoLight===l.src ? '' : l.src; }),
+      flip:()=>setBrand(b=>{ const it=b.logos.find(y=>y.id===l.id); if(it) it.plate = it.plate==='dark'?'light':'dark'; }),
+      remove:()=>setBrand(b=>{ b.logos=b.logos.filter(y=>y.id!==l.id);
+        if(b.logoDark===l.src) b.logoDark=''; if(b.logoLight===l.src) b.logoLight=''; }, brandLog('removed a logo from the brand kit'))
+    }));
+    const onLogoFile = e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return;
+      this.readImage(f,(srcUrl,name,ext)=>setBrand(b=>{
+        b.logos.unshift({id:this.uid(),name,ext,src:srcUrl,plate:'light'});
+        if(!b.logoLight) b.logoLight=srcUrl;
+      }, brandLog('added a logo to the brand kit'))); };
+
+    const brandPhotos = (B.photos||[]).map(ph=>({name:ph.name,ext:ph.ext,src:ph.src,
+      artStyle:art(ph.src,{height:124,background:'var(--gray-100)',backgroundSize:'cover'}),
+      remove:()=>setBrand(b=>{ b.photos=b.photos.filter(y=>y.id!==ph.id); })}));
+    const onPhotoFile = e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return;
+      this.readImage(f,(srcUrl,name,ext)=>setBrand(b=>{ b.photos.unshift({id:this.uid(),name,ext,src:srcUrl}); },
+        brandLog('added a photo to the brand kit'))); };
+
+    const FONTS=['Outfit','Poppins','Inter','Montserrat','DM Sans','Space Grotesk','Playfair Display','Lora','Oswald','Bebas Neue'];
+    const fontNames = FONTS.concat([B.displayFont,B.bodyFont].filter(f=>f&&FONTS.indexOf(f)<0));
+    const fontOptions = fontNames.map(n=>({name:n}));
+    const fontCard = (role,key,sample,weight)=>({role,value:B[key],sample,
+      previewStyle:{height:104,display:'flex',alignItems:'center',justifyContent:'center',background:B.primary,color:'#fff',
+        fontFamily:"'"+B[key]+"',sans-serif",fontWeight:700,fontSize:42,letterSpacing:'.02em'},
+      sampleStyle:{fontFamily:"'"+B[key]+"',sans-serif",fontSize:17,fontWeight:weight,color:'var(--navy)',lineHeight:1.4},
+      onChange:e=>{ const v=e.target.value; this.ensureFont(v); setBrand(b=>{ b[key]=v; }); }});
+    const brandFonts=[fontCard('Display / headlines','displayFont','The quick brown fox',700),
+      fontCard('Body / labels','bodyFont','Jumps over the lazy dog',400)];
+
+    const wmOwned = d.wordmarkFor===client.id;
+    const dWordmark = wmOwned ? (d.wordmark||'') : (B.wordmark||'');
+    const voiceOwned = d.voiceFor===client.id;
+    const dVoice = voiceOwned ? (d.voice||'') : (B.voice||'');
+    const newHex = d.colorHexFor===client.id ? (d.colorHex||B.accent) : B.accent;
+
+    // The portal wears the client's brand; the team view stays Social Upgrades.
+    const rootStyle = {display:'flex',height:'100vh',overflow:'hidden',background:'var(--cloud)',fontFamily:'var(--font-body)'};
+    if(!isTeam){
+      Object.assign(rootStyle,{
+        '--navy':B.primary,
+        '--navy-800':this.mix(B.primary,'#ffffff',.08),
+        '--navy-700':this.mix(B.primary,'#ffffff',.16),
+        '--text-heading':B.primary,
+        '--text-body':B.text,
+        '--text-muted':this.mix(B.text,'#ffffff',.40),
+        '--ink-60':this.mix(B.text,'#ffffff',.40),
+        '--ink-40':this.mix(B.text,'#ffffff',.60),
+        '--green':B.accent,
+        '--check':B.accent,
+        '--blue':B.link,
+        '--teal':this.mix(B.link,B.accent,.5),
+        '--link':B.link,
+        '--link-hover':B.accent,
+        '--cloud':B.surface,
+        '--surface-page':B.surface,
+        '--gray-100':this.mix(B.surface,'#ffffff',.35),
+        '--gray-200':this.mix(B.text,'#ffffff',.84),
+        '--grad-brand':'linear-gradient(135deg,'+B.accent+' 0%,'+B.link+' 100%)',
+        '--font-display':"'"+B.displayFont+"',sans-serif",
+        '--font-body':"'"+B.bodyFont+"',sans-serif"
+      });
+    }
+    const topLogoSrc = isTeam ? 'assets/logo-on-dark.svg' : (B.logoDark||'');
+    const hasTopLogo = !!topLogoSrc;
+    const topLogoStyle = hasTopLogo ? art(topLogoSrc,{height:30,width:'100%',maxWidth:186,
+      backgroundPosition:'left center',alignSelf:'flex-start'}) : {};
+    const topLogoAlt = isTeam ? 'Social Upgrades' : brandWordmark;
+    const topWordmark = brandWordmark;
+    const topWordmarkStyle = {fontFamily:"'"+B.displayFont+"',sans-serif",fontWeight:800,fontSize:19,letterSpacing:'.03em',
+      textTransform:'uppercase',color:'#fff',lineHeight:1.15,alignSelf:'flex-start'};
+
     let dv={detailOpen:false};
     if(S.detail){
       const ty=S.detail.type;
@@ -1047,7 +1463,36 @@ class Component extends DCLogic {
       reportDate:new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}),
       planName:client.plan, planPrice:'$'+client.price, planHours:client.hoursUsed+' / '+client.hoursTotal+' used',
       planBarStyle:{width:planPct+'%',height:'100%',background:'var(--grad-brand)'},
-      invoices
+      invoices,
+      rootStyle, hasTopLogo, noTopLogo:!hasTopLogo, topLogoStyle, topLogoAlt, topWordmark, topWordmarkStyle,
+      secBrand:secKey('brand'), storeErr:S.storeErr, brandTeamNote:isTeam,
+      brandName, brandAccent:B.accent, brandWordmark, brandDisplayFont:B.displayFont, brandBodyFont:B.bodyFont,
+      brandBlurb:'Everything saved here runs the portal — the sidebar, buttons, links, headings and type all follow this kit the moment it changes.',
+      brandHasLogo:!!B.logoDark, brandNoLogo:!B.logoDark,
+      brandLogoStyle: B.logoDark ? art(B.logoDark,{height:42,width:'100%',maxWidth:196,backgroundPosition:'left center',alignSelf:'flex-start'}) : {},
+      brandPlateStyle:{background:B.primary,padding:'26px 24px',display:'flex',flexDirection:'column',gap:16,justifyContent:'space-between',minHeight:152},
+      brandWordmarkStyle:{fontFamily:"'"+B.displayFont+"',sans-serif",fontWeight:800,fontSize:23,letterSpacing:'.03em',textTransform:'uppercase',color:'#fff',lineHeight:1.15},
+      brandChips, brandRoles, brandPalette, brandLogos, brandPhotos, brandFonts, fontOptions,
+      onLogoFile, onPhotoFile,
+      brandMiniStyle,
+      brandBtnStyle:{background:'var(--navy)',border:'none',color:'#fff',fontFamily:'var(--font-display)',fontWeight:600,fontSize:12,padding:'9px 18px',cursor:'pointer'},
+      brandInputStyle:{flex:1,minWidth:170,border:'1px solid var(--gray-200)',borderRadius:4,padding:'9px 13px',fontSize:13.5},
+      brandFieldStyle:{border:'1px solid var(--gray-200)',borderRadius:4,padding:'9px 13px',fontSize:13.5,width:'100%',boxSizing:'border-box'},
+      brandSelectStyle:{border:'1px solid var(--gray-200)',borderRadius:4,padding:'9px 12px',fontSize:13.5,background:'#fff',color:'var(--text-body)',width:'100%'},
+      brandAreaStyle:{border:'1px solid var(--gray-200)',borderRadius:4,padding:'10px 13px',fontSize:13,resize:'vertical',minHeight:64,lineHeight:1.55},
+      ruleSwatchStyle:{width:34,height:34,minWidth:34,borderRadius:999,background:B.accent,border:'1px solid var(--border-hairline)'},
+      ruleFontStyle:{fontFamily:"'"+B.displayFont+"',sans-serif",fontWeight:700,fontSize:15,color:'var(--navy)'},
+      copyAccent:this.copyText('accent',B.accent), accentCopyLabel:copyLabel(S.copied==='accent'), accentCopyStyle:copyStyle(S.copied==='accent'),
+      dWordmark, onWordmark:e=>{ const v=e.target.value; this.setState(s=>({d:{...s.d,wordmark:v,wordmarkFor:client.id}})); },
+      saveWordmark:()=>{ if(!wmOwned) return; const v=(d.wordmark||'').trim(); if(v===(B.wordmark||'').trim()) return; setBrand(b=>{ b.wordmark=v; }); },
+      dVoice, onVoice:e=>{ const v=e.target.value; this.setState(s=>({d:{...s.d,voice:v,voiceFor:client.id}})); },
+      saveVoice:()=>{ if(!voiceOwned) return; const v=(d.voice||'').trim(); if(v===(B.voice||'').trim()) return; setBrand(b=>{ b.voice=v; }); },
+      dColorName:d.colorName||'', onColorName:this.draft('colorName'),
+      dColorHex:newHex, onColorHex:e=>{ const v=e.target.value; this.setState(s=>({d:{...s.d,colorHex:v,colorHexFor:client.id}})); },
+      newColorSwatchStyle:{position:'relative',width:44,height:38,borderRadius:4,background:newHex,border:'1px solid var(--gray-200)',cursor:'pointer',display:'block'},
+      addColor:()=>{ const name=(d.colorName||'').trim(); const hex=newHex;
+        setBrand(b=>{ b.palette.push({id:this.uid(),name:name||hex.toUpperCase(),hex}); });
+        this.setState(s=>({d:{...s.d,colorName:''}})); }
     };
   }
 }
