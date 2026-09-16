@@ -21,7 +21,10 @@
     price: 'price', hoursUsed: 'hours_used', hoursTotal: 'hours_total',
     pulse: 'pulse', pulseMonth: 'pulse_month', businesses: 'businesses',
     billingPortalUrl: 'billing_portal_url', billingCycle: 'billing_cycle',
-    billingType: 'billing_type', hourlyRate: 'hourly_rate', color: 'color'
+    billingType: 'billing_type', hourlyRate: 'hourly_rate', color: 'color',
+    // The client's brand kit. One jsonb body, always written whole; the
+    // database decides what a client is allowed to change in it.
+    brand: 'brand'
   };
 
   // Per-reader marker for message threads. Composite key, so the app-side id
@@ -127,6 +130,10 @@
     const o = mapFromRow(r, CLIENT_COLS);
     if (!Array.isArray(o.pulse)) o.pulse = [];
     if (!Array.isArray(o.businesses)) o.businesses = [];
+    if (!o.brand || typeof o.brand !== 'object') o.brand = {};
+    ['logos', 'photos', 'palette'].forEach(k => {
+      if (!Array.isArray(o.brand[k])) o.brand[k] = [];
+    });
     return o;
   };
   const clientToRow = c => mapToRow(c, CLIENT_COLS);
@@ -420,6 +427,46 @@
     };
   }
 
+  // Brand files are their own bucket: they are public (a logo is shown on a
+  // portal), small, and scoped to one client by the first path segment, which
+  // is what the storage policy checks. Attachments are none of those things.
+  const BRAND_BUCKET = 'brand-assets';
+  const MAX_BRAND_BYTES = 2 * 1024 * 1024;      // the bucket enforces this too
+  const BRAND_MIME = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp', 'image/gif'];
+
+  async function uploadBrandAsset(file, clientId) {
+    if (!file) throw new Error('No file was selected.');
+    if (!clientId) throw new Error('A brand file needs a client to belong to.');
+    if (BRAND_MIME.indexOf(file.type) < 0) {
+      throw new Error('"' + file.name + '" is not an image we can use — PNG, JPG, SVG, WEBP or GIF.');
+    }
+    if (file.size > MAX_BRAND_BYTES) {
+      throw new Error('"' + file.name + '" is ' + (file.size / 1048576).toFixed(1) +
+        ' MB. Brand files stop at 2 MB — export it smaller and try again.');
+    }
+    const path = clientId + '/' + objectKey(file.name);
+    const { error } = await client().storage.from(BRAND_BUCKET)
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (error) throw error;
+    const { data } = client().storage.from(BRAND_BUCKET).getPublicUrl(path);
+    return {
+      url: data.publicUrl,
+      name: file.name.replace(/\.[^.]+$/, ''),
+      ext: (file.name.split('.').pop() || '').toUpperCase().slice(0, 4)
+    };
+  }
+
+  // Removing a logo from a kit should not leave the file behind. A URL that is
+  // not one of our uploads (an asset shipped with the app) has nothing to drop.
+  async function deleteBrandAsset(url) {
+    const marker = '/storage/v1/object/public/' + BRAND_BUCKET + '/';
+    const at = String(url || '').indexOf(marker);
+    if (at < 0) return;
+    const path = decodeURIComponent(String(url).slice(at + marker.length));
+    const { error } = await client().storage.from(BRAND_BUCKET).remove([path]);
+    if (error) console.warn('[su-data] could not remove brand file', error);
+  }
+
   async function signedUrl(path) {
     if (!path) throw new Error('That attachment has no stored file.');
     const { data, error } = await client().storage.from(BUCKET)
@@ -564,6 +611,7 @@
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, sync, latestTs,
     uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
+    uploadBrandAsset, deleteBrandAsset, MAX_BRAND_BYTES,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
     sendPasswordLink, setPassword, mailAdvice,

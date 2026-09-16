@@ -434,6 +434,50 @@ it is on a desktop. Laid out as a row it had kept the column's full-width rows,
 stretching to the height of the panel and wrapping company names onto three
 lines, so the list of companies took the screen and the thread had none of it.
 
+## Brand kit
+
+Every client has a kit — logos, colours, type, photography and a short voice
+note — and the portal is built out of it. Change a colour on the Brand Kit tab
+and the sidebar, headings, buttons, links, status pills and type follow on the
+next render; there is no separate "apply" step. The client's logo sits top left
+and the Social Upgrades mark moves to the bottom left, under "Powered by".
+
+Both sides reach the same tab. Staff edit whichever client the sidebar picker
+is on, so a kit can be set up before the client ever opens it; a client edits
+their own and nobody else's.
+
+A kit that has never been touched still themes. The accent falls back to the
+colour already assigned to that client on the Clients board, so a portal is
+recognisably theirs from the first load rather than Social Upgrades green, and
+the wordmark stands in for the logo until one is marked "On dark".
+
+Theming works by overriding the design system's custom properties on the app's
+root element for the portal only — `--navy`, `--green`, `--blue`, `--cloud`,
+`--cta-bg`, `--font-display` and the rest. Nothing downstream knows about
+brands: a card that reads `var(--navy)` is themed without being told. The team
+view sets none of them and stays Social Upgrades throughout.
+
+### What the database allows
+
+`clients.brand` is one jsonb body, written whole. This is the only column a
+client may write, and `032_client_brand_kit.sql` is what makes that safe: a
+client's update is rebuilt from the stored row with just `brand` carried
+across, so the same request cannot also move their price, retainer hours or
+billing terms. Rebuilding from the old row rather than listing the columns to
+protect means a column added later is protected the day it is added.
+
+The body is checked on the way in, for staff writes too. Colours must be hex,
+text is capped, lists are capped, and image URLs must point at our own storage
+bucket or a file shipped with the app — those URLs are read back into `url(...)`
+in a stylesheet, so one pointing anywhere else is the only value in a kit that
+could do more than look wrong.
+
+Logos and photography go to the public `brand-assets` bucket, penned into a
+folder named for the client; the storage policy checks that first path segment,
+so one client cannot write into another's folder. 2 MB a file, images only.
+Removing a logo drops the record first and the file second — a kit pointing at
+a file that is already gone would render broken on every load.
+
 ## Money
 
 **Billing type** is per client:
