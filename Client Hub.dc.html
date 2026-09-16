@@ -928,13 +928,21 @@ class Component extends DCLogic {
     return {
       clients:[
         {id:'af',name:'Afore Beauty',domain:'aforebeauty.com',service:'Shopify store + marketing',plan:'Growth',price:499,hoursUsed:14,hoursTotal:25,pulse:[5,4],
-          brand:{wordmark:'Afore Beauty',logoDark:'',logoLight:'',primary:'#2A1B24',accent:'#C9705B',link:'#8A5A7A',surface:'#FAF6F3',text:'#4A3B42',
+          brand:{wordmark:'Afore Beauty',
+            logoDark:'assets/clients/afore-beauty-on-dark.svg', logoLight:'assets/clients/afore-beauty-on-light.svg',
+            primary:'#2A1B24',accent:'#C9705B',link:'#8A5A7A',surface:'#FAF6F3',text:'#4A3B42',
             displayFont:'Playfair Display',bodyFont:'Poppins',voice:'Warm and unhurried. Short sentences, no hard sell.',
-            logos:[],photos:[],palette:[{id:'afp1',name:'Blush',hex:'#E8CFC6'},{id:'afp2',name:'Sand',hex:'#D8C3A5'}]}},
+            logos:[{id:'afl1',name:'Wordmark — on dark',ext:'SVG',src:'assets/clients/afore-beauty-on-dark.svg',plate:'dark'},
+                   {id:'afl2',name:'Wordmark — on light',ext:'SVG',src:'assets/clients/afore-beauty-on-light.svg',plate:'light'}],
+            photos:[],palette:[{id:'afp1',name:'Blush',hex:'#E8CFC6'},{id:'afp2',name:'Sand',hex:'#D8C3A5'}]}},
         {id:'vs',name:'ViewSlipstream',domain:'viewslipstream.com',service:'Web platform · movie RSVP',plan:'Scale',price:999,hoursUsed:31,hoursTotal:50,pulse:[4],
-          brand:{wordmark:'ViewSlipstream',logoDark:'',logoLight:'',primary:'#12121A',accent:'#E5484D',link:'#5B6CFF',surface:'#F4F4F7',text:'#3B3B46',
+          brand:{wordmark:'ViewSlipstream',
+            logoDark:'assets/clients/viewslipstream-on-dark.svg', logoLight:'assets/clients/viewslipstream-on-light.svg',
+            primary:'#12121A',accent:'#E5484D',link:'#5B6CFF',surface:'#F4F4F7',text:'#3B3B46',
             displayFont:'Space Grotesk',bodyFont:'Inter',voice:'Short, stacked, one red line. No emoji.',
-            logos:[],photos:[],palette:[{id:'vsp1',name:'Screen black',hex:'#0A0A0F'}]}}
+            logos:[{id:'vsl1',name:'Wordmark — on dark',ext:'SVG',src:'assets/clients/viewslipstream-on-dark.svg',plate:'dark'},
+                   {id:'vsl2',name:'Wordmark — on light',ext:'SVG',src:'assets/clients/viewslipstream-on-light.svg',plate:'light'}],
+            photos:[],palette:[{id:'vsp1',name:'Screen black',hex:'#0A0A0F'}]}}
       ],
       todos:[
         {id:'t1',clientId:'af',title:'QA new PDP template on mobile Safari',who:'team',done:false,ts:now-2*h},
@@ -1043,11 +1051,26 @@ class Component extends DCLogic {
       displayFont:'Outfit', bodyFont:'Poppins', voice:'',
       logos:[], photos:[], palette:[]};
   }
+  pristineBrand(b,name){
+    if(!b) return true;
+    const dflt=this.defaultBrand(name);
+    return ['primary','accent','link','surface','text','displayFont','bodyFont'].every(k=>b[k]===dflt[k])
+      && !b.logoDark && !b.logoLight && !(b.voice||'').trim()
+      && !(b.logos||[]).length && !(b.photos||[]).length && !(b.palette||[]).length;
+  }
   normalize(data){
+    const seeded={};
+    (this.seed().clients||[]).forEach(c=>{ if(c.brand) seeded[c.id]=c.brand; });
     (data.clients||[]).forEach(c=>{
-      const b=Object.assign(this.defaultBrand(c.name), c.brand||{});
+      // Data saved before brand kits existed — and the all-defaults kit the first
+      // build wrote — both leave the portal looking like the team view, so adopt
+      // the seeded kit. A kit the client has actually edited is left alone.
+      let b = c.brand;
+      if(!b || (!b.v && this.pristineBrand(b,c.name))) b = seeded[c.id] || this.defaultBrand(c.name);
+      b = Object.assign(this.defaultBrand(c.name), b);
       ['logos','photos','palette'].forEach(k=>{ if(!Array.isArray(b[k])) b[k]=[]; });
-      c.brand=b;
+      b.v = 2;
+      c.brand = b;
     });
     return data;
   }
