@@ -460,6 +460,38 @@ sidebar cannot be opened on a phone at all.
 
 Staff have no Files board, so `SUBNAV` is empty for them.
 
+## The content calendar
+
+Content Map opens on the whole plan rather than on one channel's board. The
+three boards answer "what is in Emails"; the overview answers "what is going
+out, and when", which is the question the tab is named after. The channels are
+still there, as the pills beside Overview and as the sidebar's children.
+
+The calendar draws every month between nothing and nothing: it runs from the
+Sunday on or before the first to the Saturday on or after the last, so the grid
+is always whole weeks. A week toggle narrows it to seven days and gives each
+day room for six items instead of three. Items are placed by `scheduledFor`;
+anything without a date is not on the calendar and lives on its channel board.
+
+Beside it, the last and next item for Social and for Emails, and for Paid the
+campaigns that are live, because the useful question about an ad is not when it
+ran but whether it is running.
+
+### Channel colours
+
+The three channels do not take their colours from the kit. A kit is free to set
+the same colour for its accent and its link, and at least one does, which
+collapsed all three channels to one red and made the legend meaningless. They
+are a fixed categorical trio instead, stepped for the card behind them and run
+through the palette validator rather than picked by eye: `#1FB264 / #3B82F6 /
+#E0A11B` on a light card, `#16A34A / #3B82F6 / #D97706` on a dark one, both
+inside their mode's lightness band with colour-blind separation well clear of
+the floor. Every dot is paired with a name in the legend and with the item's
+own title, so the channel is never carried by colour alone.
+
+Seven columns on a phone leaves about 39px a day, which turns a title into two
+letters and an ellipsis, so below 560px the cells show their dots alone.
+
 ## Sorting and filtering the Overview
 
 The Overview carries a filter bar over all four columns and a sort menu in each

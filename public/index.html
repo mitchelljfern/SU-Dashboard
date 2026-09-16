@@ -157,6 +157,10 @@
        to shrink, so titles are allowed to break mid-word. */
     .su-cardtitle{overflow-wrap:anywhere}
     .su-barval{white-space:nowrap}
+    /* Seven columns on a phone leaves about 39px a day, which turns a title
+       into two letters and an ellipsis. The dots still say how busy a day is,
+       and the item opens from the week view or the channel board. */
+    @media (max-width:560px){ .su-caltitle{display:none} }
     @media (max-width:700px){ .su-barval{display:none} }
     @media (max-width:860px){
       .su-side{display:none !important}
@@ -1741,6 +1745,94 @@
             </sc-for>
           </div>
 
+          <sc-if value="{{ cmOverview }}" hint-placeholder-val="{{ true }}">
+            <div class="su-cols" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start">
+              <sc-for list="{{ cmSummaries }}" as="sm" hint-placeholder-count="2">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="{{ sm.dotStyle }}"></span>
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ sm.label }}</h3>
+                  </div>
+                  <sc-if value="{{ sm.empty }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:12.5px;color:var(--text-muted)">Nothing scheduled yet.</div>
+                  </sc-if>
+                  <sc-if value="{{ sm.hasLast }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:2px">
+                      <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Last</div>
+                      <button onClick="{{ sm.lastOpen }}" style="background:transparent;border:none;padding:0;text-align:left;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--navy);font-family:var(--font-body)">{{ sm.lastTitle }}</button>
+                      <div style="font-size:11.5px;color:var(--text-muted)">{{ sm.lastWhen }}</div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ sm.hasNext }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:2px">
+                      <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Next</div>
+                      <button onClick="{{ sm.nextOpen }}" style="background:transparent;border:none;padding:0;text-align:left;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--navy);font-family:var(--font-body)">{{ sm.nextTitle }}</button>
+                      <div style="font-size:11.5px;color:var(--text-muted)">{{ sm.nextWhen }}</div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="{{ cmPaidDot }}"></span>
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Paid Ads</h3>
+                </div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Active campaigns</div>
+                <sc-if value="{{ cmNoLive }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px;color:var(--text-muted)">Nothing live right now.</div>
+                </sc-if>
+                <sc-for list="{{ cmLive }}" as="ad" hint-placeholder-count="2">
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <button onClick="{{ ad.open }}" style="background:transparent;border:none;padding:0;text-align:left;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--navy);font-family:var(--font-body)">{{ ad.title }}</button>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ ad.when }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <button onClick="{{ cmPrev }}" aria-label="Previous" title="Previous" style="{{ cmNavStyle }}">&#8249;</button>
+                  <button onClick="{{ cmNext }}" aria-label="Next" title="Next" style="{{ cmNavStyle }}">&#8250;</button>
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0 0 0 4px">{{ cmPeriod }}</h3>
+                  <button onClick="{{ cmToday }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;color:var(--text-body);padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--font-body)">Today</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                  <div style="display:flex;gap:14px">
+                    <sc-for list="{{ cmLegend }}" as="lg" hint-placeholder-count="3">
+                      <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted)"><span style="{{ lg.dotStyle }}"></span>{{ lg.label }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ cmSetMonth }}" style="{{ cmMonthStyle }}">Month</button>
+                    <button onClick="{{ cmSetWeek }}" style="{{ cmWeekStyle }}">Week</button>
+                  </div>
+                </div>
+              </div>
+              <div style="{{ cmGridStyle }}">
+                <sc-for list="{{ cmWeekdays }}" as="wd" hint-placeholder-count="7">
+                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);text-align:center;padding-bottom:2px">{{ wd.n }}</div>
+                </sc-for>
+              </div>
+              <div style="{{ cmGridStyle }}">
+                <sc-for list="{{ cmDays }}" as="dy" hint-placeholder-count="35">
+                  <div style="{{ dy.dayStyle }}">
+                    <div style="{{ dy.numStyle }}">{{ dy.num }}</div>
+                    <sc-for list="{{ dy.items }}" as="ev" hint-placeholder-count="1">
+                      <button onClick="{{ ev.open }}" style="{{ ev.style }}" title="{{ ev.channel }}: {{ ev.title }}"><span style="{{ ev.dotStyle }}"></span><span class="su-caltitle">{{ ev.title }}</span></button>
+                    </sc-for>
+                    <sc-if value="{{ dy.hasMore }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:10.5px;color:var(--text-muted)">{{ dy.more }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmBoard }}" hint-placeholder-val="{{ false }}">
+
           <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Add to {{ stratChannel }}</h3>
               <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1787,6 +1879,7 @@
               </div>
             </sc-for>
           </div>
+          </sc-if>
 
         </div>
       </sc-if>
@@ -3707,7 +3800,12 @@ class Component extends DCLogic {
       {id:'ads',    label:'Paid Ads',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['live','Live','var(--blue)'],['paused','Paused','#D68F2E'],['ended','Ended','var(--text-muted)']]}
     ];
-    const chanId = S.channel || 'social';
+    // Content Map opens on the whole plan rather than on one channel's board:
+    // the three boards answer "what is in Emails", the overview answers "what
+    // is going out, and when", which is the question the tab is named after.
+    const cmTab = S.channel || 'overview';
+    const cmOverview = cmTab === 'overview';
+    const chanId = cmOverview ? 'social' : cmTab;
     const chan = CHANNELS.find(c=>c.id===chanId) || CHANNELS[0];
     const chanOrder = chan.cols.map(c=>c[0]);
     // Team sees the client currently being viewed; a client sees only itself.
@@ -3794,6 +3892,7 @@ class Component extends DCLogic {
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand=['Logos · Colors · Rules','Brand Kit'];
+    if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
     const hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>sectionNow===k;
     // notifications
@@ -4287,6 +4386,113 @@ class Component extends DCLogic {
         .map(w=>[w.title||'', w.category||'',
           w.completedAt? new Date(w.completedAt).toISOString().slice(0,10) : '',
           (Number(w.hoursApproved)||0), w.desc||'', listOf(w.links), listOf(w.files)]));
+    // ===== content calendar =====
+    // The three channels need to be told apart, so their colours cannot come
+    // from the kit: a kit is free to set the same colour for its accent and its
+    // link, and Double Ops does, which collapsed all three dots to one red.
+    // These are a fixed categorical trio, stepped for the card behind them and
+    // checked for colour-blind separation rather than chosen by eye. Every dot
+    // is paired with a name in the legend and the item's own title, so channel
+    // is never carried by colour alone.
+    const cmCardDark = !isTeam && this.lum(this.brandOf(client).card) < 0.5;
+    const CH_HUES = cmCardDark
+      ? {social:'#16A34A', email:'#3B82F6', ads:'#D97706'}
+      : {social:'#1FB264', email:'#3B82F6', ads:'#E0A11B'};
+    const CH_META = {social:{label:'Social', color:CH_HUES.social},
+                     email: {label:'Email',  color:CH_HUES.email},
+                     ads:   {label:'Paid',   color:CH_HUES.ads}};
+    const DAYMS = 86400000;
+    const isoOf = dt => dt.toISOString().slice(0,10);
+    const utcOf = iso => new Date(iso+'T00:00:00Z');
+    const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const MONF = ['January','February','March','April','May','June','July',
+                  'August','September','October','November','December'];
+    const cmAll = (D.strategy||[]).filter(x=>x.clientId===client.id);
+    const cmDated = cmAll.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.scheduledFor||''));
+    const cmByDay = {};
+    cmDated.forEach(x=>{ (cmByDay[x.scheduledFor] = cmByDay[x.scheduledFor]||[]).push(x); });
+
+    const cmView   = S.cmView === 'week' ? 'week' : 'month';
+    const cmAnchor = /^\d{4}-\d{2}-\d{2}$/.test(S.cmAnchor||'') ? S.cmAnchor : todayIso;
+    const anchorD  = utcOf(cmAnchor);
+    // Weeks start on Sunday, which is what the date input and every other
+    // calendar this team looks at already does.
+    let cmStart, cmCount;
+    if(cmView === 'week'){
+      cmStart = new Date(anchorD.getTime() - anchorD.getUTCDay()*DAYMS);
+      cmCount = 7;
+    } else {
+      const first = new Date(Date.UTC(anchorD.getUTCFullYear(), anchorD.getUTCMonth(), 1));
+      const last  = new Date(Date.UTC(anchorD.getUTCFullYear(), anchorD.getUTCMonth()+1, 0));
+      cmStart = new Date(first.getTime() - first.getUTCDay()*DAYMS);
+      const end = new Date(last.getTime() + (6-last.getUTCDay())*DAYMS);
+      cmCount = Math.round((end-cmStart)/DAYMS)+1;
+    }
+    const perCell = cmView === 'week' ? 6 : 3;
+    const cmDays = [];
+    for(let i=0;i<cmCount;i++){
+      const dt = new Date(cmStart.getTime()+i*DAYMS);
+      const iso = isoOf(dt);
+      const items = (cmByDay[iso]||[]).slice()
+        .sort((a,b)=>String(a.channel).localeCompare(String(b.channel)));
+      const outside = cmView==='month' && dt.getUTCMonth() !== anchorD.getUTCMonth();
+      const isToday = iso === todayIso;
+      cmDays.push({
+        num: dt.getUTCDate(),
+        isToday,
+        dayStyle:{minHeight: cmView==='week'?190:96, border:'1px solid var(--border-hairline)',
+          borderRadius:10, padding:'7px 8px', display:'flex', flexDirection:'column', gap:4,
+          background: isToday ? 'var(--gray-100)' : 'transparent',
+          opacity: outside ? .45 : 1},
+        numStyle:{fontSize:11, fontWeight: isToday?700:600,
+          color: isToday ? 'var(--navy)' : 'var(--text-muted)'},
+        items: items.slice(0,perCell).map(x=>{
+          const meta = CH_META[x.channel] || {label:'Other', color:'var(--gray-400)'};
+          return {title:x.title, channel:meta.label, open:openDetail('strategy',x.id),
+            dotStyle:{width:7,height:7,minWidth:7,borderRadius:999,background:meta.color},
+            style:{display:'flex',alignItems:'center',gap:5,width:'100%',textAlign:'left',
+              background:'transparent',border:'none',padding:'2px 0',cursor:'pointer',
+              fontSize:11.5,color:'var(--text-body)',fontFamily:'var(--font-body)',
+              overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}};
+        }),
+        more: items.length>perCell ? '+'+(items.length-perCell)+' more' : '',
+        hasMore: items.length>perCell
+      });
+    }
+    const stepMonth = n => () => {
+      const d = utcOf(cmAnchor);
+      this.setState({cmAnchor: isoOf(cmView==='week'
+        ? new Date(d.getTime()+n*7*DAYMS)
+        : new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth()+n, 1)))});
+    };
+    const weekEnd = new Date(cmStart.getTime()+6*DAYMS);
+    const cmPeriod = cmView==='week'
+      ? MON3[cmStart.getUTCMonth()]+' '+cmStart.getUTCDate()+' to '+
+        MON3[weekEnd.getUTCMonth()]+' '+weekEnd.getUTCDate()+', '+weekEnd.getUTCFullYear()
+      : MONF[anchorD.getUTCMonth()]+' '+anchorD.getUTCFullYear();
+
+    // Last and next for the two channels that run as campaigns; for paid the
+    // useful question is not when something ran but what is running now.
+    const cmSorted = id => cmDated.filter(x=>x.channel===id)
+      .sort((a,b)=>a.scheduledFor.localeCompare(b.scheduledFor));
+    const niceDay = iso => { const d=utcOf(iso);
+      return MON3[d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear(); };
+    const cmSummaries = [['social','Social Media'],['email','Emails']].map(([id,label])=>{
+      const rows = cmSorted(id);
+      const past = rows.filter(x=>x.scheduledFor<=todayIso);
+      const last = past[past.length-1] || null;
+      const next = rows.find(x=>x.scheduledFor>todayIso) || null;
+      return {label, dotStyle:{width:9,height:9,minWidth:9,borderRadius:999,background:CH_META[id].color},
+        hasLast:!!last, lastTitle:last?last.title:'', lastWhen:last?niceDay(last.scheduledFor):'',
+        lastOpen:last?openDetail('strategy',last.id):(()=>{}),
+        hasNext:!!next, nextTitle:next?next.title:'', nextWhen:next?niceDay(next.scheduledFor):'',
+        nextOpen:next?openDetail('strategy',next.id):(()=>{}),
+        empty: !last && !next};
+    });
+    const cmLive = cmAll.filter(x=>x.channel==='ads' && x.status==='live').map(x=>({
+      title:x.title, when: x.scheduledFor? 'Since '+niceDay(x.scheduledFor) : 'No start date',
+      open:openDetail('strategy',x.id)}));
+
     let dv={detailOpen:false};
     if(S.detail){
       const ty=S.detail.type;
@@ -5471,9 +5677,24 @@ class Component extends DCLogic {
       secTeam: isTeam&&secKey('team'),
       secStrategy: !isTeam&&secKey('strategy'),
       stratCols, stratChannel: chan.label,
-      channelTabs: CHANNELS.map(ch=>({label:ch.label,
+      cmOverview, cmBoard:!cmOverview,
+      cmDays, cmPeriod, cmSummaries, cmLive, cmNoLive:cmLive.length===0,
+      cmWeekdays:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(n=>({n})),
+      cmGridStyle:{display:'grid',gridTemplateColumns:'repeat(7,minmax(0,1fr))',gap:6},
+      cmPrev:stepMonth(-1), cmNext:stepMonth(1),
+      cmToday:()=>this.setState({cmAnchor:todayIso}),
+      cmMonthStyle:pillStyle(cmView==='month'), cmWeekStyle:pillStyle(cmView==='week'),
+      cmSetMonth:()=>this.setState({cmView:'month'}), cmSetWeek:()=>this.setState({cmView:'week'}),
+      cmPaidDot:{width:9,height:9,minWidth:9,borderRadius:999,background:CH_HUES.ads},
+      cmLegend:Object.keys(CH_META).map(k=>({label:CH_META[k].label,
+        dotStyle:{width:8,height:8,minWidth:8,borderRadius:999,background:CH_META[k].color}})),
+      cmNavStyle:{background:'transparent',border:'1px solid var(--gray-200)',borderRadius:10,
+        color:'var(--text-body)',width:30,height:30,cursor:'pointer',fontSize:13,lineHeight:1,padding:0},
+      channelTabs: [{label:'Overview',
+        select:()=>this.setState({channel:'overview'}),
+        style:pillStyle(cmOverview)}].concat(CHANNELS.map(ch=>({label:ch.label,
         select:()=>this.setState({channel:ch.id}),
-        style:pillStyle(chanId===ch.id)})),
+        style:pillStyle(!cmOverview && chanId===ch.id)}))),
       // Adding a card (team only)
       dStratTitle:d.stTitle||'', onStratTitle:this.draft('stTitle'),
       dStratBody:d.stBody||'', onStratBody:this.draft('stBody'),
