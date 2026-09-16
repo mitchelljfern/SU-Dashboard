@@ -216,8 +216,17 @@ misbehaves after a cal.com change, the `sandbox` attribute is the first thing
 to widen.
 
 Only one frame is ever in the page: sections render conditionally, so the
-dashboard copy and the tab copy never both exist, and cal.com is not contacted
-at all until a client opens one of them.
+dashboard copy and the tab copy never both exist.
+
+On the dashboard the frame now waits for a click. cal.com focuses a control as
+soon as it is ready, and a browser scrolls whatever has focus into view, so
+merely having the embed down there dragged the dashboard to the bottom of
+itself a few seconds after it opened. `loading="lazy"` did not help: the card
+sits inside the browser's load margin, so the frame mounted anyway. Pressing
+"Pick a time" loads it in place, which also means cal.com is not contacted at
+all for the many clients who never book. The Schedule Call tab still embeds it
+directly, where the calendar is the point of the page and there is nothing to
+scroll past.
 
 ## Taking work elsewhere
 
@@ -434,17 +443,22 @@ it is on a desktop. Laid out as a row it had kept the column's full-width rows,
 stretching to the height of the panel and wrapping company names onto three
 lines, so the list of companies took the screen and the thread had none of it.
 
-## Booking a call
+## Files under Brand Kit
 
-The dashboard's booking panel waits for a click before it mounts the cal.com
-frame. cal.com focuses a control as soon as it is ready and a browser scrolls
-whatever has focus into view, so simply having the embed on the page dragged
-the dashboard to the bottom of itself a few seconds after it opened.
-`loading="lazy"` did not help, because the card sits inside the browser's load
-margin and the frame mounted anyway. Clicking "Pick a time" loads it in place,
-which also keeps a third-party frame off the dashboard entirely for everyone
-who never books. The Schedule Call tab still embeds it directly, where the
-calendar is the point of the page and there is nothing to scroll past.
+In the portal, Files is a child of Brand Kit rather than a tab of its own: both
+hold the client's own material, and Files sat a tab away from the kit it
+belongs to. The parent takes a disclosure arrow, expands while either board is
+open, and stays lit when the child is the one showing, which is how Strategy
+already opened into its channels. The difference is that Strategy's children
+are one board filtered three ways, while this child is a section of its own and
+carries its own id.
+
+`SUBNAV` holds the parent-to-children map and `navFlat` is the same nav with
+the children folded back in. The phone's More sheet and the tab bar's label
+lookup read the flat list, because a nested board that exists only in the
+sidebar cannot be opened on a phone at all.
+
+Staff have no Files board, so `SUBNAV` is empty for them.
 
 ## Sorting and filtering the Overview
 
