@@ -438,11 +438,11 @@
     if (!file) throw new Error('No file was selected.');
     if (!clientId) throw new Error('A brand file needs a client to belong to.');
     if (BRAND_MIME.indexOf(file.type) < 0) {
-      throw new Error('"' + file.name + '" is not an image we can use — PNG, JPG, SVG, WEBP or GIF.');
+      throw new Error('"' + file.name + '" is not an image we can use. Try PNG, JPG, SVG, WEBP or GIF.');
     }
     if (file.size > MAX_BRAND_BYTES) {
       throw new Error('"' + file.name + '" is ' + (file.size / 1048576).toFixed(1) +
-        ' MB. Brand files stop at 2 MB — export it smaller and try again.');
+        ' MB. Brand files stop at 2 MB, so export it smaller and try again.');
     }
     const path = clientId + '/' + objectKey(file.name);
     const { error } = await client().storage.from(BRAND_BUCKET)

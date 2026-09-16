@@ -475,7 +475,7 @@
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                   <span style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ c.who }} · {{ c.when }}</span>
                   <span style="flex:1"></span>
-                  <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen — on it</span></sc-if>
+                  <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen, on it</span></sc-if>
                   <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
                   <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:22px;height:22px;min-width:22px;padding:0;color:var(--text-muted);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="border-color:#D8564E;color:#a8352d;background:#FDECEA">×</button></sc-if>
                   <sc-if value="{{ c.confirming }}" hint-placeholder-val="{{ false }}">
@@ -489,7 +489,7 @@
             </sc-for>
             <sc-if value="{{ noDetailComments }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted);padding:4px 0">No comments yet.</div></sc-if>
             <div style="display:flex;gap:8px;margin-top:10px;align-items:flex-end;flex-wrap:wrap">
-              <textarea value="{{ dComment }}" onChange="{{ onComment }}" onKeyDown="{{ onCommentKey }}" placeholder="Add a comment — Enter for a new line" rows="2" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;font-family:var(--font-body);line-height:1.5"></textarea>
+              <textarea value="{{ dComment }}" onChange="{{ onComment }}" onKeyDown="{{ onCommentKey }}" placeholder="Add a comment. Enter for a new line" rows="2" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;font-family:var(--font-body);line-height:1.5"></textarea>
               <button onClick="{{ sendComment }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
             </div>
           </div>
@@ -617,7 +617,7 @@
               <div style="font-size:13px;color:var(--text-muted)">Opening…</div>
             </sc-if>
             <sc-if value="{{ previewError }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6">This attachment has no stored file.<br>It was added before uploads were supported — ask for it to be attached again.</div>
+              <div style="font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6">This attachment has no stored file.<br>It was added before uploads were supported. Ask for it to be attached again.</div>
             </sc-if>
             <sc-if value="{{ previewImage }}" hint-placeholder-val="{{ true }}">
               <img sc-camel-src="{{ previewUrl }}" alt="{{ previewName }}" style="max-width:100%;max-height:74vh;object-fit:contain;display:block;border-radius:8px">
@@ -827,7 +827,7 @@
               <sc-for list="{{ lastMsgs }}" as="lm" hint-placeholder-count="2">
                 <button onClick="{{ lm.open }}" style="text-align:left;background:none;border:none;border-bottom:1px solid var(--border-hairline);padding:9px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;width:100%" style-hover="background:var(--gray-100)">
                   <div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--text-muted)">
-                    <span style="{{ lm.dot }}"></span>{{ lm.name }} — {{ lm.who }} · {{ lm.when }}
+                    <span style="{{ lm.dot }}"></span>{{ lm.name }} · {{ lm.who }} · {{ lm.when }}
                   </div>
                   <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ lm.text }}</div>
                 </button>
@@ -1010,7 +1010,7 @@
               <div style="font-size:12px;color:var(--text-muted)">Extra brands run under the same umbrella account, so one login covers them all.</div>
             </div>
             <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:12px">
-              <div style="font-size:12px;color:var(--text-muted)">Optional — create the client's portal login now.</div>
+              <div style="font-size:12px;color:var(--text-muted)">Optional. Create the client's portal login now.</div>
               <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
                 <input value="{{ dNewClientContact }}" onChange="{{ onNewClientContact }}" placeholder="Contact name" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                 <input value="{{ dNewClientEmail }}" onChange="{{ onNewClientEmail }}" placeholder="chris@doubleops.com" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
@@ -1050,7 +1050,7 @@
                         <option value="retainer">Monthly plan</option><option value="hourly">Hourly</option>
                       </select></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label><input value="{{ ecHourlyRate }}" onChange="{{ onEcHourlyRate }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
-                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours used this month</label><div style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--text-muted);background:var(--gray-100)">{{ ecHoursUsedLabel }}</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Counted from approved work — not set by hand.</div></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours used this month</label><div style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--text-muted);background:var(--gray-100)">{{ ecHoursUsedLabel }}</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Counted from approved work, not set by hand.</div></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label><input value="{{ ecHoursTotal }}" onChange="{{ onEcHoursTotal }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                   </div>
                   <div style="display:flex;flex-direction:column;gap:4px">
@@ -1444,7 +1444,7 @@
             </sc-for>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link — Drive, Dropbox, anywhere" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
+            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link (Drive, Dropbox, anywhere)" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
             <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
           </div>
           <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="1">
@@ -1485,7 +1485,12 @@
             </div>
             <button onClick="{{ goSchedule }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Full page →</button>
           </div>
+          <sc-if value="{{ calClosed }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ openCal }}" style="margin:22px 24px 24px;align-self:flex-start;background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Pick a time</button>
+          </sc-if>
+          <sc-if value="{{ calOpen }}" hint-placeholder-val="{{ false }}">
           <iframe sc-camel-src="{{ calUrl }}" height="700" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" title="Book a call with Social Upgrades" style="width:100%;border:none;display:block;background:var(--surface-card)"></iframe>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -1506,9 +1511,9 @@
               <sc-for list="{{ repTiles }}" as="t" hint-placeholder-count="4">
                 <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
                   <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Tile {{ t.n }}</div>
-                  <input value="{{ t.dLabel }}" onChange="{{ t.onLabel }}" placeholder="Label — e.g. Sessions" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
-                  <input value="{{ t.dValue }}" onChange="{{ t.onValue }}" placeholder="Value — e.g. 12.4K" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
-                  <input value="{{ t.dDelta }}" onChange="{{ t.onDelta }}" placeholder="Change — e.g. +18% vs Jul" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <input value="{{ t.dLabel }}" onChange="{{ t.onLabel }}" placeholder="Label, e.g. Sessions" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <input value="{{ t.dValue }}" onChange="{{ t.onValue }}" placeholder="Value, e.g. 12.4K" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
+                  <input value="{{ t.dDelta }}" onChange="{{ t.onDelta }}" placeholder="Change, e.g. +18% vs Jul" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
                   <select value="{{ t.dUp }}" onChange="{{ t.onUp }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
                     <option value="up">Good news</option>
                     <option value="down">Bad news</option>
@@ -2255,7 +2260,7 @@
                   </div>
                   <div style="display:flex;flex-direction:column;gap:5px">
                     <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What this covers</label>
-                    <textarea value="{{ niNote }}" onChange="{{ onNiNote }}" placeholder="The work this invoice is for — the client reads this inside the card" rows="2" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6;resize:vertical;font-family:var(--font-body)"></textarea>
+                    <textarea value="{{ niNote }}" onChange="{{ onNiNote }}" placeholder="The work this invoice is for. The client reads this inside the card" rows="2" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.6;resize:vertical;font-family:var(--font-body)"></textarea>
                   </div>
                   <button onClick="{{ invAdd }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add invoice</button>
                 </div>
@@ -2423,7 +2428,7 @@
       <sc-if value="{{ pRequests }}" hint-placeholder-val="{{ false }}">
         <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Request work</h3>
-          <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time — everything else waits in your queue.</div>
+          <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time. Everything else waits in your queue.</div>
           <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
             <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
           </select>
@@ -2443,7 +2448,7 @@
           </div>
           <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
             <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</label>
-            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Attach files directly, or paste a share link from wherever they already live — Google Drive, Dropbox, WeTransfer, Figma, anywhere.</div>
+            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Attach files directly, or paste a share link from wherever they already live: Google Drive, Dropbox, WeTransfer, Figma, anywhere.</div>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
               <label style="border:1px solid var(--gray-200);background:var(--surface-card);border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
               <span style="font-size:12px;color:var(--text-muted)">Up to 50 MB a file</span>
@@ -2835,7 +2840,7 @@
           <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
             <span style="width:8px;height:8px;background:{{ brandAccent }}"></span>
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Colors</h3>
-            <span style="font-size:11.5px;color:var(--text-muted)">Click a swatch to change it — the portal re-skins straight away</span>
+            <span style="font-size:11.5px;color:var(--text-muted)">Click a swatch to change it and the portal re-skins straight away</span>
             <span style="flex:1"></span>
             <button onClick="{{ applyLight }}" style="{{ presetBtnStyle }}">Light background</button>
             <button onClick="{{ applyDark }}" style="{{ presetBtnStyle }}">Dark background</button>
@@ -2949,7 +2954,7 @@
               <span style="{{ ruleSwatchStyle }}"></span>
               <div style="display:flex;flex-direction:column;gap:3px;min-width:0;flex:1">
                 <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy);text-transform:uppercase">{{ brandAccent }}</div>
-                <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Accent color — the only highlight on the page</div>
+                <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Accent color, the only highlight on the page</div>
               </div>
               <button onClick="{{ copyAccent }}" style="{{ accentCopyStyle }}">{{ accentCopyLabel }}</button>
             </div>
@@ -2966,7 +2971,7 @@
         </div>
 
         <sc-if value="{{ brandTeamNote }}" hint-placeholder-val="{{ true }}">
-          <div style="font-size:12px;color:var(--text-muted);line-height:1.6">You're editing <strong style="color:var(--navy)">{{ brandName }}</strong>'s kit. Switch clients with the portal picker in the sidebar — each client keeps their own logos, colors and type.</div>
+          <div style="font-size:12px;color:var(--text-muted);line-height:1.6">You're editing <strong style="color:var(--navy)">{{ brandName }}</strong>'s kit. Switch clients with the portal picker in the sidebar. Each client keeps their own logos, colors and type.</div>
         </sc-if>
       </sc-if>
     </div>
@@ -3100,7 +3105,7 @@ class Component extends DCLogic {
       const denied = err && (err.code==='42501' || /row-level security|permission/i.test(err.message||''));
       this.setState({syncError: denied
         ? 'That change was not allowed for your account.'
-        : 'Could not save. Check your connection — we will retry on your next change.'});
+        : 'Could not save. Check your connection. We will retry on your next change.'});
     });
   }
   set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
@@ -3512,7 +3517,7 @@ class Component extends DCLogic {
       return ok;
     };
     const copyText = (text, what) => {
-      const done = ()=>this.setState({flash:what+' copied — paste it into Asana, Trello, Jira, anywhere.'});
+      const done = ()=>this.setState({flash:what+' copied. Paste it into Asana, Trello, Jira, anywhere.'});
       const failed = ()=>this.setState({syncError:'Could not copy to the clipboard. Your browser may be blocking it.'});
       if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(text).then(done, ()=>{ copyFallback(text)? done() : failed(); });
@@ -3545,7 +3550,7 @@ class Component extends DCLogic {
       const notes = it.feedback || it.comments || [];
       if(notes.length){
         L.push('## Comments');
-        notes.forEach(c=>L.push('- **'+(c.who||c.name||'—')+'**'+(c.ts?' ('+niceDate(new Date(c.ts).toISOString().slice(0,10))+')':'')+': '+(c.text||'')));
+        notes.forEach(c=>L.push('- **'+(c.who||c.name||'Unknown')+'**'+(c.ts?' ('+niceDate(new Date(c.ts).toISOString().slice(0,10))+')':'')+': '+(c.text||'')));
         L.push('');
       }
       return L.join('\n').trim();
@@ -3990,7 +3995,7 @@ class Component extends DCLogic {
         barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
         openWork:liveWork.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
         pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
-        pulse:avg?avg.toFixed(1):'—', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
+        pulse:avg?avg.toFixed(1):'-', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
         activeTitle:act?act.title:'Nothing in progress',
         openPortal:()=>this.setState({role:'client',viewClient:c.id,section:'home',notifOpen:false})};
     });
@@ -4140,7 +4145,7 @@ class Component extends DCLogic {
     const whoWorked = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?(m.name||m.email):''; };
     const mkTimeRow = t=>({
       date:t.entryDate, hours:Number(t.hours||0).toFixed(2),
-      desc:t.description||'—', who:whoWorked(t.profileId),
+      desc:t.description||'-', who:whoWorked(t.profileId),
       clientName:cname(t.clientId),dot:clientDot(t.clientId),
       billable:t.billable!==false, tag:t.billable===false?'Non-billable':'',
       remove:()=>this.set(x=>{ x.time=x.time.filter(y=>y.id!==t.id); return x; })
@@ -4218,7 +4223,7 @@ class Component extends DCLogic {
     const completedWork=liveWork.filter(w=>w.clientId===client.id&&w.status==='done')
       .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
       .map(w=>({title:w.title,
-        completed: w.completedAt? new Date(w.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—',
+        completed: w.completedAt? new Date(w.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '-',
         ago: w.completedAt? this.fmt(w.completedAt) : '',
         cat:w.category||'', hasCat:!!w.category,
         commentsLabel:cLabel((w.comments||[]).length),
@@ -4340,7 +4345,7 @@ class Component extends DCLogic {
           descDirty: d.detailDesc!==undefined && d.detailDesc!==storedDesc,
           descPlaceholder: ty==='request'
             ? 'What needs doing, and anything useful about it.'
-            : 'Explain this card — what it covers, and anything worth knowing.',
+            : 'Explain this card: what it covers, and anything worth knowing.',
           onDetailDesc: this.draft('detailDesc'),
           resetDetailDesc: ()=>this.setState(s2=>({d:{...s2.d,detailDesc:undefined}})),
           saveDetailDesc: ()=>{
@@ -4480,7 +4485,7 @@ class Component extends DCLogic {
           detailComments:list.map((c,i)=>{
             const key=c.id||('at-'+i);
             const confirming=S.delComment===key;
-            return {who:c.who||c.name||'—', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
+            return {who:c.who||c.name||'Unknown', when:c.ts?this.fmt(c.ts):'', text:c.text, acked:!!c.ack,
             showAck:isTeam&&c.from!=='team'&&!c.ack&&!confirming,
             ack:()=>this.set(x=>{ const it=findIt(x); const L=(it[listKey]=it[listKey]||[]); if(L[i]) L[i].ack=true; this.logEv(x,item.clientId,'Team acknowledged a comment'); return x; }),
             canDelete: (isTeam || (!!c.by && c.by===me.id)) && !confirming,
@@ -4518,7 +4523,7 @@ class Component extends DCLogic {
       if(inv){
         const findInv=x=>x.invoices.find(y=>y.id===inv.id);
         const method=inv.method||'Stripe';
-        const facts=[{label:'Issued',value:invDateOf(inv)||'—'}];
+        const facts=[{label:'Issued',value:invDateOf(inv)||'-'}];
         if(inv.dueDate) facts.push({label:'Due',value:dayLabel(inv.dueDate)});
         facts.push({label:'Billed to',value:cname(inv.clientId)});
         facts.push({label:'Paid by',value:method});
@@ -4581,7 +4586,7 @@ class Component extends DCLogic {
                   +(r.url? '\n'+r.url : ''), ts:Date.now()});
               this.logEv(x,r.clientId,'Invoice '+(r.num||'')+' sent to '+to+' ('+invMoney(r.amount)+')');
               return x; });
-            this.setState({flash:'Invoice sent to '+to+' — it is on their message board and in their Billing tab.'}); },
+            this.setState({flash:'Invoice sent to '+to+'. It is on their message board and in their Billing tab.'}); },
           // The client's own mail client, for anyone who would rather send it
           // that way. Nothing here can send mail on its own.
           invMailto:'mailto:'+invMailTo(inv.clientId)
@@ -4671,13 +4676,13 @@ class Component extends DCLogic {
           barStyle:{width:'100%', maxWidth:64, height:v?Math.max(pct,2)+'%':'2px',
             background:v?'var(--green)':'var(--gray-200)',
             borderRadius:v?'4px 4px 0 0':'2px', transition:'height .18s ease'},
-          title:label(k)+' '+k.slice(0,4)+' — '+(v?invMoney(v):'nothing received')+
+          title:label(k)+' '+k.slice(0,4)+': '+(v?invMoney(v):'nothing received')+
             (c?(' from '+c+(c===1?' payment':' payments')):'')};
       });
       const total=window_.reduce((s,k)=>s+(sums[k]||0),0);
       invMonthsTotal=invMoney(total);
       invMonthsAvg=invMoney(Math.round(total/window_.length));
-      invMonthsRange=label(window_[0])+' '+window_[0].slice(0,4)+' – '+
+      invMonthsRange=label(window_[0])+' '+window_[0].slice(0,4)+' to '+
         label(window_[window_.length-1])+' '+window_[window_.length-1].slice(0,4);
     }
 
@@ -4706,7 +4711,7 @@ class Component extends DCLogic {
     const ovMatch = it => (ovClient==='all' || it.clientId===ovClient)
                        && (ovCat==='all'    || String(it.category||'')===ovCat);
     const OV_SORTS = [['manual','Manual order'],['newest','Newest first'],
-      ['oldest','Oldest first'],['az','Title A–Z'],['client','By client']];
+      ['oldest','Oldest first'],['az','Title A to Z'],['client','By client']];
     const ovSortOf = key => S['ovSort'+key] || (key==='Appr' ? 'newest' : 'manual');
     // Manual position can only be written when the column on screen is the
     // whole column: moveCard renumbers exactly the cards it is handed, so
@@ -4800,7 +4805,7 @@ class Component extends DCLogic {
         // Handing an item to the client is the common move, so it does not
         // need a trip to the Workboard.
         canSubmit: true,
-        submitNote: willCount? ('Sends it to the client to approve — '+willCount+(Number(w.actualHours)?' hours recorded.':' hours estimated.'))
+        submitNote: willCount? ('Sends it to the client to approve. '+willCount+(Number(w.actualHours)?' hours recorded.':' hours estimated.'))
                              : 'Sends it to the client to approve. No hours recorded yet.',
         submit: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
           it.status='review'; it.approvalRequestedAt=Date.now();
@@ -4994,7 +4999,7 @@ class Component extends DCLogic {
 
     const mkPayRow = p=>({
       id:p.id,
-      who: memberName(p.profileId) || '—',
+      who: memberName(p.profileId) || '-',
       kind: KIND_LABEL[p.kind]||'Hours',
       isHoursKind: p.kind==='hours',
       isFlatKind: p.kind!=='hours',
@@ -5149,7 +5154,7 @@ class Component extends DCLogic {
     const brandWarnings = CHECKS.map(([label,fg,bg,min])=>{
       const ratio = this.contrast(B[fg], B[bg]);
       if(ratio >= min) return null;
-      return {text: label+' — '+ratio.toFixed(1)+':1 against '+
+      return {text: label+': '+ratio.toFixed(1)+':1 against '+
         (bg==='card'?'the cards':'the page background')+'. Aim for '+min+':1 or more.'};
     }).filter(Boolean);
 
@@ -5300,7 +5305,7 @@ class Component extends DCLogic {
       secBrand: secKey('brand'), brandBusy: !!S.brandBusy, brandTeamNote: isTeam,
       brandName, brandAccent:B.accent, brandWordmark,
       brandDisplayFont:B.displayFont, brandBodyFont:B.bodyFont,
-      brandBlurb:'Everything saved here runs the portal — the sidebar, buttons, links, headings and type all follow this kit the moment it changes.',
+      brandBlurb:'Everything saved here runs the portal: the sidebar, buttons, links, headings and type all follow this kit the moment it changes.',
       brandHasLogo:!!B.logoDark, brandNoLogo:!B.logoDark,
       brandLogoStyle: B.logoDark ? art(B.logoDark,{height:54,width:'100%',maxWidth:206,
         backgroundPosition:'left center',alignSelf:'flex-start'}) : {},
@@ -5451,7 +5456,7 @@ class Component extends DCLogic {
         const bh=rows.filter(t=>t.billable!==false).reduce((s,t)=>s+Number(t.hours||0),0);
         return {name:c.name, dot:clientDot(c.id), hours:bh.toFixed(2),
           rate:c.billingType==='hourly'?money(c.hourlyRate)+'/hr':(c.plan||'Plan'),
-          value:c.billingType==='hourly'?money(bh*Number(c.hourlyRate||0)):'—',
+          value:c.billingType==='hourly'?money(bh*Number(c.hourlyRate||0)):'-',
           open:()=>this.setState({viewClient:c.id,msgClient:c.id})};
       }),
       recentTime: (D.time||[]).slice(0,40).map(mkTimeRow),
@@ -5773,7 +5778,8 @@ class Component extends DCLogic {
       tdToggleAll:()=>this.setState(s2=>({tdAll:!s2.tdAll,todoEdit:null,todoDel:null})),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
-      pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL, pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
+      pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL,
+      calOpen:!!S.calOpen, calClosed:!S.calOpen, openCal:()=>this.setState({calOpen:true}), pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
@@ -5833,7 +5839,7 @@ class Component extends DCLogic {
       thread, threadName:isTeam?cname(msgCid):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
       onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
       portalUpdates, dFeedback:d.feedback||'', onFeedback:this.draft('feedback'),
-      pulsePrompt:rated?'Thanks — your rating is in for '+month+'.':'Rate '+month+' from 1–5. It goes straight to the team.',
+      pulsePrompt:rated?'Thanks, your rating is in for '+month+'.':'Rate '+month+' from 1 to 5. It goes straight to the team.',
       pulseBtns:rated?[]:pulseBtns,
       dReqTitle:d.reqTitle||'', onReqTitle:this.draft('reqTitle'), dReqDesc:d.reqDesc||'', onReqDesc:this.draft('reqDesc'),
       dReqUrgency:d.reqUrgency||'Normal', onReqUrgency:this.draft('reqUrgency'),

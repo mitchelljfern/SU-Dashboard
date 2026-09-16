@@ -434,6 +434,18 @@ it is on a desktop. Laid out as a row it had kept the column's full-width rows,
 stretching to the height of the panel and wrapping company names onto three
 lines, so the list of companies took the screen and the thread had none of it.
 
+## Booking a call
+
+The dashboard's booking panel waits for a click before it mounts the cal.com
+frame. cal.com focuses a control as soon as it is ready and a browser scrolls
+whatever has focus into view, so simply having the embed on the page dragged
+the dashboard to the bottom of itself a few seconds after it opened.
+`loading="lazy"` did not help, because the card sits inside the browser's load
+margin and the frame mounted anyway. Clicking "Pick a time" loads it in place,
+which also keeps a third-party frame off the dashboard entirely for everyone
+who never books. The Schedule Call tab still embeds it directly, where the
+calendar is the point of the page and there is nothing to scroll past.
+
 ## Sorting and filtering the Overview
 
 The Overview carries a filter bar over all four columns and a sort menu in each
