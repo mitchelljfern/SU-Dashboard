@@ -3269,6 +3269,23 @@ class Component extends DCLogic {
     const x=this.relLum(a), y=this.relLum(b);
     return (Math.max(x,y)+0.05) / (Math.min(x,y)+0.05);
   }
+  // Natural proportions of an image, cached per URL. Returns 0 until the
+  // browser has it, then re-renders once; the cache is what stops that from
+  // looping, since the second call answers from memory.
+  logoRatio(src){
+    if(!src || typeof Image !== 'function') return 0;
+    this._ratios = this._ratios || {};
+    if(this._ratios[src] !== undefined) return this._ratios[src];
+    this._ratios[src] = 0;
+    const im = new Image();
+    im.onload = ()=>{
+      const r = (im.naturalWidth && im.naturalHeight) ? im.naturalWidth/im.naturalHeight : 0;
+      if(r && r !== this._ratios[src]){ this._ratios[src] = r; this.forceUpdate(); }
+    };
+    im.onerror = ()=>{ this._ratios[src] = 0; };
+    im.src = src;
+    return 0;
+  }
   copyText(id,text){
     return ()=>{
       try{
@@ -5344,8 +5361,12 @@ class Component extends DCLogic {
     }
     const topLogoSrc  = isTeam ? 'assets/logo-on-dark.svg' : (B.logoDark||'');
     const hasTopLogo  = !!topLogoSrc;
-    const topLogoStyle= hasTopLogo ? art(topLogoSrc,{height:44,width:'100%',maxWidth:188,
-      backgroundPosition:'left center',alignSelf:'flex-start'}) : {};
+    // Until the file has been measured it holds a wide, flat box, which is the
+    // shape most wordmarks are, so the nav does not jump when the real one lands.
+    const topRatio = this.logoRatio(topLogoSrc);
+    const topLogoStyle= hasTopLogo ? art(topLogoSrc,{width:'100%',alignSelf:'stretch',
+      aspectRatio: String(topRatio || 3.4), maxHeight:240,
+      backgroundPosition:'left center'}) : {};
 
     const brandVals = {
       rootStyle, hasTopLogo, noTopLogo:!hasTopLogo,
@@ -5359,8 +5380,10 @@ class Component extends DCLogic {
       brandDisplayFont:B.displayFont, brandBodyFont:B.bodyFont,
       brandBlurb:'Everything saved here runs the portal: the sidebar, buttons, links, headings and type all follow this kit the moment it changes.',
       brandHasLogo:!!B.logoDark, brandNoLogo:!B.logoDark,
-      brandLogoStyle: B.logoDark ? art(B.logoDark,{height:54,width:'100%',maxWidth:206,
-        backgroundPosition:'left center',alignSelf:'flex-start'}) : {},
+      // The kit's preview is a picture of the sidebar, so it sizes the same way.
+      brandLogoStyle: B.logoDark ? art(B.logoDark,{width:'100%',alignSelf:'stretch',
+        aspectRatio: String(this.logoRatio(B.logoDark) || 3.4), maxHeight:240,
+        backgroundPosition:'left center'}) : {},
       brandPlateStyle:{background:B.primary,padding:'26px 24px',display:'flex',flexDirection:'column',
         gap:16,justifyContent:'space-between',minHeight:152},
       brandWordmarkStyle:{fontFamily:"'"+B.displayFont+"',sans-serif",fontWeight:800,fontSize:23,
