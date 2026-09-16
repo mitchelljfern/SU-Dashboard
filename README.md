@@ -434,6 +434,35 @@ it is on a desktop. Laid out as a row it had kept the column's full-width rows,
 stretching to the height of the panel and wrapping company names onto three
 lines, so the list of companies took the screen and the thread had none of it.
 
+## Sorting and filtering the Overview
+
+The Overview carries a filter bar over all four columns and a sort menu in each
+column header. Filtering by client or category narrows every column at once — a
+client is a client wherever their work has got to — while sort is per column,
+because "oldest first" means something different in a queue than it does in a
+list of requests waiting on us.
+
+Offered categories are the ones the work actually carries as well as the
+standard list, so a category typed before it was standard is still filterable
+and one nobody uses does not clutter the menu.
+
+The up/down arrows disappear while a column is sorted or filtered, and that is
+deliberate rather than cosmetic: `moveCard` renumbers exactly the cards it is
+handed, so reordering a filtered subset would write positions that collide with
+the cards hidden from it. Hand-ordering is only offered when the column on
+screen is the whole column.
+
+## Card widths
+
+Cards are `width:100%` with padding on top, and nothing in the app set
+`box-sizing`, so each one rendered its padding and border wider than the column
+holding it — which is why the Queued cards sat on top of the Open requests ones
+on both dashboards. Two rules in the helmet fix it: `box-sizing:border-box`
+inside the dashboard grids, and `min-width:0` on their columns, since a grid
+item defaults to `min-width:auto` and will not shrink below its content. Card
+titles may also break mid-word, because a pasted URL is the usual reason a card
+refuses to shrink.
+
 ## Paid by month
 
 The invoicing board carries a column chart of what each client has actually
