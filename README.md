@@ -434,6 +434,25 @@ it is on a desktop. Laid out as a row it had kept the column's full-width rows,
 stretching to the height of the panel and wrapping company names onto three
 lines, so the list of companies took the screen and the thread had none of it.
 
+## Paid by month
+
+The invoicing board carries a column chart of what each client has actually
+paid, bucketed by the day the money landed rather than the day the invoice was
+raised. A paid invoice from before `paidOn` existed has only its issue date, so
+that stands in instead of dropping the row out of the total.
+
+Every month between the first payment and the last is drawn, including the ones
+with nothing in them — skipping an empty month would redraw a quiet stretch as
+a busy one — and the window is capped at the most recent twelve so a long
+history stays readable.
+
+Each bar is labelled with its own figure, so there is no second axis to read
+against and the fill never has to carry a value on its own. That is deliberate:
+the brand green sits at 2.69:1 against a white card, which is under the 3:1 a
+mark needs to be read unaided, so the values are written on the chart and the
+invoice list underneath is the table view. On a narrow screen the bar labels
+drop out and that list is what carries the figures.
+
 ## Brand kit
 
 Every client has a kit — logos, colours, type, photography and a short voice

@@ -146,6 +146,8 @@
     ::placeholder{color:var(--gray-400)}
     .su-bottom{display:none}
     .su-grid2>*,.su-half>*,.su-bill>*,.su-cols>*{min-width:0}
+    .su-barval{white-space:nowrap}
+    @media (max-width:700px){ .su-barval{display:none} }
     @media (max-width:860px){
       .su-side{display:none !important}
       .su-bottom{display:flex !important}
@@ -2223,6 +2225,40 @@
                   </div>
                   <button onClick="{{ invAdd }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add invoice</button>
                 </div>
+
+                <sc-if value="{{ invMonthsShow }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:18px;border-radius:12px">
+                    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                      <div style="display:flex;flex-direction:column;gap:3px">
+                        <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Paid by month</h3>
+                        <div style="font-size:12px;color:var(--text-muted)">{{ invSelName }} · {{ invMonthsRange }} · by the day the money landed</div>
+                      </div>
+                      <div style="display:flex;gap:26px">
+                        <div style="display:flex;flex-direction:column;gap:2px">
+                          <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy);line-height:1.1">{{ invMonthsTotal }}</div>
+                          <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Received</div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:2px">
+                          <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy);line-height:1.1">{{ invMonthsAvg }}</div>
+                          <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly average</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-end;gap:10px;height:180px;border-bottom:1px solid var(--border-hairline);padding-bottom:1px">
+                      <sc-for list="{{ invMonths }}" as="mo" hint-placeholder-count="5">
+                        <div title="{{ mo.title }}" style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;cursor:default" style-hover="filter:brightness(1.08)">
+                          <div class="su-barval" style="font-size:11.5px;font-weight:600;color:var(--navy)">{{ mo.amount }}</div>
+                          <div style="{{ mo.barStyle }}"></div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="display:flex;gap:10px">
+                      <sc-for list="{{ invMonths }}" as="mo" hint-placeholder-count="5">
+                        <div style="flex:1;min-width:0;text-align:center;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);white-space:nowrap">{{ mo.month }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-if>
 
                 <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:13px;border-radius:12px">
                   <div style="display:flex;flex-direction:column;gap:3px">
@@ -4563,6 +4599,53 @@ class Component extends DCLogic {
     });
     // Numbering follows whatever scheme the last invoice used — SP-0058 leads
     // to SP-0059 — rather than imposing one.
+    // ===== paid by month =====
+    // What was actually received, bucketed by the day the money landed. An
+    // invoice raised before paid-on existed has only the day it was raised, so
+    // that stands in rather than dropping the row out of the total.
+    const invPaidMonth = i => String(i.paidOn || i.issueDate ||
+      new Date(i.ts || 0).toISOString().slice(0, 10)).slice(0, 7);
+    const invPaidRows = invSel ? invsFor(invSelId).filter(invIsPaid) : [];
+    const invPaidKeys = invPaidRows.map(invPaidMonth).filter(k=>/^\d{4}-\d{2}$/.test(k)).sort();
+    let invMonths=[], invMonthsTotal='', invMonthsAvg='', invMonthsRange='';
+    if(invPaidKeys.length){
+      // Every month between the first payment and the last, including the ones
+      // with nothing in them: dropping an empty month would redraw a quiet
+      // stretch as a busy one.
+      const span=[];
+      let [y,m]=invPaidKeys[0].split('-').map(Number);
+      const [ly,lm]=invPaidKeys[invPaidKeys.length-1].split('-').map(Number);
+      while(y<ly || (y===ly && m<=lm)){
+        span.push(y+'-'+String(m).padStart(2,'0'));
+        if(++m>12){ m=1; y++; }
+        if(span.length>600) break;                 // a bad date cannot hang the page
+      }
+      const window_ = span.slice(-12);             // a year of bars stays readable
+      const sums={}, counts={};
+      invPaidRows.forEach(i=>{ const k=invPaidMonth(i);
+        sums[k]=(sums[k]||0)+Number(i.amount||0); counts[k]=(counts[k]||0)+1; });
+      const peak=Math.max.apply(null, window_.map(k=>sums[k]||0).concat([1]));
+      const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const label=k=>{ const [yy,mm]=k.split('-').map(Number);
+        return mm===1 ? MON[0]+" '"+String(yy).slice(2) : MON[mm-1]; };
+      invMonths = window_.map(k=>{
+        const v=sums[k]||0, c=counts[k]||0, pct=Math.round(100*v/peak);
+        return {key:k, month:label(k), amount:v?invMoney(v):'',
+          // Direct labels carry the values, so the chart needs no second axis
+          // and the fill never has to be read against the surface to be understood.
+          barStyle:{width:'100%', maxWidth:64, height:v?Math.max(pct,2)+'%':'2px',
+            background:v?'var(--green)':'var(--gray-200)',
+            borderRadius:v?'4px 4px 0 0':'2px', transition:'height .18s ease'},
+          title:label(k)+' '+k.slice(0,4)+' — '+(v?invMoney(v):'nothing received')+
+            (c?(' from '+c+(c===1?' payment':' payments')):'')};
+      });
+      const total=window_.reduce((s,k)=>s+(sums[k]||0),0);
+      invMonthsTotal=invMoney(total);
+      invMonthsAvg=invMoney(Math.round(total/window_.length));
+      invMonthsRange=label(window_[0])+' '+window_[0].slice(0,4)+' – '+
+        label(window_[window_.length-1])+' '+window_[window_.length-1].slice(0,4);
+    }
+
     const nextInvNum=cid=>{ const last=invsFor(cid)[0];
       const m=last&&String(last.num||'').match(/^(.*?)(\d+)$/);
       if(!m) return 'INV-'+thisYearN+'-001';
@@ -5795,6 +5878,7 @@ class Component extends DCLogic {
         this.setState(s2=>({flash:'Invoice '+num+' added. Open it to send it.', d:{...s2.d,
           niNum:undefined,niAmount:undefined,niUrl:undefined,niNote:undefined,
           niDue:undefined,niStatus:undefined}})); },
+      invMonths, invMonthsShow:invMonths.length>0, invMonthsTotal, invMonthsAvg, invMonthsRange,
       invAdminCards: invSel? invsFor(invSelId).map(invCard) : [],
       invNoAdminCards: !invSel || invsFor(invSelId).length===0,
       planName:client.plan, planPrice:'$'+client.price,
