@@ -137,7 +137,7 @@
     /* The sidebar and the dark buttons; --navy is heading text everywhere
        else. Defaults to the Social Upgrades navy, so the team view is
        unchanged and only a themed portal moves it. */
-    :root{--chrome:#0F1633}
+    :root{--chrome:#0F1633;--pill-bg:#0F1633;--pill-fg:#FFFFFF}
     body{font-family:var(--font-body);background:var(--cloud);color:var(--text-body);font-size:15px}
     a{color:var(--link);text-decoration:none}a:hover{color:var(--link-hover)}
     input,select,textarea,button{font-family:var(--font-body)}
@@ -702,7 +702,7 @@
                   <div style="font-size:11.5px;color:var(--text-muted)">Client needs it by {{ q.needBy }}</div>
                 </sc-if>
                 <div style="display:flex;align-items:center;gap:6px;width:100%">
-                                <button onClick="{{ q.start }}" style="flex:1;background:var(--chrome);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;margin-top:2px" style-hover="background:var(--navy-800)">Start ▸</button>
+                                <button onClick="{{ q.start }}" style="flex:1;background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;margin-top:2px" style-hover="background:var(--navy-800)">Start ▸</button>
                   <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
                   <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
@@ -733,7 +733,7 @@
                 <sc-if value="{{ w.canSubmit }}" hint-placeholder-val="{{ true }}">
                   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;border-top:1px solid var(--border-hairline);padding-top:10px">
                     <div style="flex:1;min-width:130px;font-size:11.5px;color:var(--text-muted);line-height:1.4">{{ w.submitNote }}</div>
-                    <button onClick="{{ w.submit }}" style="background:var(--chrome);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
+                    <button onClick="{{ w.submit }}" style="background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
                   </div>
                 </sc-if>
               </div>
@@ -3791,7 +3791,7 @@ class Component extends DCLogic {
       const mine = isTeam? m.from==='team' : m.from==='client';
       return {who:msgSigner(m),when:this.fmt(m.ts),text:m.text,
         rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
-        bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--navy)':'var(--gray-100)',color:mine?'#fff':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
+        bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--cta-bg)':'var(--gray-100)',color:mine?'var(--cta-fg)':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
     });
     // A message used to be signed by the company — every one from us read
     // "Social Upgrades", so a thread with three people on it looked like one
@@ -4020,7 +4020,7 @@ class Component extends DCLogic {
     const myFiles=D.files.filter(f=>f.clientId===client.id);
     const fileChips=types.map(t=>{ const n=t==='All'?myFiles.length:myFiles.filter(f=>f.type===t).length; const active=S.fileFilter===t;
       return {label:t+' ('+n+')',select:()=>this.setState({fileFilter:t}),
-        style:{background:active?'var(--navy)':'#fff',color:active?'#fff':'var(--text-body)',border:'1px solid '+(active?'var(--navy)':'var(--gray-200)'),borderRadius:12,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
+        style:{background:active?'var(--pill-bg)':'transparent',color:active?'var(--pill-fg)':'var(--text-body)',border:'1px solid '+(active?'var(--pill-bg)':'var(--gray-200)'),borderRadius:12,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
     // Dropping a library file also unhooks it from any update that referenced
     // it, so no update is left pointing at a row that is gone.
     const libraryDrop = f => x => {
@@ -4649,7 +4649,7 @@ class Component extends DCLogic {
           niDue:undefined,niAmount:undefined,niStatus:undefined,niMethod:undefined,
           niUrl:undefined,niNote:undefined}})),
         style:{display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',
-          background:on?'var(--gray-100)':'#fff',
+          background:on?'var(--gray-100)':'transparent',
           border:'1px solid '+(on?'var(--navy)':'var(--border-hairline)'),
           borderRadius:12,padding:'11px 14px',cursor:'pointer',fontFamily:'var(--font-body)'}};
     });
@@ -5131,8 +5131,11 @@ class Component extends DCLogic {
       justifyContent:'flex-end',padding:8,cursor:'pointer'});
     const brandMiniStyle = {background:'var(--surface-card)',border:'1px solid var(--gray-200)',borderRadius:8,
       color:'var(--text-body)',fontSize:11,fontWeight:500,padding:'5px 10px',cursor:'pointer',lineHeight:1.4};
-    const toggleStyle = on => ({background:on?B.accent:'#fff',border:'1px solid '+(on?B.accent:'var(--gray-200)'),
-      borderRadius:8,color:on?'#fff':'var(--text-body)',fontSize:11,fontWeight:on?600:500,
+    // A kit can set an accent of any lightness, so the text on a filled accent
+    // chip is picked against that accent rather than assumed to be white.
+    const onAccent = this.contrast(B.accent,'#ffffff') >= 3.2 ? '#ffffff' : '#0F1633';
+    const toggleStyle = on => ({background:on?B.accent:'transparent',border:'1px solid '+(on?B.accent:'var(--gray-200)'),
+      borderRadius:8,color:on?onAccent:'var(--text-body)',fontSize:11,fontWeight:on?600:500,
       padding:'5px 10px',cursor:'pointer',lineHeight:1.4});
     const copyStyle = on => Object.assign({}, brandMiniStyle, {alignSelf:'flex-start',
       borderColor:on?B.accent:'var(--gray-200)', color:on?B.accent:'var(--text-body)', fontWeight:on?600:500});
@@ -5166,12 +5169,14 @@ class Component extends DCLogic {
       // not on a card, so a kit with pale cards over a dark page can pass every
       // card check and still have an unreadable heading at the top of it.
       ['Headings on the page background','heading','surface',3],
+      ['Sidebar text','sidebarInk','primary',4.5],
       ['Body text on the page background','text','surface',4.5],['Links','link','card',3]];
     const brandWarnings = CHECKS.map(([label,fg,bg,min])=>{
-      const ratio = this.contrast(B[fg], B[bg]);
+      // The sidebar writes in white, whatever the kit says elsewhere.
+      const ratio = this.contrast(fg==='sidebarInk' ? '#ffffff' : B[fg], B[bg]);
       if(ratio >= min) return null;
-      return {text: label+': '+ratio.toFixed(1)+':1 against '+
-        (bg==='card'?'the cards':'the page background')+'. Aim for '+min+':1 or more.'};
+      const where = bg==='card' ? 'the cards' : bg==='primary' ? 'the sidebar' : 'the page background';
+      return {text: label+': '+ratio.toFixed(1)+':1 against '+where+'. Aim for '+min+':1 or more.'};
     }).filter(Boolean);
 
     // Four colours have to move together for a dark kit to read, so they move
@@ -5275,6 +5280,15 @@ class Component extends DCLogic {
       // more colours: set the card dark and the borders darken with it.
       const onCard = (c,amt)=>this.mix(B.card, c, amt);
       const ctaBg = this.contrast(B.primary, B.card) >= 1.6 ? B.primary : B.accent;
+      // The same idea measured against the page instead. Accent first, since a
+      // selected filter reading in the brand colour is what it is for; the
+      // chrome next; and if a kit manages to make both vanish, a tone stepped
+      // off its own ink, which cannot match the page by construction.
+      const onSurf = c => this.contrast(c, B.surface);
+      const pillBg = onSurf(B.accent)  >= 2.0 ? B.accent
+                   : onSurf(B.primary) >= 2.0 ? B.primary
+                   : this.mix(B.surface, B.text, .85);
+      const pillFg = this.contrast(pillBg, '#ffffff') >= 3.2 ? '#ffffff' : '#0F1633';
       Object.assign(rootStyle,{
         '--chrome':B.primary,
         '--navy':B.heading,                 // heading text, not the sidebar
@@ -5302,6 +5316,7 @@ class Component extends DCLogic {
         // the middle of a themed page is the one thing that still reads as ours.
         '--cta-bg':ctaBg,
         '--cta-fg':this.contrast(ctaBg,'#ffffff') >= 3.2 ? '#ffffff' : '#0F1633',
+        '--pill-bg':pillBg, '--pill-fg':pillFg,
         '--font-display':"'"+B.displayFont+"',sans-serif",
         '--font-body':"'"+B.bodyFont+"',sans-serif"
       });
@@ -5339,7 +5354,7 @@ class Component extends DCLogic {
       onLogoFile: e=>pickBrandFile(e,'logo'),
       onPhotoFile: e=>pickBrandFile(e,'photo'),
       brandMiniStyle,
-      brandBtnStyle:{background:'var(--navy)',border:'none',borderRadius:8,color:'#fff',
+      brandBtnStyle:{background:'var(--cta-bg)',border:'none',borderRadius:8,color:'var(--cta-fg)',
         fontFamily:'var(--font-display)',fontWeight:600,fontSize:12,padding:'9px 18px',cursor:'pointer'},
       brandInputStyle:{flex:1,minWidth:170,border:'1px solid var(--gray-200)',borderRadius:8,
         padding:'9px 13px',fontSize:13.5},

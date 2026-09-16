@@ -547,6 +547,25 @@ card too, since a browser paints them white otherwise, and a dark kit sets
 `color-scheme: dark` so native widgets (the date picker, select arrows,
 scrollbars) come with it.
 
+### Controls
+
+A filled control takes `--cta-bg` with `--cta-fg`, a pair the theme picks so
+the text on it is readable whatever the kit does. An unfilled one is
+transparent with a `--gray-200` border, so it sits on whatever is behind it and
+wears the same ink as the text around it. Neither is ever a literal white or
+`--navy`: a kit with white headings and white body text made both of those
+invisible, which is how the file filters came to be white pills with white
+labels on a black page.
+
+The filter pills have a pair of their own, `--pill-bg` and `--pill-fg`, because
+they stand on the page rather than inside a card. `--cta-bg` is chosen against
+the cards, which is right for a button in one and wrong here: a kit with white
+cards over a black page picks a black fill, and the pill then disappears into
+the page while its label stays perfectly readable, so the row reads as words
+with no buttons around them. `--pill-bg` is measured against the surface
+instead, preferring the accent, then the chrome, then a tone stepped off the
+kit's own ink, which cannot match the page by construction.
+
 **Light background** and **Dark background** on the Colors section move the four
 readability colours together in one click. They deliberately leave accent, link
 and the chrome alone — those are the brand; this is only about being able to
