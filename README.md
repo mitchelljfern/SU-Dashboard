@@ -528,7 +528,10 @@ read the page.
 
 Contrast is checked as you go and a warning appears on the same page when a
 combination has gone unreadable (3:1 for headings, 4.5:1 for body copy, both
-WCAG). It never blocks a choice — it is their brand — it just says so where the
+WCAG). Text is checked against the page background as well as against the
+cards, because the page title and the section kickers sit straight on the
+background — a kit with pale cards over a dark page passes every card check and
+still has an unreadable heading at the top of it. It never blocks a choice — it is their brand — it just says so where the
 choice was made rather than letting it be discovered on the dashboard. Two
 things correct themselves: a status pill lightens its text on a dark card, and
 the primary button falls back to the accent where the chrome colour would

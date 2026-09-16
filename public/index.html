@@ -664,7 +664,7 @@
               </div>
             </div>
             <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:flex;align-items:center;width:100%;gap:8px">
@@ -688,7 +688,7 @@
               </div>
             </div>
             <sc-for list="{{ teamQueueCards }}" as="q" hint-placeholder-count="2">
-              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ q.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ q.clientName }}</div></div>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
@@ -721,7 +721,7 @@
               </div>
             </div>
             <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
-              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div></div>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <div style="display:flex;align-items:center;width:100%;gap:8px">
@@ -750,7 +750,7 @@
               </div>
             </div>
             <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
-              <button onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+              <button onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.kind }} · {{ u.when }}</div></div>
                 <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
                 <sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}">
@@ -1271,7 +1271,7 @@
               <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
             </div>
             <sc-for list="{{ homeReqCards }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
@@ -1280,12 +1280,10 @@
                 <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
                 </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
+                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
                   <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
                   <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <span style="font-size:11px;color:var(--text-muted);margin-left:auto">{{ r.when }}</span>
                   <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
                   <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
@@ -1298,7 +1296,7 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In queue ({{ queueCount }})</h3>
             </div>
             <sc-for list="{{ homeQueueCards }}" as="q" hint-placeholder-count="2">
-              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
                 <sc-if value="{{ q.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ q.projected }}</div>
@@ -1306,12 +1304,10 @@
                 <sc-if value="{{ q.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px;color:var(--text-muted)">Needed by {{ q.needBy }}</div>
                 </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
                   <span style="{{ q.badgeStyle }}">{{ q.statusLabel }}</span>
                   <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ q.urgencyStyle }}">{{ q.urgency }}</span></sc-if>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ q.commentsLabel }}</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <span style="font-size:12px;color:var(--blue);font-weight:500;margin-left:auto">{{ q.commentsLabel }}</span>
                   <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
                   <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
@@ -1324,7 +1320,7 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ progCount }})</h3>
             </div>
             <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
-              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <sc-if value="{{ w.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ w.projected }}</div>
@@ -1332,12 +1328,10 @@
                 <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px;color:var(--text-muted)">Needed by {{ w.needBy }}</div>
                 </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
                   <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
                   <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ w.urgencyStyle }}">{{ w.urgency }}</span></sc-if>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ w.commentsLabel }}</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
+                  <span style="font-size:12px;color:var(--blue);font-weight:500;margin-left:auto">{{ w.commentsLabel }}</span>
                   <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
                   <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
                 </div>
@@ -5147,6 +5141,10 @@ class Component extends DCLogic {
     // be discovered on the dashboard. Headings are large text, so 3:1; body
     // copy is held to the full 4.5:1.
     const CHECKS=[['Headings','heading','card',3],['Body text','text','card',4.5],
+      // The page title and the section kickers sit straight on the background,
+      // not on a card, so a kit with pale cards over a dark page can pass every
+      // card check and still have an unreadable heading at the top of it.
+      ['Headings on the page background','heading','surface',3],
       ['Body text on the page background','text','surface',4.5],['Links','link','card',3]];
     const brandWarnings = CHECKS.map(([label,fg,bg,min])=>{
       const ratio = this.contrast(B[fg], B[bg]);
