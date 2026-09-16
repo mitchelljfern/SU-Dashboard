@@ -138,6 +138,7 @@
        else. Defaults to the Social Upgrades navy, so the team view is
        unchanged and only a themed portal moves it. */
     :root{--chrome:#0F1633;--pill-bg:#0F1633;--pill-fg:#FFFFFF}
+    :root{--danger-fg:#a8352d;--danger-line:#D8564E;--danger-wash:#fff5f4}
     body{font-family:var(--font-body);background:var(--cloud);color:var(--text-body);font-size:15px}
     a{color:var(--link);text-decoration:none}a:hover{color:var(--link-hover)}
     input,select,textarea,button{font-family:var(--font-body)}
@@ -232,11 +233,11 @@
       <div style="font-size:12px;color:rgba(255,255,255,.6)">Signed in as <strong style="color:#fff">{{ userName }}</strong></div>
       <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
       <sc-if value="{{ showSuMark }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:7px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)">
-          <div style="font-size:9px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.34);font-weight:600">Powered by</div>
-          <div style="display:flex;align-items:center;gap:8px;opacity:.78">
-            <img src="assets/logo-on-dark.svg" alt="" style="height:20px;width:20px;flex:none">
-            <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.03em;color:#fff">Social Upgrades</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+          <div style="font-size:9.5px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600">Powered by</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.9">
+            <img src="assets/logo-on-dark.svg" alt="" style="height:32px;width:32px;flex:none;display:block">
+            <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#fff;text-align:center;line-height:1.15">Social Upgrades</span>
           </div>
         </div>
       </sc-if>
@@ -280,6 +281,15 @@
           <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;padding:10px 2px 0">{{ portalName }}</div>
         </sc-if>
         <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
+        <sc-if value="{{ showSuMark }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
+            <div style="font-size:9.5px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600">Powered by</div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.9">
+              <img src="assets/logo-on-dark.svg" alt="" style="height:32px;width:32px;flex:none;display:block">
+              <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#fff;text-align:center;line-height:1.15">Social Upgrades</span>
+            </div>
+          </div>
+        </sc-if>
       </div>
     </div>
   </sc-if>
@@ -327,7 +337,7 @@
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
             <span style="flex:1"></span>
             <sc-if value="{{ canArchive }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ askArchive }}" title="Hide this card from the client" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:8px;white-space:nowrap" style-hover="border-color:#D8564E;color:#a8352d">Archive</button>
+              <button onClick="{{ askArchive }}" title="Hide this card from the client" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:8px;white-space:nowrap" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Archive</button>
             </sc-if>
             <button onClick="{{ copyCard }}" title="Copy as Markdown for Asana, Trello, Jira…" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:10px;white-space:nowrap" style-hover="border-color:var(--navy)">Copy</button>
             <button onClick="{{ closeDetail }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
@@ -335,9 +345,9 @@
           <div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
             <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
               <div style="background:#FDECEA;border:1px solid #EBBDB9;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-                <div style="font-size:13px;color:#a8352d;font-weight:600;line-height:1.5">{{ archiveWarning }}</div>
+                <div style="font-size:13px;color:var(--danger-fg);font-weight:600;line-height:1.5">{{ archiveWarning }}</div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap">
-                  <button onClick="{{ doArchive }}" style="background:var(--surface-card);border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#fff5f4">Yes, archive it</button>
+                  <button onClick="{{ doArchive }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:var(--danger-wash)">Yes, archive it</button>
                   <button onClick="{{ cancelArchive }}" style="background:var(--surface-card);border:1px solid var(--gray-200);color:var(--text-body);border-radius:12px;padding:9px 18px;font-size:13px;cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
                 </div>
               </div>
@@ -440,7 +450,7 @@
                       <button onClick="{{ f.download }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
                     </sc-if>
                     <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
-                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
+                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
                     </sc-if>
                   </div>
                 </sc-for>
@@ -477,10 +487,10 @@
                   <span style="flex:1"></span>
                   <sc-if value="{{ c.acked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:var(--green)">👍 Seen, on it</span></sc-if>
                   <sc-if value="{{ c.showAck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.ack }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer" style-hover="border-color:var(--green)">👍</button></sc-if>
-                  <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:22px;height:22px;min-width:22px;padding:0;color:var(--text-muted);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="border-color:#D8564E;color:#a8352d;background:#FDECEA">×</button></sc-if>
+                  <sc-if value="{{ c.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.askDelete }}" title="Delete this comment" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:22px;height:22px;min-width:22px;padding:0;color:var(--text-muted);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="border-color:var(--danger-fg);color:var(--danger-fg);background:#FDECEA">×</button></sc-if>
                   <sc-if value="{{ c.confirming }}" hint-placeholder-val="{{ false }}">
-                    <span style="font-size:11.5px;color:#a8352d;font-weight:600">Delete this comment?</span>
-                    <button onClick="{{ c.doDelete }}" style="background:var(--surface-card);border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                    <span style="font-size:11.5px;color:var(--danger-fg);font-weight:600">Delete this comment?</span>
+                    <button onClick="{{ c.doDelete }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
                     <button onClick="{{ c.cancelDelete }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="border-color:var(--navy)">Keep</button>
                   </sc-if>
                 </div>
@@ -590,7 +600,7 @@
                   <button onClick="{{ sendInvoice }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Send to client</button>
                   <a href="{{ invMailto }}" style="font-size:12.5px;font-weight:500">Email instead</a>
                   <span style="flex:1"></span>
-                  <button onClick="{{ deleteInvoice }}" style="background:var(--surface-card);border:1px solid #D8564E;color:#a8352d;border-radius:12px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                  <button onClick="{{ deleteInvoice }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:9px 16px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
                 </div>
                 <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Sending posts the invoice on the client's message board, which is what raises their unread count. It stays in their Billing tab either way.</div>
               </div>
@@ -1078,7 +1088,7 @@
                           <span style="font-size:11.5px;color:var(--text-muted)">{{ pm.email }}</span>
                         </div>
                         <sc-if value="{{ pm.canRemove }}" hint-placeholder-val="{{ true }}">
-                          <button onClick="{{ pm.remove }}" style="background:var(--surface-card);border:1px solid #D8564E;border-radius:12px;color:#a8352d;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                          <button onClick="{{ pm.remove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);border-radius:12px;color:var(--danger-fg);padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
                         </sc-if>
                       </div>
                     </sc-for>
@@ -1371,7 +1381,7 @@
                       <button onClick="{{ f.download }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
                     </sc-if>
                     <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
-                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
+                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
                     </sc-if>
                   </div>
                 </sc-for>
@@ -1439,7 +1449,7 @@
             <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
               <span style="display:inline-flex;align-items:center;gap:6px;background:var(--gray-100);border-radius:12px;padding:5px 10px;font-size:12px;color:var(--navy);max-width:100%">
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">{{ rf.name }}</span>
-                <button onClick="{{ rf.drop }}" title="Remove" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0;line-height:1" style-hover="color:#D8564E">×</button>
+                <button onClick="{{ rf.drop }}" title="Remove" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0;line-height:1" style-hover="color:var(--danger-fg)">×</button>
               </span>
             </sc-for>
           </div>
@@ -1451,7 +1461,7 @@
             <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-hairline)">
               <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
               <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
-              <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+              <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
             </div>
           </sc-for>
           <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#000">Submit request</button>
@@ -1613,7 +1623,7 @@
                     <div style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</div>
                     <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
                       <button onClick="{{ t.startEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Edit</button>
-                      <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:#D8564E">Remove</button>
+                      <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--danger-fg)">Remove</button>
                     </sc-if>
                     <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
                       <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</div>
@@ -1653,7 +1663,7 @@
                 <div style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</div>
                 <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
                   <button onClick="{{ t.startEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Edit</button>
-                  <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:#D8564E">Remove</button>
+                  <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--danger-fg)">Remove</button>
                 </sc-if>
                 <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
                   <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</div>
@@ -1714,7 +1724,7 @@
                   <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ e.dot }}"></span><div style="font-size:11.5px;color:var(--text-muted)">{{ e.clientName }} · {{ e.who }} {{ e.tag }}</div></div>
                 </div>
                 <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ e.hours }}</div>
-                <button onClick="{{ e.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                <button onClick="{{ e.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
               </div>
             </sc-for>
           </div>
@@ -1769,7 +1779,7 @@
                         <button onClick="{{ it.fwd }}" style="flex:1;background:var(--chrome);border:none;border-radius:12px;color:#fff;padding:5px 10px;font-size:12px;cursor:pointer" style-hover="background:var(--navy-800)">{{ it.fwdLabel }} ▸</button>
                       </sc-if>
                       <sc-if value="{{ it.canRemove }}" hint-placeholder-val="{{ false }}">
-                        <button onClick="{{ it.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                        <button onClick="{{ it.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                       </sc-if>
                     </div>
                   </div>
@@ -1890,7 +1900,7 @@
                   <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-hairline)">
                     <div style="flex:1;font-size:13.5px;color:var(--text-body)">{{ l.name }}</div>
                     <div style="font-size:13.5px;font-weight:600;color:var(--navy)">{{ l.hours }}</div>
-                    <button onClick="{{ l.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                    <button onClick="{{ l.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                   </div>
                 </sc-for>
                 <sc-if value="{{ noDraftLines }}" hint-placeholder-val="{{ false }}">
@@ -1981,7 +1991,7 @@
                             <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
                             <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
                             <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
-                            <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                            <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                           </div>
                         </sc-for>
                       </div>
@@ -1990,7 +2000,7 @@
                       <button onClick="{{ saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
                       <button onClick="{{ cancelEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
                       <span style="flex:1"></span>
-                      <button onClick="{{ p.remove }}" style="background:var(--surface-card);border:1px solid #D8564E;color:#a8352d;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                      <button onClick="{{ p.remove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
                     </div>
                   </div>
                 </sc-if>
@@ -2114,7 +2124,7 @@
                               <div style="flex:1;font-size:13px;color:var(--text-body)">{{ el.name }}</div>
                               <input value="{{ el.h }}" onChange="{{ el.onH }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
                               <input value="{{ el.m }}" onChange="{{ el.onM }}" type="number" style="width:64px;border:1px solid var(--gray-200);border-radius:12px;padding:6px 8px;font-size:12.5px">
-                              <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                              <button onClick="{{ el.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                             </div>
                           </sc-for>
                         </div>
@@ -2123,7 +2133,7 @@
                         <button onClick="{{ saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Save</button>
                         <button onClick="{{ cancelEdit }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer">Cancel</button>
                         <span style="flex:1"></span>
-                        <button onClick="{{ p.remove }}" style="background:var(--surface-card);border:1px solid #D8564E;color:#a8352d;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                        <button onClick="{{ p.remove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
                       </div>
                     </div>
                   </sc-if>
@@ -2465,7 +2475,7 @@
                   <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rf.name }}</div>
                   <div style="font-size:11.5px;color:var(--text-muted)">{{ rf.meta }}</div>
                 </div>
-                <button onClick="{{ rf.drop }}" title="Remove from this request" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
+                <button onClick="{{ rf.drop }}" title="Remove from this request" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
               </div>
             </sc-for>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -2476,7 +2486,7 @@
               <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-hairline)">
                 <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
                 <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
-                <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:#D8564E">×</button>
+                <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
               </div>
             </sc-for>
           </div>
@@ -2631,7 +2641,7 @@
                 <button onClick="{{ f.download }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
               </sc-if>
               <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
-                <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:#D8564E">×</button>
+                <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
               </sc-if>
             </div>
           </sc-for>
@@ -3647,7 +3657,7 @@ class Component extends DCLogic {
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
           .filter(([id])=>id!=='invoicing'||canBilling)
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Strategy'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           .filter(([id])=>id!=='billing'||canSeeClientBilling);
     // Hiding the tab is not enough on its own: a member already sitting on
     // Billing — or returning to it — would be left staring at a blank page,
@@ -3765,7 +3775,7 @@ class Component extends DCLogic {
     });
     const headings = isTeam
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
-      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Strategy · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand=['Logos · Colors · Rules','Brand Kit'];
     const hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>sectionNow===k;
@@ -4018,9 +4028,14 @@ class Component extends DCLogic {
     // files
     const types=['All','Design','Documents','Content','Assets'];
     const myFiles=D.files.filter(f=>f.clientId===client.id);
+    const pillStyle = on => ({
+      background: on?'var(--pill-bg)':'transparent',
+      color:      on?'var(--pill-fg)':'var(--text-body)',
+      border:     '1px solid '+(on?'var(--pill-bg)':'var(--gray-200)'),
+      borderRadius:12, padding:'7px 16px', fontSize:13, fontWeight:500, cursor:'pointer'});
     const fileChips=types.map(t=>{ const n=t==='All'?myFiles.length:myFiles.filter(f=>f.type===t).length; const active=S.fileFilter===t;
       return {label:t+' ('+n+')',select:()=>this.setState({fileFilter:t}),
-        style:{background:active?'var(--pill-bg)':'transparent',color:active?'var(--pill-fg)':'var(--text-body)',border:'1px solid '+(active?'var(--pill-bg)':'var(--gray-200)'),borderRadius:12,padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}}; });
+        style:pillStyle(active)}; });
     // Dropping a library file also unhooks it from any update that referenced
     // it, so no update is left pointing at a row that is gone.
     const libraryDrop = f => x => {
@@ -4311,7 +4326,7 @@ class Component extends DCLogic {
           });
         };
         dv={detailOpen:true,
-          detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Strategy':'Update',
+          detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Content Map':'Update',
           detailTitle: ty==='update'?item.text:item.title,
           // A title typed in a hurry keeps its typo unless somebody can fix
           // it, and the person best placed to is whoever wrote it. Both sides
@@ -5284,6 +5299,7 @@ class Component extends DCLogic {
       // selected filter reading in the brand colour is what it is for; the
       // chrome next; and if a kit manages to make both vanish, a tone stepped
       // off its own ink, which cannot match the page by construction.
+      const cardIsDark = this.lum(B.card) < 0.5;
       const onSurf = c => this.contrast(c, B.surface);
       const pillBg = onSurf(B.accent)  >= 2.0 ? B.accent
                    : onSurf(B.primary) >= 2.0 ? B.primary
@@ -5317,6 +5333,11 @@ class Component extends DCLogic {
         '--cta-bg':ctaBg,
         '--cta-fg':this.contrast(ctaBg,'#ffffff') >= 3.2 ? '#ffffff' : '#0F1633',
         '--pill-bg':pillBg, '--pill-fg':pillFg,
+        // Red has to move with the card it is written on, or a delete button
+        // is dark red on a dark panel.
+        '--danger-fg':   cardIsDark ? '#F08A83' : '#a8352d',
+        '--danger-line': cardIsDark ? '#E4736B' : '#D8564E',
+        '--danger-wash': cardIsDark ? 'rgba(216,86,78,.18)' : '#fff5f4',
         '--font-display':"'"+B.displayFont+"',sans-serif",
         '--font-body':"'"+B.bodyFont+"',sans-serif"
       });
@@ -5405,7 +5426,7 @@ class Component extends DCLogic {
       ovSortReq:ovSortMenu('Req'), ovSortQueue:ovSortMenu('Queue'),
       ovSortProg:ovSortMenu('Prog'), ovSortAppr:ovSortMenu('Appr'),
       ovShowing: teamReqCards.length+teamQueueCards.length+teamProgCards.length+teamApprCards.length,
-      hubLabel:isTeam?'CLIENT HUB • TEAM':'CLIENT PORTAL',
+      hubLabel:isTeam?'CLIENT HUB • TEAM':'TEAM PORTAL',
       navItems, kicker:hk[0], heading:hk[1], kickerColor:isTeam?'var(--green)':'var(--blue)',
       // Clearing portalUrl matters: it is a draft seeded from the viewed client,
       // so carrying it across a switch would save one client's Stripe link onto
@@ -5429,9 +5450,7 @@ class Component extends DCLogic {
       stratCols, stratChannel: chan.label,
       channelTabs: CHANNELS.map(ch=>({label:ch.label,
         select:()=>this.setState({channel:ch.id}),
-        style:{background:chanId===ch.id?'var(--navy)':'#fff',color:chanId===ch.id?'#fff':'var(--text-body)',
-          border:'1px solid '+(chanId===ch.id?'var(--navy)':'var(--gray-200)'),borderRadius:12,
-          padding:'7px 16px',fontSize:13,fontWeight:500,cursor:'pointer'}})),
+        style:pillStyle(chanId===ch.id)})),
       // Adding a card (team only)
       dStratTitle:d.stTitle||'', onStratTitle:this.draft('stTitle'),
       dStratBody:d.stBody||'', onStratBody:this.draft('stBody'),

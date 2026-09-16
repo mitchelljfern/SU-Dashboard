@@ -549,6 +549,12 @@ scrollbars) come with it.
 
 ### Controls
 
+Every row of filter pills is built by one `pillStyle(on)` helper. There were
+three copies of it once, each written out by hand, and each one had to be found
+separately when a kit broke it: the file filters and the Content Map channel
+tabs both turned into white pills with white labels on a dark kit, weeks apart,
+for exactly the same reason.
+
 A filled control takes `--cta-bg` with `--cta-fg`, a pair the theme picks so
 the text on it is readable whatever the kit does. An unfilled one is
 transparent with a `--gray-200` border, so it sits on whatever is behind it and
@@ -570,6 +576,10 @@ kit's own ink, which cannot match the page by construction.
 readability colours together in one click. They deliberately leave accent, link
 and the chrome alone — those are the brand; this is only about being able to
 read the page.
+
+Red is a token too (`--danger-fg`, `--danger-line`, `--danger-wash`): a delete
+button written in a dark red chosen for a white card is unreadable on a dark
+one, so the red moves with the card behind it.
 
 Contrast is checked as you go and a warning appears on the same page when a
 combination has gone unreadable (3:1 for headings, 4.5:1 for body copy, both
