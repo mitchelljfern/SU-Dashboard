@@ -45,13 +45,14 @@
   // Pay rates deliberately live in their own table — see RATE_COLS.
   const TEAM_COLS = {
     name: 'name', email: 'email', isAdmin: 'is_admin',
-    isAccountant: 'is_accountant', active: 'active'
+    isAccountant: 'is_accountant', active: 'active', isAgent: 'is_agent'
   };
 
   // Everyone with a login, team and client alike, for the member lists.
   const PEOPLE_COLS = {
     name: 'name', email: 'email', role: 'role', clientId: 'client_id',
-    isAdmin: 'is_admin', isAccountant: 'is_accountant', active: 'active'
+    isAdmin: 'is_admin', isAccountant: 'is_accountant', active: 'active',
+    isAgent: 'is_agent'
   };
 
   // Rates are admin-only, so they are a separate table with their own policy;

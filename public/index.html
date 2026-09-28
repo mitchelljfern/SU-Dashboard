@@ -325,7 +325,7 @@
                 <sc-for list="{{ notifs }}" as="ev" hint-placeholder-count="4">
                   <div style="padding:11px 16px;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:2px">
                     <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
-                    <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                    <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px">{{ ev.when }}<sc-if value="{{ ev.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if></div>
                   </div>
                 </sc-for>
               </div>
@@ -665,6 +665,7 @@
                 <div style="display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid var(--border-hairline);min-width:0">
                   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                     <div style="font-size:13px;font-weight:600;color:var(--navy)">{{ c.who }}</div>
+                    <sc-if value="{{ c.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ c.agentPill }}">Agent</span></sc-if>
                     <div style="font-size:12px;color:var(--text-muted)">{{ c.when }}</div>
                     <span style="flex:1"></span>
                     <sc-if value="{{ c.mine }}" hint-placeholder-val="{{ false }}">
@@ -685,6 +686,26 @@
                 <textarea value="{{ dLeadNote }}" onChange="{{ onLeadNote }}" onKeyDown="{{ onLeadNoteKey }}" placeholder="Add a comment for the team. Cmd or Ctrl + Enter to send" rows="2" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;font-family:var(--font-body);line-height:1.5"></textarea>
                 <button onClick="{{ sendLeadNote }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
               </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">History</h4>
+              <sc-if value="{{ noLoHist }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13px;color:var(--text-muted)">No changes logged yet. Every change from here on shows who made it, including the Leads Agent.</div>
+              </sc-if>
+              <sc-for list="{{ loHist }}" as="h" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:3px;padding:9px 0;border-bottom:1px solid var(--border-hairline);min-width:0">
+                  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                    <span style="font-weight:600;color:var(--navy)">{{ h.who }}</span>
+                    <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ h.agentPill }}">Agent</span></sc-if>
+                    <span>{{ h.when }}</span>
+                  </div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5;overflow-wrap:anywhere">{{ h.text }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ loHistMore }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ showLoHist }}" style="align-self:flex-start;background:none;border:none;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer">{{ loHistMoreLabel }}</button>
+              </sc-if>
             </div>
             </div>
             </sc-if>
@@ -1038,7 +1059,7 @@
                   <span style="{{ ev.dot }};margin-top:5px"></span>
                   <div style="flex:1;display:flex;flex-direction:column;gap:2px">
                     <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
-                    <div style="font-size:11px;color:var(--text-muted)">{{ ev.when }}</div>
+                    <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px">{{ ev.when }}<sc-if value="{{ ev.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if></div>
                   </div>
                 </div>
               </sc-for>
@@ -1332,9 +1353,43 @@
             <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ clearLeadFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear filters</button>
             </sc-if>
+            <button onClick="{{ toggleLeadLog }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">{{ leadLogBtn }}</button>
             <button onClick="{{ openAddLead }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">+ Add lead</button>
           </div>
           <div style="font-size:12.5px;color:var(--text-muted)">{{ leadSummary }}</div>
+
+          <sc-if value="{{ leadLogOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;gap:8px;min-width:0">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Lead activity</h3>
+                <span style="flex:1;font-size:12.5px;color:var(--text-muted)">{{ leadLogCount }}</span>
+                <select value="{{ dLeadLogWho }}" onChange="{{ onLeadLogWho }}" aria-label="Filter by who made the change" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px;font-size:13px;background:var(--surface-card)">
+                  <sc-for list="{{ leadLogWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+              <sc-if value="{{ noLeadLog }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13px;color:var(--text-muted);padding:6px 0">Nothing logged yet. Changes to leads show up here with who made them.</div>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;max-height:460px;overflow-y:auto">
+                <sc-for list="{{ leadLogList }}" as="h" hint-placeholder-count="5">
+                  <div style="display:flex;flex-direction:column;gap:3px;padding:9px 0;border-bottom:1px solid var(--border-hairline);min-width:0">
+                    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                      <span style="font-weight:600;color:var(--navy)">{{ h.who }}</span>
+                      <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ h.agentPill }}">Agent</span></sc-if>
+                      <span>{{ h.when }}</span>
+                      <sc-if value="{{ h.hasLead }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ h.open }}" style="background:none;border:none;padding:0;font-size:12px;font-weight:600;color:var(--blue);cursor:pointer">{{ h.leadLabel }}</button>
+                      </sc-if>
+                    </div>
+                    <div style="font-size:13px;color:var(--text-body);line-height:1.5;overflow-wrap:anywhere">{{ h.text }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ leadLogMore }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ moreLeadLog }}" style="align-self:flex-start;background:none;border:none;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer">Show more</button>
+              </sc-if>
+            </div>
+          </sc-if>
 
           <sc-if value="{{ leadBoard }}" hint-placeholder-val="{{ true }}">
             <div style="overflow-x:auto;max-width:100%;padding-bottom:6px">
@@ -3491,10 +3546,12 @@ class Component extends DCLogic {
   // to be able to leave your own actions out — you already know you sent that
   // message. Entries written before this have no `by` and are shown to
   // everyone, which is right: nobody can be identified as their author.
-  logEv(data, clientId, text){
+  // `extra` carries optional context, such as the leadId that ties a row to
+  // one lead so the lead card can show its own history.
+  logEv(data, clientId, text, extra){
     const me = this.state.profile || {};
-    data.log.unshift({id:this.uid(),clientId,text,ts:Date.now(),
-      by: me.id || '', side: me.role==='team' ? 'team' : 'client'});
+    data.log.unshift(Object.assign({id:this.uid(),clientId,text,ts:Date.now(),
+      by: me.id || '', side: me.role==='team' ? 'team' : 'client'}, extra || {}));
   }
   // Attachments sit in a private bucket, so every view needs a signed URL.
   // Signing is resolved lazily: the first ask starts the request and returns
@@ -4169,7 +4226,13 @@ class Component extends DCLogic {
     // Your own actions are not news to you, so they never reach the bell. The
     // overview's activity list is separate and still shows everything.
     const mine = l => !!l.by && l.by===me.id;
-    const notifSrc = (isTeam? D.log : D.log.filter(l=>l.clientId===client.id)).filter(l=>!mine(l));
+    // Agents write one summary row per run for the bell plus quiet per-lead
+    // rows for the audit trail. The quiet ones would bury everything else.
+    const notifSrc = (isTeam? D.log : D.log.filter(l=>l.clientId===client.id)).filter(l=>!mine(l)&&!l.quiet);
+    // Who did it. Team members see every profile; a client only sees its own
+    // people, so for them an unknown author simply shows no name.
+    const logWho = l => { const p=(D.people||[]).find(x=>x.id===l.by)||(D.team||[]).find(x=>x.id===l.by);
+      return {name:p?String(p.name||p.email||'').trim():'', isAgent:!!(p&&p.isAgent)}; };
     const unseenN = notifSrc.filter(l=>l.ts>S.seenTs).length;
     // messages
     const msgCid = isTeam? S.msgClient : client.id;
@@ -5388,9 +5451,11 @@ class Component extends DCLogic {
       {label:'New requests',value:newReqCount},
       {label:'Open to-dos',value:D.todos.filter(t=>!t.done).length}
     ];
-    const activity=D.log.slice(0,7).map(l=>({text:l.text,when:this.fmt(l.ts),dot:clientDot(l.clientId)}));
+    const activity=D.log.filter(l=>!l.quiet).slice(0,7).map(l=>{ const w=logWho(l);
+      return {text:l.text,when:(w.name?w.name+' · ':'')+this.fmt(l.ts),dot:clientDot(l.clientId),isAgent:w.isAgent}; });
 
-    const members = (D.team||[]).filter(t=>t.active!==false);
+    // Agents sign their work but never take assignments or get paid.
+    const members = (D.team||[]).filter(t=>t.active!==false&&!t.isAgent);
     const memberName = id=>{ const m=(D.team||[]).find(x=>x.id===id); return m?m.name:''; };
 
     // "My to-dos" — team work assigned to whoever is signed in.
@@ -5587,14 +5652,15 @@ class Component extends DCLogic {
 
     // Rates are admin-only. A member's load contains just their own row, so
     // there is nothing to hide client-side — the column simply is not there.
-    const teamRows = (D.team||[]).map(m=>{
+    const teamRows = (D.team||[]).slice().sort((a,b)=>(!!a.isAgent)-(!!b.isAgent)).map(m=>{
       const r=(D.rates||[]).find(x=>x.profileId===m.id);
       return {
-        name:m.name||m.email, email:m.email||'',
-        role: m.isAdmin?'Admin':(m.isAccountant?'Accountant':'Team'),
+        name:m.name||m.email,
+        email:m.isAgent?'Automation. Signs its changes in the logs and cannot sign in.':(m.email||''),
+        role: m.isAgent?'Agent':(m.isAdmin?'Admin':(m.isAccountant?'Accountant':'Team')),
         rate: r?r.hourlyRate:0,
         payType: r?(r.payType||'hourly'):'hourly',
-        showRate: isAdmin,
+        showRate: isAdmin&&!m.isAgent,
         onRate: e=>{ const v=Number(e.target.value)||0; this.set(x=>{
           x.rates = (x.rates||[]).slice();
           const row = x.rates.find(y=>y.profileId===m.id);
@@ -5931,6 +5997,22 @@ class Component extends DCLogic {
     const leadTeamName=id=>{ const t=(D.team||[]).find(x=>x.id===id); return t?String(t.name||t.email||''):''; };
     const leadInitials=n=>String(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
     const whoAmI=String(me.name||meRow.name||me.email||'Someone').trim();
+    // ----- the audit trail -----
+    // Every change to a lead is logged with who made it: a person in the
+    // dashboard or an agent working overnight. Rows tied to one lead carry its
+    // leadId; an agent's run summary has none but is still lead work.
+    const agentPill={...this.badge('blue'),fontSize:9.5,padding:'1px 7px',letterSpacing:'.06em'};
+    const leadLogRows=D.log.filter(l=>l.leadId || logWho(l).isAgent);
+    const leadLogRow=l=>{ const w=logWho(l), lead=l.leadId?leadsAll.find(x=>x.id===l.leadId):null;
+      return {text:l.text||'', who:w.name||'Someone', isAgent:w.isAgent, agentPill,
+        when:new Date(l.ts||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}),
+        hasLead:!!lead, leadLabel:lead?(lead.id+' · '+(lead.name||'')):'',
+        open:lead?(()=>this.setState(s2=>({leadOpen:lead.id,leadLogOpen:false,leadDelNote:null,notifOpen:false,d:{...s2.d,leadNote:''}}))):(()=>{})}; };
+    const logWhoFilter=d.leadLogWho||'';
+    const leadLogF=leadLogRows.filter(l=>!logWhoFilter || l.by===logWhoFilter);
+    const leadLogN=S.leadLogN||40;
+    const leadLogPeople=[...new Set(leadLogRows.map(l=>l.by).filter(Boolean))]
+      .map(id=>({v:id,l:logWho({by:id}).name||'Someone'})).sort((a,b)=>a.l.localeCompare(b.l));
     const lf={stage:S.leadStage||'active', q:String(d.leadQ||'').trim().toLowerCase(),
       county:d.leadCounty||'', camp:d.leadCamp||'', who:d.leadWho||''};
     const leadMatch=l=>{
@@ -5990,7 +6072,7 @@ class Component extends DCLogic {
     const leadFiltered=!!(lf.q||lf.county||lf.camp||lf.who);
     const setLead=(id,fn)=>this.set(x=>{
       const l=(x.leads||[]).find(y=>y.id===id);
-      if(l){ fn(l,x); l.updatedAt=new Date().toISOString(); }
+      if(l){ fn(l,x); l.updatedAt=new Date().toISOString(); l.updatedBy=me.id||''; }
       return x; });
 
     // ----- adding and editing a lead -----
@@ -6052,7 +6134,7 @@ class Component extends DCLogic {
         this.set(x=>{
           (x.leads=x.leads||[]).unshift({id,clientId:'',ts:Date.now(),...v,stage,assignee,
             added:leadToday,source:'manual',addedBy:whoAmI,updatedAt:new Date().toISOString()});
-          this.logEv(x,'',whoAmI+' added a lead: '+v.name);
+          this.logEv(x,'',whoAmI+' added a lead: '+v.name,{leadId:id});
           return x; });
         this.setState({leadOpen:id,leadForm:null,leadFormErr:null});
       } else {
@@ -6062,7 +6144,7 @@ class Component extends DCLogic {
         setLead(F.id,(l,x)=>{
           changed.forEach(f=>{ l[f.k]=v[f.k]; });
           const names=changed.map(f=>f.label.toLowerCase());
-          this.logEv(x,'',whoAmI+' updated '+(l.name||'a lead')+': '+names.slice(0,3).join(', ')+(names.length>3?' and more':''));
+          this.logEv(x,'',whoAmI+' updated '+(l.name||'a lead')+': '+names.slice(0,3).join(', ')+(names.length>3?' and more':''),{leadId:l.id});
         });
         this.setState({leadForm:null,leadFormErr:null});
       }
@@ -6084,10 +6166,10 @@ class Component extends DCLogic {
         ? {leadOpen:null,leadForm:null,leadFormErr:null}
         : {leadForm:null,leadFormErr:null})
     } : {formIsAdd:false, formFields:[], hasFormErr:false};
-    const leadTeamOpts=[{v:'',l:'Unassigned'}].concat((D.team||[]).filter(t=>t.active!==false)
+    const leadTeamOpts=[{v:'',l:'Unassigned'}].concat((D.team||[]).filter(t=>t.active!==false&&!t.isAgent)
       .map(t=>({v:t.id,l:String(t.name||t.email||'')})));
     const leadStageOpts=LEAD_STAGES.map(([v,l])=>({v,l}));
-    const closeLeadModal=()=>this.setState({leadOpen:null,leadDelNote:null,leadForm:null,leadFormErr:null});
+    const closeLeadModal=()=>this.setState({leadOpen:null,leadDelNote:null,leadForm:null,leadFormErr:null,leadHistAll:null});
 
     let leadModal={leadOpen:false};
     const LO=S.leadOpen ? leadsAll.find(l=>l.id===S.leadOpen) : null;
@@ -6100,13 +6182,15 @@ class Component extends DCLogic {
     if(LO){
       const notes=leadNotesFor(LO.id).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));
       const mails=leadMailsFor(LO.id);
+      const hist=D.log.filter(l=>l.leadId===LO.id);
+      const histAll=S.leadHistAll===LO.id;
       const sendNote=()=>{
         const text=String(this.state.d.leadNote||'').trim();
         if(!text) return;
         this.set(x=>{
           (x.lead_notes=x.lead_notes||[]).push({id:this.uid(),clientId:'',ts:Date.now(),
             leadId:LO.id,by:me.id||'',who:whoAmI,text});
-          this.logEv(x,'',whoAmI+' commented on '+(LO.name||'a lead')+': '+(text.length>90?text.slice(0,87)+'...':text));
+          this.logEv(x,'',whoAmI+' commented on '+(LO.name||'a lead')+': '+(text.length>90?text.slice(0,87)+'...':text),{leadId:LO.id});
           return x; });
         this.setState(s2=>({d:{...s2.d,leadNote:''}}));
       };
@@ -6122,13 +6206,13 @@ class Component extends DCLogic {
             if(v==='sent' && !l.sentAt){ l.sentAt=leadToday; if(!l.nextTouch) l.nextTouch=leadAddDays(leadToday,3); }
             if(v==='replied' && !l.repliedAt) l.repliedAt=leadToday;
             if(['won','notnow','skip'].indexOf(v)>-1) l.nextTouch='';
-            this.logEv(x,'',whoAmI+' moved '+(l.name||'a lead')+' to '+(LEAD_LABEL[v]||v));
+            this.logEv(x,'',whoAmI+' moved '+(l.name||'a lead')+' to '+(LEAD_LABEL[v]||v),{leadId:l.id});
           }); },
         loAssignee:LO.assignee||'',
         loTeamOpts:leadTeamOpts,
         onLoAssignee:e=>{ const v=e.target.value;
           setLead(LO.id,(l,x)=>{ l.assignee=v;
-            if(v) this.logEv(x,'',whoAmI+' assigned '+(l.name||'a lead')+' to '+leadTeamName(v)); }); },
+            if(v) this.logEv(x,'',whoAmI+' assigned '+(l.name||'a lead')+' to '+leadTeamName(v),{leadId:l.id}); }); },
         loNext:LO.nextTouch||'',
         onLoNext:e=>{ const v=e.target.value; setLead(LO.id,l=>{ l.nextTouch=v; }); },
         loFacts:[['Owner',LO.owner],['Email',LO.email],['Phone',LO.phone],['Address',LO.address],
@@ -6152,8 +6236,13 @@ class Component extends DCLogic {
           snippet:m.snippet||'', hasSnippet:!!m.snippet,
           hasUrl:!!m.url, url:m.url||''})),
         noLoMails:mails.length===0,
+        loHist:(histAll?hist:hist.slice(0,6)).map(leadLogRow),
+        noLoHist:hist.length===0,
+        loHistMore:!histAll && hist.length>6, loHistMoreLabel:'Show all '+hist.length,
+        showLoHist:()=>this.setState({leadHistAll:LO.id}),
         loNotesList:notes.map(n=>({
           who:n.who||leadTeamName(n.by)||'Team', when:this.fmt(n.ts||Date.now()), text:n.text||'',
+          isAgent:logWho(n).isAgent, agentPill,
           mine:!!me.id && n.by===me.id, confirming:S.leadDelNote===n.id, notConfirming:S.leadDelNote!==n.id,
           askDelete:()=>this.setState({leadDelNote:n.id}),
           cancelDelete:()=>this.setState({leadDelNote:null}),
@@ -6181,6 +6270,16 @@ class Component extends DCLogic {
       dLeadWho:d.leadWho||'', onLeadWho:this.draft('leadWho'),
       leadWhoOpts:[{v:'',l:'Everyone'},{v:'me',l:'Assigned to me'},{v:'none',l:'Unassigned'}],
       leadFiltered, openAddLead,
+      leadLogOpen:!!S.leadLogOpen,
+      leadLogBtn:S.leadLogOpen?'Hide activity':'Activity',
+      toggleLeadLog:()=>this.setState(s2=>({leadLogOpen:!s2.leadLogOpen,leadLogN:40})),
+      leadLogList:leadLogF.slice(0,leadLogN).map(leadLogRow),
+      noLeadLog:leadLogF.length===0,
+      leadLogMore:leadLogF.length>leadLogN,
+      moreLeadLog:()=>this.setState({leadLogN:leadLogN+60}),
+      leadLogCount:leadLogF.length+(leadLogF.length===1?' change':' changes')+(logWhoFilter?' by '+(logWho({by:logWhoFilter}).name||'this person'):' by everyone'),
+      dLeadLogWho:logWhoFilter, onLeadLogWho:this.draft('leadLogWho'),
+      leadLogWhoOpts:[{v:'',l:'Everyone'}].concat(leadLogPeople),
       clearLeadFilters:()=>this.setState(s2=>({d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:''}})),
       ...leadModal
     };
@@ -6609,7 +6708,8 @@ class Component extends DCLogic {
       clearFlash: ()=>this.setState({flash:null}),
       toggleNotif:()=>{ const opening=!S.notifOpen; this.setState({notifOpen:opening}); if(opening){ const ts=Date.now(); localStorage.setItem('su_hub_seen',String(ts)); this.setState({seenTs:ts}); } },
       notifOpen:S.notifOpen, unseen:unseenN>0?unseenN:false,
-      notifs:notifSrc.slice(0,10).map(l=>({text:l.text,when:this.fmt(l.ts)})),
+      notifs:notifSrc.slice(0,10).map(l=>{ const w=isTeam?logWho(l):{name:'',isAgent:false};
+        return {text:l.text,when:(w.name?w.name+' · ':'')+this.fmt(l.ts),isAgent:w.isAgent}; }),
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
       secTodos:isTeam&&secKey('todos'), tdGroups, noTdGroups:tdGroups.length===0, tdStats, tdClientOpts,
       secReports:isTeam&&secKey('reports'), repTiles, repWhen, repBy, hasRepWhen:!!repWhen, hasRepBy:!!repBy,

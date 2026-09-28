@@ -83,6 +83,23 @@ HVAC prospects. Leads are team-only in Postgres (`leads`, `lead_notes`,
   Gmail, moves drafted leads to Sent once they appear in Sent mail, marks
   replies, and records each message in `lead_emails`. The browser never writes
   that table.
+- **Activity** on the Leads toolbar lists every change to a lead with who made
+  it, filterable by person, and each card has a **History** section for its own
+  changes. Rows tied to a lead carry `leadId` in the log.
+
+## Agents
+
+Automations sign their work as **agents**: team profiles with `is_agent`
+(migration 034) that exist only to be named. An agent cannot sign in (random
+password that never leaves the database, banned auth user, a `.invalid` email),
+is never offered as an assignee, and has no pay rate. The Team page lists it
+with an *Agent* tag, and its log rows and comments carry the same tag.
+
+- Make one with `select public.provision_agent('Name', 'slug');` from the SQL
+  editor or a migration. Only the database owner can call it.
+- The first is **Leads Agent**, which signs the overnight outreach run. Its
+  per-lead log rows are `quiet`, so they fill the lead's History and the
+  Activity panel without ringing the bell; the one summary row per run is not.
 
 ## Requests and work
 
