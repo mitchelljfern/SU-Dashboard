@@ -510,6 +510,134 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ leadOpen }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeLead }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
+        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,94vw);max-height:88vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
+            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Lead · {{ loId }}</div>
+            <button onClick="{{ closeLead }}" aria-label="Close" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
+          </div>
+          <div style="padding:22px 26px;display:flex;flex-direction:column;gap:20px">
+
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+              <div style="font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--navy);line-height:1.2;overflow-wrap:anywhere">{{ loName }}</div>
+              <div style="font-size:13px;color:var(--text-muted)">{{ loMeta }}</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stage</label>
+                <select value="{{ loStage }}" onChange="{{ onLoStage }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+                  <sc-for list="{{ loStageOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Assigned to</label>
+                <select value="{{ loAssignee }}" onChange="{{ onLoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+                  <sc-for list="{{ loTeamOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Next follow-up</label>
+                <input type="date" value="{{ loNext }}" onChange="{{ onLoNext }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+              <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;min-width:0">
+                <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Contact</h4>
+                <sc-for list="{{ loFacts }}" as="f" hint-placeholder-count="5">
+                  <div style="display:flex;gap:10px;font-size:13px;line-height:1.45;min-width:0">
+                    <div style="min-width:104px;color:var(--text-muted)">{{ f.k }}</div>
+                    <div style="flex:1;color:var(--text-body);overflow-wrap:anywhere;user-select:text">{{ f.v }}</div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ hasLoSite }}" hint-placeholder-val="{{ true }}">
+                  <a href="{{ loSite }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500;overflow-wrap:anywhere">{{ loSiteLabel }}</a>
+                </sc-if>
+              </div>
+              <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;min-width:0">
+                <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Outreach</h4>
+                <sc-if value="{{ hasLoPitch }}" hint-placeholder-val="{{ true }}">
+                  <sc-for list="{{ loPitch }}" as="f" hint-placeholder-count="3">
+                    <div style="display:flex;gap:10px;font-size:13px;line-height:1.45;min-width:0">
+                      <div style="min-width:80px;color:var(--text-muted)">{{ f.k }}</div>
+                      <div style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ f.v }}</div>
+                    </div>
+                  </sc-for>
+                </sc-if>
+                <sc-if value="{{ hasLoDraft }}" hint-placeholder-val="{{ false }}">
+                  <a href="{{ loDraft }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;text-decoration:none" style-hover="background:#000">Open the draft in Gmail</a>
+                </sc-if>
+                <sc-if value="{{ hasLoHook }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What we found on their site</div>
+                    <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ loHook }}</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasLoNotes }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Research notes</div>
+                    <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:pre-wrap">{{ loNotes }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Email history</h4>
+              <sc-if value="{{ noLoMails }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:13px;color:var(--text-muted)">Nothing sent or received yet. Emails show up here after the next overnight sync.</div>
+              </sc-if>
+              <sc-for list="{{ loMails }}" as="m" hint-placeholder-count="2">
+                <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span style="{{ m.dirStyle }}">{{ m.dir }}</span>
+                    <div style="flex:1;min-width:140px;font-size:13.5px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ m.subject }}</div>
+                    <div style="font-size:12px;color:var(--text-muted)">{{ m.when }}</div>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted);overflow-wrap:anywhere">{{ m.who }}</div>
+                  <sc-if value="{{ m.hasSnippet }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;color:var(--text-body);line-height:1.5;overflow-wrap:anywhere">{{ m.snippet }}</div></sc-if>
+                  <sc-if value="{{ m.hasUrl }}" hint-placeholder-val="{{ true }}"><a href="{{ m.url }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;font-size:12.5px;font-weight:500">Open in Gmail</a></sc-if>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Team comments</h4>
+              <sc-if value="{{ noLoNotes }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:13px;color:var(--text-muted)">No comments yet. Ask a question or leave context for whoever picks this up next.</div>
+              </sc-if>
+              <sc-for list="{{ loNotesList }}" as="c" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid var(--border-hairline);min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <div style="font-size:13px;font-weight:600;color:var(--navy)">{{ c.who }}</div>
+                    <div style="font-size:12px;color:var(--text-muted)">{{ c.when }}</div>
+                    <span style="flex:1"></span>
+                    <sc-if value="{{ c.mine }}" hint-placeholder-val="{{ false }}">
+                      <sc-if value="{{ c.confirming }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size:11.5px;color:var(--danger-fg);font-weight:600">Delete this comment?</span>
+                        <button onClick="{{ c.doDelete }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:3px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                        <button onClick="{{ c.cancelDelete }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="border-color:var(--navy)">Keep</button>
+                      </sc-if>
+                      <sc-if value="{{ c.notConfirming }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ c.askDelete }}" aria-label="Delete comment" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
+                      </sc-if>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:14px;color:var(--text-body);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere">{{ c.text }}</div>
+                </div>
+              </sc-for>
+              <div style="display:flex;gap:8px;margin-top:4px;align-items:flex-end;flex-wrap:wrap">
+                <textarea value="{{ dLeadNote }}" onChange="{{ onLeadNote }}" onKeyDown="{{ onLeadNoteKey }}" placeholder="Add a comment for the team. Cmd or Ctrl + Enter to send" rows="2" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;font-family:var(--font-body);line-height:1.5"></textarea>
+                <button onClick="{{ sendLeadNote }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ invOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeInvoice }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
         <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:12px">
@@ -1125,6 +1253,89 @@
               <button onClick="{{ c.openPortal }}" style="align-self:flex-start;background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open portal</button>
             </div>
           </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ secLeads }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ leadTiles }}" as="t" hint-placeholder-count="9">
+              <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input value="{{ dLeadQ }}" onChange="{{ onLeadQ }}" placeholder="Search company, owner, email or notes" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <select value="{{ dLeadCounty }}" onChange="{{ onLeadCounty }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+              <sc-for list="{{ leadCountyOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+            </select>
+            <select value="{{ dLeadCamp }}" onChange="{{ onLeadCamp }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+              <sc-for list="{{ leadCampOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+            </select>
+            <select value="{{ dLeadWho }}" onChange="{{ onLeadWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+              <sc-for list="{{ leadWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+            </select>
+            <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ clearLeadFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear filters</button>
+            </sc-if>
+          </div>
+          <div style="font-size:12.5px;color:var(--text-muted)">{{ leadSummary }}</div>
+
+          <sc-if value="{{ leadBoard }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow-x:auto;max-width:100%;padding-bottom:6px">
+              <div style="display:grid;grid-template-columns:repeat(6,minmax(230px,1fr));gap:12px;align-items:start;min-width:1400px">
+                <sc-for list="{{ leadCols }}" as="col" hint-placeholder-count="6">
+                  <div style="background:var(--gray-100);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0 2px">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</div>
+                      <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
+                    </div>
+                    <sc-if value="{{ col.empty }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:12.5px;color:var(--text-muted);padding:4px 2px">Nothing here yet.</div>
+                    </sc-if>
+                    <sc-for list="{{ col.items }}" as="l" hint-placeholder-count="3">
+                      <button onClick="{{ l.open }}" style="{{ l.cardStyle }}" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;width:100%">
+                          <div style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.35;overflow-wrap:anywhere">{{ l.name }}</div>
+                          <sc-if value="{{ l.hasWho }}" hint-placeholder-val="{{ false }}"><span title="{{ l.whoTitle }}" style="min-width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ l.who }}</span></sc-if>
+                        </div>
+                        <div style="font-size:12px;color:var(--text-muted)">{{ l.meta }}</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-if value="{{ l.hasCamp }}" hint-placeholder-val="{{ true }}"><span style="{{ l.campStyle }}">{{ l.camp }}</span></sc-if>
+                          <sc-if value="{{ l.hasScore }}" hint-placeholder-val="{{ true }}"><span style="{{ l.scoreStyle }}">{{ l.score }}</span></sc-if>
+                        </div>
+                        <sc-if value="{{ l.hasHook }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ l.hook }}</div></sc-if>
+                        <sc-if value="{{ l.hasFoot }}" hint-placeholder-val="{{ false }}"><div style="{{ l.footStyle }}">{{ l.foot }}</div></sc-if>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ leadGridOn }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ noLeadGrid }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:24px;font-size:13.5px;color:var(--text-muted)">No leads match these filters.</div>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+              <sc-for list="{{ leadGrid }}" as="l" hint-placeholder-count="6">
+                <button onClick="{{ l.open }}" style="{{ l.cardStyle }}" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;width:100%">
+                    <div style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.35;overflow-wrap:anywhere">{{ l.name }}</div>
+                    <sc-if value="{{ l.hasWho }}" hint-placeholder-val="{{ false }}"><span title="{{ l.whoTitle }}" style="min-width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ l.who }}</span></sc-if>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ l.meta }}</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-if value="{{ l.showStage }}" hint-placeholder-val="{{ true }}"><span style="{{ l.stageStyle }}">{{ l.stageLabel }}</span></sc-if>
+                    <sc-if value="{{ l.hasCamp }}" hint-placeholder-val="{{ false }}"><span style="{{ l.campStyle }}">{{ l.camp }}</span></sc-if>
+                    <sc-if value="{{ l.hasScore }}" hint-placeholder-val="{{ true }}"><span style="{{ l.scoreStyle }}">{{ l.score }}</span></sc-if>
+                  </div>
+                  <sc-if value="{{ l.hasHook }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ l.hook }}</div></sc-if>
+                  <sc-if value="{{ l.hasFoot }}" hint-placeholder-val="{{ false }}"><div style="{{ l.footStyle }}">{{ l.foot }}</div></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -3108,7 +3319,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -3765,7 +3976,7 @@ class Component extends DCLogic {
     // no home at all. They are separate boards, and the payroll one is renamed
     // so nobody goes looking for a client's invoice under it.
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['leads','Leads'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
           .filter(([id])=>id!=='invoicing'||canBilling)
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           .filter(([id])=>id!=='billing'||canSeeClientBilling);
@@ -3847,6 +4058,9 @@ class Component extends DCLogic {
       // a count of everyone's to-dos is not a number anyone can act on.
       if(isTeam && id==='todos'){ const n=D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id).length; if(n) return n; }
       if(id==='messages' && unreadTotal) return unreadTotal;
+      // A reply is the one moment in the pipeline that needs a person, so that
+      // is what the Leads tab counts.
+      if(isTeam && id==='leads'){ const n=(D.leads||[]).filter(l=>l.stage==='replied').length; if(n) return n; }
       return false;
     };
     // Opening a board is what marks it read, wherever it is opened from.
@@ -3889,7 +4103,7 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand=['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
@@ -5633,7 +5847,189 @@ class Component extends DCLogic {
         setBrand(b=>{ b.palette.push({id:this.uid(),name:name||newHex.toUpperCase(),hex:newHex}); });
         this.setState(s=>({d:{...s.d,colorName:''}})); }
     };
+    // ===== outbound leads =====
+    // The cold-outreach pipeline. Rows arrive from the nightly outreach run
+    // (research, drafts, Gmail sync) and the team moves them from here. Stage
+    // is the one field both sides write, so every change to it is logged:
+    // the log is what wakes other open dashboards, and it is how a teammate
+    // hears that a lead moved without having to go and look.
+    const LEAD_STAGES=[['new','New'],['researched','Researched'],['drafted','Drafted'],['sent','Sent'],
+      ['replied','Replied'],['meeting','Meeting booked'],['won','Won'],['notnow','Not now'],['skip','Skip']];
+    const LEAD_LABEL=Object.fromEntries(LEAD_STAGES);
+    const LEAD_PIPE=['researched','drafted','sent','replied','meeting','won'];
+    const LEAD_TONE={new:'gray',researched:'gray',drafted:'amber',sent:'blue',replied:'green',meeting:'green',won:'green',notnow:'gray',skip:'gray'};
+    const LEAD_CAMPAIGNS={A:'A · Free build',B:'B · Straight to checkout',C:'C · Chat assistant demo'};
+    const LEAD_STATUS={ok:'Email found',form_only:'Contact form only',site_down:'Site is down',skip:'Not a fit',unresearched:'Not researched yet'};
+    // Dates here are calendar days, not instants: a follow-up is due on the
+    // 3rd wherever the reader is, so they are compared as local yyyy-mm-dd.
+    const leadToday=new Date().toLocaleDateString('en-CA');
+    const leadDay=iso=>{ const p=String(iso||'').split('-').map(Number);
+      if(!p[0]||!p[1]||!p[2]) return String(iso||'');
+      return new Date(p[0],p[1]-1,p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
+    const leadAddDays=(iso,n)=>{ const p=String(iso).split('-').map(Number);
+      return new Date(p[0],p[1]-1,p[2]+n).toLocaleDateString('en-CA'); };
+    const leadsAll=D.leads||[];
+    const leadDue=l=>!!l.nextTouch && l.nextTouch<=leadToday && ['sent','replied','meeting'].indexOf(l.stage)>-1;
+    const leadNotesFor=id=>(D.lead_notes||[]).filter(n=>n.leadId===id);
+    const leadMailsFor=id=>(D.lead_emails||[]).filter(e=>e.leadId===id).sort((a,b)=>(b.ts||0)-(a.ts||0));
+    const leadTeamName=id=>{ const t=(D.team||[]).find(x=>x.id===id); return t?String(t.name||t.email||''):''; };
+    const leadInitials=n=>String(n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+    const whoAmI=String(me.name||meRow.name||me.email||'Someone').trim();
+    const lf={stage:S.leadStage||'active', q:String(d.leadQ||'').trim().toLowerCase(),
+      county:d.leadCounty||'', camp:d.leadCamp||'', who:d.leadWho||''};
+    const leadMatch=l=>{
+      if(lf.county && l.county!==lf.county) return false;
+      if(lf.camp && (l.campaign||'')!==lf.camp) return false;
+      if(lf.who==='me' && l.assignee!==me.id) return false;
+      if(lf.who==='none' && l.assignee) return false;
+      if(lf.q && [l.name,l.owner,l.email,l.county,l.address,l.hook,l.notes,l.subject]
+        .join(' ').toLowerCase().indexOf(lf.q)<0) return false;
+      return true;
+    };
+    const leadsF=leadsAll.filter(leadMatch);
+    // Due follow-ups first, then the weakest websites: a low site score is
+    // Mitchell's shorthand for "most to gain", so it is the best prospect.
+    const leadScore=l=>{ const n=parseFloat(l.siteScore); return isNaN(n)?99:n; };
+    const leadOrder=(a,b)=>(leadDue(b)-leadDue(a)) || (leadScore(a)-leadScore(b)) || String(a.name||'').localeCompare(String(b.name||''));
+    const openLead=id=>()=>this.setState(s2=>({leadOpen:id,leadDelNote:null,notifOpen:false,d:{...s2.d,leadNote:''}}));
+    const leadBoard=lf.stage==='active';
+    const leadCard=l=>{
+      const nN=leadNotesFor(l.id).length, nM=leadMailsFor(l.id).length, due=leadDue(l);
+      const who=leadTeamName(l.assignee);
+      const hasScore=l.siteScore!==undefined && l.siteScore!=='';
+      return {id:l.id, name:l.name||'Untitled lead', open:openLead(l.id),
+        meta:[l.county, l.niche].filter(Boolean).join(' · '),
+        hook:l.hook||'', hasHook:!!l.hook,
+        showStage:!leadBoard, stageLabel:LEAD_LABEL[l.stage]||l.stage||'', stageStyle:this.badge(LEAD_TONE[l.stage]||'gray'),
+        hasCamp:!!l.campaign, camp:'Campaign '+(l.campaign||''),
+        campStyle:this.badge(l.campaign==='C'?'green':l.campaign==='B'?'blue':'amber'),
+        hasScore, score:'Site '+(hasScore?l.siteScore:''), scoreStyle:this.badge('gray'),
+        foot:[due?'Follow-up due':'', nN?(nN+(nN===1?' comment':' comments')):'', nM?(nM+(nM===1?' email':' emails')):'',
+          (!due && l.nextTouch)?('Follow up '+leadDay(l.nextTouch)):''].filter(Boolean).join(' · '),
+        hasFoot:!!(due||nN||nM||l.nextTouch),
+        footStyle:{fontSize:11.5,color:due?'#a2691a':'var(--text-muted)',fontWeight:due?600:400},
+        hasWho:!!who, who:leadInitials(who), whoTitle:'Assigned to '+who,
+        cardStyle:{background:'var(--surface-card)',border:'1px solid '+(due?'#E8C58E':'var(--border-card)'),
+          boxShadow:'0 2px 8px rgba(15,22,51,.06)',padding:'14px 16px',display:'flex',flexDirection:'column',gap:7,
+          textAlign:'left',cursor:'pointer',width:'100%',boxSizing:'border-box',borderRadius:12,transition:'all .15s ease',fontFamily:'var(--font-body)'}};
+    };
+    const leadTiles=[['active','Pipeline',leadsF.filter(l=>LEAD_PIPE.indexOf(l.stage)>-1).length]]
+      .concat(LEAD_STAGES.filter(([k])=>k!=='skip').map(([k,lab])=>[k,lab,leadsF.filter(l=>l.stage===k).length]))
+      .concat([['due','Follow-up due',leadsF.filter(leadDue).length]])
+      .map(([k,lab,n])=>{ const on=lf.stage===k;
+        const hot=(k==='due'||k==='replied')&&n>0;
+        return {label:lab, n, select:()=>this.setState({leadStage:k}),
+          style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),
+            borderRadius:12,padding:'10px 14px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
+            cursor:'pointer',minWidth:92,fontFamily:'var(--font-body)'},
+          numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,
+            color:on?'#fff':(hot?(k==='due'?'#a2691a':'#158a4d'):'var(--navy)')},
+          labStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',
+            color:on?'rgba(255,255,255,.78)':'var(--text-muted)'}}; });
+    const leadCols=leadBoard ? LEAD_PIPE.map(k=>{
+      const items=leadsF.filter(l=>l.stage===k).sort(leadOrder).map(leadCard);
+      return {label:LEAD_LABEL[k], count:items.length, items, empty:items.length===0}; }) : [];
+    const leadGrid=leadBoard ? [] : leadsF.filter(l=>lf.stage==='due'?leadDue(l):l.stage===lf.stage).sort(leadOrder).map(leadCard);
+    const leadCounties=[...new Set(leadsAll.map(l=>l.county).filter(Boolean))].sort();
+    const leadFiltered=!!(lf.q||lf.county||lf.camp||lf.who);
+    const setLead=(id,fn)=>this.set(x=>{
+      const l=(x.leads||[]).find(y=>y.id===id);
+      if(l){ fn(l,x); l.updatedAt=new Date().toISOString(); }
+      return x; });
+
+    let leadModal={leadOpen:false};
+    const LO=S.leadOpen ? leadsAll.find(l=>l.id===S.leadOpen) : null;
+    if(LO){
+      const notes=leadNotesFor(LO.id).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));
+      const mails=leadMailsFor(LO.id);
+      const sendNote=()=>{
+        const text=String(this.state.d.leadNote||'').trim();
+        if(!text) return;
+        this.set(x=>{
+          (x.lead_notes=x.lead_notes||[]).push({id:this.uid(),clientId:'',ts:Date.now(),
+            leadId:LO.id,by:me.id||'',who:whoAmI,text});
+          this.logEv(x,'',whoAmI+' commented on '+(LO.name||'a lead')+': '+(text.length>90?text.slice(0,87)+'...':text));
+          return x; });
+        this.setState(s2=>({d:{...s2.d,leadNote:''}}));
+      };
+      const hasScore=LO.siteScore!==undefined && LO.siteScore!=='';
+      leadModal={leadOpen:true,
+        loId:LO.id, loName:LO.name||'Untitled lead',
+        loMeta:[LO.county?(LO.county+' County'):'', LO.niche, LO.size].filter(Boolean).join(' · '),
+        loStage:LO.stage||'new', loStageOpts:LEAD_STAGES.map(([v,l])=>({v,l})),
+        onLoStage:e=>{ const v=e.target.value, was=LO.stage;
+          if(v===was) return;
+          setLead(LO.id,(l,x)=>{
+            l.stage=v;
+            if(v==='sent' && !l.sentAt){ l.sentAt=leadToday; if(!l.nextTouch) l.nextTouch=leadAddDays(leadToday,3); }
+            if(v==='replied' && !l.repliedAt) l.repliedAt=leadToday;
+            if(['won','notnow','skip'].indexOf(v)>-1) l.nextTouch='';
+            this.logEv(x,'',whoAmI+' moved '+(l.name||'a lead')+' to '+(LEAD_LABEL[v]||v));
+          }); },
+        loAssignee:LO.assignee||'',
+        loTeamOpts:[{v:'',l:'Unassigned'}].concat((D.team||[]).filter(t=>t.active!==false)
+          .map(t=>({v:t.id,l:String(t.name||t.email||'')}))),
+        onLoAssignee:e=>{ const v=e.target.value;
+          setLead(LO.id,(l,x)=>{ l.assignee=v;
+            if(v) this.logEv(x,'',whoAmI+' assigned '+(l.name||'a lead')+' to '+leadTeamName(v)); }); },
+        loNext:LO.nextTouch||'',
+        onLoNext:e=>{ const v=e.target.value; setLead(LO.id,l=>{ l.nextTouch=v; }); },
+        loFacts:[['Owner',LO.owner],['Email',LO.email],['Phone',LO.phone],['Address',LO.address],
+          ['Google rating',LO.googleRating],['Site score',hasScore?(String(LO.siteScore)+' / 10'):''],
+          ['Contact route',LEAD_STATUS[LO.status]||LO.status]]
+          .filter(([,v])=>v).map(([k,v])=>({k,v:String(v)})),
+        hasLoSite:!!LO.website, loSite:LO.website||'',
+        loSiteLabel:String(LO.website||'').replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''),
+        hasLoHook:!!LO.hook, loHook:LO.hook||'',
+        hasLoNotes:!!LO.notes, loNotes:LO.notes||'',
+        loPitch:[['Campaign',LEAD_CAMPAIGNS[LO.campaign]||LO.campaign],['Subject',LO.subject],
+          ['Sent',LO.sentAt?leadDay(LO.sentAt):''],['Replied',LO.repliedAt?leadDay(LO.repliedAt):'']]
+          .filter(([,v])=>v).map(([k,v])=>({k,v:String(v)})),
+        hasLoPitch:!!(LO.campaign||LO.subject||LO.sentAt||LO.repliedAt),
+        hasLoDraft:!!LO.draftUrl && LO.stage==='drafted', loDraft:LO.draftUrl||'',
+        loMails:mails.map(m=>({
+          subject:m.subject||'(no subject)',
+          when:m.at?new Date(m.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):this.fmt(m.ts||Date.now()),
+          dir:m.direction==='in'?'Received':'Sent', dirStyle:this.badge(m.direction==='in'?'green':'blue'),
+          who:m.direction==='in'?String(m.from||''):(m.to?('To '+m.to):''),
+          snippet:m.snippet||'', hasSnippet:!!m.snippet,
+          hasUrl:!!m.url, url:m.url||''})),
+        noLoMails:mails.length===0,
+        loNotesList:notes.map(n=>({
+          who:n.who||leadTeamName(n.by)||'Team', when:this.fmt(n.ts||Date.now()), text:n.text||'',
+          mine:!!me.id && n.by===me.id, confirming:S.leadDelNote===n.id, notConfirming:S.leadDelNote!==n.id,
+          askDelete:()=>this.setState({leadDelNote:n.id}),
+          cancelDelete:()=>this.setState({leadDelNote:null}),
+          doDelete:()=>{ this.set(x=>{ x.lead_notes=(x.lead_notes||[]).filter(y=>y.id!==n.id); return x; });
+            this.setState({leadDelNote:null}); }})),
+        noLoNotes:notes.length===0,
+        dLeadNote:d.leadNote||'', onLeadNote:this.draft('leadNote'),
+        onLeadNoteKey:e=>{ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)){ e.preventDefault(); sendNote(); } },
+        sendLeadNote:sendNote,
+        closeLead:()=>this.setState({leadOpen:null,leadDelNote:null})
+      };
+    }
+
+    const leadVals={
+      secLeads:isTeam&&secKey('leads'),
+      leadTiles, leadBoard, leadGridOn:!leadBoard, leadCols, leadGrid, noLeadGrid:!leadBoard&&leadGrid.length===0,
+      leadSummary: leadsF.length===leadsAll.length
+        ? (leadsAll.length+' leads. Replies and due follow-ups are highlighted, and each column lists the weakest websites first.')
+        : ('Showing '+leadsF.length+' of '+leadsAll.length+' leads.'),
+      dLeadQ:d.leadQ||'', onLeadQ:this.draft('leadQ'),
+      dLeadCounty:d.leadCounty||'', onLeadCounty:this.draft('leadCounty'),
+      leadCountyOpts:[{v:'',l:'All counties'}].concat(leadCounties.map(c=>({v:c,l:c}))),
+      dLeadCamp:d.leadCamp||'', onLeadCamp:this.draft('leadCamp'),
+      leadCampOpts:[{v:'',l:'All campaigns'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Checkout'},{v:'C',l:'C · Chat demo'}],
+      dLeadWho:d.leadWho||'', onLeadWho:this.draft('leadWho'),
+      leadWhoOpts:[{v:'',l:'Everyone'},{v:'me',l:'Assigned to me'},{v:'none',l:'Unassigned'}],
+      leadFiltered,
+      clearLeadFilters:()=>this.setState(s2=>({d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:''}})),
+      ...leadModal
+    };
+
     return {
+      ...leadVals,
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
       // they cover, so one login serves the whole group.

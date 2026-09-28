@@ -9,11 +9,15 @@
   'use strict';
 
   // Collections stored as id / client_id / ts / data(jsonb).
-  const TABLES = ['todos', 'work', 'requests', 'updates', 'messages', 'files', 'invoices', 'log', 'strategy'];
+  const TABLES = ['todos', 'work', 'requests', 'updates', 'messages', 'files', 'invoices', 'log', 'strategy',
+    // Outbound pipeline. Team-only in Postgres, so a client load gets three
+    // empty lists back. lead_emails is written by the nightly outreach run and
+    // only ever read here.
+    'leads', 'lead_notes', 'lead_emails'];
 
   // How each collection is ordered when loaded, to match what the UI expects.
   // Messages read as a chat thread (oldest first); everything else is a feed.
-  const ORDER = { messages: 'asc' };
+  const ORDER = { messages: 'asc', lead_notes: 'asc' };
 
   // `clients` has real columns rather than a jsonb body, so it maps by hand.
   const CLIENT_COLS = {

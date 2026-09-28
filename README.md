@@ -58,6 +58,27 @@ select public.provision_user('staff@example.com',   '<password>', 'team',   null
 update public.profiles set is_accountant = true where email = 'books@example.com';
 ```
 
+## Leads
+
+The team view has a **Leads** tab: the cold-outreach pipeline for plumbing and
+HVAC prospects. Leads are team-only in Postgres (`leads`, `lead_notes`,
+`lead_emails`, migration 027); a client login gets nothing back from any of them.
+
+- Stage tiles across the top filter the board. *Pipeline* shows Researched
+  through Won as columns; the other tiles list one stage, and *Follow-up due*
+  lists anything sent, replied or booked whose next touch is today or earlier.
+- Each column lists due follow-ups first, then the weakest websites (the site
+  score is 0 to 10, lower means more to gain).
+- A card opens to the lead: stage, who it is assigned to, the next follow-up
+  date, contact details, the campaign and subject that went out, what we found
+  on their site, every email sent or received, and a team comment thread.
+  Stage changes, assignments and comments are logged, so they reach the rest
+  of the team through the notification bell.
+- The nightly outreach run adds and researches leads, drafts the emails in
+  Gmail, moves drafted leads to Sent once they appear in Sent mail, marks
+  replies, and records each message in `lead_emails`. The browser never writes
+  that table.
+
 ## Requests and work
 
 Clients submit requests from their dashboard or the Requests tab, with a
