@@ -519,11 +519,64 @@
           </div>
           <div style="padding:22px 26px;display:flex;flex-direction:column;gap:20px">
 
-            <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-              <div style="font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--navy);line-height:1.2;overflow-wrap:anywhere">{{ loName }}</div>
-              <div style="font-size:13px;color:var(--text-muted)">{{ loMeta }}</div>
+            <div style="display:flex;align-items:flex-start;gap:12px;min-width:0">
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
+                <div style="font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--navy);line-height:1.2;overflow-wrap:anywhere">{{ loName }}</div>
+                <div style="font-size:13px;color:var(--text-muted)">{{ loMeta }}</div>
+              </div>
+              <sc-if value="{{ loReading }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ startEditLead }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Edit details</button>
+              </sc-if>
             </div>
 
+            <sc-if value="{{ loFormOn }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <sc-if value="{{ formIsAdd }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stage</label>
+                      <select value="{{ formStage }}" onChange="{{ onFormStage }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);font-family:var(--font-body);min-width:0">
+                        <sc-for list="{{ loStageOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                      </select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Assigned to</label>
+                      <select value="{{ formAssignee }}" onChange="{{ onFormAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);font-family:var(--font-body);min-width:0">
+                        <sc-for list="{{ loTeamOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                      </select>
+                    </div>
+                  </div>
+                </sc-if>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+                  <sc-for list="{{ formFields }}" as="f" hint-placeholder-count="8">
+                    <div style="{{ f.boxStyle }}">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ f.label }}</label>
+                      <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                        <input type="{{ f.inputType }}" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);font-family:var(--font-body);min-width:0">
+                      </sc-if>
+                      <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                        <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);font-family:var(--font-body);min-width:0">
+                          <sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                        </select>
+                      </sc-if>
+                      <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                        <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}" rows="3" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);font-family:var(--font-body);min-width:0;resize:vertical;line-height:1.5"></textarea>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ hasFormErr }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:#FDECEA;border:1px solid #EBBDB9;border-radius:12px;padding:10px 14px;font-size:13px;color:var(--danger-fg);font-weight:600;line-height:1.5">{{ formErr }}</div>
+                </sc-if>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button onClick="{{ saveLeadForm }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">{{ formSaveLabel }}</button>
+                  <button onClick="{{ cancelLeadForm }}" style="background:var(--surface-card);border:1px solid var(--gray-200);color:var(--text-body);border-radius:12px;padding:10px 20px;font-size:13px;cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ loReading }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:20px">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stage</label>
@@ -633,6 +686,8 @@
                 <button onClick="{{ sendLeadNote }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
               </div>
             </div>
+            </div>
+            </sc-if>
 
           </div>
         </div>
@@ -1277,6 +1332,7 @@
             <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ clearLeadFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear filters</button>
             </sc-if>
+            <button onClick="{{ openAddLead }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">+ Add lead</button>
           </div>
           <div style="font-size:12.5px;color:var(--text-muted)">{{ leadSummary }}</div>
 
@@ -5937,8 +5993,110 @@ class Component extends DCLogic {
       if(l){ fn(l,x); l.updatedAt=new Date().toISOString(); }
       return x; });
 
+    // ----- adding and editing a lead -----
+    // One form serves both. "Add lead" opens it blank and "Edit details" opens
+    // it filled from the card. The draft lives in state until Save, so Cancel
+    // leaves the lead exactly as it was, and a half-typed lead never syncs.
+    const LEAD_FIELDS=[
+      {k:'name',label:'Company name',ph:'Seashore Plumbing',req:true},
+      {k:'county',label:'County',ph:'Orange, Mono, San Bernardino'},
+      {k:'niche',label:'Trade',type:'select',opts:[{v:'',l:'Pick one'},{v:'Plumbing',l:'Plumbing'},{v:'HVAC',l:'HVAC'},{v:'Plumbing & HVAC',l:'Plumbing & HVAC'},{v:'Other',l:'Other'}]},
+      {k:'owner',label:'Owner or contact',ph:'First name'},
+      {k:'email',label:'Email',ph:'office@company.com',type:'email'},
+      {k:'phone',label:'Phone',ph:'(714) 555-0100'},
+      {k:'website',label:'Website',ph:'company.com'},
+      {k:'address',label:'Address or town',ph:'Mammoth Lakes, CA'},
+      {k:'siteScore',label:'Site score, 0 to 10',ph:'Lower means a weaker site',type:'number'},
+      {k:'googleRating',label:'Google rating',ph:'4.8'},
+      {k:'size',label:'About the company',ph:'Small, family-owned, est. 1998'},
+      {k:'status',label:'Contact route',type:'select',opts:[{v:'unresearched',l:'Not researched yet'},{v:'ok',l:'Email found'},{v:'form_only',l:'Contact form only'},{v:'site_down',l:'Site is down'},{v:'skip',l:'Not a fit'}]},
+      {k:'campaign',label:'Campaign',type:'select',opts:[{v:'',l:'Not assigned yet'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Straight to checkout'},{v:'C',l:'C · Chat assistant demo'}]},
+      {k:'subject',label:'Subject line',ph:'Filled in once an email is drafted'},
+      {k:'hook',label:'What we found on their site',type:'area',ph:'One true, specific thing, e.g. the Book Online button goes to a contact form'},
+      {k:'notes',label:'Research notes',type:'area',ph:'Anything the next person should know'}
+    ];
+    const LF=S.leadForm||null;
+    const setLF=(k,v)=>this.setState(s2=>({leadFormErr:null,
+      leadForm:{...s2.leadForm,dupOk:false,v:{...((s2.leadForm&&s2.leadForm.v)||{}),[k]:v}}}));
+    const openAddLead=()=>this.setState({leadOpen:'__new__',leadDelNote:null,notifOpen:false,leadFormErr:null,
+      leadForm:{mode:'add',v:{stage:'new',status:'unresearched',assignee:''}}});
+    const openEditLead=l=>()=>{ const v={};
+      LEAD_FIELDS.forEach(f=>{ v[f.k]=(l[f.k]===undefined||l[f.k]===null)?'':String(l[f.k]); });
+      if(!v.status) v.status='unresearched';
+      this.setState({leadForm:{mode:'edit',id:l.id,v},leadFormErr:null}); };
+    const leadHost=u=>String(u||'').toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'').split(/[\/?#]/)[0];
+    // Same L-number sequence the nightly run uses, so a hand-added lead reads
+    // like any other. The run only ever counts L-numbered ids, and skips any id
+    // that already exists.
+    const nextLeadId=()=>{ const n=leadsAll.reduce((m,l)=>{ const x=/^L(\d+)$/.exec(l.id||''); return x?Math.max(m,Number(x[1])):m; },0)+1;
+      return 'L'+String(n).padStart(3,'0'); };
+    const cleanLeadForm=v=>{ const o={};
+      LEAD_FIELDS.forEach(f=>{ o[f.k]=String(v[f.k]===undefined||v[f.k]===null?'':v[f.k]).trim(); });
+      if(o.website && !/^https?:\/\//i.test(o.website)) o.website='https://'+o.website;
+      return o; };
+    const saveLeadForm=()=>{
+      const F=this.state.leadForm; if(!F) return;
+      const v=cleanLeadForm(F.v||{});
+      if(!v.name) return this.setState({leadFormErr:'Give the lead a company name.'});
+      if(v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) return this.setState({leadFormErr:'That email address does not look right. Check it for a typo.'});
+      if(v.siteScore!=='' && !(Number(v.siteScore)>=0 && Number(v.siteScore)<=10)) return this.setState({leadFormErr:'Site score is a number from 0 to 10.'});
+      // A duplicate is a warning, not a wall: two locations of one company can
+      // both be worth a lead. The second Save goes through.
+      const dup=leadsAll.find(l=>l.id!==F.id && (
+        String(l.name||'').trim().toLowerCase()===v.name.toLowerCase() ||
+        (v.website && leadHost(l.website) && leadHost(l.website)===leadHost(v.website))));
+      if(dup && !F.dupOk) return this.setState(s2=>({leadForm:{...s2.leadForm,dupOk:true},
+        leadFormErr:'This looks like '+(dup.name||'a lead')+' ('+dup.id+'), which is already in the list. Press save again to keep both.'}));
+      if(F.mode==='add'){
+        const id=nextLeadId(), stage=(F.v&&F.v.stage)||'new', assignee=(F.v&&F.v.assignee)||'';
+        this.set(x=>{
+          (x.leads=x.leads||[]).unshift({id,clientId:'',ts:Date.now(),...v,stage,assignee,
+            added:leadToday,source:'manual',addedBy:whoAmI,updatedAt:new Date().toISOString()});
+          this.logEv(x,'',whoAmI+' added a lead: '+v.name);
+          return x; });
+        this.setState({leadOpen:id,leadForm:null,leadFormErr:null});
+      } else {
+        const was=leadsAll.find(l=>l.id===F.id)||{};
+        const changed=LEAD_FIELDS.filter(f=>String(was[f.k]===undefined||was[f.k]===null?'':was[f.k])!==v[f.k]);
+        if(!changed.length) return this.setState({leadForm:null,leadFormErr:null});
+        setLead(F.id,(l,x)=>{
+          changed.forEach(f=>{ l[f.k]=v[f.k]; });
+          const names=changed.map(f=>f.label.toLowerCase());
+          this.logEv(x,'',whoAmI+' updated '+(l.name||'a lead')+': '+names.slice(0,3).join(', ')+(names.length>3?' and more':''));
+        });
+        this.setState({leadForm:null,leadFormErr:null});
+      }
+    };
+    const leadFormVals = LF ? {
+      formIsAdd:LF.mode==='add',
+      formSaveLabel:LF.mode==='add'?'Add lead':'Save changes',
+      formStage:(LF.v&&LF.v.stage)||'new', onFormStage:e=>setLF('stage',e.target.value),
+      formAssignee:(LF.v&&LF.v.assignee)||'', onFormAssignee:e=>setLF('assignee',e.target.value),
+      formFields:LEAD_FIELDS.map(f=>({
+        label:f.label+(f.req?' (required)':''), ph:f.ph||'',
+        value:(LF.v&&LF.v[f.k]!==undefined)?LF.v[f.k]:'', onChange:e=>setLF(f.k,e.target.value),
+        isText:!f.type||f.type==='email'||f.type==='number', isSelect:f.type==='select', isArea:f.type==='area',
+        inputType:f.type==='email'?'email':(f.type==='number'?'number':'text'), opts:f.opts||[],
+        boxStyle:{display:'flex',flexDirection:'column',gap:5,gridColumn:f.type==='area'?'1 / -1':'auto',minWidth:0}})),
+      hasFormErr:!!S.leadFormErr, formErr:S.leadFormErr||'',
+      saveLeadForm,
+      cancelLeadForm:()=>this.setState(LF.mode==='add'
+        ? {leadOpen:null,leadForm:null,leadFormErr:null}
+        : {leadForm:null,leadFormErr:null})
+    } : {formIsAdd:false, formFields:[], hasFormErr:false};
+    const leadTeamOpts=[{v:'',l:'Unassigned'}].concat((D.team||[]).filter(t=>t.active!==false)
+      .map(t=>({v:t.id,l:String(t.name||t.email||'')})));
+    const leadStageOpts=LEAD_STAGES.map(([v,l])=>({v,l}));
+    const closeLeadModal=()=>this.setState({leadOpen:null,leadDelNote:null,leadForm:null,leadFormErr:null});
+
     let leadModal={leadOpen:false};
     const LO=S.leadOpen ? leadsAll.find(l=>l.id===S.leadOpen) : null;
+    if(S.leadOpen==='__new__' && LF){
+      leadModal={leadOpen:true, loId:'New', loName:'Add a lead',
+        loMeta:'Fill in what you know. The overnight run researches anything left blank.',
+        loReading:false, loFormOn:true, loStageOpts:leadStageOpts, loTeamOpts:leadTeamOpts,
+        ...leadFormVals, closeLead:closeLeadModal};
+    }
     if(LO){
       const notes=leadNotesFor(LO.id).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));
       const mails=leadMailsFor(LO.id);
@@ -5953,10 +6111,10 @@ class Component extends DCLogic {
         this.setState(s2=>({d:{...s2.d,leadNote:''}}));
       };
       const hasScore=LO.siteScore!==undefined && LO.siteScore!=='';
-      leadModal={leadOpen:true,
+      leadModal={leadOpen:true, loReading:!LF, loFormOn:!!LF, startEditLead:openEditLead(LO), ...leadFormVals,
         loId:LO.id, loName:LO.name||'Untitled lead',
         loMeta:[LO.county?(LO.county+' County'):'', LO.niche, LO.size].filter(Boolean).join(' · '),
-        loStage:LO.stage||'new', loStageOpts:LEAD_STAGES.map(([v,l])=>({v,l})),
+        loStage:LO.stage||'new', loStageOpts:leadStageOpts,
         onLoStage:e=>{ const v=e.target.value, was=LO.stage;
           if(v===was) return;
           setLead(LO.id,(l,x)=>{
@@ -5967,8 +6125,7 @@ class Component extends DCLogic {
             this.logEv(x,'',whoAmI+' moved '+(l.name||'a lead')+' to '+(LEAD_LABEL[v]||v));
           }); },
         loAssignee:LO.assignee||'',
-        loTeamOpts:[{v:'',l:'Unassigned'}].concat((D.team||[]).filter(t=>t.active!==false)
-          .map(t=>({v:t.id,l:String(t.name||t.email||'')}))),
+        loTeamOpts:leadTeamOpts,
         onLoAssignee:e=>{ const v=e.target.value;
           setLead(LO.id,(l,x)=>{ l.assignee=v;
             if(v) this.logEv(x,'',whoAmI+' assigned '+(l.name||'a lead')+' to '+leadTeamName(v)); }); },
@@ -6006,7 +6163,7 @@ class Component extends DCLogic {
         dLeadNote:d.leadNote||'', onLeadNote:this.draft('leadNote'),
         onLeadNoteKey:e=>{ if(e.key==='Enter' && (e.metaKey||e.ctrlKey)){ e.preventDefault(); sendNote(); } },
         sendLeadNote:sendNote,
-        closeLead:()=>this.setState({leadOpen:null,leadDelNote:null})
+        closeLead:closeLeadModal
       };
     }
 
@@ -6023,7 +6180,7 @@ class Component extends DCLogic {
       leadCampOpts:[{v:'',l:'All campaigns'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Checkout'},{v:'C',l:'C · Chat demo'}],
       dLeadWho:d.leadWho||'', onLeadWho:this.draft('leadWho'),
       leadWhoOpts:[{v:'',l:'Everyone'},{v:'me',l:'Assigned to me'},{v:'none',l:'Unassigned'}],
-      leadFiltered,
+      leadFiltered, openAddLead,
       clearLeadFilters:()=>this.setState(s2=>({d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:''}})),
       ...leadModal
     };
