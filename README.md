@@ -210,7 +210,9 @@ and a card the client sees is the card the team works on. Rows with a null
   colours with the hook written across it, so the board never shows a blank.
 - **Calendar** is the portal's month/week calendar across every brand; the
   week view shows the thumbnails. **Board** is the per-channel kanban.
-- Tiles across the top filter by state (this week, ideas, approved, in the
+- The tab opens on Social Upgrades' own content; a switch flips it to all
+  clients or everything, and a picker narrows to one client. Tiles across
+  the top filter by state (this week, ideas, approved, in the
   works, published, no date); the bar filters by brand and channel and
   searches titles, captions, hashtags and pillars. The menu badge counts
   ideas dated inside the next seven days: they need a yes or a no.

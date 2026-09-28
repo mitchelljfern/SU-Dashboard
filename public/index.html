@@ -1504,7 +1504,10 @@
             </sc-for>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="Brand" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+            <div style="display:flex;gap:6px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;padding:4px">
+              <sc-for list="{{ cmScopes }}" as="sp" hint-placeholder-count="3"><button onClick="{{ sp.select }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for>
+            </div>
+            <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="One client" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <select value="{{ cmChanValueF }}" onChange="{{ onCmChanF }}" aria-label="Channel" style="{{ cmSelStyle }}"><sc-for list="{{ cmChanOptsAll }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
             <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" aria-label="Sort" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -5266,7 +5269,12 @@ class Component extends DCLogic {
     const LIVE_ST=['posted','published','sent','live'];
     const wk0=new Date(utcOf(todayIso).getTime()-utcOf(todayIso).getUTCDay()*DAYMS);
     const weekIso=[isoOf(wk0), isoOf(new Date(wk0.getTime()+6*DAYMS))];
-    const cmClientF=S.cmClient||'all', cmChanF=S.cmChan||'all', cmTileF=S.cmTile||'all';
+    // The tab is first and foremost Social Upgrades' own plan, so that is the
+    // scope it opens on. 'clients' is every client at once; 'all' is both; a
+    // client id is that one account.
+    const cmClientF=S.cmClient||'internal', cmChanF=S.cmChan||'all', cmTileF=S.cmTile||'all';
+    const inScope=cid=> cmClientF==='all' || (cmClientF==='internal'? !cid : cmClientF==='clients'? !!cid : cid===cmClientF);
+    const cmScopeLabel= cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'all clients' : cmClientF==='all'? 'every brand' : brandLabel(cmClientF);
     const cmQ=String(d.cmQ||'').trim().toLowerCase();
     const cmMode=S.cmMode||'gallery';
     const cmMatchesTile=(x,t)=>{ const st=x.status||'idea';
@@ -5279,7 +5287,7 @@ class Component extends DCLogic {
         case 'undated': return !x.scheduledFor && LIVE_ST.indexOf(st)<0;
         default: return true; } };
     const cmScope=(D.strategy||[])
-      .filter(x=> cmClientF==='all' || (cmClientF==='internal'? !x.clientId : x.clientId===cmClientF))
+      .filter(x=>inScope(x.clientId))
       .filter(x=> cmChanF==='all' || chanOf(x)===cmChanF)
       .filter(x=> !cmQ || [x.title,x.body,x.caption,x.hook,x.pillar,x.campaign,(x.hashtags||[]).join(' '),brandLabel(x.clientId),netLabels(x).join(' ')]
         .join(' ').toLowerCase().indexOf(cmQ)>-1);
@@ -5342,7 +5350,7 @@ class Component extends DCLogic {
       return {label,accent,count:items.length,items,noItems:items.length===0}; });
     // Metricool, as the daily agent last saw it. The browser holds no token;
     // it shows what the agent wrote to content_stats, one row per brand/kind.
-    const statsScoped=(D.content_stats||[]).filter(r=> cmClientF==='all' || (cmClientF==='internal'? !r.clientId : r.clientId===cmClientF));
+    const statsScoped=(D.content_stats||[]).filter(r=>inScope(r.clientId));
     const mcByBrand={};
     statsScoped.forEach(r=>{ const k=String(r.brandId||r.clientId||'su');
       (mcByBrand[k]=mcByBrand[k]||{label:r.brandLabel||brandLabel(r.clientId),clientId:r.clientId||'',rows:[]}).rows.push(r); });
@@ -5370,7 +5378,7 @@ class Component extends DCLogic {
     // Who did what, on the content itself: rows tied to a card, or written
     // by one of the two content agents.
     const isContentAgent=id=>{ const t=(D.team||[]).find(y=>y.id===id); return !!(t&&t.isAgent&&/^(social|blog)-agent@/.test(t.email||'')); };
-    const cmLogAll=(D.log||[]).filter(l=>l.contentId||isContentAgent(l.by));
+    const cmLogAll=(D.log||[]).filter(l=>(l.contentId||isContentAgent(l.by)) && inScope(l.clientId||''));
     const cmLogN=S.cmLogN||25;
     const cmLog=cmLogAll.slice(0,cmLogN).map(l=>{ const w=logWho(l); const has=!!l.contentId&&(D.strategy||[]).some(x=>x.id===l.contentId);
       return {text:l.text||'', who:w.name||'Someone', when:this.fmt(l.ts), isAgent:w.isAgent, canOpen:has,
@@ -5515,16 +5523,21 @@ class Component extends DCLogic {
     const contentVals={
       secContent:isTeam&&secKey('content'),
       cmTiles, cmCards, cmCount:cmOrdered.length, noCmCards:cmOrdered.length===0,
-      cmSummary: cmOrdered.length===(D.strategy||[]).length
-        ? ((D.strategy||[]).length+' pieces of content across every brand. Cards are their previews: open one to page through its images, its caption and its history.')
-        : ('Showing '+cmOrdered.length+' of '+(D.strategy||[]).length+' pieces.'),
-      cmClientOpts, cmClientValue:cmClientF, onCmClient:e=>{ const v=e.target.value; this.setState({cmClient:v}); },
+      cmSummary: (cmOrdered.length===cmScope.length
+        ? cmScope.length+(cmScope.length===1?' piece':' pieces')+' of content for '+cmScopeLabel+'.'
+        : 'Showing '+cmOrdered.length+' of '+cmScope.length+' pieces for '+cmScopeLabel+'.')
+        +' Cards are their previews: open one to page through its images, its caption and its history.',
+      cmScopes:[['internal','Social Upgrades'],['clients','Clients'],['all','Everything']].map(([v,l])=>({label:l,
+        select:()=>this.setState({cmClient:v}), style:pillStyle(cmClientF===v)})),
+      cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''))).map(c=>({v:c.id,l:c.name}))),
+      cmClientValue: D.clients.some(c=>c.id===cmClientF)? cmClientF : '',
+      onCmClient:e=>{ const v=e.target.value; this.setState({cmClient: v||'clients'}); },
       cmChanOptsAll:[{v:'all',l:'All channels'}].concat(CHANNELS.map(c=>({v:c.id,l:c.label}))),
       cmChanValueF:cmChanF, onCmChanF:e=>{ const v=e.target.value; this.setState({cmChan:v}); },
       cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest first'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
       dCmQ:d.cmQ||'', onCmQ:this.draft('cmQ'),
-      cmFiltered: cmClientF!=='all'||cmChanF!=='all'||cmTileF!=='all'||!!cmQ,
-      clearCmFilters:()=>this.setState(s2=>({cmClient:'all',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
+      cmFiltered: cmClientF!=='internal'||cmChanF!=='all'||cmTileF!=='all'||!!cmQ,
+      clearCmFilters:()=>this.setState(s2=>({cmClient:'internal',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
       cmSelStyle:cmSel,
       cmGallery:cmMode==='gallery', cmCalendar:cmMode==='calendar', cmBoardOn:cmMode==='board',
       cmGalleryStyle:pillStyle(cmMode==='gallery'), cmCalendarStyle:pillStyle(cmMode==='calendar'), cmBoardStyle:pillStyle(cmMode==='board'),
