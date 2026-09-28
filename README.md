@@ -196,6 +196,57 @@ and comments. Deleting is team-only — it is the one destructive action, and
 RLS still pins every card to its own tenant, so neither side can add to or read
 another client's board.
 
+## Content Map (team)
+
+The team view has a **Content Map** tab: every client's planned content and
+Social Upgrades' own, on one board, as pictures first. It reads the same
+`strategy` table the client portal's Content Map does, so nothing is copied
+and a card the client sees is the card the team works on. Rows with a null
+`client_id` are Social Upgrades' own content and never reach a portal.
+
+- **Gallery** is the default: one card per piece, its first image as the
+  cover, channel and networks on the picture, brand, date, status and the
+  hook underneath. A card with no image yet gets a plate in the brand's
+  colours with the hook written across it, so the board never shows a blank.
+- **Calendar** is the portal's month/week calendar across every brand; the
+  week view shows the thumbnails. **Board** is the per-channel kanban.
+- Tiles across the top filter by state (this week, ideas, approved, in the
+  works, published, no date); the bar filters by brand and channel and
+  searches titles, captions, hashtags and pillars. The menu badge counts
+  ideas dated inside the next seven days: they need a yes or a no.
+- A card opens wide when it has images: a viewer with ‹ › over the
+  pictures and a thumbnail strip, ← → on the keyboard, and Prev / Next
+  between cards in the current order. Underneath, everything is editable by
+  the team (channel, status, format, date and time, networks, pillar,
+  campaign, hook, caption, call to action, hashtags, published link) and
+  read-only for a client. Text fields save on blur; selects save at once.
+  **Copy caption + hashtags** copies the post as it will go out.
+- Images arrive three ways: uploaded from the card (straight into the
+  public `content-media` bucket), pasted as a link (a job row in
+  `content_media_jobs`; a trigger asks the `content-media-ingest` edge
+  function to fetch the bytes, store them and append the stored URL to the
+  card's `media[]`), or attached as a file the old way (private bucket,
+  signed). The first two are public because a content preview is not a
+  private document and the agents that make most of them cannot sign a URL.
+- Two more social states: **Scheduled** (in Metricool) between Approved and
+  Posted, and a **Blog** channel with Ideas → Approved → Drafting →
+  Published. The portal shows both.
+- **Metricool** on the tab is what the daily sync last saw, one row per
+  brand and kind in `content_stats` (KPIs per network, best times, the
+  Metricool queue with links back to cards, top posts). The browser never
+  holds a Metricool token; the agent reads Metricool through its own
+  connector and writes the snapshot. A card carries its own `metricool`
+  block and `metrics` once it has gone out.
+- **Activity** lists every change to the content and who made it, and each
+  card has its own History (log rows carrying `contentId`).
+
+Two agents (migration 035) sign the daily runs: **Social Agent** and **Blog
+Agent**. They insert cards as Ideas, queue previews, sync Metricool, move
+approved work along, reply on cards, and write one summary log row per run
+(that row is what wakes an open dashboard and rings the bell). The contract
+they follow, and the prompt blocks to paste into the scheduled tasks, are in
+[`docs/content-agents.md`](docs/content-agents.md).
+
 ## Reports
 
 A **Reports** board in the team menu writes the monthly report a client sees.

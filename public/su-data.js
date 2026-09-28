@@ -13,7 +13,10 @@
     // Outbound pipeline. Team-only in Postgres, so a client load gets three
     // empty lists back. lead_emails is written by the nightly outreach run and
     // only ever read here.
-    'leads', 'lead_notes', 'lead_emails'];
+    'leads', 'lead_notes', 'lead_emails',
+    // Metricool snapshots for the team Content Map. Team-only in Postgres, so a
+    // client load gets an empty list. Written by the daily social agent.
+    'content_stats'];
 
   // How each collection is ordered when loaded, to match what the UI expects.
   // Messages read as a chat thread (oldest first); everything else is a feed.
@@ -235,7 +238,11 @@
       // Everyone who can sign in, so both sides can list portal members.
       db.from('profiles').select('*'),
       // This reader's own message markers.
-      db.from('message_reads').select('*')
+      db.from('message_reads').select('*'),
+      // Previews on their way onto a content card, and the ones that failed.
+      // Team-only; a client gets an empty list. Never written back from here:
+      // rows are created with queueMediaUrl and finished by the edge function.
+      db.from('content_media_jobs').select('*').order('created_at', { ascending: false }).limit(200)
     ];
     for (const t of TABLES) {
       jobs.push(db.from(t).select('*').order('ts', { ascending: ORDER[t] === 'asc' }));
@@ -254,7 +261,12 @@
     data.rates = results[5].data.map(rateFromRow);
     data.people = results[6].data.map(r => mapFromRow(r, PEOPLE_COLS));
     data.reads = results[7].data.map(readFromRow);
-    TABLES.forEach((t, i) => { data[t] = results[i + 8].data.map(fromRow); });
+    data.mediaJobs = results[8].data.map(r => ({
+      id: r.id, itemId: r.item_id, sourceUrl: r.source_url, alt: r.alt || '',
+      requestedBy: r.requested_by || '', status: r.status, storedUrl: r.stored_url || '',
+      error: r.error || '', createdAt: r.created_at, doneAt: r.done_at
+    }));
+    TABLES.forEach((t, i) => { data[t] = results[i + 9].data.map(fromRow); });
 
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
@@ -488,6 +500,66 @@
     if (error) throw error;
   }
 
+  // ---------- content previews ----------
+  // The big images on the Content Map. They live in a public bucket because
+  // the agents that make most of them cannot sign URLs, and nothing private
+  // ever goes on a content card. Two ways in: a file from the browser, or a
+  // URL handed to a job row that the content-media-ingest function fetches.
+  const CONTENT_BUCKET = 'content-media';
+  const MAX_CONTENT_BYTES = 25 * 1024 * 1024;
+
+  async function uploadContentMedia(file, where) {
+    const w = where || {};
+    if (!file) throw new Error('No file was selected.');
+    const isImage = /^image\//.test(file.type || ''), isVideo = /^video\//.test(file.type || '');
+    if (!isImage && !isVideo) throw new Error('"' + file.name + '" is not an image or video.');
+    if (file.size > MAX_CONTENT_BYTES) throw new Error('"' + file.name + '" is over the 25 MB limit.');
+    const path = [w.clientId || '_internal', w.itemId || 'misc'].join('/') + '/' + objectKey(file.name);
+    const { error } = await client().storage.from(CONTENT_BUCKET)
+      .upload(path, file, { contentType: file.type, upsert: false, cacheControl: '31536000' });
+    if (error) throw error;
+    const { data } = client().storage.from(CONTENT_BUCKET).getPublicUrl(path);
+    return {
+      id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : objectKey(''),
+      url: data.publicUrl, path, type: isVideo ? 'video' : 'image', mime: file.type,
+      size: file.size, alt: file.name.replace(/\.[^.]+$/, ''), ts: Date.now(),
+      by: (profile && profile.id) || ''
+    };
+  }
+
+  // Only our own uploads have a path to remove; a URL that came from
+  // elsewhere is just dropped from the card.
+  async function deleteContentMedia(path) {
+    if (!path) return;
+    const { error } = await client().storage.from(CONTENT_BUCKET).remove([path]);
+    if (error) console.warn('[su-data] could not remove content media', error);
+  }
+
+  // Queue a fetch. The insert fires the trigger that calls the edge function;
+  // the result lands on the card's media[] and in content_media_jobs, and the
+  // poll picks both up.
+  async function queueMediaUrl(itemId, url, alt) {
+    const { data, error } = await client().from('content_media_jobs')
+      .insert({ item_id: itemId, source_url: url, alt: alt || '', requested_by: (profile && profile.id) || null })
+      .select('*').single();
+    if (error) throw error;
+    return data;
+  }
+
+  async function dismissMediaJob(jobId) {
+    const { error } = await client().from('content_media_jobs').delete().eq('id', jobId);
+    if (error) throw error;
+  }
+
+  // Resolves once every write queued so far has landed. A row that refers to
+  // one the UI just created (a media job naming a brand-new card) waits on it.
+  function whenIdle() { return queue.catch(() => {}); }
+
+  async function retryMediaJob(jobId) {
+    const { error } = await client().rpc('content_media_job_retry', { p_job: jobId });
+    if (error) throw error;
+  }
+
   // The same signed URL, asking storage for Content-Disposition: attachment —
   // which is what actually makes the browser save the file rather than
   // navigate to it. Kept as a plain string op so a download can be started
@@ -617,6 +689,7 @@
     signIn, signOut, currentSession, loadProfile, load, sync, latestTs,
     uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
     uploadBrandAsset, deleteBrandAsset, MAX_BRAND_BYTES,
+    uploadContentMedia, deleteContentMedia, queueMediaUrl, retryMediaJob, dismissMediaJob, whenIdle, MAX_CONTENT_BYTES,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
     createClientLogin, createTeamMember, invitePortalMember, deleteUser,
     sendPasswordLink, setPassword, mailAdvice,

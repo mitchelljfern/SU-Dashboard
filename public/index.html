@@ -156,6 +156,15 @@
     /* A pasted URL or a long unbroken word is the usual reason a card refuses
        to shrink, so titles are allowed to break mid-word. */
     .su-cardtitle{overflow-wrap:anywhere}
+    .su-clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .su-clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .su-cmcard{transition:transform .15s ease,box-shadow .15s ease}
+    .su-cmcard:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(15,22,51,.16)}
+    .su-cmcard:hover .su-cmcover img{transform:scale(1.03)}
+    .su-cmcover img,.su-cmcover video{transition:transform .3s ease}
+    .su-cmgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:16px}
+    @media (max-width:560px){ .su-cmgal{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} }
+    .su-cmthumb{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block;background:var(--gray-100)}
     .su-barval{white-space:nowrap}
     /* Seven columns on a phone leaves about 39px a day, which turns a title
        into two letters and an ellipsis. The dots still say how busy a day is,
@@ -336,10 +345,14 @@
 
       <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
-        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,92vw);max-height:84vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:12px">
+        <div style="{{ detailBoxStyle }}">
           <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
             <span style="flex:1"></span>
+            <sc-if value="{{ cmNav }}" hint-placeholder-val="{{ false }}">
+              <sc-if value="{{ cmHasPrev }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cmPrevCard }}" title="Previous card (←)" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:6px;white-space:nowrap" style-hover="border-color:var(--navy)">‹ Prev</button></sc-if>
+              <sc-if value="{{ cmHasNext }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cmNextCard }}" title="Next card (→)" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:10px;white-space:nowrap" style-hover="border-color:var(--navy)">Next ›</button></sc-if>
+            </sc-if>
             <sc-if value="{{ canArchive }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ askArchive }}" title="Hide this card from the client" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:8px;white-space:nowrap" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Archive</button>
             </sc-if>
@@ -377,6 +390,143 @@
               <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
               <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
             </div>
+
+            <sc-if value="{{ isContentCard }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                <span style="{{ cmBrandDot }}"></span><span style="font-weight:600;color:var(--navy)">{{ cmBrand }}</span>
+                <span>·</span><span style="{{ cmChanDot }}"></span><span>{{ cmChanLabel }}</span>
+                <sc-if value="{{ cmHasBy }}" hint-placeholder-val="{{ false }}"><span>·</span><span>{{ cmByLine }}</span><sc-if value="{{ cmByAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if></sc-if>
+              </div>
+
+              <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="{{ mediaStage }}">
+                    <sc-if value="{{ mediaIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ mediaUrl }}" alt="{{ mediaAlt }}" style="max-width:100%;max-height:56vh;object-fit:contain;display:block"></sc-if>
+                    <sc-if value="{{ mediaIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ mediaUrl }}" controls="{{ true }}" style="max-width:100%;max-height:56vh;display:block"></video></sc-if>
+                    <sc-if value="{{ mediaMany }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ mediaPrev }}" aria-label="Previous image" title="Previous (←)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:999px;border:none;background:rgba(255,255,255,.92);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);padding:0 0 3px">‹</button>
+                      <button onClick="{{ mediaNext }}" aria-label="Next image" title="Next (→)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:999px;border:none;background:rgba(255,255,255,.92);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);padding:0 0 3px">›</button>
+                      <span style="position:absolute;right:12px;bottom:10px;background:rgba(15,22,51,.78);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px">{{ mediaCounter }}</span>
+                    </sc-if>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <sc-if value="{{ mediaMany }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;gap:6px;overflow-x:auto;padding:2px;flex:1;min-width:0">
+                        <sc-for list="{{ mediaThumbs }}" as="mt" hint-placeholder-count="3">
+                          <button onClick="{{ mt.select }}" style="{{ mt.style }}" aria-label="{{ mt.alt }}">
+                            <sc-if value="{{ mt.isImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ mt.url }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+                            <sc-if value="{{ mt.isVideo }}" hint-placeholder-val="{{ false }}"><span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:var(--navy);font-size:18px">▶</span></sc-if>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                    <span style="flex:1"></span>
+                    <a href="{{ mediaOpenUrl }}" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:500;white-space:nowrap">Open full size</a>
+                    <sc-if value="{{ mediaCanCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ mediaSetCover }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Make this the cover</button></sc-if>
+                    <sc-if value="{{ mediaCanRemove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ mediaAskRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Remove</button></sc-if>
+                    <sc-if value="{{ mediaAskingRemove }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12px;color:var(--danger-fg);font-weight:600">Remove this preview?</span>
+                      <button onClick="{{ mediaDoRemove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Remove</button>
+                      <button onClick="{{ mediaCancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Keep</button>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border:1px dashed var(--gray-200);border-radius:12px;padding:10px 12px">
+                  <label style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 14px;font-size:12.5px;color:var(--text-body);cursor:pointer;background:var(--surface-card);white-space:nowrap" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" accept="image/*,video/*" onChange="{{ onCmUpload }}" style="display:none">{{ cmUploadLabel }}</label>
+                  <input value="{{ dCmUrl }}" onChange="{{ onCmUrl }}" placeholder="or paste an image / video link (Canva export, Drive, Dropbox, any direct link)" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 11px;font-size:12.5px">
+                  <button onClick="{{ cmFetchUrl }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:8px 14px;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:rgba(15,22,51,.06)">Fetch preview</button>
+                </div>
+                <sc-if value="{{ hasCmJobs }}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{ cmJobs }}" as="j" hint-placeholder-count="1">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:8px 12px;font-size:12.5px">
+                      <span style="color:var(--text-body)">{{ j.label }}</span>
+                      <sc-if value="{{ j.hasError }}" hint-placeholder-val="{{ false }}"><span style="color:var(--danger-fg)">{{ j.error }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ j.failed }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ j.retry }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:4px 12px;font-size:12px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Retry</button>
+                        <button onClick="{{ j.dismiss }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </sc-if>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Channel</label>
+                    <select value="{{ cmChanValue }}" onChange="{{ onCmChan }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmChanOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Status</label>
+                    <select value="{{ cmStatusValue }}" onChange="{{ onCmStatus }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmStatusOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Format</label>
+                    <select value="{{ cmFormatValue }}" onChange="{{ onCmFormat }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmFormatOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Date</label>
+                    <input type="date" value="{{ cmDateValue }}" onChange="{{ onCmDate }}" style="{{ cmFieldStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Time</label>
+                    <input type="time" value="{{ cmTimeValue }}" onChange="{{ onCmTime }}" style="{{ cmFieldStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Pillar</label>
+                    <input value="{{ cfPillar.value }}" onChange="{{ cfPillar.onChange }}" onBlur="{{ cfPillar.onBlur }}" placeholder="e.g. Client wins" style="{{ cmFieldStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Campaign</label>
+                    <input value="{{ cfCampaign.value }}" onChange="{{ cfCampaign.onChange }}" onBlur="{{ cfCampaign.onBlur }}" placeholder="Optional" style="{{ cmFieldStyle }}"></div>
+                </div>
+                <sc-if value="{{ cmIsSocial }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <label style="{{ cmLabelStyle }}">Networks</label>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      <sc-for list="{{ cmNetChips }}" as="nc" hint-placeholder-count="5"><button onClick="{{ nc.toggle }}" style="{{ nc.style }}">{{ nc.label }}</button></sc-for>
+                    </div>
+                  </div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hook</label>
+                  <input value="{{ cfHook.value }}" onChange="{{ cfHook.onChange }}" onBlur="{{ cfHook.onBlur }}" placeholder="The first line. What stops the scroll." style="{{ cmFieldStyle }}"></div>
+                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Caption / body</label>
+                  <textarea value="{{ cfCaption.value }}" onChange="{{ cfCaption.onChange }}" onBlur="{{ cfCaption.onBlur }}" rows="5" placeholder="The post as it will go out. For a blog, the outline or the draft." style="{{ cmFieldStyle }};line-height:1.55;resize:vertical"></textarea></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Call to action</label>
+                    <input value="{{ cfCta.value }}" onChange="{{ cfCta.onChange }}" onBlur="{{ cfCta.onBlur }}" placeholder="Book a call, read the guide…" style="{{ cmFieldStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hashtags</label>
+                    <input value="{{ cfTags.value }}" onChange="{{ cfTags.onChange }}" onBlur="{{ cfTags.onBlur }}" placeholder="#socialmedia #smallbusiness" style="{{ cmFieldStyle }}"></div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+                  <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px"><label style="{{ cmLabelStyle }}">Published link</label>
+                    <input value="{{ cfPublished.value }}" onChange="{{ cfPublished.onChange }}" onBlur="{{ cfPublished.onBlur }}" placeholder="https://… once it is live" style="{{ cmFieldStyle }}"></div>
+                  <sc-if value="{{ canCopyCaption }}" hint-placeholder-val="{{ true }}"><button onClick="{{ copyCaption }}" title="Copies hook, caption, call to action and hashtags" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Copy caption + hashtags</button></sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cmReadOnly }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ hasCmFacts }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:14px;flex-wrap:wrap">
+                    <sc-for list="{{ cmFacts }}" as="cf" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:1px"><span style="{{ cmLabelStyle }}">{{ cf.label }}</span><span style="font-size:13px;color:var(--navy);font-weight:500">{{ cf.value }}</span></div></sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasCmHook }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;font-weight:600;color:var(--navy);line-height:1.4">{{ cmHook }}</div></sc-if>
+                <sc-if value="{{ hasCmCaption }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--text-body);line-height:1.6;white-space:pre-wrap">{{ cmCaption }}</div></sc-if>
+                <sc-if value="{{ hasCmCta }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--navy);font-weight:500">{{ cmCta }}</div></sc-if>
+                <sc-if value="{{ hasCmTags }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--blue);line-height:1.5">{{ cmTags }}</div></sc-if>
+                <sc-if value="{{ hasCmPublished }}" hint-placeholder-val="{{ false }}"><a href="{{ cmPublished }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">See it live →</a></sc-if>
+              </sc-if>
+
+              <sc-if value="{{ hasMc }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:10px 14px;font-size:12.5px">
+                  <span style="font-weight:700;color:var(--navy)">Metricool</span>
+                  <span style="color:var(--text-body)">{{ mcStatus }}</span>
+                  <span style="color:var(--text-muted)">{{ mcWhen }}</span>
+                  <span style="flex:1"></span>
+                  <sc-if value="{{ hasMcUrl }}" hint-placeholder-val="{{ false }}"><a href="{{ mcUrl }}" target="_blank" rel="noopener noreferrer" style="font-weight:500">Open in Metricool →</a></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ hasMx }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px"><span style="{{ cmLabelStyle }}">Performance</span><span style="font-size:11px;color:var(--text-muted)">{{ mxWhen }}</span></div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px">
+                    <sc-for list="{{ mxRows }}" as="mx" hint-placeholder-count="4">
+                      <div style="background:var(--gray-100);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--navy);line-height:1">{{ mx.value }}</span><span style="font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600">{{ mx.label }}</span></div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </sc-if>
             <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                 <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Description</span>
@@ -482,6 +632,20 @@
               </div>
             </sc-if>
           </div>
+          <sc-if value="{{ hasCmHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 26px 6px;display:flex;flex-direction:column;gap:4px">
+              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 4px">History</h4>
+              <div style="max-height:170px;overflow-y:auto;display:flex;flex-direction:column">
+                <sc-for list="{{ cmHistory }}" as="h" hint-placeholder-count="3">
+                  <div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border-hairline);font-size:12.5px;min-width:0">
+                    <span style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ h.text }}</span>
+                    <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ h.who }} · {{ h.when }}</span>
+                    <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
           <div style="padding:6px 26px 22px;display:flex;flex-direction:column;gap:4px">
             <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 6px">Comments</h4>
             <sc-for list="{{ detailComments }}" as="c" hint-placeholder-count="2">
@@ -1332,6 +1496,296 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secContent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ cmTiles }}" as="t" hint-placeholder-count="7">
+              <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="Brand" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+            <select value="{{ cmChanValueF }}" onChange="{{ onCmChanF }}" aria-label="Channel" style="{{ cmSelStyle }}"><sc-for list="{{ cmChanOptsAll }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+            <input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
+            <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" aria-label="Sort" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+            <sc-if value="{{ cmFiltered }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ clearCmFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear</button>
+            </sc-if>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ cmSetGallery }}" style="{{ cmGalleryStyle }}">Gallery</button>
+              <button onClick="{{ cmSetCalendar }}" style="{{ cmCalendarStyle }}">Calendar</button>
+              <button onClick="{{ cmSetBoard }}" style="{{ cmBoardStyle }}">Board</button>
+            </div>
+            <button onClick="{{ toggleCmAdd }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">{{ cmAddBtn }}</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--text-muted)">
+            <span style="flex:1">{{ cmSummary }}</span>
+            <button onClick="{{ toggleCmHow }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">How the agents update this</button>
+          </div>
+          <sc-if value="{{ cmHowOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--text-body);line-height:1.65;display:flex;flex-direction:column;gap:6px">
+              <div><strong style="color:var(--navy)">Social Agent</strong> and <strong style="color:var(--navy)">Blog Agent</strong> run on a schedule and write straight to this board: new cards land as <em>Ideas</em>, previews arrive a few seconds after the card (they are fetched from the link the agent gives), and every change is signed and listed under Activity and in each card's History.</div>
+              <div>Your part is the yes or the no. Move an idea to <em>Approved</em> (or comment on the card with what to change) and the next run picks it up: it schedules approved social posts in Metricool, drafts approved blog topics, and replies on the card. Cards you add here by hand get the same treatment.</div>
+              <div>The Metricool panel is what the agent last saw there (queue, best times, KPIs, top posts). It refreshes on every run rather than live.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmAddOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:12px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Add content</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <input value="{{ dCmTitle }}" onChange="{{ onCmTitle }}" placeholder="Working title" style="flex:2;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <select value="{{ dCmClient }}" onChange="{{ onCmClient2 }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmAddClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+                <select value="{{ dCmChan }}" onChange="{{ onCmChan2 }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmAddChanOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+                <sc-if value="{{ cmAddIsSocial }}" hint-placeholder-val="{{ true }}"><select value="{{ dCmNet }}" onChange="{{ onCmNet }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmNetOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
+                <select value="{{ dCmFormat }}" onChange="{{ onCmFormat2 }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmFormatOptsAll }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+                <input value="{{ dCmWhen }}" onChange="{{ onCmWhen }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
+                <input value="{{ dCmTime }}" onChange="{{ onCmTime2 }}" type="time" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px">
+              </div>
+              <textarea value="{{ dCmBody }}" onChange="{{ onCmBody }}" placeholder="The angle, the copy, the notes. Whatever you have." rows="2" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical;font-family:var(--font-body)"></textarea>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <input value="{{ dCmMediaUrl }}" onChange="{{ onCmMediaUrl }}" placeholder="Preview link, optional. Any direct image or video link; it is fetched and stored." style="flex:1;min-width:240px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+                <button onClick="{{ cmAdd }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add card</button>
+              </div>
+              <div style="font-size:11.5px;color:var(--text-muted)">More images, the caption, hashtags and the rest go on the card once it exists. Open it and everything is editable.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmGallery }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ noCmCards }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface-card);border:1px dashed var(--gray-200);border-radius:12px;padding:36px 24px;text-align:center;font-size:13.5px;color:var(--text-muted);line-height:1.6">Nothing here yet. Add a card, or wait for the next agent run: it fills this board with the week's posts and blog topics, previews included.</div>
+            </sc-if>
+            <div class="su-cmgal">
+              <sc-for list="{{ cmCards }}" as="k" hint-placeholder-count="6">
+                <div onClick="{{ k.open }}" class="su-cmcard" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;min-width:0;box-shadow:0 2px 8px rgba(15,22,51,.06)">
+                  <div class="su-cmcover" style="position:relative;aspect-ratio:1/1;background:var(--gray-100);overflow:hidden">
+                    <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+                    <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px">▶</span></sc-if>
+                    <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateStyle }}"><div class="su-clamp3" style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
+                    <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
+                      <span style="background:rgba(255,255,255,.94);color:var(--navy);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px"><span style="{{ k.chanDot }}"></span>{{ k.chanLabel }}</span>
+                      <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ true }}"><span style="background:rgba(15,22,51,.72);color:#fff;font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:999px">{{ k.nets }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasMore }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(15,22,51,.75);color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap">{{ k.mediaCount }}</span></sc-if>
+                    </div>
+                  </div>
+                  <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:7px;min-width:0"><span style="{{ k.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ k.brand }}</span><span style="flex:1"></span><span style="{{ k.whenStyle }}">{{ k.when }}</span></div>
+                    <div class="su-cardtitle su-clamp2" style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.35">{{ k.title }}</div>
+                    <sc-if value="{{ k.hasExcerpt }}" hint-placeholder-val="{{ true }}"><div class="su-clamp2" style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ k.excerpt }}</div></sc-if>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
+                      <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
+                      <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
+                      <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
+                    </div>
+                    
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmCalendar }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <button onClick="{{ cmPrev }}" aria-label="Previous" title="Previous" style="{{ cmNavStyle }}">&#8249;</button>
+                  <button onClick="{{ cmNext }}" aria-label="Next" title="Next" style="{{ cmNavStyle }}">&#8250;</button>
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0 0 0 4px">{{ cmPeriod }}</h3>
+                  <button onClick="{{ cmToday }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;color:var(--text-body);padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--font-body)">Today</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                  <div style="display:flex;gap:14px">
+                    <sc-for list="{{ cmLegend }}" as="lg" hint-placeholder-count="3">
+                      <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted)"><span style="{{ lg.dotStyle }}"></span>{{ lg.label }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ cmSetMonth }}" style="{{ cmMonthStyle }}">Month</button>
+                    <button onClick="{{ cmSetWeek }}" style="{{ cmWeekStyle }}">Week</button>
+                  </div>
+                </div>
+              </div>
+              <div style="{{ cmGridStyle }}">
+                <sc-for list="{{ cmWeekdays }}" as="wd" hint-placeholder-count="7">
+                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);text-align:center;padding-bottom:2px">{{ wd.n }}</div>
+                </sc-for>
+              </div>
+              <div style="{{ cmGridStyle }}">
+                <sc-for list="{{ cmDays }}" as="dy" hint-placeholder-count="35">
+                  <div style="{{ dy.dayStyle }}">
+                    <div style="{{ dy.numStyle }}">{{ dy.num }}</div>
+                    <sc-for list="{{ dy.items }}" as="ev" hint-placeholder-count="1">
+                      <button onClick="{{ ev.open }}" style="{{ ev.style }}" title="{{ ev.channel }}: {{ ev.title }}">
+                        <sc-if value="{{ ev.hasThumb }}" hint-placeholder-val="{{ false }}"><img sc-camel-src="{{ ev.thumb }}" alt="" class="su-cmthumb"></sc-if>
+                        <span style="display:flex;align-items:center;gap:5px;min-width:0"><span style="{{ ev.dotStyle }}"></span><span class="su-caltitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.title }}</span></span>
+                        <sc-if value="{{ ev.hasSub }}" hint-placeholder-val="{{ false }}"><span class="su-caltitle" style="font-size:10px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.sub }}</span></sc-if>
+                      </button>
+                    </sc-for>
+                    <sc-if value="{{ dy.hasMore }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:10.5px;color:var(--text-muted)">{{ dy.more }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmBoardOn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <span style="font-size:12px;color:var(--text-muted)">Board for</span>
+              <sc-for list="{{ cmBoardChanTabs }}" as="ct" hint-placeholder-count="4"><button onClick="{{ ct.select }}" style="{{ ct.style }}" style-hover="border-color:var(--navy)">{{ ct.label }}</button></sc-for>
+            </div>
+            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start">
+              <sc-for list="{{ cmBoardCols }}" as="col" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:6px;border-bottom:2px solid {{ col.accent }}">
+                    <span style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</span>
+                    <span style="font-size:11px;font-weight:600;color:var(--text-muted)">{{ col.count }}</span>
+                  </div>
+                  <sc-if value="{{ col.noItems }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-muted);padding:4px 2px">Nothing here yet.</div></sc-if>
+              <sc-for list="{{ col.items }}" as="k" hint-placeholder-count="2">
+                <div onClick="{{ k.open }}" class="su-cmcard" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;min-width:0;box-shadow:0 2px 8px rgba(15,22,51,.06)">
+                  <div class="su-cmcover" style="position:relative;aspect-ratio:1/1;background:var(--gray-100);overflow:hidden">
+                    <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+                    <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px">▶</span></sc-if>
+                    <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateStyle }}"><div class="su-clamp3" style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
+                    <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
+                      <span style="background:rgba(255,255,255,.94);color:var(--navy);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px"><span style="{{ k.chanDot }}"></span>{{ k.chanLabel }}</span>
+                      <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ true }}"><span style="background:rgba(15,22,51,.72);color:#fff;font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:999px">{{ k.nets }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasMore }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(15,22,51,.75);color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap">{{ k.mediaCount }}</span></sc-if>
+                    </div>
+                  </div>
+                  <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:7px;min-width:0"><span style="{{ k.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ k.brand }}</span><span style="flex:1"></span><span style="{{ k.whenStyle }}">{{ k.when }}</span></div>
+                    <div class="su-cardtitle su-clamp2" style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.35">{{ k.title }}</div>
+                    <sc-if value="{{ k.hasExcerpt }}" hint-placeholder-val="{{ true }}"><div class="su-clamp2" style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ k.excerpt }}</div></sc-if>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
+                      <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
+                      <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
+                      <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center;padding-top:2px">
+                      <sc-if value="{{ k.asking }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size:12px;color:var(--danger-fg);font-weight:600;flex:1">Delete this card?</span>
+                        <button onClick="{{ k.doRemove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                        <button onClick="{{ k.cancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Keep</button>
+                      </sc-if>
+                      <sc-if value="{{ k.notAsking }}" hint-placeholder-val="{{ true }}">
+                        <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.back }}" style="flex:0 0 auto;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 10px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button></sc-if>
+                        <sc-if value="{{ k.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ k.fwd }}" style="flex:1;background:var(--chrome);border:none;border-radius:12px;color:#fff;padding:5px 10px;font-size:12px;cursor:pointer" style-hover="background:var(--navy-800)">{{ k.fwdLabel }} ▸</button></sc-if>
+                        <button onClick="{{ k.askRemove }}" title="Delete this card" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ cmHasStats }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Metricool</h3>
+                <span style="font-size:12px;color:var(--text-muted)">What the daily sync last saw</span>
+                <button onClick="{{ toggleMc }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">{{ mcToggleLabel }}</button>
+                <span style="flex:1"></span>
+                <a href="https://app.metricool.com/" target="_blank" rel="noopener noreferrer" style="font-size:12.5px;font-weight:500">Open Metricool →</a>
+              </div>
+              <sc-if value="{{ cmMcOpen }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ mcBrands }}" as="mb" hint-placeholder-count="1">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:14px 18px 16px;display:flex;flex-direction:column;gap:12px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px"><span style="{{ mb.dot }}"></span><span style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy)">{{ mb.label }}</span><span style="flex:1"></span><span style="font-size:11px;color:var(--text-muted)">{{ mb.synced }}</span></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;align-items:start">
+                      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                        <sc-for list="{{ mb.kpiGroups }}" as="kg" hint-placeholder-count="1">
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ kg.network }}</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px">
+                              <sc-for list="{{ kg.stats }}" as="st" hint-placeholder-count="4">
+                                <div style="background:var(--gray-100);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:1px;min-width:0">
+                                  <span style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ st.value }}</span>
+                                  <span style="font-size:9.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ st.label }}</span>
+                                  <sc-if value="{{ st.hasDelta }}" hint-placeholder-val="{{ false }}"><span style="font-size:10.5px;font-weight:600;color:{{ st.deltaColor }}">{{ st.delta }}</span></sc-if>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </sc-for>
+                        <sc-if value="{{ mb.hasBest }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:5px">
+                            <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Best times to post</div>
+                            <sc-for list="{{ mb.best }}" as="bt" hint-placeholder-count="1">
+                              <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;font-size:11.5px"><span style="font-weight:600;color:var(--navy);min-width:64px">{{ bt.network }}</span><sc-for list="{{ bt.slots }}" as="sl" hint-placeholder-count="3"><span style="background:var(--gray-100);border-radius:999px;padding:2px 9px;color:var(--text-body)">{{ sl.t }}</span></sc-for></div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                      </div>
+                      <sc-if value="{{ mb.hasQueue }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                          <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ mb.queueLabel }}</div>
+                          <sc-for list="{{ mb.queue }}" as="q" hint-placeholder-count="2">
+                            <div onClick="{{ q.open }}" style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer;min-width:0">
+                              <sc-if value="{{ q.hasImg }}" hint-placeholder-val="{{ false }}"><img sc-camel-src="{{ q.img }}" alt="" loading="lazy" style="width:38px;height:38px;min-width:38px;object-fit:cover;border-radius:8px;background:var(--gray-100)"></sc-if>
+                              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                                <div style="font-size:10.5px;color:var(--text-muted)">{{ q.network }} · {{ q.when }}<sc-if value="{{ q.linked }}" hint-placeholder-val="{{ false }}"> · <span style="color:var(--green);font-weight:600">On the board</span></sc-if></div>
+                                <div style="font-size:12px;color:var(--text-body);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ q.text }}</div>
+                              </div>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ mb.hasTop }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                          <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Top posts</div>
+                          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+                            <sc-for list="{{ mb.top }}" as="tp" hint-placeholder-count="3">
+                              <a href="{{ tp.url }}" target="_blank" rel="noopener noreferrer" style="display:flex;flex-direction:column;gap:4px;min-width:0;color:var(--text-body)">
+                                <sc-if value="{{ tp.hasImg }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ tp.img }}" alt="" loading="lazy" class="su-cmthumb"></sc-if>
+                                <span style="font-size:10.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ tp.network }} · {{ tp.when }}</span>
+                                <span class="su-clamp2" style="font-size:11.5px;line-height:1.35">{{ tp.text }}</span>
+                                <span style="font-size:10.5px;font-weight:600;color:var(--navy)">{{ tp.stat }}</span>
+                              </a>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;gap:8px;min-width:0">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Activity</h3>
+              <span style="font-size:12.5px;color:var(--text-muted)">Every change to the content, and who made it</span>
+            </div>
+            <sc-if value="{{ noCmLog }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted);padding:6px 0">Nothing logged yet. The agents' runs and your edits show up here.</div></sc-if>
+            <div style="display:flex;flex-direction:column;max-height:380px;overflow-y:auto">
+              <sc-for list="{{ cmLog }}" as="h" hint-placeholder-count="4">
+                <div onClick="{{ h.open }}" style="display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border-hairline);min-width:0;cursor:pointer">
+                  <span style="flex:1;font-size:13px;color:var(--text-body);overflow-wrap:anywhere">{{ h.text }}</span>
+                  <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ h.who }} · {{ h.when }}</span>
+                  <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ h.agentPill }}">Agent</span></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ cmLogMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ moreCmLog }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:500;cursor:pointer;padding:4px 0" style-hover="color:var(--green)">Show more</button></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ secLeads }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -2142,7 +2596,11 @@
                   <div style="{{ dy.dayStyle }}">
                     <div style="{{ dy.numStyle }}">{{ dy.num }}</div>
                     <sc-for list="{{ dy.items }}" as="ev" hint-placeholder-count="1">
-                      <button onClick="{{ ev.open }}" style="{{ ev.style }}" title="{{ ev.channel }}: {{ ev.title }}"><span style="{{ ev.dotStyle }}"></span><span class="su-caltitle">{{ ev.title }}</span></button>
+                      <button onClick="{{ ev.open }}" style="{{ ev.style }}" title="{{ ev.channel }}: {{ ev.title }}">
+                        <sc-if value="{{ ev.hasThumb }}" hint-placeholder-val="{{ false }}"><img sc-camel-src="{{ ev.thumb }}" alt="" class="su-cmthumb"></sc-if>
+                        <span style="display:flex;align-items:center;gap:5px;min-width:0"><span style="{{ ev.dotStyle }}"></span><span class="su-caltitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.title }}</span></span>
+                        <sc-if value="{{ ev.hasSub }}" hint-placeholder-val="{{ false }}"><span class="su-caltitle" style="font-size:10px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ev.sub }}</span></sc-if>
+                      </button>
                     </sc-for>
                     <sc-if value="{{ dy.hasMore }}" hint-placeholder-val="{{ false }}">
                       <div style="font-size:10.5px;color:var(--text-muted)">{{ dy.more }}</div>
@@ -2177,6 +2635,10 @@
                 </sc-if>
                 <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="2">
                   <div onClick="{{ it.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                    <sc-if value="{{ it.hasCover }}" hint-placeholder-val="{{ false }}">
+                      <sc-if value="{{ it.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ it.coverUrl }}" muted="{{ true }}" preload="metadata" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block;background:var(--gray-100)"></video></sc-if>
+                      <sc-if value="{{ it.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ it.coverUrl }}" alt="{{ it.coverAlt }}" class="su-cmthumb"></sc-if>
+                    </sc-if>
                     <div class="su-cardtitle" style="font-size:13.5px;font-weight:500;color:var(--navy);line-height:1.4">{{ it.title }}</div>
                     <sc-if value="{{ it.hasBody }}" hint-placeholder-val="{{ true }}">
                       <div style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ it.body }}</div>
@@ -3479,7 +3941,15 @@ class Component extends DCLogic {
 
     // Escape closes the attachment lightbox — it can open over the detail
     // modal, so there needs to be a way out that is not the overlay behind it.
-    this.__onKey = e=>{ if(e.key==='Escape' && this.state.preview) this.setState({preview:null}); };
+    this.__onKey = e=>{
+      if(e.key==='Escape' && this.state.preview) return this.setState({preview:null});
+      // Left and right walk the previews on an open content card, or the cards
+      // themselves when there is nothing to page through. Never while typing.
+      const t=e.target, typing=t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable);
+      if(typing || this.state.preview) return;
+      if(e.key==='ArrowLeft' && this.__cmKeyPrev){ e.preventDefault(); this.__cmKeyPrev(); }
+      if(e.key==='ArrowRight' && this.__cmKeyNext){ e.preventDefault(); this.__cmKeyNext(); }
+    };
     window.addEventListener('keydown', this.__onKey);
   }
   componentWillUnmount(){
@@ -3534,6 +4004,10 @@ class Component extends DCLogic {
     });
   }
   set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
+  // Runs once the write queued by the last set() has landed. A row that refers
+  // to one the UI just made (a media job naming a brand-new card) must wait
+  // for the card, or the foreign key refuses it.
+  afterSave(fn){ setTimeout(()=>window.SUData.whenIdle().then(fn).catch(err=>console.error('[hub] afterSave', err)), 80); }
   // Now a shared primary key across every user, so the old 7-char random
   // string is no longer good enough — two people creating rows at once could
   // collide and overwrite each other.
@@ -3759,7 +4233,7 @@ class Component extends DCLogic {
     // Set before the first badge() of this pass: in the portal the status
     // pills are tinted from the client's kit, not from Social Upgrades green.
     this._theme = isTeam ? null : this.brandOf(client);
-    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
+    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,mediaIdx:0,delMedia:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,comment:''}}));
     const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined}}));
@@ -3928,6 +4402,18 @@ class Component extends DCLogic {
     // Picking the same file twice in a row has to fire onChange again, and it
     // only does if the input is cleared first.
     const takeFiles=e=>{ const input=e.target; const picked=Array.from(input.files||[]); input.value=''; return picked; };
+    // Every visual a content card carries, in display order: its media[]
+    // (public URLs, most of them stored by the ingest function) and then any
+    // image or video attached as a file, which is private and so signed on
+    // demand. The first one is the card's cover.
+    const mediaOf=it=>{
+      const out=[];
+      (it.media||[]).forEach(m=>{ if(m&&m.url) out.push({id:m.id||m.url,url:m.url,type:m.type==='video'?'video':'image',
+        alt:m.alt||'',path:m.path||'',own:!!m.path,fromFile:false}); });
+      (it.files||[]).forEach(f=>{ const k=fileKind(f); if(!f.path||(k!=='image'&&k!=='video')) return;
+        const u=this.sigUrl(f.path); if(u) out.push({id:'f:'+f.path,url:u,type:k,alt:f.name||'',path:'',own:false,fromFile:true}); });
+      return out;
+    };
 
     // ===== leaving the dashboard =====
     // Plenty of clients already run Asana, Trello or Jira. Rather than three
@@ -4089,7 +4575,7 @@ class Component extends DCLogic {
     // no home at all. They are separate boards, and the payroll one is renamed
     // so nobody goes looking for a client's invoice under it.
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['leads','Leads'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
+      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['leads','Leads'],['content','Content Map'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
           .filter(([id])=>id!=='invoicing'||canBilling)
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           .filter(([id])=>id!=='billing'||canSeeClientBilling);
@@ -4118,7 +4604,10 @@ class Component extends DCLogic {
     // a post is posted, an email is sent, an ad runs and then stops.
     const CHANNELS=[
       {id:'social', label:'Social Media',
-       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['posted','Posted','var(--blue)']]},
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
+      // A post is drafted and then published; the topic is what gets approved.
+      {id:'blog',   label:'Blog',
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['drafting','Drafting','#D68F2E'],['published','Published','var(--blue)']]},
       {id:'email',  label:'Emails',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['sent','Sent','var(--blue)']]},
       {id:'ads',    label:'Paid Ads',
@@ -4145,8 +4634,10 @@ class Component extends DCLogic {
             const it=y.strategy.find(z=>z.id===x.id);
             it.status=chanOrder[Math.max(0,Math.min(chanOrder.length-1,i+dir))];
             return y; }));
+          const cov=mediaOf(x)[0]||null;
           return {
             title:x.title||'Untitled', body:x.body||'', hasBody:!!x.body,
+            hasCover:!!cov, coverUrl:cov?cov.url:'', coverIsVideo:!!cov&&cov.type==='video', coverIsImage:!!cov&&cov.type!=='video', coverAlt:cov?cov.alt:'',
             when:x.scheduledFor?niceDate(x.scheduledFor):'', hasWhen:!!x.scheduledFor,
             commentsLabel:cLabel((x.comments||[]).length),
             open:openDetail('strategy',x.id),
@@ -4174,6 +4665,12 @@ class Component extends DCLogic {
       // A reply is the one moment in the pipeline that needs a person, so that
       // is what the Leads tab counts.
       if(isTeam && id==='leads'){ const n=(D.leads||[]).filter(l=>l.stage==='replied').length; if(n) return n; }
+      // An idea with a date inside the week needs a yes or a no before it can
+      // be scheduled, so that is what the Content Map counts.
+      if(isTeam && id==='content'){
+        const lim=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+        const n=(D.strategy||[]).filter(x=>(x.status||'idea')==='idea'&&x.scheduledFor&&x.scheduledFor<=lim).length;
+        if(n) return n; }
       return false;
     };
     // Opening a board is what marks it read, wherever it is opened from.
@@ -4216,7 +4713,7 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand=['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
@@ -4729,9 +5226,10 @@ class Component extends DCLogic {
     // is never carried by colour alone.
     const cmCardDark = !isTeam && this.lum(this.brandOf(client).card) < 0.5;
     const CH_HUES = cmCardDark
-      ? {social:'#16A34A', email:'#3B82F6', ads:'#D97706'}
-      : {social:'#1FB264', email:'#3B82F6', ads:'#E0A11B'};
+      ? {social:'#16A34A', blog:'#A855F7', email:'#3B82F6', ads:'#D97706'}
+      : {social:'#1FB264', blog:'#7C3AED', email:'#3B82F6', ads:'#E0A11B'};
     const CH_META = {social:{label:'Social', color:CH_HUES.social},
+                     blog:  {label:'Blog',   color:CH_HUES.blog},
                      email: {label:'Email',  color:CH_HUES.email},
                      ads:   {label:'Paid',   color:CH_HUES.ads}};
     const DAYMS = 86400000;
@@ -4740,7 +5238,323 @@ class Component extends DCLogic {
     const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const MONF = ['January','February','March','April','May','June','July',
                   'August','September','October','November','December'];
-    const cmAll = (D.strategy||[]).filter(x=>x.clientId===client.id);
+    // ===== team content map =====
+    // Everything the agency has planned, across every client, plus Social
+    // Upgrades' own posts (client_id null, shown as "Social Upgrades"). The
+    // daily agents fill it in; people approve, move and comment. It is a
+    // visual board first: a card is its preview, the words come second.
+    const NETWORKS=[['instagram','Instagram'],['facebook','Facebook'],['linkedin','LinkedIn'],['gbp','Google Business'],
+      ['tiktok','TikTok'],['youtube','YouTube'],['x','X'],['threads','Threads'],['pinterest','Pinterest']];
+    const NET_LABEL=Object.fromEntries(NETWORKS);
+    const FORMATS=[['single','Single image'],['carousel','Carousel'],['reel','Reel'],['story','Story'],['video','Video'],
+      ['article','Article'],['newsletter','Newsletter'],['ad','Ad']];
+    const FMT_LABEL=Object.fromEntries(FORMATS);
+    const netsOf=x=>Array.isArray(x.networks)&&x.networks.length? x.networks : (x.network? [x.network] : []);
+    const netLabels=x=>netsOf(x).map(n=>NET_LABEL[n]||n);
+    const stBadge=st=>{ st=st||'idea';
+      const kind= st==='idea'?'gray' : st==='approved'?'green' : (st==='drafting'||st==='paused')?'amber' : st==='ended'?'gray' : 'blue';
+      return [this.badge(kind), st.charAt(0).toUpperCase()+st.slice(1)]; };
+    const chanOf=x=>CH_META[x.channel]? x.channel : 'social';
+    const colsOf=ch=>(CHANNELS.find(c=>c.id===ch)||CHANNELS[0]).cols;
+    const brandLabel=cid=> cid? cname(cid) : 'Social Upgrades';
+    // The plate behind a card that has no preview yet: the brand's colours,
+    // with the hook written across them, so the board never shows a blank.
+    const plateOf=cid=>{ const c=D.clients.find(y=>y.id===cid);
+      if(!c) return 'linear-gradient(135deg,#1FB264 0%,#2E3FD6 100%)';
+      const k=this.brandOf(c);
+      return 'linear-gradient(135deg,'+(k.accent||'#1FB264')+' 0%,'+(k.primary||'#0F1633')+' 100%)'; };
+    const LIVE_ST=['posted','published','sent','live'];
+    const wk0=new Date(utcOf(todayIso).getTime()-utcOf(todayIso).getUTCDay()*DAYMS);
+    const weekIso=[isoOf(wk0), isoOf(new Date(wk0.getTime()+6*DAYMS))];
+    const cmClientF=S.cmClient||'all', cmChanF=S.cmChan||'all', cmTileF=S.cmTile||'all';
+    const cmQ=String(d.cmQ||'').trim().toLowerCase();
+    const cmMode=S.cmMode||'gallery';
+    const cmMatchesTile=(x,t)=>{ const st=x.status||'idea';
+      switch(t){
+        case 'week': return !!x.scheduledFor && x.scheduledFor>=weekIso[0] && x.scheduledFor<=weekIso[1];
+        case 'idea': return st==='idea';
+        case 'approved': return st==='approved';
+        case 'working': return st==='scheduled'||st==='drafting';
+        case 'live': return LIVE_ST.indexOf(st)>-1;
+        case 'undated': return !x.scheduledFor && LIVE_ST.indexOf(st)<0;
+        default: return true; } };
+    const cmScope=(D.strategy||[])
+      .filter(x=> cmClientF==='all' || (cmClientF==='internal'? !x.clientId : x.clientId===cmClientF))
+      .filter(x=> cmChanF==='all' || chanOf(x)===cmChanF)
+      .filter(x=> !cmQ || [x.title,x.body,x.caption,x.hook,x.pillar,x.campaign,(x.hashtags||[]).join(' '),brandLabel(x.clientId),netLabels(x).join(' ')]
+        .join(' ').toLowerCase().indexOf(cmQ)>-1);
+    const cmTeamList=cmScope.filter(x=>cmMatchesTile(x,cmTileF));
+    // What is coming, then what has no date, then what already went out.
+    const cmSort=S.cmSort||'date';
+    const cmRank=x=> !x.scheduledFor? 1 : (x.scheduledFor>=todayIso? 0 : 2);
+    const cmOrdered=cmTeamList.slice().sort((a,b)=>{
+      if(cmSort==='new') return b.ts-a.ts;
+      const ra=cmRank(a), rb=cmRank(b);
+      if(ra!==rb) return ra-rb;
+      if(ra===1) return b.ts-a.ts;
+      const c=(a.scheduledFor||'').localeCompare(b.scheduledFor||'');
+      if(c) return ra===2? -c : c;
+      return String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||'')) || b.ts-a.ts; });
+    const cmTileDefs=[['all','All'],['week','This week'],['idea','Ideas'],['approved','Approved'],['working','In the works'],['live','Published'],['undated','No date']];
+    const cmTiles=cmTileDefs.map(([k,lab])=>{ const n=cmScope.filter(x=>cmMatchesTile(x,k)).length; const on=cmTileF===k;
+      return {label:lab, n, select:()=>this.setState({cmTile:k}),
+        style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),
+          borderRadius:12,padding:'10px 14px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
+          cursor:'pointer',minWidth:92,fontFamily:'var(--font-body)'},
+        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':(k==='idea'&&n?'#a2691a':'var(--navy)')},
+        labStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:on?'rgba(255,255,255,.78)':'var(--text-muted)'}}; });
+    const cmJobsFor=id=>(D.mediaJobs||[]).filter(j=>j.itemId===id);
+    const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]=stBadge(x.status);
+      const ch=chanOf(x), meta=CH_META[ch], who=logWho({by:x.by||''});
+      const pend=cmJobsFor(x.id).filter(j=>j.status==='pending'||j.status==='working').length;
+      return {id:x.id, title:x.title||'Untitled', open:openDetail('strategy',x.id),
+        hasCover:!!cover, noCover:!cover, coverUrl:cover?cover.url:'', coverIsVideo:!!cover&&cover.type==='video', coverIsImage:!!cover&&cover.type!=='video', coverAlt:cover?cover.alt:'',
+        plateStyle:{background:plateOf(x.clientId),position:'absolute',inset:0,display:'flex',alignItems:'flex-end',padding:'14px 14px 16px'},
+        plateText:x.hook||x.caption||x.title||'',
+        mediaCount:med.length>1? '1 / '+med.length : '', hasMore:med.length>1,
+        pendingLabel: pend? (pend===1?'1 preview on its way':pend+' previews on their way') : '', hasPending:pend>0,
+        chanLabel:meta.label, chanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:meta.color},
+        nets:netLabels(x).join(' · '), hasNets:netsOf(x).length>0,
+        fmt:FMT_LABEL[x.format]||'', hasFmt:!!x.format,
+        brand:brandLabel(x.clientId), dot:clientDot(x.clientId),
+        when: x.scheduledFor? niceDate(x.scheduledFor)+(x.scheduledTime?' · '+x.scheduledTime:'') : 'No date yet',
+        whenStyle:{fontSize:11.5,fontWeight:600,color: x.scheduledFor? (x.scheduledFor<todayIso&&LIVE_ST.indexOf(x.status||'idea')<0? '#a2691a':'var(--blue)') : 'var(--text-muted)'},
+        excerpt:x.caption||x.hook||x.body||'', hasExcerpt:!!(x.caption||x.hook||x.body),
+        badgeStyle, statusLabel, commentsLabel:cLabel((x.comments||[]).length), hasComments:(x.comments||[]).length>0,
+        byName:who.name, isAgent:who.isAgent, hasBy:!!who.name}; };
+    const cmCards=cmOrdered.map(cmCard);
+    // Board: one channel at a time, since the lists differ per channel.
+    const cmBoardChan= cmChanF==='all'? 'social' : cmChanF;
+    const cmBoardColsRaw=colsOf(cmBoardChan);
+    const cmBoardOrder=cmBoardColsRaw.map(c=>c[0]);
+    const cmBoardCols=cmBoardColsRaw.map(([st,label,accent],i)=>{
+      const items=cmOrdered.filter(x=>chanOf(x)===cmBoardChan&&(x.status||'idea')===st).map(x=>{
+        const c=cmCard(x);
+        const move=dir=>stopThen(()=>this.set(y=>{ const it=y.strategy.find(z=>z.id===x.id); if(!it) return y;
+          const to=Math.max(0,Math.min(cmBoardOrder.length-1,i+dir)); it.status=cmBoardOrder[to];
+          this.logEv(y,x.clientId,'Social Upgrades moved "'+(it.title||'a card')+'" to '+cmBoardColsRaw[to][1],{contentId:x.id,quiet:true}); return y; }));
+        const asking=S.cmDel===x.id;
+        return Object.assign(c,{asking, notAsking:!asking, canBack:i>0,canFwd:i<cmBoardOrder.length-1,back:move(-1),fwd:move(1),
+          fwdLabel:cmBoardColsRaw[Math.min(i+1,cmBoardColsRaw.length-1)][1],
+          askRemove:stopThen(()=>this.setState({cmDel:x.id})), cancelRemove:stopThen(()=>this.setState({cmDel:null})),
+          doRemove:stopThen(()=>{ this.setState({cmDel:null});
+            this.set(y=>{ y.strategy=y.strategy.filter(z=>z.id!==x.id); this.logEv(y,x.clientId,'Social Upgrades deleted "'+(x.title||'a card')+'" from the Content Map',{contentId:x.id}); return y; }); })}); });
+      return {label,accent,count:items.length,items,noItems:items.length===0}; });
+    // Metricool, as the daily agent last saw it. The browser holds no token;
+    // it shows what the agent wrote to content_stats, one row per brand/kind.
+    const statsScoped=(D.content_stats||[]).filter(r=> cmClientF==='all' || (cmClientF==='internal'? !r.clientId : r.clientId===cmClientF));
+    const mcByBrand={};
+    statsScoped.forEach(r=>{ const k=String(r.brandId||r.clientId||'su');
+      (mcByBrand[k]=mcByBrand[k]||{label:r.brandLabel||brandLabel(r.clientId),clientId:r.clientId||'',rows:[]}).rows.push(r); });
+    const mcWhen=v=>{ if(!v) return ''; const t=new Date(v); return isNaN(t)? String(v) : t.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); };
+    const mcBrands=Object.keys(mcByBrand).map(k=>{ const b=mcByBrand[k];
+      const kpis=b.rows.filter(r=>r.kind==='kpis').sort((x,y)=>String(x.network||'').localeCompare(String(y.network||'')));
+      const best=b.rows.filter(r=>r.kind==='best_times');
+      const queue=b.rows.find(r=>r.kind==='queue'), top=b.rows.find(r=>r.kind==='top_posts');
+      const synced=b.rows.reduce((a,r)=>Math.max(a,Number(r.syncedAt)||Number(r.ts)||0),0);
+      const qposts=queue?(queue.posts||[]):[], tposts=top?(top.posts||[]):[];
+      return {label:b.label, dot:clientDot(b.clientId), synced: synced? 'Synced '+this.fmt(synced) : 'Not synced yet',
+        kpiGroups:kpis.map(r=>({network:(NET_LABEL[r.network]||r.network||'')+(r.period?' · '+r.period:''),
+          stats:(r.stats||[]).map(s2=>({label:s2.label,value:String(s2.value),delta:s2.delta||'',hasDelta:!!s2.delta,
+            deltaColor: s2.up===false? '#a2691a':'var(--green)'}))})), hasKpis:kpis.length>0,
+        best:best.map(r=>({network:NET_LABEL[r.network]||r.network||'', slots:(r.slots||[]).slice(0,5).map(sl=>({t:[sl.day,sl.time].filter(Boolean).join(' ')}))})), hasBest:best.length>0,
+        queueN:qposts.length, hasQueue:qposts.length>0, queueLabel:qposts.length+(qposts.length===1?' post':' posts')+' in the Metricool queue',
+        queue:qposts.slice(0,8).map(pq=>({network:NET_LABEL[pq.network]||pq.network||'', text:String(pq.text||'').slice(0,110),
+          when:mcWhen(pq.publishAt), img:(pq.mediaUrls||[])[0]||'', hasImg:!!(pq.mediaUrls&&pq.mediaUrls[0]),
+          linked:!!pq.contentId&&(D.strategy||[]).some(x=>x.id===pq.contentId),
+          open: pq.contentId? openDetail('strategy',pq.contentId) : (()=>{})})),
+        hasTop:tposts.length>0, top:tposts.slice(0,6).map(tp=>({network:NET_LABEL[tp.network]||tp.network||'', text:String(tp.text||'').slice(0,90),
+          img:tp.imageUrl||'', hasImg:!!tp.imageUrl, url:tp.url||'#', hasUrl:!!tp.url,
+          stat:[tp.impressions!==undefined?tp.impressions+' impressions':'', tp.engagement!==undefined?tp.engagement+' engagements':''].filter(Boolean).join(' · '),
+          when:tp.publishedAt? niceDate(String(tp.publishedAt).slice(0,10)) : ''}))}; });
+    // Who did what, on the content itself: rows tied to a card, or written
+    // by one of the two content agents.
+    const isContentAgent=id=>{ const t=(D.team||[]).find(y=>y.id===id); return !!(t&&t.isAgent&&/^(social|blog)-agent@/.test(t.email||'')); };
+    const cmLogAll=(D.log||[]).filter(l=>l.contentId||isContentAgent(l.by));
+    const cmLogN=S.cmLogN||25;
+    const cmLog=cmLogAll.slice(0,cmLogN).map(l=>{ const w=logWho(l); const has=!!l.contentId&&(D.strategy||[]).some(x=>x.id===l.contentId);
+      return {text:l.text||'', who:w.name||'Someone', when:this.fmt(l.ts), isAgent:w.isAgent, canOpen:has,
+        open: has? openDetail('strategy',l.contentId) : (()=>{}),
+        agentPill:{background:'rgba(46,63,214,.10)',color:'var(--blue)',fontSize:9.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',padding:'1px 7px',borderRadius:12}}; });
+    // Adding a card by hand. An agent does the same through SQL.
+    const cmAdd=()=>{ const t=(d.cmTitle||'').trim();
+      if(!t) return this.setState({syncError:'Give the card a title.'});
+      const id=this.uid(); const cid=(d.cmClient||'internal')==='internal'? '' : d.cmClient;
+      const ch=d.cmChan||'social'; const url=(d.cmMediaUrl||'').trim();
+      if(url && !/^https?:\/\//i.test(url)) return this.setState({syncError:'A preview link needs to start with http:// or https://'});
+      this.setState({syncError:null});
+      this.set(x=>{ x.strategy.unshift({id,clientId:cid,ts:Date.now(),channel:ch,status:'idea',title:t,body:(d.cmBody||'').trim(),
+        networks: ch==='social'&&d.cmNet? [d.cmNet] : [], format:d.cmFormat||'', scheduledFor:d.cmWhen||'', scheduledTime:d.cmTime||'',
+        links:[],comments:[],media:[],by:me.id});
+        this.logEv(x,cid,'Social Upgrades added "'+t+'" to the Content Map',{contentId:id}); return x; });
+      if(url) this.afterSave(()=>window.SUData.queueMediaUrl(id,url,t).then(()=>this.__pull())
+        .catch(err=>this.setState({syncError:(err&&err.message)||'That link could not be queued.'})));
+      this.setState(s2=>({cmAddOpen:false,d:{...s2.d,cmTitle:'',cmBody:'',cmWhen:'',cmTime:'',cmMediaUrl:''}})); };
+    const cmSel={border:'1px solid var(--gray-200)',borderRadius:12,padding:'8px 10px',fontSize:13,background:'var(--surface-card)',color:'var(--text-body)',maxWidth:220};
+    const cmClientOpts=[{v:'all',l:'All brands'},{v:'internal',l:'Social Upgrades'}].concat(
+      D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''))).map(c=>({v:c.id,l:c.name})));
+    // The detail view of a content card: the big preview, its fields, what
+    // Metricool knows about it, and its history. Team edits; a client reads.
+    const DETAIL_BOX=wide=>({position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:wide?'min(880px,94vw)':'min(600px,92vw)',
+      maxHeight:'88vh',overflowY:'auto',background:'var(--surface-card)',zIndex:81,display:'flex',flexDirection:'column',borderRadius:12});
+    const contentDetail=(item, findIt)=>{
+      const med=mediaOf(item), n=med.length;
+      const idx=n? Math.min(Math.max(0,S.mediaIdx||0),n-1) : 0;
+      const cur=med[idx]||null;
+      const setIdx=i=>this.setState({mediaIdx:((i%n)+n)%n, delMedia:null});
+      const order=cmOrdered.map(x=>x.id), pos=order.indexOf(item.id);
+      const prevId= pos>0? order[pos-1] : null, nextId= (pos>-1&&pos<order.length-1)? order[pos+1] : null;
+      const inTeamMap = isTeam && sectionNow==='content';
+      this.__cmKeyPrev = n>1? ()=>setIdx(idx-1) : (inTeamMap&&prevId? openDetail('strategy',prevId) : null);
+      this.__cmKeyNext = n>1? ()=>setIdx(idx+1) : (inTeamMap&&nextId? openDetail('strategy',nextId) : null);
+      const write=(fn,note)=>this.set(x=>{ const it=findIt(x); if(!it) return x; fn(it);
+        if(note) this.logEv(x,item.clientId,note,{contentId:item.id,quiet:true}); return x; });
+      const label=item.title||'a card';
+      const txt=(key,pretty)=>({ value: d['cf_'+key]===undefined? String(item[key]||'') : d['cf_'+key], onChange:this.draft('cf_'+key),
+        onBlur:()=>{ const v=d['cf_'+key]; if(v===undefined) return;
+          if(String(v)!==String(item[key]||'')) write(it=>{ it[key]=v; },'Social Upgrades edited the '+(pretty||key)+' of "'+label+'"');
+          this.setState(s2=>({d:{...s2.d,['cf_'+key]:undefined}})); } });
+      const tagsText=(item.hashtags||[]).join(' ');
+      const tags={ value: d.cf_hashtags===undefined? tagsText : d.cf_hashtags, onChange:this.draft('cf_hashtags'),
+        onBlur:()=>{ const v=d.cf_hashtags; if(v===undefined) return;
+          const arr=String(v).split(/[\s,]+/).filter(Boolean).map(t=>t[0]==='#'?t:'#'+t);
+          if(arr.join(' ')!==tagsText) write(it=>{ it.hashtags=arr; },'Social Upgrades edited the hashtags of "'+label+'"');
+          this.setState(s2=>({d:{...s2.d,cf_hashtags:undefined}})); } };
+      const ch=chanOf(item), cols=colsOf(ch);
+      const jobs=cmJobsFor(item.id).filter(j=>j.status!=='done');
+      const hostOf=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return 'link'; } };
+      const facts=[];
+      if(netsOf(item).length) facts.push({label:'Networks',value:netLabels(item).join(', ')});
+      if(item.format) facts.push({label:'Format',value:FMT_LABEL[item.format]||item.format});
+      if(item.scheduledTime) facts.push({label:'Time',value:item.scheduledTime});
+      if(item.pillar) facts.push({label:'Pillar',value:item.pillar});
+      if(item.campaign) facts.push({label:'Campaign',value:item.campaign});
+      const mc=item.metricool||null, mx=item.metrics||null;
+      const mxRows= mx? Object.keys(mx).filter(k=>mx[k]!==null&&mx[k]!==undefined&&mx[k]!=='').map(k=>({label:k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase()),value:String(mx[k])})) : [];
+      const hist=(D.log||[]).filter(l=>l.contentId===item.id).slice(0,30).map(l=>{ const w=logWho(l);
+        return {text:l.text||'', who:w.name||'Someone', when:this.fmt(l.ts), isAgent:w.isAgent}; });
+      const who=logWho({by:item.by||''});
+      const caption=[item.hook, item.caption||item.body, item.cta].filter(Boolean).join('\n\n');
+      const copyBlock=caption+(tagsText?'\n\n'+tagsText:'');
+      return {
+        detailBoxStyle:DETAIL_BOX(n>0),
+        isContentCard:true, cmCanEdit:isTeam, cmReadOnly:!isTeam,
+        cmNav:inTeamMap&&(prevId||nextId), cmHasPrev:!!prevId, cmHasNext:!!nextId,
+        cmPrevCard: prevId? openDetail('strategy',prevId) : (()=>{}), cmNextCard: nextId? openDetail('strategy',nextId) : (()=>{}),
+        cmChanLabel:CH_META[ch].label, cmChanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:CH_META[ch].color},
+        cmBrand:brandLabel(item.clientId), cmBrandDot:clientDot(item.clientId),
+        cmByLine: who.name? 'Added by '+who.name : '', cmHasBy:!!who.name, cmByAgent:who.isAgent,
+        // the gallery
+        hasMedia:n>0, noMedia:n===0, mediaMany:n>1,
+        mediaUrl:cur?cur.url:'', mediaAlt:cur?cur.alt:'', mediaIsVideo:!!cur&&cur.type==='video', mediaIsImage:!!cur&&cur.type!=='video',
+        mediaCounter:(idx+1)+' / '+n,
+        mediaPrev:()=>setIdx(idx-1), mediaNext:()=>setIdx(idx+1),
+        mediaThumbs:med.map((m,i)=>({url:m.url,alt:m.alt,isVideo:m.type==='video',isImage:m.type!=='video',select:()=>setIdx(i),
+          style:{width:64,height:64,minWidth:64,borderRadius:8,overflow:'hidden',border:'2px solid '+(i===idx?'var(--navy)':'transparent'),padding:0,background:'var(--gray-100)',cursor:'pointer',display:'block'}})),
+        mediaStage:{position:'relative',background:'#0F1633',borderRadius:12,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',minHeight:240,maxHeight:'56vh'},
+        mediaCanCover: isTeam&&!!cur&&idx>0&&!cur.fromFile,
+        mediaSetCover:()=>write(it=>{ const arr=it.media||[]; const k=arr.findIndex(m=>(m.id||m.url)===cur.id); if(k>0){ const [m]=arr.splice(k,1); arr.unshift(m); } },'Social Upgrades changed the cover of "'+label+'"'),
+        mediaCanRemove: isTeam&&!!cur&&!cur.fromFile&&S.delMedia!==cur.id,
+        mediaAskingRemove: isTeam&&!!cur&&S.delMedia===cur.id,
+        mediaAskRemove:()=>this.setState({delMedia:cur.id}), mediaCancelRemove:()=>this.setState({delMedia:null}),
+        mediaDoRemove:()=>{ this.setState({delMedia:null,mediaIdx:Math.max(0,idx-1)});
+          if(cur.own) window.SUData.deleteContentMedia(cur.path).catch(()=>{});
+          write(it=>{ it.media=(it.media||[]).filter(m=>(m.id||m.url)!==cur.id); },'Social Upgrades removed a preview from "'+label+'"'); },
+        mediaOpenUrl:cur?cur.url:'#',
+        // adding previews (team)
+        cmUploadLabel:(S.cmUploading||0)>0? 'Uploading…' : '+ Upload image or video',
+        onCmUpload:e=>{ const picked=takeFiles(e); if(!picked.length) return;
+          this.setState(s2=>({cmUploading:(s2.cmUploading||0)+picked.length,syncError:null}));
+          const done=extra=>this.setState(s2=>Object.assign({cmUploading:Math.max(0,(s2.cmUploading||0)-1)},extra||{}));
+          picked.forEach(f=>window.SUData.uploadContentMedia(f,{clientId:item.clientId,itemId:item.id})
+            .then(m=>{ write(it=>{ it.media=(it.media||[]).concat([m]); },'Social Upgrades added a preview to "'+label+'"'); done({mediaIdx:n}); })
+            .catch(err=>done({syncError:(err&&err.message)||'That file could not be uploaded.'}))); },
+        dCmUrl:d.cmUrl||'', onCmUrl:this.draft('cmUrl'),
+        cmFetchUrl:()=>{ const u=(d.cmUrl||'').trim(); if(!u) return;
+          if(!/^https?:\/\//i.test(u)) return this.setState({syncError:'A preview link needs to start with http:// or https://'});
+          this.setState(s2=>({syncError:null,d:{...s2.d,cmUrl:''}}));
+          window.SUData.queueMediaUrl(item.id,u,item.title||'').then(()=>this.__pull())
+            .catch(err=>this.setState({syncError:(err&&err.message)||'That link could not be queued.'})); },
+        cmJobs:jobs.map(j=>({label:(j.status==='failed'?'Could not fetch ':'Fetching ')+hostOf(j.sourceUrl)+(j.status==='failed'?'':'…'),
+          failed:j.status==='failed', error:j.error||'', hasError:!!j.error,
+          retry:()=>window.SUData.retryMediaJob(j.id).then(()=>this.__pull()).catch(err=>this.setState({syncError:(err&&err.message)||'Could not retry.'})),
+          dismiss:()=>window.SUData.dismissMediaJob(j.id).then(()=>this.__pull()).catch(err=>this.setState({syncError:(err&&err.message)||'Could not dismiss.'}))})),
+        hasCmJobs:jobs.length>0,
+        // the fields
+        cmChanValue:ch, onCmChan:e=>{ const v=e.target.value; write(it=>{ it.channel=v; if(colsOf(v).map(c=>c[0]).indexOf(it.status||'idea')<0) it.status='idea'; },'Social Upgrades moved "'+label+'" to '+(CH_META[v]||{}).label); },
+        cmChanOpts:CHANNELS.map(c=>({v:c.id,l:c.label})),
+        cmStatusValue:item.status||'idea', onCmStatus:e=>{ const v=e.target.value; write(it=>{ it.status=v; },'Social Upgrades marked "'+label+'" '+v); },
+        cmStatusOpts:cols.map(c=>({v:c[0],l:c[1]})),
+        cmIsSocial:ch==='social',
+        cmNetChips:NETWORKS.map(([k,l])=>{ const on=netsOf(item).indexOf(k)>-1;
+          return {label:l, style:{background:on?'var(--navy)':'var(--surface-card)',color:on?'#fff':'var(--text-body)',border:'1px solid '+(on?'var(--navy)':'var(--gray-200)'),borderRadius:999,padding:'4px 11px',fontSize:11.5,fontWeight:500,cursor:isTeam?'pointer':'default'},
+            toggle:()=>{ if(!isTeam) return; write(it=>{ const cur2=netsOf(it).slice(); const at=cur2.indexOf(k); if(at>-1) cur2.splice(at,1); else cur2.push(k); it.networks=cur2; delete it.network; }); }}; }),
+        cmFormatValue:item.format||'', onCmFormat:e=>{ const v=e.target.value; write(it=>{ it.format=v; }); },
+        cmFormatOpts:[{v:'',l:'Format…'}].concat(FORMATS.map(([v,l])=>({v,l}))),
+        cmDateValue:item.scheduledFor||'', onCmDate:e=>{ const v=e.target.value; write(it=>{ it.scheduledFor=v; },'Social Upgrades set "'+label+'" for '+(v?niceDate(v):'no date')); },
+        cmTimeValue:item.scheduledTime||'', onCmTime:e=>{ const v=e.target.value; write(it=>{ it.scheduledTime=v; }); },
+        cfPillar:txt('pillar'), cfCampaign:txt('campaign'), cfHook:txt('hook'), cfCaption:txt('caption'), cfCta:txt('cta','call to action'),
+        cfPublished:txt('publishedUrl','published link'), cfTags:tags,
+        cmFacts:facts, hasCmFacts:facts.length>0,
+        cmHook:item.hook||'', hasCmHook:!!item.hook, cmCaption:item.caption||'', hasCmCaption:!!item.caption,
+        cmCta:item.cta||'', hasCmCta:!!item.cta, cmTags:tagsText, hasCmTags:!!tagsText,
+        cmPublished:item.publishedUrl||'', hasCmPublished:!!item.publishedUrl,
+        copyCaption:()=>copyText(copyBlock,'Caption'), canCopyCaption:!!copyBlock.trim(),
+        // Metricool
+        hasMc:!!mc, mcStatus: mc? (mc.status? String(mc.status) : 'In Metricool') : '', mcUrl: mc&&mc.url? mc.url : '', hasMcUrl:!!(mc&&mc.url),
+        mcWhen: mc&&(mc.publishedAt||mc.scheduledAt)? mcWhen(mc.publishedAt||mc.scheduledAt) : '',
+        hasMx:mxRows.length>0, mxRows, mxWhen: item.metricsAt? 'as of '+this.fmt(Number(item.metricsAt)||Date.parse(item.metricsAt)||Date.now()) : '',
+        // history
+        cmHistory:hist, hasCmHistory:hist.length>0,
+        agentPill:{background:'rgba(46,63,214,.10)',color:'var(--blue)',fontSize:9.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',padding:'1px 7px',borderRadius:12},
+        cmFieldStyle:{border:'1px solid var(--gray-200)',borderRadius:12,padding:'8px 11px',fontSize:13,width:'100%',boxSizing:'border-box',background:'var(--surface-card)',color:'var(--text-body)',fontFamily:'var(--font-body)'},
+        cmLabelStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'var(--ls-caps)',textTransform:'uppercase',color:'var(--text-muted)'}
+      };
+    };
+    if(!(S.detail&&S.detail.type==='strategy')){ this.__cmKeyPrev=null; this.__cmKeyNext=null; }
+    const contentVals={
+      secContent:isTeam&&secKey('content'),
+      cmTiles, cmCards, cmCount:cmOrdered.length, noCmCards:cmOrdered.length===0,
+      cmSummary: cmOrdered.length===(D.strategy||[]).length
+        ? ((D.strategy||[]).length+' pieces of content across every brand. Cards are their previews: open one to page through its images, its caption and its history.')
+        : ('Showing '+cmOrdered.length+' of '+(D.strategy||[]).length+' pieces.'),
+      cmClientOpts, cmClientValue:cmClientF, onCmClient:e=>{ const v=e.target.value; this.setState({cmClient:v}); },
+      cmChanOptsAll:[{v:'all',l:'All channels'}].concat(CHANNELS.map(c=>({v:c.id,l:c.label}))),
+      cmChanValueF:cmChanF, onCmChanF:e=>{ const v=e.target.value; this.setState({cmChan:v}); },
+      cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest first'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
+      dCmQ:d.cmQ||'', onCmQ:this.draft('cmQ'),
+      cmFiltered: cmClientF!=='all'||cmChanF!=='all'||cmTileF!=='all'||!!cmQ,
+      clearCmFilters:()=>this.setState(s2=>({cmClient:'all',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
+      cmSelStyle:cmSel,
+      cmGallery:cmMode==='gallery', cmCalendar:cmMode==='calendar', cmBoardOn:cmMode==='board',
+      cmGalleryStyle:pillStyle(cmMode==='gallery'), cmCalendarStyle:pillStyle(cmMode==='calendar'), cmBoardStyle:pillStyle(cmMode==='board'),
+      cmSetGallery:()=>this.setState({cmMode:'gallery'}), cmSetCalendar:()=>this.setState({cmMode:'calendar'}), cmSetBoard:()=>this.setState({cmMode:'board'}),
+      cmBoardCols, cmBoardChanLabel:(CH_META[cmBoardChan]||{}).label||'', cmBoardChanTabs:CHANNELS.map(c=>({label:c.label,select:()=>this.setState({cmChan:c.id}),style:pillStyle(cmBoardChan===c.id)})),
+      mcBrands, cmHasStats:mcBrands.length>0,
+      cmMcOpen:S.cmMcOpen!==false, toggleMc:()=>this.setState(s2=>({cmMcOpen:s2.cmMcOpen===false})),
+      mcToggleLabel:S.cmMcOpen===false?'Show':'Hide',
+      cmLog, noCmLog:cmLogAll.length===0, cmLogMore:cmLogAll.length>cmLogN, moreCmLog:()=>this.setState({cmLogN:cmLogN+50}),
+      cmAddOpen:!!S.cmAddOpen, toggleCmAdd:()=>this.setState(s2=>({cmAddOpen:!s2.cmAddOpen})),
+      cmAddBtn: S.cmAddOpen? 'Close' : '+ Add content',
+      dCmTitle:d.cmTitle||'', onCmTitle:this.draft('cmTitle'),
+      dCmBody:d.cmBody||'', onCmBody:this.draft('cmBody'),
+      dCmWhen:d.cmWhen||'', onCmWhen:this.draft('cmWhen'),
+      dCmTime:d.cmTime||'', onCmTime2:this.draft('cmTime'),
+      dCmMediaUrl:d.cmMediaUrl||'', onCmMediaUrl:this.draft('cmMediaUrl'),
+      dCmClient:d.cmClient||'internal', onCmClient2:this.draft('cmClient'),
+      cmAddClientOpts:cmClientOpts.filter(o=>o.v!=='all'),
+      dCmChan:d.cmChan||'social', onCmChan2:this.draft('cmChan'), cmAddChanOpts:CHANNELS.map(c=>({v:c.id,l:c.label})),
+      cmAddIsSocial:(d.cmChan||'social')==='social',
+      dCmNet:d.cmNet||'instagram', onCmNet:this.draft('cmNet'), cmNetOpts:NETWORKS.map(([v,l])=>({v,l})),
+      dCmFormat:d.cmFormat||'', onCmFormat2:this.draft('cmFormat'), cmFormatOptsAll:[{v:'',l:'Format…'}].concat(FORMATS.map(([v,l])=>({v,l}))),
+      cmAdd,
+      cmWeekThumbs: (S.cmView||'month')==='week',
+      cmHowOpen:!!S.cmHowOpen, toggleCmHow:()=>this.setState(s2=>({cmHowOpen:!s2.cmHowOpen})),
+    };
+
+    // The client's own calendar in the portal; the whole filtered plan in the
+    // team view. One builder, two sources.
+    const cmAll = isTeam ? cmTeamList : (D.strategy||[]).filter(x=>x.clientId===client.id);
     const cmDated = cmAll.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.scheduledFor||''));
     const cmByDay = {};
     cmDated.forEach(x=>{ (cmByDay[x.scheduledFor] = cmByDay[x.scheduledFor]||[]).push(x); });
@@ -4781,12 +5595,20 @@ class Component extends DCLogic {
           color: isToday ? 'var(--navy)' : 'var(--text-muted)'},
         items: items.slice(0,perCell).map(x=>{
           const meta = CH_META[x.channel] || {label:'Other', color:'var(--gray-400)'};
+          const cov = mediaOf(x)[0]||null;
           return {title:x.title, channel:meta.label, open:openDetail('strategy',x.id),
+            // The week view has room for the picture; the month view keeps the dot.
+            hasThumb: cmView==='week' && !!cov && cov.type!=='video', thumb: cov? cov.url : '',
+            sub: isTeam? brandLabel(x.clientId) : '', hasSub: isTeam,
             dotStyle:{width:7,height:7,minWidth:7,borderRadius:999,background:meta.color},
-            style:{display:'flex',alignItems:'center',gap:5,width:'100%',textAlign:'left',
-              background:'transparent',border:'none',padding:'2px 0',cursor:'pointer',
-              fontSize:11.5,color:'var(--text-body)',fontFamily:'var(--font-body)',
-              overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}};
+            style: cmView==='week'
+              ? {display:'flex',flexDirection:'column',alignItems:'stretch',gap:3,width:'100%',textAlign:'left',
+                 background:'var(--surface-card)',border:'1px solid var(--border-hairline)',borderRadius:8,padding:4,cursor:'pointer',
+                 fontSize:11.5,color:'var(--text-body)',fontFamily:'var(--font-body)',overflow:'hidden'}
+              : {display:'flex',alignItems:'center',gap:5,width:'100%',textAlign:'left',
+                 background:'transparent',border:'none',padding:'2px 0',cursor:'pointer',
+                 fontSize:11.5,color:'var(--text-body)',fontFamily:'var(--font-body)',
+                 overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}};
         }),
         more: items.length>perCell ? '+'+(items.length-perCell)+' more' : '',
         hasMore: items.length>perCell
@@ -4882,6 +5704,7 @@ class Component extends DCLogic {
           });
         };
         dv={detailOpen:true,
+          detailBoxStyle:DETAIL_BOX(false), isContentCard:false, cmNav:false, hasCmHistory:false,
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Content Map':'Update',
           detailTitle: ty==='update'?item.text:item.title,
           // A title typed in a hurry keeps its typo unless somebody can fix
@@ -5099,6 +5922,7 @@ class Component extends DCLogic {
               this.logEv(x,item.clientId,nm+' commented on '+(ty==='update'?'an update':'"'+it.title+'"')); return x; });
             this.setState(s=>({d:{...s.d,comment:''}})); }
         };
+        if(ty==='strategy') Object.assign(dv, contentDetail(item, findIt));
       }
     }
     // ----- an invoice, opened -----
@@ -6327,6 +7151,7 @@ class Component extends DCLogic {
       // ----- roles -----
       isAdmin, canBilling, notBilling:isTeam&&!canBilling,
       secTeam: isTeam&&secKey('team'),
+      ...contentVals,
       secStrategy: !isTeam&&secKey('strategy'),
       stratCols, stratChannel: chan.label,
       cmOverview, cmBoard:!cmOverview,
