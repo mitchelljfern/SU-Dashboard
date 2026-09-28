@@ -74,6 +74,11 @@ HVAC prospects. Leads are team-only in Postgres (`leads`, `lead_notes`,
   on their site, every email sent or received, and a team comment thread.
   Stage changes, assignments and comments are logged, so they reach the rest
   of the team through the notification bell.
+- **+ Add lead** opens a blank card for a lead found by hand, and **Edit details**
+  on any card turns it into the same form. Nothing is saved until Save, and a
+  lead whose name or website matches one already in the list asks for a second
+  Save before it is added. Hand-added leads carry `source: manual`; the nightly
+  run researches them but never overwrites a field a person filled in.
 - The nightly outreach run adds and researches leads, drafts the emails in
   Gmail, moves drafted leads to Sent once they appear in Sent mail, marks
   replies, and records each message in `lead_emails`. The browser never writes
