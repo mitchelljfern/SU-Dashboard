@@ -3037,19 +3037,73 @@
           </div>
 
           <!-- Your own submissions -->
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
+          <div style="display:flex;flex-direction:column;gap:14px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your submissions</h3>
             <sc-if value="{{ noMyPayRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:13.5px;color:var(--text-muted)">Nothing submitted yet.</div>
             </sc-if>
-            <sc-for list="{{ myPayRows }}" as="p" hint-placeholder-count="3">
-              <div style="display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+            <sc-if value="{{ hasMyPayOverview }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours by pay period · tap a bar to jump to it</span>
+                <div style="display:flex;gap:14px;font-size:11.5px;color:var(--text-muted)">
+                  <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#1FB264"></span>Paid</span>
+                  <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#2E3FD6"></span>Approved</span>
+                  <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#D68F2E"></span>Awaiting approval</span>
+                </div>
+              </div>
+              <div style="overflow-x:auto;display:flex;flex-direction:row-reverse;align-items:flex-end;gap:6px">
+                <div style="display:contents">
+                  <sc-for list="{{ myPayOverview }}" as="o" hint-placeholder-count="8">
+                    <button onClick="{{ o.jump }}" title="{{ o.tip }}" style="flex:1 0 58px;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;padding:4px 2px;cursor:pointer;border-radius:8px" style-hover="background:var(--gray-100)">
+                      <span style="font-size:11px;font-weight:600;color:var(--navy);white-space:nowrap">{{ o.hours }}</span>
+                      <span style="height:110px;width:100%;display:flex;align-items:flex-end;justify-content:center"><span style="{{ o.barStyle }}"></span></span>
+                      <span style="font-size:11px;color:var(--text-body);white-space:nowrap">{{ o.label }}</span>
+                      <span style="font-size:10px;color:var(--text-muted);margin-top:-4px">{{ o.year }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+            <sc-for list="{{ myPayPeriods }}" as="g" hint-placeholder-count="2">
+            <div id="my-{{ g.anchorId }}" style="scroll-margin-top:90px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 22px;background:linear-gradient(135deg,rgba(31,178,100,.07),rgba(46,63,214,.06))">
+                <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pay period</span>
+                    <sc-if value="{{ g.isCurrent }}" hint-placeholder-val="{{ false }}">
+                      <span style="background:rgba(31,178,100,.14);color:#158a4d;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:12px">Current</span>
+                    </sc-if>
+                  </div>
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:22px;line-height:1.15;color:var(--navy)">{{ g.rangeLabel }}</div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-muted)">
+                    <span title="{{ g.isoLabel }}">{{ g.startDay }} to {{ g.endDay }}</span>
+                    <sc-if value="{{ g.hasPay }}" hint-placeholder-val="{{ true }}">
+                      <span style="background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--navy);font-weight:600;border-radius:12px;padding:3px 10px">{{ g.payLabel }}</span>
+                    </sc-if>
+                  </div>
+                </div>
+                <div style="display:flex;gap:26px;align-items:flex-end">
+                  <sc-if value="{{ g.hasHours }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ g.totalHours }}</div>
+                      <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);font-size:10px">Total hours</div>
+                    </div>
+                  </sc-if>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ g.totalAmount }}</div>
+                    <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);font-size:10px">{{ g.countLabel }}</div>
+                  </div>
+                </div>
+              </div>
+              <sc-for list="{{ g.rows }}" as="p" hint-placeholder-count="1">
+                <div style="display:flex;flex-direction:column;gap:12px;padding:18px 22px;border-top:1px solid var(--border-hairline)">
                 <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
                   <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:2px">
-                    <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.kind }} · {{ p.hoursLabel }}</div>
-                    <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · {{ p.note }}</div>
+                    <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.kind }}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ p.mySubLabel }}</div>
                   </div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ p.rateLabel }}</div>
                   <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:86px;text-align:right">{{ p.amount }}</div>
                   <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
                   <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ true }}">
@@ -3061,11 +3115,30 @@
                     <strong>Changes requested:</strong> {{ p.changeNote }}
                   </div>
                 </sc-if>
-                <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
-                  <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
-                    <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
-                      <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
-                    </sc-for>
+                <sc-if value="{{ p.hasChart }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                      <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours by client</span>
+                      <span style="font-size:12px;color:var(--text-muted)">Total <strong style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--navy)">{{ p.totalHours }}</strong></span>
+                    </div>
+                    <div style="display:flex;gap:2px;height:14px;border-radius:999px;overflow:hidden;background:var(--surface-card)">
+                      <sc-for list="{{ p.segs }}" as="s" hint-placeholder-count="4">
+                        <div title="{{ s.tip }}" style="{{ s.segStyle }}"></div>
+                      </sc-for>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px 28px">
+                      <sc-for list="{{ p.segs }}" as="s" hint-placeholder-count="4">
+                        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                          <div style="display:flex;align-items:center;gap:8px;font-size:13px;min-width:0">
+                            <span style="{{ s.dotStyle }}"></span>
+                            <span style="flex:1;min-width:0;color:var(--text-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ s.name }}">{{ s.name }}</span>
+                            <strong style="color:var(--navy);font-weight:600;white-space:nowrap">{{ s.hours }}</strong>
+                            <span style="color:var(--text-muted);font-size:11.5px;min-width:38px;text-align:right">{{ s.pctLabel }}</span>
+                          </div>
+                          <div style="height:6px;border-radius:999px;background:var(--gray-100)"><div style="{{ s.barStyle }}"></div></div>
+                        </div>
+                      </sc-for>
+                    </div>
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}">
@@ -3121,12 +3194,14 @@
                   </div>
                 </sc-if>
               </div>
+              </sc-for>
+            </div>
             </sc-for>
           </div>
 
           <!-- Everything, for finance -->
           <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
+            <div style="display:flex;flex-direction:column;gap:14px">
               <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
                 <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">All submissions</h3>
                 <div style="display:flex;gap:22px">
@@ -3143,14 +3218,68 @@
               <sc-if value="{{ noPayRows }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13.5px;color:var(--text-muted)">Nothing submitted yet.</div>
               </sc-if>
-              <sc-for list="{{ payRows }}" as="p" hint-placeholder-count="4">
-                <div style="display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--border-hairline)">
+              <sc-if value="{{ hasPayOverview }}" hint-placeholder-val="{{ true }}">
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                  <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours by pay period · tap a bar to jump to it</span>
+                  <div style="display:flex;gap:14px;font-size:11.5px;color:var(--text-muted)">
+                    <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#1FB264"></span>Paid</span>
+                    <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#2E3FD6"></span>Approved</span>
+                    <span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:3px;background:#D68F2E"></span>Awaiting approval</span>
+                  </div>
+                </div>
+                <div style="overflow-x:auto;display:flex;flex-direction:row-reverse;align-items:flex-end;gap:6px">
+                  <div style="display:contents">
+                    <sc-for list="{{ payOverview }}" as="o" hint-placeholder-count="8">
+                      <button onClick="{{ o.jump }}" title="{{ o.tip }}" style="flex:1 0 58px;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;padding:4px 2px;cursor:pointer;border-radius:8px" style-hover="background:var(--gray-100)">
+                        <span style="font-size:11px;font-weight:600;color:var(--navy);white-space:nowrap">{{ o.hours }}</span>
+                        <span style="height:110px;width:100%;display:flex;align-items:flex-end;justify-content:center"><span style="{{ o.barStyle }}"></span></span>
+                        <span style="font-size:11px;color:var(--text-body);white-space:nowrap">{{ o.label }}</span>
+                        <span style="font-size:10px;color:var(--text-muted);margin-top:-4px">{{ o.year }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              </sc-if>
+              <sc-for list="{{ payPeriods }}" as="g" hint-placeholder-count="2">
+              <div id="all-{{ g.anchorId }}" style="scroll-margin-top:90px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 22px;background:linear-gradient(135deg,rgba(31,178,100,.07),rgba(46,63,214,.06))">
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pay period</span>
+                      <sc-if value="{{ g.isCurrent }}" hint-placeholder-val="{{ false }}">
+                        <span style="background:rgba(31,178,100,.14);color:#158a4d;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 9px;border-radius:12px">Current</span>
+                      </sc-if>
+                    </div>
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:22px;line-height:1.15;color:var(--navy)">{{ g.rangeLabel }}</div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--text-muted)">
+                      <span title="{{ g.isoLabel }}">{{ g.startDay }} to {{ g.endDay }}</span>
+                      <sc-if value="{{ g.hasPay }}" hint-placeholder-val="{{ true }}">
+                        <span style="background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--navy);font-weight:600;border-radius:12px;padding:3px 10px">{{ g.payLabel }}</span>
+                      </sc-if>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:26px;align-items:flex-end">
+                    <sc-if value="{{ g.hasHours }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                        <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ g.totalHours }}</div>
+                        <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);font-size:10px">Total hours</div>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ g.totalAmount }}</div>
+                      <div style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);font-size:10px">{{ g.countLabel }}</div>
+                    </div>
+                  </div>
+                </div>
+                <sc-for list="{{ g.rows }}" as="p" hint-placeholder-count="1">
+                  <div style="display:flex;flex-direction:column;gap:12px;padding:18px 22px;border-top:1px solid var(--border-hairline)">
                   <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
                     <div style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:2px">
-                      <div style="font-size:14px;font-weight:600;color:var(--navy)">{{ p.who }} · {{ p.kind }} {{ p.hoursLabel }}</div>
-                      <div style="font-size:11.5px;color:var(--text-muted)">{{ p.period }} · pay {{ p.payDate }} {{ p.note }}</div>
+                      <div style="font-size:15px;font-weight:600;color:var(--navy)">{{ p.who }}</div>
+                      <div style="font-size:11.5px;color:var(--text-muted)">{{ p.subLabel }}</div>
                     </div>
-                    <div style="font-size:12px;color:var(--text-muted)">{{ p.rateLabel }}</div>
                     <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--navy);min-width:86px;text-align:right">{{ p.amount }}</div>
                     <span style="{{ p.badgeStyle }}">{{ p.status }}</span>
                     <sc-if value="{{ p.canApprove }}" hint-placeholder-val="{{ true }}">
@@ -3176,11 +3305,30 @@
                     </div>
                   </sc-if>
 
-                  <sc-if value="{{ p.hasBreakdown }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;padding-left:2px">
-                      <sc-for list="{{ p.breakdown }}" as="b" hint-placeholder-count="4">
-                        <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11.5px;padding:3px 11px">{{ b.name }} {{ b.hours }}</span>
-                      </sc-for>
+                  <sc-if value="{{ p.hasChart }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                        <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours by client</span>
+                        <span style="font-size:12px;color:var(--text-muted)">Total <strong style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--navy)">{{ p.totalHours }}</strong></span>
+                      </div>
+                      <div style="display:flex;gap:2px;height:14px;border-radius:999px;overflow:hidden;background:var(--surface-card)">
+                        <sc-for list="{{ p.segs }}" as="s" hint-placeholder-count="4">
+                          <div title="{{ s.tip }}" style="{{ s.segStyle }}"></div>
+                        </sc-for>
+                      </div>
+                      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px 28px">
+                        <sc-for list="{{ p.segs }}" as="s" hint-placeholder-count="4">
+                          <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                            <div style="display:flex;align-items:center;gap:8px;font-size:13px;min-width:0">
+                              <span style="{{ s.dotStyle }}"></span>
+                              <span style="flex:1;min-width:0;color:var(--text-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ s.name }}">{{ s.name }}</span>
+                              <strong style="color:var(--navy);font-weight:600;white-space:nowrap">{{ s.hours }}</strong>
+                              <span style="color:var(--text-muted);font-size:11.5px;min-width:38px;text-align:right">{{ s.pctLabel }}</span>
+                            </div>
+                            <div style="height:6px;border-radius:999px;background:var(--gray-100)"><div style="{{ s.barStyle }}"></div></div>
+                          </div>
+                        </sc-for>
+                      </div>
                     </div>
                   </sc-if>
 
@@ -3254,6 +3402,8 @@
                     </div>
                   </sc-if>
                 </div>
+                </sc-for>
+              </div>
               </sc-for>
             </div>
           </sc-if>
@@ -6892,6 +7042,77 @@ class Component extends DCLogic {
     const STATUS_LABEL = {pending:'Pending', unpaid:'Unpaid', paid:'Paid'};
     const statusBadge = st=> st==='paid'? this.badge('green') : st==='unpaid'? this.badge('blue') : this.badge('amber');
 
+    // ----- Team Pay charts -----
+    // A client keeps the same colour in every period card so the eye can track
+    // it across months. Internal work is always navy; everyone else is hashed
+    // into the palette, stepping to the next free colour on a clash in one card.
+    // Amber is left out on purpose: it means "awaiting approval" on this page.
+    const PAY_PALETTE = ['#189D99','#2E3FD6','#7B5BD6','#D8564E','#5B8DEF','#C2569B','#1FB264','#3AA6C9','#8A93AE','#8C5A3C'];
+    const PAY_INTERNAL = '#0F1633';
+    const payHash = s=>{ let h=0; s=String(s||''); for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return h; };
+    const paySegs = p=>{
+      if(p.kind!=='hours') return [];
+      const total = Number(p.minutes)||0;
+      if(!(total>0)) return [];
+      // Merge duplicate lines for the same client so each gets one segment.
+      const byKey = {};
+      (p.breakdown||[]).forEach(b=>{
+        const mins = Number(b.minutes)||0; if(!(mins>0)) return;
+        // No clientId means internal work, unless the line carries its own name
+        // (hours imported for someone who is not set up as a client yet).
+        const internal = !b.clientId && (!b.name || /social upgrades/i.test(b.name) || b.name==='Internal');
+        const key = internal ? '__internal' : (b.clientId || 'name:'+b.name);
+        const name = internal ? 'Social Upgrades'
+          : (b.clientId && cname(b.clientId)!=='Internal') ? cname(b.clientId) : (b.name||'Client');
+        if(!byKey[key]) byKey[key] = {key, name, internal, minutes:0};
+        byKey[key].minutes += mins;
+      });
+      let segs = Object.values(byKey);
+      const lined = segs.reduce((s,x)=>s+x.minutes,0);
+      // A total typed without lines (or lines short of the total) still charts.
+      if(lined < total) segs.push({key:'__none', name:'Not broken down', internal:false, none:true, minutes: total-lined});
+      segs.sort((a,b)=>b.minutes-a.minutes);
+      const used = new Set();
+      const maxMin = segs.length ? segs[0].minutes : 1;
+      return segs.map(s=>{
+        let color;
+        if(s.internal) color = PAY_INTERNAL;
+        else if(s.none) color = '#C9CEDD';
+        else {
+          let i = payHash(s.key) % PAY_PALETTE.length, n = 0;
+          while(used.has(PAY_PALETTE[i]) && n < PAY_PALETTE.length){ i=(i+1)%PAY_PALETTE.length; n++; }
+          color = PAY_PALETTE[i];
+        }
+        used.add(color);
+        const pct = s.minutes/total*100;
+        return {
+          name: s.name, hours: hm(s.minutes),
+          pctLabel: (pct>=10 ? Math.round(pct) : Math.round(pct*10)/10)+'%',
+          segStyle: 'flex:'+s.minutes+' 1 0;min-width:4px;background:'+color,
+          dotStyle: 'width:10px;height:10px;min-width:10px;border-radius:3px;background:'+color,
+          barStyle: 'height:6px;border-radius:999px;width:'+Math.max(2, s.minutes/maxMin*100).toFixed(1)+'%;background:'+color,
+          tip: s.name+' · '+hm(s.minutes)+' ('+Math.round(pct)+'%)'
+        };
+      });
+    };
+    // "Aug 1 to 15, 2026" / "Aug 16 to Sep 1, 2026" / "Dec 16, 2026 to Jan 1, 2027".
+    // Dates are stored as plain YYYY-MM-DD, so they are read in UTC to avoid a
+    // timezone shifting the 1st back to the 31st.
+    const PAY_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const PAY_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const payPd = s=>{ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||''); return m? new Date(Date.UTC(+m[1],+m[2]-1,+m[3])) : null; };
+    const payRange = (a,b)=>{
+      const A=payPd(a), B=payPd(b);
+      if(!A && !B) return 'No dates';
+      if(!A || !B) { const X=A||B; return PAY_MON[X.getUTCMonth()]+' '+X.getUTCDate()+', '+X.getUTCFullYear(); }
+      const ay=A.getUTCFullYear(), by=B.getUTCFullYear();
+      if(ay!==by) return PAY_MON[A.getUTCMonth()]+' '+A.getUTCDate()+', '+ay+' to '+PAY_MON[B.getUTCMonth()]+' '+B.getUTCDate()+', '+by;
+      if(A.getUTCMonth()===B.getUTCMonth()) return PAY_MON[A.getUTCMonth()]+' '+A.getUTCDate()+' to '+B.getUTCDate()+', '+ay;
+      return PAY_MON[A.getUTCMonth()]+' '+A.getUTCDate()+' to '+PAY_MON[B.getUTCMonth()]+' '+B.getUTCDate()+', '+ay;
+    };
+    const payDay = s=>{ const X=payPd(s); return X? PAY_DOW[X.getUTCDay()]+', '+PAY_MON[X.getUTCMonth()]+' '+X.getUTCDate() : ''; };
+    const payTodayIso = (()=>{ const n=new Date(); return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); })();
+
     const mkPayRow = p=>({
       id:p.id,
       who: memberName(p.profileId) || '-',
@@ -6908,6 +7129,12 @@ class Component extends DCLogic {
       badgeStyle: statusBadge(p.status),
       breakdown: (p.breakdown||[]).map(b=>({name:b.name||'Internal',hours:hm(b.minutes)})),
       hasBreakdown: (p.breakdown||[]).length>0,
+      // Chart data for the hours split: one segment per client, largest first.
+      segs: paySegs(p),
+      hasChart: p.kind==='hours' && (Number(p.minutes)||0)>0,
+      totalHours: hm(p.minutes),
+      subLabel: [KIND_LABEL[p.kind]||'Hours', p.kind==='hours'?('$'+p.rate+'/hr'):'', p.note||''].filter(Boolean).join(' · '),
+      mySubLabel: [p.kind==='hours'?('$'+p.rate+'/hr'):'', p.note||''].filter(Boolean).join(' · '),
       // Feedback from a reviewer. Editing the row clears the flag.
       changeRequested: !!p.changeRequested,
       changeNote: p.changeNote||'',
@@ -6949,6 +7176,64 @@ class Component extends DCLogic {
     const noPayRows = payRows.length===0;
     const myPayRows = allPayments.filter(p=>p.profileId===me.id).map(mkPayRow);
     const noMyPayRows = myPayRows.length===0;
+
+    // One card per pay period. Submissions share a card when they cover the
+    // same start and end dates; newest period first (allPayments is sorted).
+    const groupPeriods = list=>{
+      const out=[], idx={};
+      list.forEach(p=>{
+        const key=(p.periodStart||'')+'|'+(p.periodEnd||'');
+        if(!(key in idx)){ idx[key]=out.length; out.push({key, start:p.periodStart||'', end:p.periodEnd||'', payDate:p.payDate||'', items:[]}); }
+        const g=out[idx[key]];
+        g.items.push(p);
+        if(!g.payDate && p.payDate) g.payDate=p.payDate;
+      });
+      return out.map(g=>{
+        const mins=g.items.filter(p=>p.kind==='hours').reduce((s,p)=>s+(Number(p.minutes)||0),0);
+        const amt=g.items.reduce((s,p)=>s+Number(p.amount||0),0);
+        const n=g.items.length;
+        const allPaid = g.items.every(p=>p.status==='paid');
+        const isCurrent = g.start && g.end && payTodayIso>=g.start && payTodayIso<=g.end;
+        const anyPending = g.items.some(p=>p.status==='pending'), anyUnpaid = g.items.some(p=>p.status==='unpaid');
+        const A=payPd(g.start), B=payPd(g.end);
+        const shortLabel = A&&B ? (A.getUTCMonth()===B.getUTCMonth() ? PAY_MON[A.getUTCMonth()]+' '+A.getUTCDate()+'-'+B.getUTCDate()
+                                  : PAY_MON[A.getUTCMonth()]+' '+A.getUTCDate()+'-'+PAY_MON[B.getUTCMonth()]+' '+B.getUTCDate()) : '?';
+        return {
+          key:g.key, mins, start:g.start,
+          anchorId: 'pp-'+(g.start||'x')+'-'+(g.end||'x'),
+          shortLabel, yearLabel: A? String(A.getUTCFullYear()) : '',
+          statusColor: anyPending ? '#D68F2E' : anyUnpaid ? '#2E3FD6' : '#1FB264',
+          rangeLabel: payRange(g.start,g.end),
+          startDay: payDay(g.start), endDay: payDay(g.end),
+          isoLabel: (g.start||'?')+' to '+(g.end||'?'),
+          payLabel: g.payDate ? (allPaid?'Paid ':'Pays ')+payDay(g.payDate) : '',
+          hasPay: !!g.payDate,
+          isCurrent,
+          totalHours: hm(mins),
+          hasHours: mins>0,
+          totalAmount: '$'+amt.toFixed(2),
+          countLabel: n+(n===1?' submission':' submissions'),
+          rows: g.items.map(mkPayRow)
+        };
+      });
+    };
+    const payPeriods = groupPeriods(allPayments);
+    const myPayPeriods = groupPeriods(allPayments.filter(p=>p.profileId===me.id));
+    // Hours per period, oldest on the left. Clicking a bar jumps to its card.
+    const payOverviewOf = (groups, scope)=>{
+      const max = Math.max(1, ...groups.map(g=>g.mins));
+      // Newest first; the strip is laid out right to left so the newest bar sits
+      // on the right and is the one in view on a phone.
+      return groups.map(g=>({
+        label: g.shortLabel, year: g.yearLabel, hours: g.totalHours, hasHours: g.hasHours,
+        tip: g.rangeLabel+' · '+g.totalHours+' · '+g.totalAmount,
+        barStyle: 'width:100%;max-width:34px;border-radius:6px 6px 2px 2px;height:'+Math.max(g.mins>0?4:0, g.mins/max*100).toFixed(1)+'%;background:'+g.statusColor,
+        jump: ()=>{ const el=document.getElementById(scope+g.anchorId); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+      }));
+    };
+    const payOverview = payOverviewOf(payPeriods,'all-');
+    const myPayOverview = payOverviewOf(myPayPeriods,'my-');
+    const hasPayOverview = payOverview.length>1, hasMyPayOverview = myPayOverview.length>1;
 
     const sumOf = f => '$'+allPayments.filter(f).reduce((s,p)=>s+Number(p.amount||0),0).toFixed(2);
     const payTotalPending = sumOf(p=>p.status==='pending');
@@ -7803,7 +8088,7 @@ class Component extends DCLogic {
 
       // ----- team + payroll -----
       teamRows, payRows, noPayRows, payTotalPending, payTotalUnpaid,
-      myPayRows, noMyPayRows, myTotalUnpaid,
+      myPayRows, noMyPayRows, myTotalUnpaid, payPeriods, myPayPeriods, payOverview, myPayOverview, hasPayOverview, hasMyPayOverview,
       secPayments: isTeam&&secKey('payments'),
       myRateLabel: myRate>0? ('$'+myRate+'/hr') : 'Not set',
 
