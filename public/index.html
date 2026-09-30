@@ -396,7 +396,68 @@
                 <span style="{{ cmBrandDot }}"></span><span style="font-weight:600;color:var(--navy)">{{ cmBrand }}</span>
                 <span>·</span><span style="{{ cmChanDot }}"></span><span>{{ cmChanLabel }}</span>
                 <sc-if value="{{ cmHasBy }}" hint-placeholder-val="{{ false }}"><span>·</span><span>{{ cmByLine }}</span><sc-if value="{{ cmByAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if></sc-if>
+                <sc-if value="{{ cmHasAdded }}" hint-placeholder-val="{{ true }}"><span>·</span><span>Added {{ cmAdded }}</span></sc-if>
               </div>
+
+              <sc-if value="{{ cmIsArchived }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px">
+                  <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">
+                    <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Archived · not for us</span>
+                    <span style="font-size:12.5px;color:var(--text-body)">{{ cmArchLine }}</span>
+                    <sc-if value="{{ cmHasArchReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--navy);line-height:1.5">“{{ cmArchReason }}”</span></sc-if>
+                  </div>
+                  <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cmRestore }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Restore to the board</button></sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cmFbIdle }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <button onClick="{{ cmOpenChanges }}" style="background:rgba(214,143,46,.12);border:1px solid rgba(214,143,46,.45);border-radius:12px;padding:7px 14px;font-size:12.5px;font-weight:600;color:#a2691a;cursor:pointer" style-hover="background:rgba(214,143,46,.2)">✎ {{ cmChangesBtn }}</button>
+                  <sc-if value="{{ cmNotArchived }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cmOpenArchive }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-muted)" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us · archive</button></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ cmFbChanges }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;background:rgba(214,143,46,.07);border:1px solid rgba(214,143,46,.35);border-radius:12px;padding:12px 14px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:#a2691a">Request changes</span>
+                  <textarea value="{{ dCmCR }}" onChange="{{ onCmCR }}" rows="3" placeholder="What should change? Copy, design, angle, length, the image, the hook. Be as specific as you like." style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical;font-family:var(--font-body)"></textarea>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <button onClick="{{ cmSendCR }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:8px 18px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#000">Send change request</button>
+                    <button onClick="{{ cmCancelFb }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-body)" style-hover="border-color:var(--navy)">Cancel</button>
+                    <span style="font-size:11.5px;color:var(--text-muted)">The next scheduled run makes the changes and replies here, or ask Claude to run it now.</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ cmFbArchive }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Not for us</span>
+                  <textarea value="{{ dCmArch }}" onChange="{{ onCmArch }}" rows="2" placeholder="Why not? Optional, but it is how the agents learn what to stop making." style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical;font-family:var(--font-body)"></textarea>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <button onClick="{{ cmDoArchive }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 18px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#000">Archive this idea</button>
+                    <button onClick="{{ cmCancelFb }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-body)" style-hover="border-color:var(--navy)">Cancel</button>
+                    <span style="font-size:11.5px;color:var(--text-muted)">It leaves the board and waits under Archived. You can restore it any time.</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ hasCmCRs }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Change requests</span>
+                  <sc-for list="{{ cmCRs }}" as="cr" hint-placeholder-count="1">
+                    <div style="display:flex;flex-direction:column;gap:5px;border:1px solid var(--border-card);border-radius:12px;padding:10px 12px;background:var(--surface-card)">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted)">
+                        <span style="{{ cr.stateStyle }}">{{ cr.stateLabel }}</span><span style="font-weight:600;color:var(--navy)">{{ cr.who }}</span><span>{{ cr.when }}</span>
+                        <span style="flex:1"></span>
+                        <sc-if value="{{ cr.canAct }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ cr.markDone }}" style="background:none;border:none;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;padding:0 4px">Mark done</button>
+                          <button onClick="{{ cr.withdraw }}" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">Withdraw</button>
+                        </sc-if>
+                      </div>
+                      <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:pre-wrap">{{ cr.text }}</div>
+                      <sc-if value="{{ cr.isDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#158a4d">{{ cr.doneLine }}</div></sc-if>
+                      <sc-if value="{{ cr.hasDoneNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.5;background:var(--gray-100);border-radius:10px;padding:7px 10px">{{ cr.doneNote }}</div></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
 
               <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:8px">
@@ -869,6 +930,17 @@
               </sc-for>
               <sc-if value="{{ loHistMore }}" hint-placeholder-val="{{ false }}">
                 <button onClick="{{ showLoHist }}" style="align-self:flex-start;background:none;border:none;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer">{{ loHistMoreLabel }}</button>
+              </sc-if>
+              <sc-if value="{{ hasLoCreated }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:3px;padding:9px 0;min-width:0">
+                  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                    <span style="font-size:10px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--green)">Created</span>
+                    <span style="font-weight:600;color:var(--navy)">{{ loCreatedWho }}</span>
+                    <sc-if value="{{ loCreatedAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ loAgentPill }}">Agent</span></sc-if>
+                    <span>{{ loCreatedWhen }}</span>
+                  </div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ loCreatedText }}</div>
+                </div>
               </sc-if>
             </div>
             </div>
@@ -1498,6 +1570,11 @@
 
       <sc-if value="{{ secContent }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div role="tablist" aria-label="Content Map channels" style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ cmSubTabs }}" as="st" hint-placeholder-count="5">
+              <button role="tab" onClick="{{ st.select }}" style="{{ st.style }}" style-hover="border-color:var(--navy)">{{ st.label }}<span style="{{ st.countStyle }}">{{ st.n }}</span></button>
+            </sc-for>
+          </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ cmTiles }}" as="t" hint-placeholder-count="7">
               <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
@@ -1508,7 +1585,6 @@
               <sc-for list="{{ cmScopes }}" as="sp" hint-placeholder-count="3"><button onClick="{{ sp.select }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for>
             </div>
             <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="One client" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
-            <select value="{{ cmChanValueF }}" onChange="{{ onCmChanF }}" aria-label="Channel" style="{{ cmSelStyle }}"><sc-for list="{{ cmChanOptsAll }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
             <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" aria-label="Sort" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <sc-if value="{{ cmFiltered }}" hint-placeholder-val="{{ false }}">
@@ -1528,7 +1604,8 @@
           <sc-if value="{{ cmHowOpen }}" hint-placeholder-val="{{ false }}">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--text-body);line-height:1.65;display:flex;flex-direction:column;gap:6px">
               <div><strong style="color:var(--navy)">Social Agent</strong> and <strong style="color:var(--navy)">Blog Agent</strong> run on a schedule and write straight to this board: new cards land as <em>Ideas</em>, previews arrive a few seconds after the card (they are fetched from the link the agent gives), and every change is signed and listed under Activity and in each card's History.</div>
-              <div>Your part is the yes or the no. Move an idea to <em>Approved</em> (or comment on the card with what to change) and the next run picks it up: it schedules approved social posts in Metricool, drafts approved blog topics, and replies on the card. Cards you add here by hand get the same treatment.</div>
+              <div>Your part is the yes, the no, or the "almost". Move an idea to <em>Approved</em> and the next run picks it up. If the idea is good but needs work, open it and use <em>Request changes</em>: say what to change and the next run makes the changes, replies on the card and marks the request done (or ask Claude to run it now). If it is not for us, use <em>Not for us</em>: the card moves to <em>Archived</em> with your reason, and every run reads those reasons before making new ideas. Restore an archived card any time.</div>
+              <div>Social, Blog and Emails share the same columns: Ideas, Approved, Scheduled, Posted. Every card shows the date it was added; sort by <em>Oldest added</em> to clear out the stale ones first.</div>
               <div>The Metricool panel is what the agent last saw there (queue, best times, KPIs, top posts). It refreshes on every run rather than live.</div>
             </div>
           </sc-if>
@@ -1580,7 +1657,10 @@
                       <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
                       <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
                       <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px">✎ {{ k.changeLabel }}</span></sc-if>
+                      <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#158a4d;font-weight:600">Revised</span></sc-if>
                       <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasAdded }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ k.added }}</span></sc-if>
                       <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
                       <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
                     </div>
@@ -1671,7 +1751,10 @@
                       <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
                       <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
                       <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px">✎ {{ k.changeLabel }}</span></sc-if>
+                      <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#158a4d;font-weight:600">Revised</span></sc-if>
                       <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasAdded }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ k.added }}</span></sc-if>
                       <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
                       <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
                     </div>
@@ -1687,6 +1770,12 @@
                         <button onClick="{{ k.askRemove }}" title="Delete this card" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                       </sc-if>
                     </div>
+                    <sc-if value="{{ k.notAsking }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:6px;align-items:center">
+                        <button onClick="{{ k.askChanges }}" title="Good idea, needs changes" style="flex:1;background:var(--surface-card);border:1px solid rgba(214,143,46,.45);border-radius:12px;padding:5px 8px;font-size:11.5px;font-weight:600;color:#a2691a;cursor:pointer;white-space:nowrap" style-hover="background:rgba(214,143,46,.1)">✎ Changes</button>
+                        <button onClick="{{ k.askArchive }}" title="Not for us: archive it" style="flex:1;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 8px;font-size:11.5px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us</button>
+                      </div>
+                    </sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -4236,9 +4325,9 @@ class Component extends DCLogic {
     // Set before the first badge() of this pass: in the portal the status
     // pills are tinted from the client's kit, not from Social Upgrades green.
     this._theme = isTeam ? null : this.brandOf(client);
-    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,mediaIdx:0,delMedia:null,
+    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,mediaIdx:0,delMedia:null,cmFb:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,comment:''}}));
-    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
+    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,cmFb:null,
       d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
@@ -4608,14 +4697,27 @@ class Component extends DCLogic {
     const CHANNELS=[
       {id:'social', label:'Social Media',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
-      // A post is drafted and then published; the topic is what gets approved.
+      // Social, Blog and Emails share one set of columns, so a card reads the
+      // same on every board. Blogs and emails may skip Scheduled today; the
+      // column stays so they can be scheduled later.
       {id:'blog',   label:'Blog',
-       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['drafting','Drafting','#D68F2E'],['published','Published','var(--blue)']]},
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
       {id:'email',  label:'Emails',
-       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['sent','Sent','var(--blue)']]},
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
       {id:'ads',    label:'Paid Ads',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['live','Live','var(--blue)'],['paused','Paused','#D68F2E'],['ended','Ended','var(--text-muted)']]}
     ];
+    // Older blog and email cards used Drafting / Published / Sent. They read as
+    // the shared columns so nothing falls off a board.
+    const ST_LEGACY={drafting:'approved',published:'posted',sent:'posted'};
+    const stOf=x=>{ const st=(x&&x.status)||'idea'; return ((x&&x.channel)!=='ads'&&ST_LEGACY[st])||st; };
+    // "Not for us" ideas are archived, not deleted: they drop off every board
+    // and wait under Archived, with the reason, for the agents to learn from.
+    const isArch=x=>!!(x&&x.archived&&x.archived.at);
+    const openCRs=x=>((x&&x.changeRequests)||[]).filter(r=>r&&r.state==='open');
+    const createdMs=x=>{ const t=x&&x.createdAt? Date.parse(x.createdAt) : NaN; return isNaN(t)? Number((x&&x.ts)||0) : t; };
+    const addedLabel=x=>{ const t=createdMs(x); if(!t) return '';
+      return 'Added '+new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:(new Date(t).getFullYear()===new Date().getFullYear()?undefined:'numeric')}); };
     // Content Map opens on the whole plan rather than on one channel's board:
     // the three boards answer "what is in Emails", the overview answers "what
     // is going out, and when", which is the question the tab is named after.
@@ -4626,10 +4728,10 @@ class Component extends DCLogic {
     const chanOrder = chan.cols.map(c=>c[0]);
     // Team sees the client currently being viewed; a client sees only itself.
     const stratClient = isStaff ? S.viewClient : client.id;
-    const stratItems = (D.strategy||[]).filter(x=>x.clientId===stratClient&&x.channel===chan.id);
+    const stratItems = (D.strategy||[]).filter(x=>x.clientId===stratClient&&x.channel===chan.id&&!isArch(x));
 
     const stratCols = chan.cols.map(([st,label,accent])=>{
-      const items = stratItems.filter(x=>(x.status||'idea')===st)
+      const items = stratItems.filter(x=>stOf(x)===st)
         .sort((a,b)=>(a.scheduledFor||'').localeCompare(b.scheduledFor||'')||b.ts-a.ts)
         .map(x=>{
           const i = chanOrder.indexOf(st);
@@ -4672,7 +4774,7 @@ class Component extends DCLogic {
       // be scheduled, so that is what the Content Map counts.
       if(isTeam && id==='content'){
         const lim=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
-        const n=(D.strategy||[]).filter(x=>(x.status||'idea')==='idea'&&x.scheduledFor&&x.scheduledFor<=lim).length;
+        const n=(D.strategy||[]).filter(x=>!isArch(x)&&stOf(x)==='idea'&&x.scheduledFor&&x.scheduledFor<=lim).length;
         if(n) return n; }
       return false;
     };
@@ -4695,7 +4797,7 @@ class Component extends DCLogic {
       const active=sectionNow===id||kidOpen, muted=id==='billing';
       const badge=badgeFor(id);
       navItems.push({label,badge,
-        arrow: (id==='strategy'||kids.length) ? (active?'▾':'▸') : false,
+        arrow: (id==='strategy'||(isTeam&&id==='content')||kids.length) ? (active?'▾':'▸') : false,
         select:openSection(id),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       kids.forEach(([kid,klabel])=>{
@@ -4705,6 +4807,16 @@ class Component extends DCLogic {
           select:openSection(kid),
           style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.62)',padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       });
+      // The team Content Map opens into the same tabs as the client one.
+      if(id==='content'&&active){
+        const cmNavF=S.cmChan||'all';
+        [{id:'all',label:'Overview'}].concat(CHANNELS).forEach(ch=>{
+          const on=cmNavF===ch.id;
+          navItems.push({label:ch.label,badge:false,
+            select:()=>this.setState({section:'content',cmChan:ch.id,cmTile:'all',notifOpen:false,moreOpen:false}),
+            style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.6)',padding:'8px 12px 8px 22px',margin:'0 0 0 10px',fontSize:12.5,fontWeight:on?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+        });
+      }
       // Strategy opens into its three channels rather than being one long board.
       if(id==='strategy'&&active){
         CHANNELS.forEach(ch=>{
@@ -5254,7 +5366,7 @@ class Component extends DCLogic {
     const FMT_LABEL=Object.fromEntries(FORMATS);
     const netsOf=x=>Array.isArray(x.networks)&&x.networks.length? x.networks : (x.network? [x.network] : []);
     const netLabels=x=>netsOf(x).map(n=>NET_LABEL[n]||n);
-    const stBadge=st=>{ st=st||'idea';
+    const stBadge=st=>{ st=ST_LEGACY[st]||st||'idea';
       const kind= st==='idea'?'gray' : st==='approved'?'green' : (st==='drafting'||st==='paused')?'amber' : st==='ended'?'gray' : 'blue';
       return [this.badge(kind), st.charAt(0).toUpperCase()+st.slice(1)]; };
     const chanOf=x=>CH_META[x.channel]? x.channel : 'social';
@@ -5277,12 +5389,15 @@ class Component extends DCLogic {
     const cmScopeLabel= cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'all clients' : cmClientF==='all'? 'every brand' : brandLabel(cmClientF);
     const cmQ=String(d.cmQ||'').trim().toLowerCase();
     const cmMode=S.cmMode||'gallery';
-    const cmMatchesTile=(x,t)=>{ const st=x.status||'idea';
+    const cmMatchesTile=(x,t)=>{ const st=stOf(x);
+      if(t==='archived') return isArch(x);
+      if(isArch(x)) return false;
       switch(t){
+        case 'changes': return openCRs(x).length>0;
         case 'week': return !!x.scheduledFor && x.scheduledFor>=weekIso[0] && x.scheduledFor<=weekIso[1];
         case 'idea': return st==='idea';
         case 'approved': return st==='approved';
-        case 'working': return st==='scheduled'||st==='drafting';
+        case 'working': return st==='scheduled';
         case 'live': return LIVE_ST.indexOf(st)>-1;
         case 'undated': return !x.scheduledFor && LIVE_ST.indexOf(st)<0;
         default: return true; } };
@@ -5296,23 +5411,24 @@ class Component extends DCLogic {
     const cmSort=S.cmSort||'date';
     const cmRank=x=> !x.scheduledFor? 1 : (x.scheduledFor>=todayIso? 0 : 2);
     const cmOrdered=cmTeamList.slice().sort((a,b)=>{
-      if(cmSort==='new') return b.ts-a.ts;
+      if(cmSort==='new') return createdMs(b)-createdMs(a);
+      if(cmSort==='old') return createdMs(a)-createdMs(b);
       const ra=cmRank(a), rb=cmRank(b);
       if(ra!==rb) return ra-rb;
       if(ra===1) return b.ts-a.ts;
       const c=(a.scheduledFor||'').localeCompare(b.scheduledFor||'');
       if(c) return ra===2? -c : c;
       return String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||'')) || b.ts-a.ts; });
-    const cmTileDefs=[['all','All'],['week','This week'],['idea','Ideas'],['approved','Approved'],['working','In the works'],['live','Published'],['undated','No date']];
+    const cmTileDefs=[['all','All'],['week','This week'],['idea','Ideas'],['approved','Approved'],['changes','Changes requested'],['working','Scheduled'],['live','Posted'],['undated','No date'],['archived','Archived']];
     const cmTiles=cmTileDefs.map(([k,lab])=>{ const n=cmScope.filter(x=>cmMatchesTile(x,k)).length; const on=cmTileF===k;
       return {label:lab, n, select:()=>this.setState({cmTile:k}),
         style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),
           borderRadius:12,padding:'10px 14px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
           cursor:'pointer',minWidth:92,fontFamily:'var(--font-body)'},
-        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':(k==='idea'&&n?'#a2691a':'var(--navy)')},
+        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':((k==='idea'||k==='changes')&&n?'#a2691a':'var(--navy)')},
         labStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:on?'rgba(255,255,255,.78)':'var(--text-muted)'}}; });
     const cmJobsFor=id=>(D.mediaJobs||[]).filter(j=>j.itemId===id);
-    const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]=stBadge(x.status);
+    const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]= isArch(x)? [this.badge('gray'),'Archived'] : stBadge(stOf(x));
       const ch=chanOf(x), meta=CH_META[ch], who=logWho({by:x.by||''});
       const pend=cmJobsFor(x.id).filter(j=>j.status==='pending'||j.status==='working').length;
       return {id:x.id, title:x.title||'Untitled', open:openDetail('strategy',x.id),
@@ -5329,20 +5445,26 @@ class Component extends DCLogic {
         whenStyle:{fontSize:11.5,fontWeight:600,color: x.scheduledFor? (x.scheduledFor<todayIso&&LIVE_ST.indexOf(x.status||'idea')<0? '#a2691a':'var(--blue)') : 'var(--text-muted)'},
         excerpt:x.caption||x.hook||x.body||'', hasExcerpt:!!(x.caption||x.hook||x.body),
         badgeStyle, statusLabel, commentsLabel:cLabel((x.comments||[]).length), hasComments:(x.comments||[]).length>0,
-        byName:who.name, isAgent:who.isAgent, hasBy:!!who.name}; };
+        byName:who.name, isAgent:who.isAgent, hasBy:!!who.name,
+        added:addedLabel(x), hasAdded:!!addedLabel(x),
+        hasChange:openCRs(x).length>0 && !isArch(x), changeLabel:'Changes requested',
+        wasRevised:!openCRs(x).length && (x.changeRequests||[]).some(r=>r&&r.state==='done') && !isArch(x),
+        isArchived:isArch(x)}; };
     const cmCards=cmOrdered.map(cmCard);
     // Board: one channel at a time, since the lists differ per channel.
     const cmBoardChan= cmChanF==='all'? 'social' : cmChanF;
     const cmBoardColsRaw=colsOf(cmBoardChan);
     const cmBoardOrder=cmBoardColsRaw.map(c=>c[0]);
     const cmBoardCols=cmBoardColsRaw.map(([st,label,accent],i)=>{
-      const items=cmOrdered.filter(x=>chanOf(x)===cmBoardChan&&(x.status||'idea')===st).map(x=>{
+      const items=cmOrdered.filter(x=>chanOf(x)===cmBoardChan&&!isArch(x)&&stOf(x)===st).map(x=>{
         const c=cmCard(x);
         const move=dir=>stopThen(()=>this.set(y=>{ const it=y.strategy.find(z=>z.id===x.id); if(!it) return y;
           const to=Math.max(0,Math.min(cmBoardOrder.length-1,i+dir)); it.status=cmBoardOrder[to];
           this.logEv(y,x.clientId,'Social Upgrades moved "'+(it.title||'a card')+'" to '+cmBoardColsRaw[to][1],{contentId:x.id,quiet:true}); return y; }));
         const asking=S.cmDel===x.id;
+        const openFb=mode=>stopThen(()=>{ openDetail('strategy',x.id)(); this.setState({cmFb:mode}); });
         return Object.assign(c,{asking, notAsking:!asking, canBack:i>0,canFwd:i<cmBoardOrder.length-1,back:move(-1),fwd:move(1),
+          askChanges:openFb('changes'), askArchive:openFb('archive'),
           fwdLabel:cmBoardColsRaw[Math.min(i+1,cmBoardColsRaw.length-1)][1],
           askRemove:stopThen(()=>this.setState({cmDel:x.id})), cancelRemove:stopThen(()=>this.setState({cmDel:null})),
           doRemove:stopThen(()=>{ this.setState({cmDel:null});
@@ -5391,7 +5513,7 @@ class Component extends DCLogic {
       const ch=d.cmChan||'social'; const url=(d.cmMediaUrl||'').trim();
       if(url && !/^https?:\/\//i.test(url)) return this.setState({syncError:'A preview link needs to start with http:// or https://'});
       this.setState({syncError:null});
-      this.set(x=>{ x.strategy.unshift({id,clientId:cid,ts:Date.now(),channel:ch,status:'idea',title:t,body:(d.cmBody||'').trim(),
+      this.set(x=>{ x.strategy.unshift({id,clientId:cid,ts:Date.now(),createdAt:new Date().toISOString(),channel:ch,status:'idea',title:t,body:(d.cmBody||'').trim(),
         networks: ch==='social'&&d.cmNet? [d.cmNet] : [], format:d.cmFormat||'', scheduledFor:d.cmWhen||'', scheduledTime:d.cmTime||'',
         links:[],comments:[],media:[],by:me.id});
         this.logEv(x,cid,'Social Upgrades added "'+t+'" to the Content Map',{contentId:id}); return x; });
@@ -5442,6 +5564,14 @@ class Component extends DCLogic {
       const hist=(D.log||[]).filter(l=>l.contentId===item.id).slice(0,30).map(l=>{ const w=logWho(l);
         return {text:l.text||'', who:w.name||'Someone', when:this.fmt(l.ts), isAgent:w.isAgent}; });
       const who=logWho({by:item.by||''});
+      // Feedback: a change request (the idea is good, the execution needs work)
+      // or an archive (not for us). Both are read by the content agents: open
+      // requests get worked on the next run, archive reasons teach them.
+      const fbMode=S.cmFb||null, meName=String(me.name||me.email||'Someone').trim();
+      const crAll=(item.changeRequests||[]).filter(Boolean), crOpenN=crAll.filter(r=>r.state==='open').length;
+      const whenOf=v=>{ const t=Date.parse(v); return isNaN(t)? '' : new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); };
+      const setCR=(rid,fn,note)=>write(it=>{ const r=(it.changeRequests||[]).find(z=>z&&z.id===rid); if(r) fn(r); },note);
+      const arch=isArch(item)? item.archived : null;
       const caption=[item.hook, item.caption||item.body, item.cta].filter(Boolean).join('\n\n');
       const copyBlock=caption+(tagsText?'\n\n'+tagsText:'');
       return {
@@ -5452,6 +5582,36 @@ class Component extends DCLogic {
         cmChanLabel:CH_META[ch].label, cmChanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:CH_META[ch].color},
         cmBrand:brandLabel(item.clientId), cmBrandDot:clientDot(item.clientId),
         cmByLine: who.name? 'Added by '+who.name : '', cmHasBy:!!who.name, cmByAgent:who.isAgent,
+        cmAdded: createdMs(item)? new Date(createdMs(item)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '', cmHasAdded:!!createdMs(item),
+        // feedback
+        cmIsArchived:!!arch, cmNotArchived:!arch,
+        cmArchLine: arch? 'Archived '+(whenOf(arch.at)||'')+(arch.byName?' by '+arch.byName:'') : '',
+        cmArchReason: arch&&arch.reason? arch.reason : '', cmHasArchReason:!!(arch&&arch.reason),
+        cmRestore:()=>write(it=>{ const was=(it.archived&&it.archived.fromStatus)||'idea'; it.archived=null; if(colsOf(chanOf(it)).map(c=>c[0]).indexOf(stOf(it))<0) it.status=was; },meName+' restored "'+label+'" from the archive'),
+        cmFbIdle:isTeam&&!fbMode&&!arch, cmFbChanges:isTeam&&fbMode==='changes', cmFbArchive:isTeam&&fbMode==='archive'&&!arch,
+        cmOpenChanges:()=>this.setState({cmFb:'changes'}), cmOpenArchive:()=>this.setState({cmFb:'archive'}), cmCancelFb:()=>this.setState({cmFb:null}),
+        cmChangesBtn: crOpenN? 'Add another change' : 'Request changes',
+        dCmCR:d.cmCR||'', onCmCR:this.draft('cmCR'),
+        cmSendCR:()=>{ const t=String(d.cmCR||'').trim(); if(!t) return this.setState({syncError:'Say what should change.'});
+          const rid=this.uid();
+          write(it=>{ (it.changeRequests=it.changeRequests||[]).push({id:rid,text:t,by:me.id||'',byName:meName,at:new Date().toISOString(),state:'open'}); },
+            meName+' requested changes on "'+label+'": '+t.slice(0,120));
+          this.setState(s2=>({cmFb:null,syncError:null,d:{...s2.d,cmCR:''}})); },
+        dCmArch:d.cmArch||'', onCmArch:this.draft('cmArch'),
+        cmDoArchive:()=>{ const reason=String(d.cmArch||'').trim();
+          write(it=>{ it.archived={at:new Date().toISOString(),by:me.id||'',byName:meName,reason,fromStatus:stOf(it)}; },
+            meName+' archived "'+label+'" (not for us)'+(reason?': '+reason.slice(0,120):''));
+          this.setState(s2=>({cmFb:null,d:{...s2.d,cmArch:''}})); },
+        cmCRs:crAll.slice().reverse().map(r=>({text:r.text||'', who:r.byName||'Someone', when:whenOf(r.at),
+          isOpen:r.state==='open', isDone:r.state==='done', isWithdrawn:r.state==='withdrawn',
+          stateLabel: r.state==='open'? 'Open' : r.state==='done'? 'Done' : 'Withdrawn',
+          stateStyle:r.state==='open'? this.badge('amber') : r.state==='done'? this.badge('green') : this.badge('gray'),
+          doneLine: r.state==='done'? 'Done '+(whenOf(r.doneAt)||'')+(r.doneByName?' by '+r.doneByName:'') : '',
+          doneNote:r.doneNote||'', hasDoneNote:!!r.doneNote,
+          canAct:isTeam&&r.state==='open',
+          markDone:()=>setCR(r.id,x=>{ x.state='done'; x.doneAt=new Date().toISOString(); x.doneBy=me.id||''; x.doneByName=meName; },meName+' marked a change request on "'+label+'" done'),
+          withdraw:()=>setCR(r.id,x=>{ x.state='withdrawn'; x.doneAt=new Date().toISOString(); x.doneBy=me.id||''; x.doneByName=meName; },meName+' withdrew a change request on "'+label+'"')})),
+        hasCmCRs:crAll.length>0,
         // the gallery
         hasMedia:n>0, noMedia:n===0, mediaMany:n>1,
         mediaUrl:cur?cur.url:'', mediaAlt:cur?cur.alt:'', mediaIsVideo:!!cur&&cur.type==='video', mediaIsImage:!!cur&&cur.type!=='video',
@@ -5491,7 +5651,7 @@ class Component extends DCLogic {
         // the fields
         cmChanValue:ch, onCmChan:e=>{ const v=e.target.value; write(it=>{ it.channel=v; if(colsOf(v).map(c=>c[0]).indexOf(it.status||'idea')<0) it.status='idea'; },'Social Upgrades moved "'+label+'" to '+(CH_META[v]||{}).label); },
         cmChanOpts:CHANNELS.map(c=>({v:c.id,l:c.label})),
-        cmStatusValue:item.status||'idea', onCmStatus:e=>{ const v=e.target.value; write(it=>{ it.status=v; },'Social Upgrades marked "'+label+'" '+v); },
+        cmStatusValue:stOf(item), onCmStatus:e=>{ const v=e.target.value; write(it=>{ it.status=v; },'Social Upgrades marked "'+label+'" '+v); },
         cmStatusOpts:cols.map(c=>({v:c[0],l:c[1]})),
         cmIsSocial:ch==='social',
         cmNetChips:NETWORKS.map(([k,l])=>{ const on=netsOf(item).indexOf(k)>-1;
@@ -5532,9 +5692,18 @@ class Component extends DCLogic {
       cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''))).map(c=>({v:c.id,l:c.name}))),
       cmClientValue: D.clients.some(c=>c.id===cmClientF)? cmClientF : '',
       onCmClient:e=>{ const v=e.target.value; this.setState({cmClient: v||'clients'}); },
+      // Same tabs as the client portal: Overview, then one per channel. The
+      // count is what that tab holds for the current brand scope.
+      cmSubTabs:[{id:'all',label:'Overview'}].concat(CHANNELS.map(c=>({id:c.id,label:c.label}))).map(t=>{
+        const on=cmChanF===t.id;
+        const n=(D.strategy||[]).filter(x=>inScope(x.clientId)&&!isArch(x)&&(t.id==='all'||chanOf(x)===t.id)).length;
+        return {label:t.label, n:String(n), select:()=>this.setState({cmChan:t.id,cmTile:'all'}),
+          style:Object.assign(pillStyle(on),{display:'inline-flex',alignItems:'center',gap:8,padding:'8px 16px',fontSize:13.5,fontWeight:on?600:500}),
+          countStyle:{fontSize:11,fontWeight:600,lineHeight:1,padding:'3px 7px',borderRadius:999,
+            background:on?'rgba(255,255,255,.18)':'var(--gray-100)',color:on?'inherit':'var(--text-muted)'}}; }),
       cmChanOptsAll:[{v:'all',l:'All channels'}].concat(CHANNELS.map(c=>({v:c.id,l:c.label}))),
       cmChanValueF:cmChanF, onCmChanF:e=>{ const v=e.target.value; this.setState({cmChan:v}); },
-      cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest first'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
+      cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest added'},{v:'old',l:'Oldest added'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
       dCmQ:d.cmQ||'', onCmQ:this.draft('cmQ'),
       cmFiltered: cmClientF!=='internal'||cmChanF!=='all'||cmTileF!=='all'||!!cmQ,
       clearCmFilters:()=>this.setState(s2=>({cmClient:'internal',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
@@ -5567,7 +5736,7 @@ class Component extends DCLogic {
 
     // The client's own calendar in the portal; the whole filtered plan in the
     // team view. One builder, two sources.
-    const cmAll = isTeam ? cmTeamList : (D.strategy||[]).filter(x=>x.clientId===client.id);
+    const cmAll = isTeam ? cmTeamList.filter(x=>!isArch(x)) : (D.strategy||[]).filter(x=>x.clientId===client.id&&!isArch(x));
     const cmDated = cmAll.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.scheduledFor||''));
     const cmByDay = {};
     cmDated.forEach(x=>{ (cmByDay[x.scheduledFor] = cmByDay[x.scheduledFor]||[]).push(x); });
@@ -6970,7 +7139,7 @@ class Component extends DCLogic {
         const id=nextLeadId(), stage=(F.v&&F.v.stage)||'new', assignee=(F.v&&F.v.assignee)||'';
         this.set(x=>{
           (x.leads=x.leads||[]).unshift({id,clientId:'',ts:Date.now(),...v,stage,assignee,
-            added:leadToday,source:'manual',addedBy:whoAmI,updatedAt:new Date().toISOString()});
+            added:leadToday,source:'manual',addedBy:whoAmI,createdBy:me.id||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
           this.logEv(x,'',whoAmI+' added a lead: '+v.name,{leadId:id});
           return x; });
         this.setState({leadOpen:id,leadForm:null,leadFormErr:null});
@@ -7021,6 +7190,15 @@ class Component extends DCLogic {
       const mails=leadMailsFor(LO.id);
       const hist=D.log.filter(l=>l.leadId===LO.id);
       const histAll=S.leadHistAll===LO.id;
+      // Who created the lead and when. createdBy is a profile id, createdAt an
+      // ISO date or timestamp; older rows fall back to added / addedBy.
+      const loCreated=(()=>{
+        const at=LO.createdAt||LO.added||''; if(!at) return null;
+        const w=LO.createdBy? logWho({by:LO.createdBy}) : {name:LO.addedBy||'',isAgent:/agent/i.test(String(LO.addedBy||''))};
+        const dt=/^\d{4}-\d{2}-\d{2}$/.test(at)? new Date(at+'T12:00:00') : new Date(at);
+        const when=isNaN(dt)? String(at) : dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        const src=LO.source==='agent'?'Found by the overnight research run':(LO.source==='manual'?'Added by hand':'Created');
+        return {who:w.name||'Someone', isAgent:!!w.isAgent, when, text:LO.createdNote||(src+'.')}; })();
       const sendNote=()=>{
         const text=String(this.state.d.leadNote||'').trim();
         if(!text) return;
@@ -7074,7 +7252,9 @@ class Component extends DCLogic {
           hasUrl:!!m.url, url:m.url||''})),
         noLoMails:mails.length===0,
         loHist:(histAll?hist:hist.slice(0,6)).map(leadLogRow),
-        noLoHist:hist.length===0,
+        noLoHist:hist.length===0 && !loCreated,
+        hasLoCreated:!!loCreated, loAgentPill:agentPill, loCreatedWho:loCreated?loCreated.who:'', loCreatedAgent:!!(loCreated&&loCreated.isAgent),
+        loCreatedWhen:loCreated?loCreated.when:'', loCreatedText:loCreated?loCreated.text:'',
         loHistMore:!histAll && hist.length>6, loHistMoreLabel:'Show all '+hist.length,
         showLoHist:()=>this.setState({leadHistAll:LO.id}),
         loNotesList:notes.map(n=>({
@@ -7195,7 +7375,7 @@ class Component extends DCLogic {
         if(!stratClient) return this.setState({syncError:'Pick a client first.'});
         this.setState({syncError:null});
         this.set(x=>{ x.strategy.unshift({id:this.uid(),clientId:stratClient,ts:Date.now(),
-          channel:chan.id,status:'idea',title:t,body:(d.stBody||'').trim(),
+          channel:chan.id,status:'idea',createdAt:new Date().toISOString(),title:t,body:(d.stBody||'').trim(),
           scheduledFor:d.stWhen||'',links:[],comments:[]}); return x; });
         this.setState(s2=>({d:{...s2.d,stTitle:'',stBody:'',stWhen:''}}));
       },
