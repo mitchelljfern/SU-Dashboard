@@ -55,7 +55,10 @@
   const PEOPLE_COLS = {
     name: 'name', email: 'email', role: 'role', clientId: 'client_id',
     isAdmin: 'is_admin', isAccountant: 'is_accountant', active: 'active',
-    isAgent: 'is_agent'
+    isAgent: 'is_agent',
+    // A portal member's companies inside their organization. Empty means the
+    // whole organization; the database enforces it (migration 036).
+    businessIds: 'business_ids'
   };
 
   // Rates are admin-only, so they are a separate table with their own policy;
@@ -633,9 +636,13 @@
     return raw;
   }
 
-  async function inviteUser(rpc, params) {
-    const { error } = await client().rpc(rpc, params);
+  // `before` runs after the account exists and before the invitation goes
+  // out, so anything that narrows what the new login can see (its companies)
+  // is in place before anyone can sign in with it.
+  async function inviteUser(rpc, params, before) {
+    const { data: uid, error } = await client().rpc(rpc, params);
     if (error) throw error;
+    if (before) await before(uid);
     try {
       await sendPasswordLink(params.p_email);
     } catch (mailErr) {
@@ -647,13 +654,22 @@
     }
   }
 
-  async function createClientLogin(clientId, email, name) {
+  async function createClientLogin(clientId, email, name, businessIds) {
+    const ids = (businessIds || []).filter(Boolean);
     await inviteUser('admin_create_client_login', {
       p_client_id: clientId,
       p_email: String(email || '').trim().toLowerCase(),
       p_password: null,
       p_name: name || ''
+    }, ids.length ? (uid => setMemberCompanies(uid, ids)) : null);
+  }
+
+  // Which companies a portal member sees. [] makes them organization-wide.
+  async function setMemberCompanies(userId, businessIds) {
+    const { error } = await client().rpc('set_member_companies', {
+      p_user: userId, p_business_ids: (businessIds || []).filter(Boolean)
     });
+    if (error) throw error;
   }
 
   async function createTeamMember(email, name, rate, isAccountant) {
@@ -666,11 +682,12 @@
     });
   }
 
-  async function invitePortalMember(email, name) {
+  async function invitePortalMember(email, name, businessIds) {
     await inviteUser('client_invite_member', {
       p_email: String(email || '').trim().toLowerCase(),
       p_password: null,
-      p_name: name || ''
+      p_name: name || '',
+      p_business_ids: (businessIds || []).filter(Boolean)
     });
   }
 
@@ -691,7 +708,7 @@
     uploadBrandAsset, deleteBrandAsset, MAX_BRAND_BYTES,
     uploadContentMedia, deleteContentMedia, queueMediaUrl, retryMediaJob, dismissMediaJob, whenIdle, MAX_CONTENT_BYTES,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
-    createClientLogin, createTeamMember, invitePortalMember, deleteUser,
+    createClientLogin, createTeamMember, invitePortalMember, setMemberCompanies, deleteUser,
     sendPasswordLink, setPassword, mailAdvice,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
