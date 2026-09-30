@@ -256,6 +256,11 @@
 
     const data = {};
     data.clients = results[0].data.map(clientFromRow);
+    // Our own test account ("Social Upgrades Test") always sits at the end of
+    // every client list so it never gets mistaken for a real client. The sort
+    // is stable, so everyone else keeps their created order.
+    const isOwnTest = c => /^social upgrades\b.*\btest\b/i.test(c.name || '');
+    data.clients.sort((a, b) => Number(isOwnTest(a)) - Number(isOwnTest(b)));
     data.reports = {};
     for (const r of results[1].data) data.reports[r.client_id] = r.data;
     data.team = results[2].data.map(teamFromRow);

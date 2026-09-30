@@ -4687,6 +4687,9 @@ class Component extends DCLogic {
     const liveWork = (D.work||[]).filter(r=>!r.archived);
     const liveReqs = (D.requests||[]).filter(r=>!r.archived);
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
+    // A–Z, with our own "Social Upgrades Test" account always last.
+    const isOwnTest = c=>/^social upgrades\b.*\btest\b/i.test((c&&c.name)||'');
+    const clientByName = (a,b)=>(Number(isOwnTest(a))-Number(isOwnTest(b))) || String(a.name||'').localeCompare(String(b.name||''));
     // "Double Ops Inc · Bravo Boxing" for a company inside an organization,
     // just the name for a single-company client.
     const orgLabel = x=>{ if(!x||!x.clientId) return 'Internal'; const c=orgRec(x.clientId); if(!c) return 'Internal';
@@ -5916,7 +5919,7 @@ class Component extends DCLogic {
       this.setState(s2=>({cmAddOpen:false,d:{...s2.d,cmTitle:'',cmBody:'',cmWhen:'',cmTime:'',cmMediaUrl:''}})); };
     const cmSel={border:'1px solid var(--gray-200)',borderRadius:12,padding:'8px 10px',fontSize:13,background:'var(--surface-card)',color:'var(--text-body)',maxWidth:220};
     const cmClientOpts=[{v:'all',l:'All brands'},{v:'internal',l:'Social Upgrades'}].concat(
-      D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')))
+      D.clients.slice().sort(clientByName)
         .flatMap(c=>isMultiOrg(c)? bizList(c).map(b=>({v:c.id+'::'+b.id,l:c.name+' · '+b.name})) : [{v:c.id,l:c.name}]));
     // The detail view of a content card: the big preview, its fields, what
     // Metricool knows about it, and its history. Team edits; a client reads.
@@ -6123,7 +6126,7 @@ class Component extends DCLogic {
         select:()=>this.setState({cmClient:v}), style:pillStyle(cmClientF===v)})),
       // An organization lists its companies under it, so the map narrows to
       // Bravo Boxing without also showing Double Ops and Costa Mesa Jiu Jitsu.
-      cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')))
+      cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort(clientByName)
         .flatMap(c=>[{v:c.id,l:c.name+(isMultiOrg(c)?' (all companies)':'')}].concat(isMultiOrg(c)? bizList(c).map(b=>({v:c.id+'::'+b.id,l:'   '+b.name})) : []))),
       cmClientValue: (D.clients.some(c=>c.id===cmOrgF) && (!cmBizF || D.clients.some(c=>c.id===cmOrgF&&bizById(c,cmBizF))))? cmClientF : '',
       onCmClient:e=>{ const v=e.target.value; this.setState({cmClient: v||'clients'}); },
@@ -6649,8 +6652,7 @@ class Component extends DCLogic {
     // Client billing used to be reachable only by previewing a portal, which
     // meant switching context to raise an invoice. This is the same work, on
     // one board, one client at a time.
-    const billClients=D.clients.slice()
-      .sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    const billClients=D.clients.slice().sort(clientByName);
     const invSel=billClients.find(c=>c.id===S.invClient)||billClients[0]||null;
     const invSelId=invSel? invSel.id : '';
     const owedFor=cid=>invsFor(cid).filter(i=>!invIsPaid(i)).reduce((s,i)=>s+Number(i.amount||0),0);
@@ -7973,7 +7975,7 @@ class Component extends DCLogic {
       ...brandVals,
       ovClient, ovCat, ovFiltered,
       ovClientOptions: [{id:'all',name:'All clients'}].concat(
-        D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')))
+        D.clients.slice().sort(clientByName)
           .map(c=>({id:c.id,name:c.name}))),
       ovCatOptions: [{id:'all',name:'All categories'}].concat(ovCats.map(c=>({id:c,name:c}))),
       onOvClient: e=>{ const v=e.target.value; this.setState({ovClient:v}); },
@@ -8174,7 +8176,7 @@ class Component extends DCLogic {
       dLineClient:d.lineClient||'', onLineClient:this.draft('lineClient'),
       // Organizations with several companies list each company, so hours land
       // on Costa Mesa Jiu Jitsu rather than just "Double Ops Inc".
-      payLineOpts: D.clients.slice().sort((a,b)=>a.name.localeCompare(b.name)).flatMap(c=>{
+      payLineOpts: D.clients.slice().sort(clientByName).flatMap(c=>{
         const bz=(c.businesses||[]);
         return bz.length>1 ? bz.map(b=>({value:c.id+'|'+b.id, label:(b.name===c.name? c.name : c.name+' · '+b.name)}))
                            : [{value:c.id, label:c.name}];
