@@ -230,6 +230,13 @@ and a card the client sees is the card the team works on. Rows with a null
   card's `media[]`), or attached as a file the old way (private bucket,
   signed). The first two are public because a content preview is not a
   private document and the agents that make most of them cannot sign a URL.
+- **Email cards** carry the finished email as `html` (plus `subject`,
+  `subjectB`, `preheader`, `audience`, `excludes`). Opened, they show the
+  subject lines, then the email rendered in a sandboxed frame with no scripts
+  (desktop and mobile widths), an **HTML code** view, **Copy HTML** and
+  **Download .html**, on both the team side and the client portal. The team
+  can paste or edit the HTML in the code view and save it. On the gallery an
+  email with no image uses the email itself, shrunk, as its cover.
 - Two more social states: **Scheduled** (in Metricool) between Approved and
   Posted, and a **Blog** channel with Ideas → Approved → Drafting →
   Published. The portal shows both.
@@ -296,7 +303,7 @@ of record would not mean anything.
 
 ## Booking a call
 
-A **Schedule Call** tab in the client portal, and the same booking form at the
+A **Meet with Social Upgrades** tab in the client portal (it was Schedule Call), and the same booking form at the
 foot of their dashboard, both pointed at the cal.com link in `CAL_URL`.
 
 It is an `<iframe>` rather than cal.com's `embed.js`. The script version would
@@ -320,7 +327,7 @@ merely having the embed down there dragged the dashboard to the bottom of
 itself a few seconds after it opened. `loading="lazy"` did not help: the card
 sits inside the browser's load margin, so the frame mounted anyway. Pressing
 "Pick a time" loads it in place, which also means cal.com is not contacted at
-all for the many clients who never book. The Schedule Call tab still embeds it
+all for the many clients who never book. The Meet with Social Upgrades tab still embeds it
 directly, where the calendar is the point of the page and there is nothing to
 scroll past.
 
@@ -431,12 +438,54 @@ your own message. The team overview's activity list is separate and still shows
 everything, including your own actions. Entries written before this carry no
 author and are shown to everyone — nobody can be identified as their author.
 
-## Clients and businesses
+## Organizations and companies
 
-A client is the tenant and the unit of isolation. A client may cover several
-businesses — Double Ops Inc and Bravo Boxing sit under one account, so one
-login serves the whole group. Extra businesses are entered comma-separated when
-creating the client and stored on `clients.businesses`.
+A client is an **organization**: the tenant and the unit of isolation. An
+organization can run several **companies** (Double Ops Inc runs Double Ops,
+Bravo Boxing and Costa Mesa Jiu Jitsu; AIS MGMT runs AIS Platform and Mover's
+Wallet). The companies are `clients.businesses`, entered comma-separated on the
+client, main one first. Ids are kept by name, so reordering the list or
+renaming one company does not refile anybody's work.
+
+Every row in `strategy`, `requests`, `work`, `todos`, `messages`, `updates`,
+`files` and `log` carries `data.businessId`. A row without one belongs to the
+organization's first company, which is how everything written before companies
+existed reads. New rows are filed automatically (`stampBiz` in `set()`): work
+follows its request, a log line follows its card, anything else takes the
+company being viewed, or the one picked under **New items go to** in the
+organization overview. Staff can move any card with the **Company** picker in
+its detail view; an organization-wide member can move content cards.
+
+**Portal.** An organization with more than one company gets a company bar under
+the heading:
+
+- **All companies** is the executive view. The Dashboard becomes an
+  organization overview: totals across the group (open requests, in progress,
+  needs your approval, content this week, unread messages), then a card per
+  company with its own figures, the next three dated pieces of content, the
+  latest message and who has access, each with **Open board**. Below that the
+  usual four columns run across every company, each card naming its company.
+- Picking a company turns every tab (requests, to-dos, content map, messages,
+  files, updates) into that company's board.
+
+**Who sees what.** A portal login is either organization-wide
+(`profiles.business_ids` empty) or scoped to some companies. Staff and
+organization-wide members set it from the portal's Team tab (chips per
+person), and choose it when inviting. Nobody edits their own. A scoped member
+only ever receives their companies' rows, cannot invite anyone wider than
+themselves, and does not see Billing (invoices and logged hours are the
+organization's).
+
+This is enforced in Postgres (migration `036_org_companies.sql`):
+`row_in_my_companies(client_id, data)` is added to every client policy on the
+tables above, `set_member_companies()` is the only way to change a scope, and
+`client_invite_member()` takes the new member's companies.
+
+**Team side.** Cards read "Double Ops Inc · Bravo Boxing". The Content Map
+picker lists each organization's companies under it (`org::company`), and
+Add content can file a card straight to one. Messages open an organization's
+companies underneath it; with none picked the thread shows every company's
+messages, labelled, and a reply goes to the main company.
 
 ### The pipeline
 

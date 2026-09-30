@@ -343,6 +343,23 @@
         </div>
       </header>
 
+      <sc-if value="{{ showBizBar }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:-12px">
+          <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);margin-right:2px">{{ bizBarLabel }}</span>
+          <sc-for list="{{ bizTabs }}" as="bz" hint-placeholder-count="3">
+            <button onClick="{{ bz.select }}" aria-pressed="{{ bz.on }}" style="{{ bz.style }}"><span style="{{ bz.dot }}"></span><span>{{ bz.label }}</span></button>
+          </sc-for>
+          <sc-if value="{{ showFileUnder }}" hint-placeholder-val="{{ false }}">
+            <span style="flex:1"></span>
+            <label style="font-size:11.5px;color:var(--text-muted);display:flex;align-items:center;gap:6px">New items go to
+              <select value="{{ fileUnderValue }}" onChange="{{ onFileUnder }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:6px 10px;font-size:12.5px;background:var(--surface-card);color:var(--text-body)">
+                <sc-for list="{{ fileUnderOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+            </label>
+          </sc-if>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
         <div style="{{ detailBoxStyle }}">
@@ -390,13 +407,81 @@
               <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
               <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
             </div>
+            <sc-if value="{{ detailCoShow }}" hint-placeholder-val="{{ false }}">
+              <label style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Company
+                <select value="{{ detailCoValue }}" onChange="{{ onDetailCo }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:6px 10px;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;background:var(--surface-card);color:var(--navy)">
+                  <sc-for list="{{ detailCoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </label>
+            </sc-if>
 
             <sc-if value="{{ isContentCard }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
                 <span style="{{ cmBrandDot }}"></span><span style="font-weight:600;color:var(--navy)">{{ cmBrand }}</span>
                 <span>·</span><span style="{{ cmChanDot }}"></span><span>{{ cmChanLabel }}</span>
                 <sc-if value="{{ cmHasBy }}" hint-placeholder-val="{{ false }}"><span>·</span><span>{{ cmByLine }}</span><sc-if value="{{ cmByAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if></sc-if>
+                <sc-if value="{{ cmHasAdded }}" hint-placeholder-val="{{ true }}"><span>·</span><span>Added {{ cmAdded }}</span></sc-if>
               </div>
+
+              <sc-if value="{{ cmIsArchived }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px">
+                  <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">
+                    <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Archived · not for us</span>
+                    <span style="font-size:12.5px;color:var(--text-body)">{{ cmArchLine }}</span>
+                    <sc-if value="{{ cmHasArchReason }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--navy);line-height:1.5">“{{ cmArchReason }}”</span></sc-if>
+                  </div>
+                  <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cmRestore }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Restore to the board</button></sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cmFbIdle }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <button onClick="{{ cmOpenChanges }}" style="background:rgba(214,143,46,.12);border:1px solid rgba(214,143,46,.45);border-radius:12px;padding:7px 14px;font-size:12.5px;font-weight:600;color:#a2691a;cursor:pointer" style-hover="background:rgba(214,143,46,.2)">✎ {{ cmChangesBtn }}</button>
+                  <sc-if value="{{ cmNotArchived }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cmOpenArchive }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-muted)" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us · archive</button></sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ cmFbChanges }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;background:rgba(214,143,46,.07);border:1px solid rgba(214,143,46,.35);border-radius:12px;padding:12px 14px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:#a2691a">Request changes</span>
+                  <textarea value="{{ dCmCR }}" onChange="{{ onCmCR }}" rows="3" placeholder="What should change? Copy, design, angle, length, the image, the hook. Be as specific as you like." style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical;font-family:var(--font-body)"></textarea>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <button onClick="{{ cmSendCR }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:8px 18px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#000">Send change request</button>
+                    <button onClick="{{ cmCancelFb }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-body)" style-hover="border-color:var(--navy)">Cancel</button>
+                    <span style="font-size:11.5px;color:var(--text-muted)">The next scheduled run makes the changes and replies here, or ask Claude to run it now.</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ cmFbArchive }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Not for us</span>
+                  <textarea value="{{ dCmArch }}" onChange="{{ onCmArch }}" rows="2" placeholder="Why not? Optional, but it is how the agents learn what to stop making." style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;resize:vertical;font-family:var(--font-body)"></textarea>
+                  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <button onClick="{{ cmDoArchive }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 18px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#000">Archive this idea</button>
+                    <button onClick="{{ cmCancelFb }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-body)" style-hover="border-color:var(--navy)">Cancel</button>
+                    <span style="font-size:11.5px;color:var(--text-muted)">It leaves the board and waits under Archived. You can restore it any time.</span>
+                  </div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ hasCmCRs }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Change requests</span>
+                  <sc-for list="{{ cmCRs }}" as="cr" hint-placeholder-count="1">
+                    <div style="display:flex;flex-direction:column;gap:5px;border:1px solid var(--border-card);border-radius:12px;padding:10px 12px;background:var(--surface-card)">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted)">
+                        <span style="{{ cr.stateStyle }}">{{ cr.stateLabel }}</span><span style="font-weight:600;color:var(--navy)">{{ cr.who }}</span><span>{{ cr.when }}</span>
+                        <span style="flex:1"></span>
+                        <sc-if value="{{ cr.canAct }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ cr.markDone }}" style="background:none;border:none;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;padding:0 4px">Mark done</button>
+                          <button onClick="{{ cr.withdraw }}" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">Withdraw</button>
+                        </sc-if>
+                      </div>
+                      <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:pre-wrap">{{ cr.text }}</div>
+                      <sc-if value="{{ cr.isDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#158a4d">{{ cr.doneLine }}</div></sc-if>
+                      <sc-if value="{{ cr.hasDoneNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.5;background:var(--gray-100);border-radius:10px;padding:7px 10px">{{ cr.doneNote }}</div></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
 
               <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:8px">
@@ -430,6 +515,52 @@
                       <button onClick="{{ mediaCancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Keep</button>
                     </sc-if>
                   </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ emlShow }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px;border:1px solid var(--gray-200);border-radius:12px;padding:12px">
+                  <sc-if value="{{ emlHasFacts }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                      <sc-for list="{{ emlFacts }}" as="ef" hint-placeholder-count="3">
+                        <div style="display:flex;gap:10px;align-items:baseline;min-width:0">
+                          <span style="{{ emlLabelStyle }}">{{ ef.label }}</span>
+                          <span style="font-size:13.5px;color:var(--navy);font-weight:500;overflow-wrap:anywhere;min-width:0">{{ ef.value }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <div role="group" aria-label="Email view" style="display:inline-flex;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden">
+                      <sc-for list="{{ emlTabs }}" as="et" hint-placeholder-count="2"><button onClick="{{ et.select }}" aria-pressed="{{ et.on }}" style="{{ et.style }}">{{ et.label }}</button></sc-for>
+                    </div>
+                    <sc-if value="{{ emlIsPreview }}" hint-placeholder-val="{{ true }}">
+                      <div role="group" aria-label="Device" style="display:inline-flex;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden">
+                        <sc-for list="{{ emlDevs }}" as="ev2" hint-placeholder-count="2"><button onClick="{{ ev2.select }}" aria-pressed="{{ ev2.on }}" style="{{ ev2.style }}">{{ ev2.label }}</button></sc-for>
+                      </div>
+                    </sc-if>
+                    <span style="flex:1"></span>
+                    <sc-if value="{{ emlHas }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size:11.5px;color:var(--text-muted)">{{ emlSize }}</span>
+                      <button onClick="{{ emlDownload }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:7px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download .html</button>
+                      <button onClick="{{ emlCopy }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Copy HTML</button>
+                    </sc-if>
+                  </div>
+                  <sc-if value="{{ emlShowFrame }}" hint-placeholder-val="{{ true }}">
+                    <div style="background:var(--gray-100);border-radius:12px;padding:12px;display:flex;justify-content:center;overflow-x:auto">
+                      <iframe sc-camel-src-doc="{{ emlDoc }}" sandbox="allow-popups allow-popups-to-escape-sandbox" title="{{ emlFrameTitle }}" style="{{ emlFrameStyle }}"></iframe>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ emlShowCode }}" hint-placeholder-val="{{ false }}">
+                    <textarea value="{{ emlCode }}" onChange="{{ onEmlCode }}" sc-camel-read-only="{{ emlReadOnly }}" spellcheck="false" placeholder="Paste the email's full HTML here to preview it and share it with the client." rows="18" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;color:var(--text-body);background:var(--gray-100);white-space:pre;overflow:auto;resize:vertical"></textarea>
+                    <sc-if value="{{ emlDirty }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                        <button onClick="{{ emlSave }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:7px 18px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="filter:brightness(1.08)">Save HTML</button>
+                        <button onClick="{{ emlCancel }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                        <span style="font-size:11.5px;color:var(--text-muted)">The client sees the saved version in their portal.</span>
+                      </div>
+                    </sc-if>
+                  </sc-if>
                 </div>
               </sc-if>
 
@@ -475,6 +606,18 @@
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
                       <sc-for list="{{ cmNetChips }}" as="nc" hint-placeholder-count="5"><button onClick="{{ nc.toggle }}" style="{{ nc.style }}">{{ nc.label }}</button></sc-for>
                     </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ cmIsEmail }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Subject line</label>
+                      <input value="{{ cfSubject.value }}" onChange="{{ cfSubject.onChange }}" onBlur="{{ cfSubject.onBlur }}" placeholder="What shows in the inbox" style="{{ cmFieldStyle }}"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Subject B (test)</label>
+                      <input value="{{ cfSubjectB.value }}" onChange="{{ cfSubjectB.onChange }}" onBlur="{{ cfSubjectB.onBlur }}" placeholder="Optional A/B variant" style="{{ cmFieldStyle }}"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Preview text</label>
+                      <input value="{{ cfPreheader.value }}" onChange="{{ cfPreheader.onChange }}" onBlur="{{ cfPreheader.onBlur }}" placeholder="The line after the subject" style="{{ cmFieldStyle }}"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Sends to</label>
+                      <input value="{{ cfAudience.value }}" onChange="{{ cfAudience.onChange }}" onBlur="{{ cfAudience.onBlur }}" placeholder="List or segment" style="{{ cmFieldStyle }}"></div>
                   </div>
                 </sc-if>
                 <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hook</label>
@@ -869,6 +1012,17 @@
               </sc-for>
               <sc-if value="{{ loHistMore }}" hint-placeholder-val="{{ false }}">
                 <button onClick="{{ showLoHist }}" style="align-self:flex-start;background:none;border:none;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer">{{ loHistMoreLabel }}</button>
+              </sc-if>
+              <sc-if value="{{ hasLoCreated }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:3px;padding:9px 0;min-width:0">
+                  <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                    <span style="font-size:10px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--green)">Created</span>
+                    <span style="font-weight:600;color:var(--navy)">{{ loCreatedWho }}</span>
+                    <sc-if value="{{ loCreatedAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ loAgentPill }}">Agent</span></sc-if>
+                    <span>{{ loCreatedWhen }}</span>
+                  </div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ loCreatedText }}</div>
+                </div>
               </sc-if>
             </div>
             </div>
@@ -1387,9 +1541,9 @@
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:5px">
-              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Additional businesses (comma separated)</label>
+              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Other companies in this organization (comma separated)</label>
               <input value="{{ dNewClientBrands }}" onChange="{{ onNewClientBrands }}" placeholder="Bravo Boxing" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              <div style="font-size:12px;color:var(--text-muted)">Extra brands run under the same umbrella account, so one login covers them all.</div>
+              <div style="font-size:12px;color:var(--text-muted)">Each company gets its own board for content, requests, to-dos and messages, plus an organization overview for the owners.</div>
             </div>
             <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:12px">
               <div style="font-size:12px;color:var(--text-muted)">Optional. Create the client's portal login now.</div>
@@ -1436,7 +1590,7 @@
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label><input value="{{ ecHoursTotal }}" onChange="{{ onEcHoursTotal }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                   </div>
                   <div style="display:flex;flex-direction:column;gap:4px">
-                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Businesses (comma separated)</label>
+                    <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Companies in this organization (comma separated, main one first)</label>
                     <input value="{{ ecBrands }}" onChange="{{ onEcBrands }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   </div>
                   <div style="display:flex;flex-direction:column;gap:6px">
@@ -1498,6 +1652,11 @@
 
       <sc-if value="{{ secContent }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div role="tablist" aria-label="Content Map channels" style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ cmSubTabs }}" as="st" hint-placeholder-count="5">
+              <button role="tab" onClick="{{ st.select }}" style="{{ st.style }}" style-hover="border-color:var(--navy)">{{ st.label }}<span style="{{ st.countStyle }}">{{ st.n }}</span></button>
+            </sc-for>
+          </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ cmTiles }}" as="t" hint-placeholder-count="7">
               <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
@@ -1508,7 +1667,6 @@
               <sc-for list="{{ cmScopes }}" as="sp" hint-placeholder-count="3"><button onClick="{{ sp.select }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for>
             </div>
             <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="One client" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
-            <select value="{{ cmChanValueF }}" onChange="{{ onCmChanF }}" aria-label="Channel" style="{{ cmSelStyle }}"><sc-for list="{{ cmChanOptsAll }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
             <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" aria-label="Sort" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
             <sc-if value="{{ cmFiltered }}" hint-placeholder-val="{{ false }}">
@@ -1528,7 +1686,8 @@
           <sc-if value="{{ cmHowOpen }}" hint-placeholder-val="{{ false }}">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--text-body);line-height:1.65;display:flex;flex-direction:column;gap:6px">
               <div><strong style="color:var(--navy)">Social Agent</strong> and <strong style="color:var(--navy)">Blog Agent</strong> run on a schedule and write straight to this board: new cards land as <em>Ideas</em>, previews arrive a few seconds after the card (they are fetched from the link the agent gives), and every change is signed and listed under Activity and in each card's History.</div>
-              <div>Your part is the yes or the no. Move an idea to <em>Approved</em> (or comment on the card with what to change) and the next run picks it up: it schedules approved social posts in Metricool, drafts approved blog topics, and replies on the card. Cards you add here by hand get the same treatment.</div>
+              <div>Your part is the yes, the no, or the "almost". Move an idea to <em>Approved</em> and the next run picks it up. If the idea is good but needs work, open it and use <em>Request changes</em>: say what to change and the next run makes the changes, replies on the card and marks the request done (or ask Claude to run it now). If it is not for us, use <em>Not for us</em>: the card moves to <em>Archived</em> with your reason, and every run reads those reasons before making new ideas. Restore an archived card any time.</div>
+              <div>Social, Blog and Emails share the same columns: Ideas, Approved, Scheduled, Posted. Every card shows the date it was added; sort by <em>Oldest added</em> to clear out the stale ones first.</div>
               <div>The Metricool panel is what the agent last saw there (queue, best times, KPIs, top posts). It refreshes on every run rather than live.</div>
             </div>
           </sc-if>
@@ -1564,6 +1723,7 @@
                   <div class="su-cmcover" style="position:relative;aspect-ratio:1/1;background:var(--gray-100);overflow:hidden">
                     <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
                     <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px">▶</span></sc-if>
+                    <sc-if value="{{ k.hasEmlThumb }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;overflow:hidden;background:var(--gray-100)"><iframe sc-camel-src-doc="{{ k.emlDoc }}" sandbox="" tabindex="-1" aria-hidden="true" title="Email preview" loading="lazy" scrolling="no" style="position:absolute;top:0;left:50%;width:640px;height:1500px;border:none;transform:translateX(-50%) scale(.44);transform-origin:top center;pointer-events:none;background:#fff"></iframe></div></sc-if>
                     <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateStyle }}"><div class="su-clamp3" style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
                     <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
                       <span style="background:rgba(255,255,255,.94);color:var(--navy);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px"><span style="{{ k.chanDot }}"></span>{{ k.chanLabel }}</span>
@@ -1580,7 +1740,10 @@
                       <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
                       <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
                       <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px">✎ {{ k.changeLabel }}</span></sc-if>
+                      <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#158a4d;font-weight:600">Revised</span></sc-if>
                       <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasAdded }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ k.added }}</span></sc-if>
                       <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
                       <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
                     </div>
@@ -1655,6 +1818,7 @@
                   <div class="su-cmcover" style="position:relative;aspect-ratio:1/1;background:var(--gray-100);overflow:hidden">
                     <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
                     <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px">▶</span></sc-if>
+                    <sc-if value="{{ k.hasEmlThumb }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;overflow:hidden;background:var(--gray-100)"><iframe sc-camel-src-doc="{{ k.emlDoc }}" sandbox="" tabindex="-1" aria-hidden="true" title="Email preview" loading="lazy" scrolling="no" style="position:absolute;top:0;left:50%;width:640px;height:1500px;border:none;transform:translateX(-50%) scale(.44);transform-origin:top center;pointer-events:none;background:#fff"></iframe></div></sc-if>
                     <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateStyle }}"><div class="su-clamp3" style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
                     <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
                       <span style="background:rgba(255,255,255,.94);color:var(--navy);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px"><span style="{{ k.chanDot }}"></span>{{ k.chanLabel }}</span>
@@ -1671,7 +1835,10 @@
                       <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
                       <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
                       <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
+                      <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px">✎ {{ k.changeLabel }}</span></sc-if>
+                      <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#158a4d;font-weight:600">Revised</span></sc-if>
                       <span style="flex:1"></span>
+                      <sc-if value="{{ k.hasAdded }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ k.added }}</span></sc-if>
                       <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
                       <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
                     </div>
@@ -1687,6 +1854,12 @@
                         <button onClick="{{ k.askRemove }}" title="Delete this card" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
                       </sc-if>
                     </div>
+                    <sc-if value="{{ k.notAsking }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:6px;align-items:center">
+                        <button onClick="{{ k.askChanges }}" title="Good idea, needs changes" style="flex:1;background:var(--surface-card);border:1px solid rgba(214,143,46,.45);border-radius:12px;padding:5px 8px;font-size:11.5px;font-weight:600;color:#a2691a;cursor:pointer;white-space:nowrap" style-hover="background:rgba(214,143,46,.1)">✎ Changes</button>
+                        <button onClick="{{ k.askArchive }}" title="Not for us: archive it" style="flex:1;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 8px;font-size:11.5px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us</button>
+                      </div>
+                    </sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -2056,6 +2229,66 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ showOrgOverview }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+            <sc-for list="{{ orgStats }}" as="os" hint-placeholder-count="5">
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+                <span style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1;color:var(--navy)">{{ os.value }}</span>
+                <span style="font-size:10.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ os.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-items:start">
+            <sc-for list="{{ orgCos }}" as="co" hint-placeholder-count="3">
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0">
+                <div style="display:flex;align-items:flex-start;gap:10px">
+                  <span style="{{ co.dot }}"></span>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                    <span style="font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--navy);line-height:1.2">{{ co.name }}</span>
+                    <sc-if value="{{ co.hasDomain }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;color:var(--text-muted);overflow-wrap:anywhere">{{ co.domain }}</span></sc-if>
+                  </div>
+                  <button onClick="{{ co.open }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:7px 14px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Open board →</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+                  <sc-for list="{{ co.stats }}" as="cs" hint-placeholder-count="4">
+                    <div style="{{ cs.style }}">
+                      <span style="font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1;color:var(--navy)">{{ cs.value }}</span>
+                      <span style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);line-height:1.25">{{ cs.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Coming up</span>
+                  <sc-for list="{{ co.next }}" as="nx" hint-placeholder-count="2">
+                    <button onClick="{{ nx.open }}" style="display:flex;align-items:center;gap:8px;background:var(--gray-100);border:none;border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;min-width:0">
+                      <span style="{{ nx.dot }}"></span>
+                      <span style="font-size:12px;font-weight:600;color:var(--blue);white-space:nowrap">{{ nx.when }}</span>
+                      <span style="font-size:13px;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ nx.title }}</span>
+                    </button>
+                  </sc-for>
+                  <sc-if value="{{ co.noNext }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;color:var(--text-muted)">Nothing dated in the next 30 days.</span></sc-if>
+                </div>
+                <sc-if value="{{ co.hasMsg }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ co.openMsgs }}" style="display:flex;flex-direction:column;gap:3px;background:none;border:none;border-top:1px solid var(--border-hairline);padding:10px 0 0;text-align:left;cursor:pointer;min-width:0">
+                    <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Latest message · {{ co.msgWhen }}</span>
+                    <span style="font-size:13px;color:var(--text-body);line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">{{ co.msgText }}</span>
+                  </button>
+                </sc-if>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted)">
+                  <span>{{ co.people }}</span>
+                  <sc-if value="{{ co.hasActivity }}" hint-placeholder-val="{{ true }}"><span>·</span><span>Last activity {{ co.lastWhen }}</span></sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border-hairline);padding-top:18px">
+            <h2 style="font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Everything across the organization</h2>
+            <span style="font-size:12.5px;color:var(--text-muted)">Every company's work in one place, labelled by company.</span>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ pHome }}" hint-placeholder-val="{{ false }}">
         <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
           <div style="display:flex;flex-direction:column;gap:10px">
@@ -2090,6 +2323,7 @@
             </div>
             <sc-for list="{{ homeQueueCards }}" as="q" hint-placeholder-count="2">
               <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ q.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ q.co }}</div></sc-if>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
                 <sc-if value="{{ q.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ q.projected }}</div>
@@ -2114,6 +2348,7 @@
             </div>
             <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
               <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <sc-if value="{{ w.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.co }}</div></sc-if>
                 <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                 <sc-if value="{{ w.hasProjected }}" hint-placeholder-val="{{ true }}">
                   <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ w.projected }}</div>
@@ -2139,6 +2374,7 @@
             </div>
             <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
               <div onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
+                <sc-if value="{{ u.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.co }}</div></sc-if>
                 <div style="font-size:14px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
                 <sc-for list="{{ u.files }}" as="f" hint-placeholder-count="0">
                   <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
@@ -2273,7 +2509,7 @@
         <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
           <div style="padding:22px 24px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border-hairline)">
             <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:3px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Book a call</h3>
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Meet with Social Upgrades</h3>
               <div style="font-size:12.5px;color:var(--text-muted)">Something easier said than typed? Grab a time.</div>
             </div>
             <button onClick="{{ goSchedule }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Full page →</button>
@@ -3231,6 +3467,14 @@
               <div style="flex:1;display:flex;flex-direction:column">
                 <span style="font-size:13.5px;color:var(--navy);font-weight:500">{{ pp.name }}</span>
                 <span style="font-size:11.5px;color:var(--text-muted)">{{ pp.email }}</span>
+                <sc-if value="{{ pp.hasScope }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11.5px;color:var(--navy);font-weight:500;padding-top:3px">Sees: {{ pp.scope }}</span>
+                  <sc-if value="{{ pp.canScope }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:6px">
+                      <sc-for list="{{ pp.chips }}" as="ch" hint-placeholder-count="3"><button onClick="{{ ch.toggle }}" aria-pressed="{{ ch.on }}" style="{{ ch.style }}">{{ ch.label }}</button></sc-for>
+                    </div>
+                  </sc-if>
+                </sc-if>
               </div>
               <sc-if value="{{ pp.isMe }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--text-muted)">You</span></sc-if>
               <sc-if value="{{ pp.canResend }}" hint-placeholder-val="{{ true }}">
@@ -3244,6 +3488,12 @@
             
             <button onClick="{{ invitePortalMember }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
           </div>
+          <sc-if value="{{ pmHasCos }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <span style="font-size:11.5px;color:var(--text-muted);margin-right:2px">They will see</span>
+              <sc-for list="{{ pmCoChips }}" as="ch" hint-placeholder-count="3"><button onClick="{{ ch.toggle }}" aria-pressed="{{ ch.on }}" style="{{ ch.style }}">{{ ch.label }}</button></sc-for>
+            </div>
+          </sc-if>
           <div style="font-size:11.5px;color:var(--text-muted)">{{ inviteHint }}</div>
           <div style="font-size:11.5px;color:var(--text-muted)">Ask Social Upgrades if you need someone removed.</div>
         </div>
@@ -3474,7 +3724,7 @@
       <sc-if value="{{ pSchedule }}" hint-placeholder-val="{{ false }}">
         <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
           <div style="padding:22px 24px;display:flex;flex-direction:column;gap:3px;border-bottom:1px solid var(--border-hairline)">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Book a call</h3>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Meet with Social Upgrades</h3>
             <div style="font-size:12.5px;color:var(--text-muted)">Pick a time that suits you and it lands in both calendars.</div>
           </div>
           <iframe sc-camel-src="{{ calUrl }}" height="780" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" title="Book a call with Social Upgrades" style="width:100%;border:none;display:block;background:var(--surface-card)"></iframe>
@@ -4006,7 +4256,28 @@ class Component extends DCLogic {
         : 'Could not save. Check your connection. We will retry on your next change.'});
     });
   }
-  set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; return {data}; }, ()=>this.save()); }
+  set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; this.stampBiz(s.data,data); return {data}; }, ()=>this.save()); }
+  // New rows for an organization with several companies are filed under one.
+  // Something made from another row (work from its request, a log line about
+  // a card) follows that row; anything else takes the company being viewed,
+  // or the one picked on the team side. Left blank, a row belongs to the
+  // organization's first company, which is also what the database assumes.
+  stampBiz(prev, next){
+    const orgs={}; (next.clients||[]).forEach(c=>{ if(Array.isArray(c.businesses)&&c.businesses.filter(b=>b&&b.id).length>1) orgs[c.id]=c; });
+    if(!Object.keys(orgs).length) return;
+    const now=this.__bizNow||{}, picks=this.state.bizPick||{};
+    const find=(t,id)=>id? (next[t]||[]).find(y=>y.id===id) : null;
+    ['requests','work','todos','updates','messages','files','strategy','log'].forEach(t=>{
+      const before=new Set((prev[t]||[]).map(y=>y.id));
+      (next[t]||[]).forEach(r=>{
+        if(before.has(r.id) || r.businessId || !r.clientId || !orgs[r.clientId]) return;
+        const src=find('requests',r.requestId)||find('work',r.workId)||find('strategy',r.contentId)||find('work',r.itemId)||find('requests',r.itemId);
+        if(src && src.clientId===r.clientId && src.businessId){ r.businessId=src.businessId; return; }
+        if(now.clientId===r.clientId && now.bizId){ r.businessId=now.bizId; return; }
+        if(picks[r.clientId]) r.businessId=picks[r.clientId];
+      });
+    });
+  }
   // Runs once the write queued by the last set() has landed. A row that refers
   // to one the UI just made (a media job naming a brand-new card) must wait
   // for the card, or the foreign key refuses it.
@@ -4192,15 +4463,13 @@ class Component extends DCLogic {
     };
   }
   renderVals(){
-    const S=this.state, D=S.data, d=S.d;
+    const S=this.state, D0=S.data, d=S.d;
     // Archived cards are gone from every list, on both sides. The client
     // cannot even read one — the row is invisible to them in Postgres — so the
     // team's lists have to drop them too, or the two sides would disagree
     // about what exists. Everything below reads these, not D.work/D.requests;
     // the raw collections are still what the archive itself and the file
     // reference count look at.
-    const liveWork = (S.data.work||[]).filter(r=>!r.archived);
-    const liveReqs = (S.data.requests||[]).filter(r=>!r.archived);
     // Whether the signed-in *account* is staff, as opposed to which view is
     // currently open. A client account can never reach the team view.
     const isStaff = !!(S.profile && S.profile.role==='team');
@@ -4213,7 +4482,7 @@ class Component extends DCLogic {
     // if either says admin, treat as admin. A single missing column here
     // silently strips approvals, rate editing and the billing panel, and that
     // failure is invisible — the controls simply are not drawn.
-    const meRow = (D.team||[]).find(t=>t.id===me.id) || {};
+    const meRow = (D0.team||[]).find(t=>t.id===me.id) || {};
     const isAdmin = !!(me.is_admin || meRow.isAdmin);
     // Finance visibility: owner or accountant. Ordinary staff never see client
     // invoices or anyone else's pay. The database enforces this too — these
@@ -4230,16 +4499,57 @@ class Component extends DCLogic {
     const isTeam = isStaff && S.role==='team';
     // Placeholder keeps render total during the pre-auth frame, when no rows
     // have loaded yet and the login overlay is still covering the page.
-    const client = D.clients.find(c=>c.id===S.viewClient) || D.clients[0] ||
+    const client = D0.clients.find(c=>c.id===S.viewClient) || D0.clients[0] ||
       {id:'',name:'',domain:'',service:'',plan:'',price:0,hoursUsed:0,hoursTotal:0,pulse:[]};
+    // ===== organizations and their companies =====
+    // A client is an organization; `businesses` are the companies it runs.
+    // Rows carry `businessId`; a row without one belongs to the first
+    // company, which is where everything written before companies existed
+    // goes. The database applies the same rule (migration 036).
+    const orgRec = id=>D0.clients.find(c=>c.id===id);
+    const bizList = c=>(c&&Array.isArray(c.businesses))? c.businesses.filter(b=>b&&b.id) : [];
+    const isMultiOrg = c=>bizList(c).length>1;
+    const mainBizId = c=>(bizList(c)[0]||{}).id||'';
+    const bizIdOf = x=>{ if(!x||!x.clientId) return ''; return x.businessId || mainBizId(orgRec(x.clientId)); };
+    const bizById = (c,id)=>bizList(c).find(b=>b.id===id)||null;
+    const bizNameOf = x=>{ const c=orgRec(x&&x.clientId); if(!c) return ''; const b=bizById(c,bizIdOf(x)); return b? b.name : c.name; };
+    // A company-scoped member only ever receives their companies' rows; this
+    // is what their "all companies" means.
+    const myBizIds = (!isStaff && Array.isArray(me.business_ids))? me.business_ids.filter(Boolean) : [];
+    const orgWideMe = isStaff || myBizIds.length===0;
+    const portalBizs = (!isTeam && isMultiOrg(client))? bizList(client).filter(b=>orgWideMe||myBizIds.indexOf(b.id)>-1) : [];
+    let bizSel = S.biz||'all';
+    if(bizSel!=='all' && !portalBizs.some(b=>b.id===bizSel)) bizSel='all';
+    if(bizSel==='all' && !orgWideMe && portalBizs.length===1) bizSel=portalBizs[0].id;
+    const bizScoped = portalBizs.length>0 && bizSel!=='all';
+    const orgOverview = portalBizs.length>1 && bizSel==='all';
+    const curBiz = bizScoped? bizById(client,bizSel) : null;
+    const BIZ_TABLES=['todos','work','requests','updates','messages','files','strategy','log'];
+    const D = bizScoped
+      ? Object.assign({}, D0, Object.fromEntries(BIZ_TABLES.map(t=>[t,(D0[t]||[]).filter(x=>x.clientId!==client.id || bizIdOf(x)===bizSel)])))
+      : D0;
+    // Where something made in the portal is filed: the company being viewed,
+    // or in the overview the one picked under "New items go to" (the first
+    // company the member can see, by default, so a write is never refused).
+    const pickNow=(S.bizPick||{})[client.id];
+    const fileUnderId = bizScoped? bizSel : (portalBizs.some(b=>b.id===pickNow)? pickNow : ((portalBizs[0]||{}).id||''));
+    this.__bizNow = {clientId: isTeam? '' : client.id, bizId: isTeam? '' : fileUnderId};
+    const liveWork = (D.work||[]).filter(r=>!r.archived);
+    const liveReqs = (D.requests||[]).filter(r=>!r.archived);
     const cname = id=>{ const c=D.clients.find(x=>x.id===id); return c?c.name:'Internal'; };
+    // "Double Ops Inc · Bravo Boxing" for a company inside an organization,
+    // just the name for a single-company client.
+    const orgLabel = x=>{ if(!x||!x.clientId) return 'Internal'; const c=orgRec(x.clientId); if(!c) return 'Internal';
+      if(!isMultiOrg(c)) return c.name; const bn=bizNameOf(x); return (bn&&bn!==c.name)? c.name+' · '+bn : c.name; };
+    // The name a piece of content goes out under: the company, not the group.
+    const itemBrand = x=>{ if(!x||!x.clientId) return 'Social Upgrades'; const c=orgRec(x.clientId); return (c&&isMultiOrg(c))? bizNameOf(x) : cname(x.clientId); };
     // Set before the first badge() of this pass: in the portal the status
     // pills are tinted from the client's kit, not from Social Upgrades green.
     this._theme = isTeam ? null : this.brandOf(client);
-    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,mediaIdx:0,delMedia:null,
-      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,comment:''}}));
-    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,
-      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined}}));
+    const openDetail=(type,id)=>()=>this.setState(s2=>({detail:{type,id},notifOpen:false,delFile:null,delComment:null,archiveAsk:null,editTitle:null,mediaIdx:0,delMedia:null,cmFb:null,
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,comment:'',cmHtml:undefined}}));
+    const closeDetail=()=>this.setState(s2=>({detail:null,delFile:null,delComment:null,archiveAsk:null,editTitle:null,cmFb:null,
+      d:{...s2.d,detailDesc:undefined,detailEst:undefined,title:undefined,cmHtml:undefined}}));
     const stopThen=fn=>e=>{ if(e&&e.stopPropagation) e.stopPropagation(); fn(); };
     const cLabel=n=> n===0?'No comments yet':(n===1?'1 comment':n+' comments');
     const CATS=['Website Design','E-Commerce Management','Email Marketing','Social Media','Paid Ads','Mobile App','AI Chatbot','Marketing Strategy','Content Production','Blog','Events'];
@@ -4275,7 +4585,7 @@ class Component extends DCLogic {
     // without letting the browser shift them a day by timezone.
     const niceDate=s2=>{ if(!s2) return ''; const p=String(s2).split('-');
       if(p.length!==3) return String(s2);
-      return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); };
+      return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}); };
     // A shared host label for pasted file links (Dropbox, Drive, WeTransfer...).
     const linkLabel=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return 'Link'; } };
 
@@ -4462,7 +4772,7 @@ class Component extends DCLogic {
       const L=[];
       const title = kind==='update' ? (it.text||'Update') : (it.title||'Untitled');
       L.push('# '+title);
-      const meta=[cname(it.clientId)];
+      const meta=[orgLabel(it)];
       if(it.category) meta.push(it.category);
       if(it.urgency && it.urgency!=='Normal') meta.push(it.urgency);
       if(it.needBy) meta.push('needed by '+niceDate(it.needBy));
@@ -4580,12 +4890,13 @@ class Component extends DCLogic {
     const nav = isTeam
       ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['leads','Leads'],['content','Content Map'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
           .filter(([id])=>id!=='invoicing'||canBilling)
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Schedule Call'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
-          .filter(([id])=>id!=='billing'||canSeeClientBilling);
+      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Meet with Social Upgrades'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
+          // Billing is the organization's; a company manager does not get it.
+          .filter(([id])=>id!=='billing'||(canSeeClientBilling&&orgWideMe));
     // Hiding the tab is not enough on its own: a member already sitting on
     // Billing — or returning to it — would be left staring at a blank page,
     // because no section would match. The view falls back to the dashboard.
-    const sectionNow = (S.section==='billing' && !canSeeClientBilling) ? 'home' : S.section;
+    const sectionNow = (S.section==='billing' && !(canSeeClientBilling&&orgWideMe)) ? 'home' : S.section;
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -4608,14 +4919,27 @@ class Component extends DCLogic {
     const CHANNELS=[
       {id:'social', label:'Social Media',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
-      // A post is drafted and then published; the topic is what gets approved.
+      // Social, Blog and Emails share one set of columns, so a card reads the
+      // same on every board. Blogs and emails may skip Scheduled today; the
+      // column stays so they can be scheduled later.
       {id:'blog',   label:'Blog',
-       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['drafting','Drafting','#D68F2E'],['published','Published','var(--blue)']]},
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
       {id:'email',  label:'Emails',
-       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['sent','Sent','var(--blue)']]},
+       cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['scheduled','Scheduled','var(--teal)'],['posted','Posted','var(--blue)']]},
       {id:'ads',    label:'Paid Ads',
        cols:[['idea','Ideas','var(--gray-400)'],['approved','Approved','var(--green)'],['live','Live','var(--blue)'],['paused','Paused','#D68F2E'],['ended','Ended','var(--text-muted)']]}
     ];
+    // Older blog and email cards used Drafting / Published / Sent. They read as
+    // the shared columns so nothing falls off a board.
+    const ST_LEGACY={drafting:'approved',published:'posted',sent:'posted'};
+    const stOf=x=>{ const st=(x&&x.status)||'idea'; return ((x&&x.channel)!=='ads'&&ST_LEGACY[st])||st; };
+    // "Not for us" ideas are archived, not deleted: they drop off every board
+    // and wait under Archived, with the reason, for the agents to learn from.
+    const isArch=x=>!!(x&&x.archived&&x.archived.at);
+    const openCRs=x=>((x&&x.changeRequests)||[]).filter(r=>r&&r.state==='open');
+    const createdMs=x=>{ const t=x&&x.createdAt? Date.parse(x.createdAt) : NaN; return isNaN(t)? Number((x&&x.ts)||0) : t; };
+    const addedLabel=x=>{ const t=createdMs(x); if(!t) return '';
+      return 'Added '+new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:(new Date(t).getFullYear()===new Date().getFullYear()?undefined:'numeric')}); };
     // Content Map opens on the whole plan rather than on one channel's board:
     // the three boards answer "what is in Emails", the overview answers "what
     // is going out, and when", which is the question the tab is named after.
@@ -4626,10 +4950,10 @@ class Component extends DCLogic {
     const chanOrder = chan.cols.map(c=>c[0]);
     // Team sees the client currently being viewed; a client sees only itself.
     const stratClient = isStaff ? S.viewClient : client.id;
-    const stratItems = (D.strategy||[]).filter(x=>x.clientId===stratClient&&x.channel===chan.id);
+    const stratItems = (D.strategy||[]).filter(x=>x.clientId===stratClient&&x.channel===chan.id&&!isArch(x));
 
     const stratCols = chan.cols.map(([st,label,accent])=>{
-      const items = stratItems.filter(x=>(x.status||'idea')===st)
+      const items = stratItems.filter(x=>stOf(x)===st)
         .sort((a,b)=>(a.scheduledFor||'').localeCompare(b.scheduledFor||'')||b.ts-a.ts)
         .map(x=>{
           const i = chanOrder.indexOf(st);
@@ -4672,7 +4996,7 @@ class Component extends DCLogic {
       // be scheduled, so that is what the Content Map counts.
       if(isTeam && id==='content'){
         const lim=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
-        const n=(D.strategy||[]).filter(x=>(x.status||'idea')==='idea'&&x.scheduledFor&&x.scheduledFor<=lim).length;
+        const n=(D.strategy||[]).filter(x=>!isArch(x)&&stOf(x)==='idea'&&x.scheduledFor&&x.scheduledFor<=lim).length;
         if(n) return n; }
       return false;
     };
@@ -4695,7 +5019,7 @@ class Component extends DCLogic {
       const active=sectionNow===id||kidOpen, muted=id==='billing';
       const badge=badgeFor(id);
       navItems.push({label,badge,
-        arrow: (id==='strategy'||kids.length) ? (active?'▾':'▸') : false,
+        arrow: (id==='strategy'||(isTeam&&id==='content')||kids.length) ? (active?'▾':'▸') : false,
         select:openSection(id),
         style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       kids.forEach(([kid,klabel])=>{
@@ -4705,6 +5029,16 @@ class Component extends DCLogic {
           select:openSection(kid),
           style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.62)',padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
       });
+      // The team Content Map opens into the same tabs as the client one.
+      if(id==='content'&&active){
+        const cmNavF=S.cmChan||'all';
+        [{id:'all',label:'Overview'}].concat(CHANNELS).forEach(ch=>{
+          const on=cmNavF===ch.id;
+          navItems.push({label:ch.label,badge:false,
+            select:()=>this.setState({section:'content',cmChan:ch.id,cmTile:'all',notifOpen:false,moreOpen:false}),
+            style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.6)',padding:'8px 12px 8px 22px',margin:'0 0 0 10px',fontSize:12.5,fontWeight:on?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
+        });
+      }
       // Strategy opens into its three channels rather than being one long board.
       if(id==='strategy'&&active){
         CHANNELS.forEach(ch=>{
@@ -4717,9 +5051,17 @@ class Component extends DCLogic {
     });
     const headings = isTeam
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
-      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Schedule a Call'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand=['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
+    // Inside a company, the kicker says which one; the organization overview
+    // is the dashboard's own heading.
+    if(!isTeam){
+      const kick = curBiz? client.name+' · '+curBiz.name : (portalBizs.length>1? client.name+' · All companies' : client.name);
+      Object.keys(headings).forEach(k=>{ if(Array.isArray(headings[k]) && headings[k][0]===client.name) headings[k]=[kick, headings[k][1]]; });
+      if(orgOverview && headings.home) headings.home=[kick,'Overview'];
+      if(curBiz && headings.todos) headings.todos=[kick, curBiz.name+' To-Dos'];
+    }
     const hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
     const secKey=k=>sectionNow===k;
     // notifications
@@ -4746,9 +5088,15 @@ class Component extends DCLogic {
       const person = p ? String(p.name||p.email||'').trim() : '';
       return person ? person + ' @ ' + org : (m.who || org);
     };
-    const thread = D.messages.filter(m=>m.clientId===msgCid).sort((a,b)=>a.ts-b.ts).map(m=>{
+    // An organization's board holds every company's messages. The team can
+    // narrow it to one company; with none picked, and in the portal's
+    // organization overview, each message says which company it is about.
+    const msgOrg = orgRec(msgCid);
+    const teamMsgBiz = (isTeam && isMultiOrg(msgOrg) && bizById(msgOrg,S.msgBiz))? S.msgBiz : '';
+    const msgShowCo = isTeam? (isMultiOrg(msgOrg) && !teamMsgBiz) : orgOverview;
+    const thread = D.messages.filter(m=>m.clientId===msgCid && (!teamMsgBiz || bizIdOf(m)===teamMsgBiz)).sort((a,b)=>a.ts-b.ts).map(m=>{
       const mine = isTeam? m.from==='team' : m.from==='client';
-      return {who:msgSigner(m),when:this.fmt(m.ts),text:m.text,
+      return {who:msgSigner(m)+(msgShowCo? ' · '+bizNameOf(m) : ''),when:this.fmt(m.ts),text:m.text,
         rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
         bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--cta-bg)':'var(--gray-100)',color:mine?'var(--cta-fg)':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
     });
@@ -4757,7 +5105,7 @@ class Component extends DCLogic {
     // voice. It is signed by the person now, with the company after it, and
     // the composed name is stored rather than resolved on the way out: a
     // client cannot read our profiles, and the name has to survive that.
-    const orgOf = side => side==='team' ? 'Social Upgrades' : cname(msgCid);
+    const orgOf = side => side==='team' ? 'Social Upgrades' : (curBiz? curBiz.name : cname(msgCid));
     const signature = side => {
       const person = String(me.name || meRow.name || me.email || '').trim();
       const org = orgOf(side);
@@ -4765,8 +5113,9 @@ class Component extends DCLogic {
     };
     const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
       const side = isTeam? 'team' : 'client';
-      this.set(x=>{ x.messages.push({id:this.uid(),clientId:msgCid,from:side,by:me.id,
-        who:signature(side),text,ts:Date.now()});
+      const teamCo = isTeam && isMultiOrg(msgOrg)? {businessId: teamMsgBiz || mainBizId(msgOrg)} : {};
+      this.set(x=>{ x.messages.push(Object.assign({id:this.uid(),clientId:msgCid,from:side,by:me.id,
+        who:signature(side),text,ts:Date.now()}, teamCo));
         this.logEv(x,msgCid,(isTeam?'Team':cname(msgCid))+' posted on the '+cname(msgCid)+' message board'); return x; });
       this.setState(s=>({d:{...s.d,msg:''}})); };
     // ===== manual card order =====
@@ -4823,7 +5172,7 @@ class Component extends DCLogic {
           if(it.status==='review' && !it.approvalRequestedAt) it.approvalRequestedAt=Date.now();
           return x; });
         const est=Number(w.hours)||0, act=Number(w.actualHours)||0;
-        return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),
+        return {title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),
           // The card shows what will be counted: the hours taken once they are
           // recorded, the estimate until then.
           hoursLabel: act? act+'h' : (est? est+'h est.' : 'no estimate'),
@@ -4851,10 +5200,10 @@ class Component extends DCLogic {
     });
     const boardReqOrder=ordered(liveReqs.filter(r=>r.status==='new'), natReq);
     const boardReqIds=boardReqOrder.map(r=>r.id);
-    const boardReqs=boardReqOrder.map(r=>({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
+    const boardReqs=boardReqOrder.map(r=>({title:r.title,clientName:orgLabel(r),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
       ...moveBits('requests',boardReqIds,r.id),
       approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
-    const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
+    const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
     // Every checkbox in the app goes through here, so the completion stamp
     // cannot be recorded in one list and forgotten in another. Without it the
@@ -4867,7 +5216,7 @@ class Component extends DCLogic {
       if(it.done && it.who==='client')
         this.logEv(x,it.clientId,cname(it.clientId)+' completed a to-do: '+it.title);
       return x; });
-    const mkTodo=t=>({title:t.title,clientName:cname(t.clientId),dot:clientDot(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
+    const mkTodo=t=>({title:t.title,clientName:orgLabel(t),dot:clientDot(t.clientId),mark:t.done?'✓':'',boxStyle:this.box(t.done),titleColor:t.done?'var(--text-muted)':'var(--text-body)',deco:t.done?'line-through':'none',
       assignee:t.assigneeName||'', hasAssignee:!!t.assigneeName,
       toggle:()=>toggleTodo(t.id)});
     const teamTodos=D.todos.filter(t=>t.who==='team').sort((a,b)=>Number(a.done)-Number(b.done)||b.ts-a.ts).slice(0,7).map(mkTodo);
@@ -4883,7 +5232,7 @@ class Component extends DCLogic {
     const reqBadge=st=> st==='new'? [this.badge('amber'),'Pending review'] : st==='approved'? [this.badge('green'),'In queue'] : st==='done'? [this.badge('blue'),'Complete'] : [this.badge('gray'),'Declined'];
     const newRequests=liveReqs.filter(r=>r.status==='new').sort((a,b)=>b.ts-a.ts).map(r=>({title:r.title,
       desc:r.desc||'', hasDesc:!!r.desc,
-      clientName:cname(r.clientId),dot:clientDot(r.clientId),when:this.fmt(r.ts),
+      clientName:orgLabel(r),dot:clientDot(r.clientId),when:this.fmt(r.ts),
       cat:r.category||'General',
       badgeStyle:this.badge('amber'), statusLabel:'Pending review',
       urgency:r.urgency||'Normal', urgencyStyle:urgStyle(r.urgency),
@@ -4914,7 +5263,7 @@ class Component extends DCLogic {
       const w=workForReq(r.id);
       return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,
         cat:r.category||'General', open:openDetail('request',r.id),
-        clientName:cname(r.clientId), dot:clientDot(r.clientId), showClient:!!withClient,
+        clientName:orgLabel(r), dot:clientDot(r.clientId), showClient:!!withClient,
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),
         isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
@@ -5059,7 +5408,7 @@ class Component extends DCLogic {
     // Real invoices run to four figures, and "$1567.64" reads as a typo.
     const invMoney=v=>'$'+Number(v||0).toLocaleString('en-US',
       {minimumFractionDigits:2, maximumFractionDigits:2});
-    const todayIso=new Date().toISOString().slice(0,10);
+    const todayIso=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
     // Dates arrive as 'YYYY-MM-DD' from the date fields and as free text on
     // the rows that predate them, so both have to render.
     const dayLabel=s=>{ if(!s) return '';
@@ -5126,7 +5475,7 @@ class Component extends DCLogic {
     const mkTimeRow = t=>({
       date:t.entryDate, hours:Number(t.hours||0).toFixed(2),
       desc:t.description||'-', who:whoWorked(t.profileId),
-      clientName:cname(t.clientId),dot:clientDot(t.clientId),
+      clientName:orgLabel(t),dot:clientDot(t.clientId),
       billable:t.billable!==false, tag:t.billable===false?'Non-billable':'',
       remove:()=>this.set(x=>{ x.time=x.time.filter(y=>y.id!==t.id); return x; })
     });
@@ -5136,7 +5485,9 @@ class Component extends DCLogic {
     // portal home dashboard
     const go=sec=>()=>this.setState({section:sec,moreOpen:false});
     const fileById=id=>{ const f=D.files.find(x=>x.id===id); return f? fileRow(f) : null; };
-    const approvalUpdates=D.updates.filter(u=>u.clientId===client.id&&u.needsApproval&&!u.approved).map(u=>({
+    // In the organization overview every card names its company.
+    const coBits = x=>({co: orgOverview? bizNameOf(x) : '', hasCo: orgOverview});
+    const approvalUpdates=D.updates.filter(u=>u.clientId===client.id&&u.needsApproval&&!u.approved).map(u=>({...coBits(u),
       sortTs:u.ts, when:this.fmt(u.ts), text:u.text, files:(u.fileIds||[]).map(fileById).filter(Boolean),
       hasHoursNote:false, hoursNote:'',
       open:openDetail('update',u.id), openFb:stopThen(openDetail('update',u.id)),
@@ -5146,7 +5497,7 @@ class Component extends DCLogic {
     const approvalWork=liveWork.filter(w=>w.clientId===client.id&&w.status==='review').map(w=>{
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
       const ts=w.approvalRequestedAt||w.ts;
-      return {sortTs:ts, when:this.fmt(ts), text:w.title,
+      return {...coBits(w), sortTs:ts, when:this.fmt(ts), text:w.title,
         files:(w.files||[]).map(f=>fileRow(f)),
         // Just the figure. The old line explained that approving counts the
         // hours against the month, which on the card where the client is
@@ -5170,7 +5521,7 @@ class Component extends DCLogic {
     const homeProg=ordered(liveWork.filter(w=>w.clientId===client.id&&w.status==='progress'), natWork);
     const homeProgIds=homeProg.map(w=>w.id);
     const homeProgCards=homeProg.map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
-      return Object.assign({title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
+      return Object.assign({...coBits(w),title:w.title,badgeStyle,statusLabel,commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
         moveBits('work',homeProgIds,w.id),
         dateBits(w.needBy,w.projectedFinish)); });
@@ -5183,7 +5534,7 @@ class Component extends DCLogic {
     const homeQueue=ordered(liveWork.filter(w=>w.clientId===client.id&&w.status==='queued'), natWork);
     const homeQueueIds=homeQueue.map(w=>w.id);
     const homeQueueCards=homeQueue.map(w=>{ const [badgeStyle,statusLabel]=wBadge(w.status);
-      return Object.assign({title:w.title,badgeStyle,statusLabel,
+      return Object.assign({...coBits(w),title:w.title,badgeStyle,statusLabel,
         commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         urgency:w.urgency||'Normal',urgencyStyle:urgStyle(w.urgency),
         isUrgent:(w.urgency==='High'||w.urgency==='Urgent')},
@@ -5193,7 +5544,7 @@ class Component extends DCLogic {
     const homeReqIds=homeReq.map(r=>r.id);
     const homeReqCards=homeReq.map(r=>{ const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
-      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:r.category||'General',open:openDetail('request',r.id),
+      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,cat:(orgOverview? bizNameOf(r)+' · ' : '')+(r.category||'General'),open:openDetail('request',r.id),
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
         moveBits('requests',homeReqIds,r.id),
@@ -5250,11 +5601,11 @@ class Component extends DCLogic {
       ['tiktok','TikTok'],['youtube','YouTube'],['x','X'],['threads','Threads'],['pinterest','Pinterest']];
     const NET_LABEL=Object.fromEntries(NETWORKS);
     const FORMATS=[['single','Single image'],['carousel','Carousel'],['reel','Reel'],['story','Story'],['video','Video'],
-      ['article','Article'],['newsletter','Newsletter'],['ad','Ad']];
+      ['article','Article'],['newsletter','Newsletter'],['campaign','Campaign email'],['ad','Ad']];
     const FMT_LABEL=Object.fromEntries(FORMATS);
     const netsOf=x=>Array.isArray(x.networks)&&x.networks.length? x.networks : (x.network? [x.network] : []);
     const netLabels=x=>netsOf(x).map(n=>NET_LABEL[n]||n);
-    const stBadge=st=>{ st=st||'idea';
+    const stBadge=st=>{ st=ST_LEGACY[st]||st||'idea';
       const kind= st==='idea'?'gray' : st==='approved'?'green' : (st==='drafting'||st==='paused')?'amber' : st==='ended'?'gray' : 'blue';
       return [this.badge(kind), st.charAt(0).toUpperCase()+st.slice(1)]; };
     const chanOf=x=>CH_META[x.channel]? x.channel : 'social';
@@ -5273,50 +5624,59 @@ class Component extends DCLogic {
     // scope it opens on. 'clients' is every client at once; 'all' is both; a
     // client id is that one account.
     const cmClientF=S.cmClient||'internal', cmChanF=S.cmChan||'all', cmTileF=S.cmTile||'all';
-    const inScope=cid=> cmClientF==='all' || (cmClientF==='internal'? !cid : cmClientF==='clients'? !!cid : cid===cmClientF);
-    const cmScopeLabel= cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'all clients' : cmClientF==='all'? 'every brand' : brandLabel(cmClientF);
+    // A value of "org::company" narrows to one company inside an organization.
+    const [cmOrgF,cmBizF]=String(cmClientF).split('::');
+    const inScope=(cid,x)=> cmClientF==='all' || (cmClientF==='internal'? !cid : cmClientF==='clients'? !!cid
+      : (cid===cmOrgF && (!cmBizF || !x || bizIdOf(Object.assign({},x,{clientId:cid}))===cmBizF)));
+    const cmScopeLabel= cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'all clients' : cmClientF==='all'? 'every brand' : (cmBizF? orgLabel({clientId:cmOrgF,businessId:cmBizF}) : brandLabel(cmOrgF));
     const cmQ=String(d.cmQ||'').trim().toLowerCase();
     const cmMode=S.cmMode||'gallery';
-    const cmMatchesTile=(x,t)=>{ const st=x.status||'idea';
+    const cmMatchesTile=(x,t)=>{ const st=stOf(x);
+      if(t==='archived') return isArch(x);
+      if(isArch(x)) return false;
       switch(t){
+        case 'changes': return openCRs(x).length>0;
         case 'week': return !!x.scheduledFor && x.scheduledFor>=weekIso[0] && x.scheduledFor<=weekIso[1];
         case 'idea': return st==='idea';
         case 'approved': return st==='approved';
-        case 'working': return st==='scheduled'||st==='drafting';
+        case 'working': return st==='scheduled';
         case 'live': return LIVE_ST.indexOf(st)>-1;
         case 'undated': return !x.scheduledFor && LIVE_ST.indexOf(st)<0;
         default: return true; } };
     const cmScope=(D.strategy||[])
-      .filter(x=>inScope(x.clientId))
+      .filter(x=>inScope(x.clientId,x))
       .filter(x=> cmChanF==='all' || chanOf(x)===cmChanF)
-      .filter(x=> !cmQ || [x.title,x.body,x.caption,x.hook,x.pillar,x.campaign,(x.hashtags||[]).join(' '),brandLabel(x.clientId),netLabels(x).join(' ')]
+      .filter(x=> !cmQ || [x.title,x.body,x.caption,x.hook,x.pillar,x.campaign,(x.hashtags||[]).join(' '),brandLabel(x.clientId),itemBrand(x),netLabels(x).join(' ')]
         .join(' ').toLowerCase().indexOf(cmQ)>-1);
     const cmTeamList=cmScope.filter(x=>cmMatchesTile(x,cmTileF));
     // What is coming, then what has no date, then what already went out.
     const cmSort=S.cmSort||'date';
     const cmRank=x=> !x.scheduledFor? 1 : (x.scheduledFor>=todayIso? 0 : 2);
     const cmOrdered=cmTeamList.slice().sort((a,b)=>{
-      if(cmSort==='new') return b.ts-a.ts;
+      if(cmSort==='new') return createdMs(b)-createdMs(a);
+      if(cmSort==='old') return createdMs(a)-createdMs(b);
       const ra=cmRank(a), rb=cmRank(b);
       if(ra!==rb) return ra-rb;
       if(ra===1) return b.ts-a.ts;
       const c=(a.scheduledFor||'').localeCompare(b.scheduledFor||'');
       if(c) return ra===2? -c : c;
       return String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||'')) || b.ts-a.ts; });
-    const cmTileDefs=[['all','All'],['week','This week'],['idea','Ideas'],['approved','Approved'],['working','In the works'],['live','Published'],['undated','No date']];
+    const cmTileDefs=[['all','All'],['week','This week'],['idea','Ideas'],['approved','Approved'],['changes','Changes requested'],['working','Scheduled'],['live','Posted'],['undated','No date'],['archived','Archived']];
     const cmTiles=cmTileDefs.map(([k,lab])=>{ const n=cmScope.filter(x=>cmMatchesTile(x,k)).length; const on=cmTileF===k;
       return {label:lab, n, select:()=>this.setState({cmTile:k}),
         style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),
           borderRadius:12,padding:'10px 14px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
           cursor:'pointer',minWidth:92,fontFamily:'var(--font-body)'},
-        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':(k==='idea'&&n?'#a2691a':'var(--navy)')},
+        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':((k==='idea'||k==='changes')&&n?'#a2691a':'var(--navy)')},
         labStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:on?'rgba(255,255,255,.78)':'var(--text-muted)'}}; });
     const cmJobsFor=id=>(D.mediaJobs||[]).filter(j=>j.itemId===id);
-    const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]=stBadge(x.status);
+    const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]= isArch(x)? [this.badge('gray'),'Archived'] : stBadge(stOf(x));
       const ch=chanOf(x), meta=CH_META[ch], who=logWho({by:x.by||''});
       const pend=cmJobsFor(x.id).filter(j=>j.status==='pending'||j.status==='working').length;
+      // An email with its HTML and no image shows the email itself, shrunk.
+      const emlThumb=!cover && ch==='email' && !!String(x.html||'').trim();
       return {id:x.id, title:x.title||'Untitled', open:openDetail('strategy',x.id),
-        hasCover:!!cover, noCover:!cover, coverUrl:cover?cover.url:'', coverIsVideo:!!cover&&cover.type==='video', coverIsImage:!!cover&&cover.type!=='video', coverAlt:cover?cover.alt:'',
+        hasCover:!!cover, noCover:!cover&&!emlThumb, hasEmlThumb:emlThumb, emlDoc:emlThumb? String(x.html) : '', coverUrl:cover?cover.url:'', coverIsVideo:!!cover&&cover.type==='video', coverIsImage:!!cover&&cover.type!=='video', coverAlt:cover?cover.alt:'',
         plateStyle:{background:plateOf(x.clientId),position:'absolute',inset:0,display:'flex',alignItems:'flex-end',padding:'14px 14px 16px'},
         plateText:x.hook||x.caption||x.title||'',
         mediaCount:med.length>1? '1 / '+med.length : '', hasMore:med.length>1,
@@ -5324,25 +5684,31 @@ class Component extends DCLogic {
         chanLabel:meta.label, chanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:meta.color},
         nets:netLabels(x).join(' · '), hasNets:netsOf(x).length>0,
         fmt:FMT_LABEL[x.format]||'', hasFmt:!!x.format,
-        brand:brandLabel(x.clientId), dot:clientDot(x.clientId),
+        brand:itemBrand(x), dot:clientDot(x.clientId),
         when: x.scheduledFor? niceDate(x.scheduledFor)+(x.scheduledTime?' · '+x.scheduledTime:'') : 'No date yet',
         whenStyle:{fontSize:11.5,fontWeight:600,color: x.scheduledFor? (x.scheduledFor<todayIso&&LIVE_ST.indexOf(x.status||'idea')<0? '#a2691a':'var(--blue)') : 'var(--text-muted)'},
         excerpt:x.caption||x.hook||x.body||'', hasExcerpt:!!(x.caption||x.hook||x.body),
         badgeStyle, statusLabel, commentsLabel:cLabel((x.comments||[]).length), hasComments:(x.comments||[]).length>0,
-        byName:who.name, isAgent:who.isAgent, hasBy:!!who.name}; };
+        byName:who.name, isAgent:who.isAgent, hasBy:!!who.name,
+        added:addedLabel(x), hasAdded:!!addedLabel(x),
+        hasChange:openCRs(x).length>0 && !isArch(x), changeLabel:'Changes requested',
+        wasRevised:!openCRs(x).length && (x.changeRequests||[]).some(r=>r&&r.state==='done') && !isArch(x),
+        isArchived:isArch(x)}; };
     const cmCards=cmOrdered.map(cmCard);
     // Board: one channel at a time, since the lists differ per channel.
     const cmBoardChan= cmChanF==='all'? 'social' : cmChanF;
     const cmBoardColsRaw=colsOf(cmBoardChan);
     const cmBoardOrder=cmBoardColsRaw.map(c=>c[0]);
     const cmBoardCols=cmBoardColsRaw.map(([st,label,accent],i)=>{
-      const items=cmOrdered.filter(x=>chanOf(x)===cmBoardChan&&(x.status||'idea')===st).map(x=>{
+      const items=cmOrdered.filter(x=>chanOf(x)===cmBoardChan&&!isArch(x)&&stOf(x)===st).map(x=>{
         const c=cmCard(x);
         const move=dir=>stopThen(()=>this.set(y=>{ const it=y.strategy.find(z=>z.id===x.id); if(!it) return y;
           const to=Math.max(0,Math.min(cmBoardOrder.length-1,i+dir)); it.status=cmBoardOrder[to];
           this.logEv(y,x.clientId,'Social Upgrades moved "'+(it.title||'a card')+'" to '+cmBoardColsRaw[to][1],{contentId:x.id,quiet:true}); return y; }));
         const asking=S.cmDel===x.id;
+        const openFb=mode=>stopThen(()=>{ openDetail('strategy',x.id)(); this.setState({cmFb:mode}); });
         return Object.assign(c,{asking, notAsking:!asking, canBack:i>0,canFwd:i<cmBoardOrder.length-1,back:move(-1),fwd:move(1),
+          askChanges:openFb('changes'), askArchive:openFb('archive'),
           fwdLabel:cmBoardColsRaw[Math.min(i+1,cmBoardColsRaw.length-1)][1],
           askRemove:stopThen(()=>this.setState({cmDel:x.id})), cancelRemove:stopThen(()=>this.setState({cmDel:null})),
           doRemove:stopThen(()=>{ this.setState({cmDel:null});
@@ -5387,20 +5753,21 @@ class Component extends DCLogic {
     // Adding a card by hand. An agent does the same through SQL.
     const cmAdd=()=>{ const t=(d.cmTitle||'').trim();
       if(!t) return this.setState({syncError:'Give the card a title.'});
-      const id=this.uid(); const cid=(d.cmClient||'internal')==='internal'? '' : d.cmClient;
+      const id=this.uid(); const [cidRaw,bizPick]=String(d.cmClient||'internal').split('::'); const cid=cidRaw==='internal'? '' : cidRaw;
       const ch=d.cmChan||'social'; const url=(d.cmMediaUrl||'').trim();
       if(url && !/^https?:\/\//i.test(url)) return this.setState({syncError:'A preview link needs to start with http:// or https://'});
       this.setState({syncError:null});
-      this.set(x=>{ x.strategy.unshift({id,clientId:cid,ts:Date.now(),channel:ch,status:'idea',title:t,body:(d.cmBody||'').trim(),
+      this.set(x=>{ x.strategy.unshift(Object.assign({id,clientId:cid,ts:Date.now(),createdAt:new Date().toISOString(),channel:ch,status:'idea',title:t,body:(d.cmBody||'').trim(),
         networks: ch==='social'&&d.cmNet? [d.cmNet] : [], format:d.cmFormat||'', scheduledFor:d.cmWhen||'', scheduledTime:d.cmTime||'',
-        links:[],comments:[],media:[],by:me.id});
-        this.logEv(x,cid,'Social Upgrades added "'+t+'" to the Content Map',{contentId:id}); return x; });
+        links:[],comments:[],media:[],by:me.id}, bizPick? {businessId:bizPick} : {}));
+        this.logEv(x,cid,'Social Upgrades added "'+t+'" to the Content Map',Object.assign({contentId:id}, bizPick? {businessId:bizPick} : {})); return x; });
       if(url) this.afterSave(()=>window.SUData.queueMediaUrl(id,url,t).then(()=>this.__pull())
         .catch(err=>this.setState({syncError:(err&&err.message)||'That link could not be queued.'})));
       this.setState(s2=>({cmAddOpen:false,d:{...s2.d,cmTitle:'',cmBody:'',cmWhen:'',cmTime:'',cmMediaUrl:''}})); };
     const cmSel={border:'1px solid var(--gray-200)',borderRadius:12,padding:'8px 10px',fontSize:13,background:'var(--surface-card)',color:'var(--text-body)',maxWidth:220};
     const cmClientOpts=[{v:'all',l:'All brands'},{v:'internal',l:'Social Upgrades'}].concat(
-      D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''))).map(c=>({v:c.id,l:c.name})));
+      D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')))
+        .flatMap(c=>isMultiOrg(c)? bizList(c).map(b=>({v:c.id+'::'+b.id,l:c.name+' · '+b.name})) : [{v:c.id,l:c.name}]));
     // The detail view of a content card: the big preview, its fields, what
     // Metricool knows about it, and its history. Team edits; a client reads.
     const DETAIL_BOX=wide=>({position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:wide?'min(880px,94vw)':'min(600px,92vw)',
@@ -5442,16 +5809,91 @@ class Component extends DCLogic {
       const hist=(D.log||[]).filter(l=>l.contentId===item.id).slice(0,30).map(l=>{ const w=logWho(l);
         return {text:l.text||'', who:w.name||'Someone', when:this.fmt(l.ts), isAgent:w.isAgent}; });
       const who=logWho({by:item.by||''});
+      // Feedback: a change request (the idea is good, the execution needs work)
+      // or an archive (not for us). Both are read by the content agents: open
+      // requests get worked on the next run, archive reasons teach them.
+      const fbMode=S.cmFb||null, meName=String(me.name||me.email||'Someone').trim();
+      const crAll=(item.changeRequests||[]).filter(Boolean), crOpenN=crAll.filter(r=>r.state==='open').length;
+      const whenOf=v=>{ const t=Date.parse(v); return isNaN(t)? '' : new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); };
+      const setCR=(rid,fn,note)=>write(it=>{ const r=(it.changeRequests||[]).find(z=>z&&z.id===rid); if(r) fn(r); },note);
+      const arch=isArch(item)? item.archived : null;
+      // Email cards carry the finished email as HTML. Both sides see it
+      // rendered (in a frame with no scripts, so pasted HTML cannot reach the
+      // signed-in page) and can copy or download the code for their sender.
+      const isEml=ch==='email', emlHtml=String(item.html||''), hasEml=isEml&&!!emlHtml.trim();
+      const emlCodeMode=isEml&&((S.emlView==='code')||(!hasEml&&isTeam));
+      const emlDev=S.emlDev==='mobile'?'mobile':'desktop';
+      const segBtn=on=>({background:on?'var(--navy)':'var(--surface-card)',color:on?'#fff':'var(--text-body)',border:'none',padding:'6px 12px',fontSize:12,fontWeight:on?600:500,cursor:'pointer',whiteSpace:'nowrap'});
+      const emlFacts=[['Subject',item.subject],['Subject B',item.subjectB],['Preview text',item.preheader],['Sends to',item.audience],['Leaves out',item.excludes]]
+        .filter(([,v])=>v&&String(v).trim()).map(([label,value])=>({label,value:String(value)}));
+      const copyHtml=text=>{ const ok=()=>this.setState({flash:'Email HTML copied. Paste it into the HTML editor of your email platform.'});
+        const bad=()=>this.setState({syncError:'Could not copy to the clipboard. Your browser may be blocking it.'});
+        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok,()=>{ copyFallback(text)? ok() : bad(); });
+        else { copyFallback(text)? ok() : bad(); } };
+      const emlDraft=d.cmHtml===undefined? emlHtml : d.cmHtml;
       const caption=[item.hook, item.caption||item.body, item.cta].filter(Boolean).join('\n\n');
       const copyBlock=caption+(tagsText?'\n\n'+tagsText:'');
       return {
-        detailBoxStyle:DETAIL_BOX(n>0),
+        detailBoxStyle:DETAIL_BOX(n>0||hasEml||(isEml&&isTeam)),
+        // the email itself
+        emlShow:hasEml||(isEml&&isTeam), emlHas:hasEml, emlFacts, emlHasFacts:emlFacts.length>0,
+        emlIsPreview:hasEml&&!emlCodeMode, emlShowFrame:hasEml&&!emlCodeMode, emlShowCode:emlCodeMode,
+        emlTabs:hasEml? [['preview','Preview'],['code','HTML code']].map(([v,l])=>{ const on=(v==='code')===emlCodeMode;
+          return {label:l,on,style:segBtn(on),select:()=>this.setState({emlView:v})}; }) : [],
+        emlDevs:[['desktop','Desktop'],['mobile','Mobile']].map(([v,l])=>({label:l,on:emlDev===v,style:segBtn(emlDev===v),select:()=>this.setState({emlDev:v})})),
+        emlDoc:emlHtml, emlFrameTitle:'Preview of '+label,
+        emlFrameStyle:{width:emlDev==='mobile'?390:'100%',maxWidth:'100%',minWidth:emlDev==='mobile'?390:0,height:'68vh',border:'none',background:'#fff',display:'block',borderRadius:8,boxShadow:'0 2px 10px rgba(15,22,51,.10)'},
+        emlSize:(emlHtml.length/1024).toFixed(1)+' KB',
+        emlCopy:()=>copyHtml(emlHtml),
+        emlDownload:()=>{ try{ const blob=new Blob([emlHtml],{type:'text/html'}); const u=URL.createObjectURL(blob); const a=document.createElement('a');
+          a.href=u; a.download=String(item.title||'email').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toLowerCase().slice(0,60)+'.html';
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),2000); }
+          catch(e){ this.setState({syncError:'Could not download the file.'}); } },
+        emlCode:isTeam? emlDraft : emlHtml, emlReadOnly:!isTeam,
+        onEmlCode:isTeam? this.draft('cmHtml') : (()=>{}),
+        emlDirty:isTeam&&d.cmHtml!==undefined&&d.cmHtml!==emlHtml,
+        emlSave:()=>{ const v=d.cmHtml; if(v===undefined) return; write(it=>{ it.html=v; },'Social Upgrades updated the email HTML of "'+label+'"');
+          this.setState(s2=>({emlView:'preview',d:{...s2.d,cmHtml:undefined}})); },
+        emlCancel:()=>this.setState(s2=>({d:{...s2.d,cmHtml:undefined}})),
+        emlLabelStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'var(--ls-caps)',textTransform:'uppercase',color:'var(--text-muted)',minWidth:92,flex:'none'},
+        cmIsEmail:isEml, cfSubject:txt('subject','subject line'), cfSubjectB:txt('subjectB','second subject line'),
+        cfPreheader:txt('preheader','preview text'), cfAudience:txt('audience','audience'),
         isContentCard:true, cmCanEdit:isTeam, cmReadOnly:!isTeam,
         cmNav:inTeamMap&&(prevId||nextId), cmHasPrev:!!prevId, cmHasNext:!!nextId,
         cmPrevCard: prevId? openDetail('strategy',prevId) : (()=>{}), cmNextCard: nextId? openDetail('strategy',nextId) : (()=>{}),
         cmChanLabel:CH_META[ch].label, cmChanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:CH_META[ch].color},
-        cmBrand:brandLabel(item.clientId), cmBrandDot:clientDot(item.clientId),
+        cmBrand:itemBrand(item), cmBrandDot:clientDot(item.clientId),
         cmByLine: who.name? 'Added by '+who.name : '', cmHasBy:!!who.name, cmByAgent:who.isAgent,
+        cmAdded: createdMs(item)? new Date(createdMs(item)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '', cmHasAdded:!!createdMs(item),
+        // feedback
+        cmIsArchived:!!arch, cmNotArchived:!arch,
+        cmArchLine: arch? 'Archived '+(whenOf(arch.at)||'')+(arch.byName?' by '+arch.byName:'') : '',
+        cmArchReason: arch&&arch.reason? arch.reason : '', cmHasArchReason:!!(arch&&arch.reason),
+        cmRestore:()=>write(it=>{ const was=(it.archived&&it.archived.fromStatus)||'idea'; it.archived=null; if(colsOf(chanOf(it)).map(c=>c[0]).indexOf(stOf(it))<0) it.status=was; },meName+' restored "'+label+'" from the archive'),
+        cmFbIdle:isTeam&&!fbMode&&!arch, cmFbChanges:isTeam&&fbMode==='changes', cmFbArchive:isTeam&&fbMode==='archive'&&!arch,
+        cmOpenChanges:()=>this.setState({cmFb:'changes'}), cmOpenArchive:()=>this.setState({cmFb:'archive'}), cmCancelFb:()=>this.setState({cmFb:null}),
+        cmChangesBtn: crOpenN? 'Add another change' : 'Request changes',
+        dCmCR:d.cmCR||'', onCmCR:this.draft('cmCR'),
+        cmSendCR:()=>{ const t=String(d.cmCR||'').trim(); if(!t) return this.setState({syncError:'Say what should change.'});
+          const rid=this.uid();
+          write(it=>{ (it.changeRequests=it.changeRequests||[]).push({id:rid,text:t,by:me.id||'',byName:meName,at:new Date().toISOString(),state:'open'}); },
+            meName+' requested changes on "'+label+'": '+t.slice(0,120));
+          this.setState(s2=>({cmFb:null,syncError:null,d:{...s2.d,cmCR:''}})); },
+        dCmArch:d.cmArch||'', onCmArch:this.draft('cmArch'),
+        cmDoArchive:()=>{ const reason=String(d.cmArch||'').trim();
+          write(it=>{ it.archived={at:new Date().toISOString(),by:me.id||'',byName:meName,reason,fromStatus:stOf(it)}; },
+            meName+' archived "'+label+'" (not for us)'+(reason?': '+reason.slice(0,120):''));
+          this.setState(s2=>({cmFb:null,d:{...s2.d,cmArch:''}})); },
+        cmCRs:crAll.slice().reverse().map(r=>({text:r.text||'', who:r.byName||'Someone', when:whenOf(r.at),
+          isOpen:r.state==='open', isDone:r.state==='done', isWithdrawn:r.state==='withdrawn',
+          stateLabel: r.state==='open'? 'Open' : r.state==='done'? 'Done' : 'Withdrawn',
+          stateStyle:r.state==='open'? this.badge('amber') : r.state==='done'? this.badge('green') : this.badge('gray'),
+          doneLine: r.state==='done'? 'Done '+(whenOf(r.doneAt)||'')+(r.doneByName?' by '+r.doneByName:'') : '',
+          doneNote:r.doneNote||'', hasDoneNote:!!r.doneNote,
+          canAct:isTeam&&r.state==='open',
+          markDone:()=>setCR(r.id,x=>{ x.state='done'; x.doneAt=new Date().toISOString(); x.doneBy=me.id||''; x.doneByName=meName; },meName+' marked a change request on "'+label+'" done'),
+          withdraw:()=>setCR(r.id,x=>{ x.state='withdrawn'; x.doneAt=new Date().toISOString(); x.doneBy=me.id||''; x.doneByName=meName; },meName+' withdrew a change request on "'+label+'"')})),
+        hasCmCRs:crAll.length>0,
         // the gallery
         hasMedia:n>0, noMedia:n===0, mediaMany:n>1,
         mediaUrl:cur?cur.url:'', mediaAlt:cur?cur.alt:'', mediaIsVideo:!!cur&&cur.type==='video', mediaIsImage:!!cur&&cur.type!=='video',
@@ -5491,7 +5933,7 @@ class Component extends DCLogic {
         // the fields
         cmChanValue:ch, onCmChan:e=>{ const v=e.target.value; write(it=>{ it.channel=v; if(colsOf(v).map(c=>c[0]).indexOf(it.status||'idea')<0) it.status='idea'; },'Social Upgrades moved "'+label+'" to '+(CH_META[v]||{}).label); },
         cmChanOpts:CHANNELS.map(c=>({v:c.id,l:c.label})),
-        cmStatusValue:item.status||'idea', onCmStatus:e=>{ const v=e.target.value; write(it=>{ it.status=v; },'Social Upgrades marked "'+label+'" '+v); },
+        cmStatusValue:stOf(item), onCmStatus:e=>{ const v=e.target.value; write(it=>{ it.status=v; },'Social Upgrades marked "'+label+'" '+v); },
         cmStatusOpts:cols.map(c=>({v:c[0],l:c[1]})),
         cmIsSocial:ch==='social',
         cmNetChips:NETWORKS.map(([k,l])=>{ const on=netsOf(item).indexOf(k)>-1;
@@ -5529,12 +5971,24 @@ class Component extends DCLogic {
         +' Cards are their previews: open one to page through its images, its caption and its history.',
       cmScopes:[['internal','Social Upgrades'],['clients','Clients'],['all','Everything']].map(([v,l])=>({label:l,
         select:()=>this.setState({cmClient:v}), style:pillStyle(cmClientF===v)})),
-      cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''))).map(c=>({v:c.id,l:c.name}))),
-      cmClientValue: D.clients.some(c=>c.id===cmClientF)? cmClientF : '',
+      // An organization lists its companies under it, so the map narrows to
+      // Bravo Boxing without also showing Double Ops and Costa Mesa Jiu Jitsu.
+      cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')))
+        .flatMap(c=>[{v:c.id,l:c.name+(isMultiOrg(c)?' (all companies)':'')}].concat(isMultiOrg(c)? bizList(c).map(b=>({v:c.id+'::'+b.id,l:'   '+b.name})) : []))),
+      cmClientValue: (D.clients.some(c=>c.id===cmOrgF) && (!cmBizF || D.clients.some(c=>c.id===cmOrgF&&bizById(c,cmBizF))))? cmClientF : '',
       onCmClient:e=>{ const v=e.target.value; this.setState({cmClient: v||'clients'}); },
+      // Same tabs as the client portal: Overview, then one per channel. The
+      // count is what that tab holds for the current brand scope.
+      cmSubTabs:[{id:'all',label:'Overview'}].concat(CHANNELS.map(c=>({id:c.id,label:c.label}))).map(t=>{
+        const on=cmChanF===t.id;
+        const n=(D.strategy||[]).filter(x=>inScope(x.clientId,x)&&!isArch(x)&&(t.id==='all'||chanOf(x)===t.id)).length;
+        return {label:t.label, n:String(n), select:()=>this.setState({cmChan:t.id,cmTile:'all'}),
+          style:Object.assign(pillStyle(on),{display:'inline-flex',alignItems:'center',gap:8,padding:'8px 16px',fontSize:13.5,fontWeight:on?600:500}),
+          countStyle:{fontSize:11,fontWeight:600,lineHeight:1,padding:'3px 7px',borderRadius:999,
+            background:on?'rgba(255,255,255,.18)':'var(--gray-100)',color:on?'inherit':'var(--text-muted)'}}; }),
       cmChanOptsAll:[{v:'all',l:'All channels'}].concat(CHANNELS.map(c=>({v:c.id,l:c.label}))),
       cmChanValueF:cmChanF, onCmChanF:e=>{ const v=e.target.value; this.setState({cmChan:v}); },
-      cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest first'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
+      cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest added'},{v:'old',l:'Oldest added'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
       dCmQ:d.cmQ||'', onCmQ:this.draft('cmQ'),
       cmFiltered: cmClientF!=='internal'||cmChanF!=='all'||cmTileF!=='all'||!!cmQ,
       clearCmFilters:()=>this.setState(s2=>({cmClient:'internal',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
@@ -5567,7 +6021,7 @@ class Component extends DCLogic {
 
     // The client's own calendar in the portal; the whole filtered plan in the
     // team view. One builder, two sources.
-    const cmAll = isTeam ? cmTeamList : (D.strategy||[]).filter(x=>x.clientId===client.id);
+    const cmAll = isTeam ? cmTeamList.filter(x=>!isArch(x)) : (D.strategy||[]).filter(x=>x.clientId===client.id&&!isArch(x));
     const cmDated = cmAll.filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.scheduledFor||''));
     const cmByDay = {};
     cmDated.forEach(x=>{ (cmByDay[x.scheduledFor] = cmByDay[x.scheduledFor]||[]).push(x); });
@@ -5612,7 +6066,7 @@ class Component extends DCLogic {
           return {title:x.title, channel:meta.label, open:openDetail('strategy',x.id),
             // The week view has room for the picture; the month view keeps the dot.
             hasThumb: cmView==='week' && !!cov && cov.type!=='video', thumb: cov? cov.url : '',
-            sub: isTeam? brandLabel(x.clientId) : '', hasSub: isTeam,
+            sub: isTeam? itemBrand(x) : (orgOverview? bizNameOf(x) : ''), hasSub: isTeam||orgOverview,
             dotStyle:{width:7,height:7,minWidth:7,borderRadius:999,background:meta.color},
             style: cmView==='week'
               ? {display:'flex',flexDirection:'column',alignItems:'stretch',gap:3,width:'100%',textAlign:'left',
@@ -5750,7 +6204,7 @@ class Component extends DCLogic {
               return x; });
             this.setState(s2=>({editTitle:null,d:{...s2.d,title:undefined}})); },
           detailBadgeStyle:bs, detailStatus:sl,
-          detailMeta: cname(item.clientId)+(ty==='work'
+          detailMeta: orgLabel(item)+(ty==='work'
             ? ' · '+(item.approvedAt
                 ? (Number(item.hoursApproved)||0)+'h counted'
                 : (Number(item.actualHours)
@@ -5936,6 +6390,21 @@ class Component extends DCLogic {
             this.setState(s=>({d:{...s.d,comment:''}})); }
         };
         if(ty==='strategy') Object.assign(dv, contentDetail(item, findIt));
+        // Which company inside the organization this belongs to. Staff can
+        // move anything; an organization-wide member can move content cards
+        // (the database keeps the rest of a client's edits to named fields).
+        const coOrg=orgRec(item.clientId);
+        const coShow=!!coOrg && isMultiOrg(coOrg) && (isStaff || (ty==='strategy' && orgWideMe));
+        Object.assign(dv, {detailCoShow:coShow, detailCoValue:bizIdOf(item),
+          detailCoOpts: coShow? bizList(coOrg).map(b=>({v:b.id,l:b.name})) : [],
+          onDetailCo:e=>{ const v=e.target.value; if(!v||v===bizIdOf(item)) return;
+            const nm=(bizById(coOrg,v)||{}).name||v;
+            this.set(x=>{ const it=findIt(x); if(!it) return x; it.businessId=v;
+              // A request and the work made from it move together.
+              if(ty==='request') x.work.filter(w=>w.requestId===it.id).forEach(w=>{ w.businessId=v; });
+              if(ty==='work' && it.requestId){ const rq=x.requests.find(r=>r.id===it.requestId); if(rq) rq.businessId=v; }
+              this.logEv(x,item.clientId,'"'+(it.title||it.text||'An item')+'" moved to '+nm,Object.assign({businessId:v}, ty==='strategy'? {contentId:item.id,quiet:true} : {}));
+              return x; }); }});
       }
     }
     // ----- an invoice, opened -----
@@ -6163,7 +6632,7 @@ class Component extends DCLogic {
     const teamReqOrder=ovArrange(liveReqs.filter(r=>r.status==='new').filter(ovMatch),
       'Req', natReq, r=>r.ts||0, r=>r.title);
     const teamReqIds=teamReqOrder.map(r=>r.id);
-    const teamReqCards=teamReqOrder.map(r=>Object.assign({title:r.title,clientName:cname(r.clientId),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)},moveBits('requests',teamReqIds,r.id,ovManual('Req'))));
+    const teamReqCards=teamReqOrder.map(r=>Object.assign({title:r.title,clientName:orgLabel(r),dot:clientDot(r.clientId),cat:r.category||'General',when:this.fmt(r.ts),badgeStyle:this.badge('amber'),statusLabel:'Pending review',open:openDetail('request',r.id)},moveBits('requests',teamReqIds,r.id,ovManual('Req'))));
     // The queue was only ever visible by opening the Workboard, so the next
     // job to pick up was always one click out of sight. Oldest first: a queue
     // that surfaces the newest thing is not a queue.
@@ -6189,7 +6658,7 @@ class Component extends DCLogic {
       .concat((D.requests||[]).filter(r=>r.archived).map(r=>({r,coll:'requests',kind:'Request'})))
       .sort((a,b)=>(b.r.archivedAt||0)-(a.r.archivedAt||0))
       .map(({r,coll,kind})=>({
-        title:r.title||'Untitled', clientName:cname(r.clientId), dot:clientDot(r.clientId),
+        title:r.title||'Untitled', clientName:orgLabel(r), dot:clientDot(r.clientId),
         kind, when:r.archivedAt? this.fmt(r.archivedAt) : 'at some point',
         // Who archived it is the point of keeping the history: a client
         // clearing their own request reads very differently from us doing it.
@@ -6200,7 +6669,7 @@ class Component extends DCLogic {
       'Queue', natWork, w=>w.ts||0, w=>w.title);
     const teamQueueIds=teamQueue.map(w=>w.id);
     const teamQueueCards=teamQueue.map(w=>({
-        title:w.title, clientName:cname(w.clientId), dot:clientDot(w.clientId),
+        title:w.title, clientName:orgLabel(w), dot:clientDot(w.clientId),
         hoursLabel: Number(w.hours)? Number(w.hours)+'h estimated' : 'No estimate yet',
         urgency:w.urgency||'Normal', urgencyStyle:urgStyle(w.urgency),
         isUrgent: w.urgency==='Urgent'||w.urgency==='High',
@@ -6224,7 +6693,7 @@ class Component extends DCLogic {
     const teamProgCards=teamProg.map(w=>{
       const [badgeStyle,statusLabel]=wBadge(w.status);
       const willCount=Number(w.actualHours)||Number(w.hours)||0;
-      return {title:w.title,clientName:cname(w.clientId),dot:clientDot(w.clientId),badgeStyle,statusLabel,
+      return {title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),badgeStyle,statusLabel,
         commentsLabel:cLabel((w.comments||[]).length),open:openDetail('work',w.id),
         // Handing an item to the client is the common move, so it does not
         // need a trip to the Workboard.
@@ -6242,14 +6711,14 @@ class Component extends DCLogic {
     const teamApprRaw=[]
       .concat(D.updates.filter(u=>u.needsApproval&&!u.approved).map(u=>({
         kind:'Update', sortTs:u.ts, text:u.text, clientId:u.clientId, category:'',
-        clientName:cname(u.clientId), dot:clientDot(u.clientId),
+        clientName:orgLabel(u), dot:clientDot(u.clientId),
         when:this.fmt(u.ts), open:openDetail('update',u.id),
         hasHoursNote:false, hoursNote:''})))
       .concat(liveWork.filter(w=>w.status==='review').map(w=>{
         const willCount=Number(w.actualHours)||Number(w.hours)||0;
         const ts=w.approvalRequestedAt||w.ts;
         return {kind:'Work item', sortTs:ts, text:w.title, clientId:w.clientId, category:w.category||'',
-          clientName:cname(w.clientId), dot:clientDot(w.clientId),
+          clientName:orgLabel(w), dot:clientDot(w.clientId),
           when:this.fmt(ts), open:openDetail('work',w.id),
           hasHoursNote:true,
           hoursNote: willCount
@@ -6297,7 +6766,7 @@ class Component extends DCLogic {
 
     // "My to-dos" — team work assigned to whoever is signed in.
     const myTodos = D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id)
-      .map(t=>({title:t.title,client:t.clientId?cname(t.clientId):'Internal',when:this.fmt(t.ts),
+      .map(t=>({title:t.title,client:orgLabel(t),when:this.fmt(t.ts),
         toggle:()=>toggleTodo(t.id),
         boxStyle:this.box(false)}));
     const noMyTodos = myTodos.length===0;
@@ -6346,7 +6815,7 @@ class Component extends DCLogic {
         // The open board names the client once in the group heading above the
         // rows. The completed list is one flat run across every client, so each
         // row has to say whose it is or it says nothing at all.
-        clientName: t.clientId? cname(t.clientId) : 'Internal', dot: clientDot(t.clientId),
+        clientName: orgLabel(t), dot: clientDot(t.clientId),
         // Finished rows date themselves by when they were finished; open ones
         // by when they were written. Older rows carry no stamp, so they fall
         // back rather than reading as completed at the epoch.
@@ -6970,7 +7439,7 @@ class Component extends DCLogic {
         const id=nextLeadId(), stage=(F.v&&F.v.stage)||'new', assignee=(F.v&&F.v.assignee)||'';
         this.set(x=>{
           (x.leads=x.leads||[]).unshift({id,clientId:'',ts:Date.now(),...v,stage,assignee,
-            added:leadToday,source:'manual',addedBy:whoAmI,updatedAt:new Date().toISOString()});
+            added:leadToday,source:'manual',addedBy:whoAmI,createdBy:me.id||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
           this.logEv(x,'',whoAmI+' added a lead: '+v.name,{leadId:id});
           return x; });
         this.setState({leadOpen:id,leadForm:null,leadFormErr:null});
@@ -7021,6 +7490,15 @@ class Component extends DCLogic {
       const mails=leadMailsFor(LO.id);
       const hist=D.log.filter(l=>l.leadId===LO.id);
       const histAll=S.leadHistAll===LO.id;
+      // Who created the lead and when. createdBy is a profile id, createdAt an
+      // ISO date or timestamp; older rows fall back to added / addedBy.
+      const loCreated=(()=>{
+        const at=LO.createdAt||LO.added||''; if(!at) return null;
+        const w=LO.createdBy? logWho({by:LO.createdBy}) : {name:LO.addedBy||'',isAgent:/agent/i.test(String(LO.addedBy||''))};
+        const dt=/^\d{4}-\d{2}-\d{2}$/.test(at)? new Date(at+'T12:00:00') : new Date(at);
+        const when=isNaN(dt)? String(at) : dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        const src=LO.source==='agent'?'Found by the overnight research run':(LO.source==='manual'?'Added by hand':'Created');
+        return {who:w.name||'Someone', isAgent:!!w.isAgent, when, text:LO.createdNote||(src+'.')}; })();
       const sendNote=()=>{
         const text=String(this.state.d.leadNote||'').trim();
         if(!text) return;
@@ -7074,7 +7552,9 @@ class Component extends DCLogic {
           hasUrl:!!m.url, url:m.url||''})),
         noLoMails:mails.length===0,
         loHist:(histAll?hist:hist.slice(0,6)).map(leadLogRow),
-        noLoHist:hist.length===0,
+        noLoHist:hist.length===0 && !loCreated,
+        hasLoCreated:!!loCreated, loAgentPill:agentPill, loCreatedWho:loCreated?loCreated.who:'', loCreatedAgent:!!(loCreated&&loCreated.isAgent),
+        loCreatedWhen:loCreated?loCreated.when:'', loCreatedText:loCreated?loCreated.text:'',
         loHistMore:!histAll && hist.length>6, loHistMoreLabel:'Show all '+hist.length,
         showLoHist:()=>this.setState({leadHistAll:LO.id}),
         loNotesList:notes.map(n=>({
@@ -7121,9 +7601,84 @@ class Component extends DCLogic {
       ...leadModal
     };
 
+    // ===== who sees which company =====
+    // Staff and organization-wide members decide; nobody changes their own.
+    // All companies is an empty list, which is also what every login had
+    // before companies existed.
+    const chipStyle=on=>({background:on?'var(--navy)':'var(--surface-card)',color:on?'#fff':'var(--text-body)',border:'1px solid '+(on?'var(--navy)':'var(--gray-200)'),
+      borderRadius:999,padding:'4px 11px',fontSize:11.5,fontWeight:on?600:500,cursor:'pointer',whiteSpace:'nowrap'});
+    const orgBizs=bizList(client), orgMulti=orgBizs.length>1;
+    const canManageScopes=orgMulti && (isStaff || orgWideMe);
+    const setScope=(pp,ids)=>{ this.setState({syncError:null});
+      window.SUData.setMemberCompanies(pp.id, ids).then(()=>window.SUData.load())
+        .then(data=>{ this.__synced=structuredClone(data); this.setState({data,flash:(pp.name||pp.email)+' now sees '+(ids.length? ids.map(i=>(bizById(client,i)||{}).name||i).join(', ') : 'every company')+'.'}); })
+        .catch(err=>this.setState({syncError:'Could not change what they see: '+(err.message||err)})); };
+    const scopeBits=pp=>{
+      if(!orgMulti) return {hasScope:false,canScope:false,scope:'',chips:[]};
+      const ids=(pp.businessIds||[]).filter(i=>bizById(client,i));
+      const scope= ids.length? ids.map(i=>bizById(client,i).name).join(', ') : 'All companies';
+      const canScope=canManageScopes && pp.id!==me.id;
+      const chips=[{label:'All companies',on:ids.length===0,toggle:()=>{ if(ids.length) setScope(pp,[]); }}]
+        .concat(orgBizs.map(b=>{ const on=ids.indexOf(b.id)>-1;
+          return {label:b.name,on,toggle:()=>{ const next= on? ids.filter(i=>i!==b.id) : ids.concat([b.id]); setScope(pp,next); }}; }))
+        .map(c=>Object.assign(c,{style:chipStyle(c.on)}));
+      return {hasScope:true,canScope,scope,chips};
+    };
+    // Companies a new invite will see. A scoped member can only hand out what
+    // they have; the database refuses anything wider.
+    const pmChoices = orgMulti? (orgWideMe? orgBizs : orgBizs.filter(b=>myBizIds.indexOf(b.id)>-1)) : [];
+    const pmPicked = (S.pmBiz||[]).filter(i=>pmChoices.some(b=>b.id===i));
+    const pmCoChips = pmChoices.length? ((orgWideMe? [{label:'All companies',on:pmPicked.length===0,toggle:()=>this.setState({pmBiz:[]})}] : [])
+      .concat(pmChoices.map(b=>{ const on=pmPicked.indexOf(b.id)>-1 || (!orgWideMe && !pmPicked.length);
+        return {label:b.name,on,toggle:()=>this.setState({pmBiz: on? pmPicked.filter(i=>i!==b.id) : pmPicked.concat([b.id])})}; }))
+      .map(c=>Object.assign(c,{style:chipStyle(c.on)}))) : [];
+    // ===== organization overview (portal, all companies) =====
+    const CO_PALETTE=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#4a3aa7','#008300','#e34948'];
+    const coDot=i=>({width:10,height:10,minWidth:10,borderRadius:'50%',background:CO_PALETTE[i%CO_PALETTE.length],marginTop:6,display:'inline-block'});
+    const coIdx=id=>Math.max(0,bizList(client).findIndex(b=>b.id===id));
+    const in30=(()=>{ const t=new Date(); t.setDate(t.getDate()+30); return t.toISOString().slice(0,10); })();
+    const in7=(()=>{ const t=new Date(); t.setDate(t.getDate()+7); return t.toISOString().slice(0,10); })();
+    const ofCo=(list,b)=>(list||[]).filter(x=>x.clientId===client.id && bizIdOf(x)===b.id);
+    const coFigures=b=>{
+      const reqs=ofCo(D0.requests,b).filter(r=>!r.archived), work=ofCo(D0.work,b).filter(w=>!w.archived);
+      const open=reqs.filter(r=>r.status==='new').length;
+      const doing=work.filter(w=>w.status==='queued'||w.status==='progress').length;
+      const needs=work.filter(w=>w.status==='review').length + ofCo(D0.updates,b).filter(u=>u.needsApproval&&!u.approved).length;
+      const content=ofCo(D0.strategy,b).filter(x=>!isArch(x)&&x.scheduledFor&&x.scheduledFor>=todayIso&&LIVE_ST.indexOf(stOf(x))<0);
+      const week=content.filter(x=>x.scheduledFor<=in7).length;
+      return {reqs,work,open,doing,needs,content,week};
+    };
+    const tile=(hot)=>({background:hot?'rgba(214,143,46,.12)':'var(--gray-100)',borderRadius:10,padding:'9px 10px',display:'flex',flexDirection:'column',gap:4,minWidth:0});
+    const orgCos = orgOverview? portalBizs.map(b=>{
+      const f=coFigures(b), i=coIdx(b.id);
+      const next=f.content.filter(x=>x.scheduledFor<=in30).sort((a,c)=>(a.scheduledFor+(a.scheduledTime||'')).localeCompare(c.scheduledFor+(c.scheduledTime||''))).slice(0,3)
+        .map(x=>({title:x.title||'Untitled', when:niceDate(x.scheduledFor), open:openDetail('strategy',x.id),
+          dot:{width:8,height:8,minWidth:8,borderRadius:999,background:(CH_META[chanOf(x)]||{}).color||'var(--gray-400)'}}));
+      const msgs=ofCo(D0.messages,b).sort((a,c)=>a.ts-c.ts), last=msgs[msgs.length-1];
+      const logs=ofCo(D0.log,b).filter(l=>!l.quiet).sort((a,c)=>c.ts-a.ts);
+      const ppl=(D0.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===client.id&&pp.active!==false&&(!(pp.businessIds||[]).length||(pp.businessIds||[]).indexOf(b.id)>-1)).length;
+      return {name:b.name, domain:b.domain||'', hasDomain:!!b.domain, dot:coDot(i),
+        open:()=>this.setState({biz:b.id,section:'home',detail:null}),
+        stats:[['Open requests',f.open,false],['In progress',f.doing,false],['Needs your OK',f.needs,f.needs>0],['Content this week',f.week,false]]
+          .map(([label,value,hot])=>({label,value:String(value),style:tile(hot)})),
+        next, noNext:next.length===0,
+        hasMsg:!!last, msgText:last? String(last.text||'') : '', msgWhen:last? this.fmt(last.ts) : '',
+        openMsgs:()=>this.setState({biz:b.id,section:'messages',detail:null}),
+        people: ppl===1? '1 person with access' : ppl+' people with access',
+        hasActivity:logs.length>0, lastWhen:logs.length? this.fmt(logs[0].ts) : ''};
+    }) : [];
+    const orgTotals=orgOverview? portalBizs.map(coFigures).reduce((a,f)=>({open:a.open+f.open,doing:a.doing+f.doing,needs:a.needs+f.needs,week:a.week+f.week}),{open:0,doing:0,needs:0,week:0}) : null;
+    const orgStats=orgTotals? [['Companies',portalBizs.length],['Open requests',orgTotals.open],['In progress',orgTotals.doing],['Needs your OK',orgTotals.needs],['Content this week',orgTotals.week],['Unread messages',unreadFor(client.id)]]
+      .map(([label,value])=>({label,value:String(value)})) : [];
+    const pillOn=on=>({display:'inline-flex',alignItems:'center',gap:7,background:on?'var(--navy)':'var(--surface-card)',color:on?'#fff':'var(--navy)',
+      border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),borderRadius:999,padding:'7px 14px',fontSize:13,fontWeight:on?600:500,cursor:'pointer',whiteSpace:'nowrap'});
+    const bizTabs = portalBizs.length? (((orgWideMe||portalBizs.length>1)? [{id:'all',label:orgWideMe?'All companies':'All my companies'}] : [])
+      .concat(portalBizs.map(b=>({id:b.id,label:b.name}))).map(t=>{ const on=(t.id==='all'? !bizScoped : bizSel===t.id);
+        const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'#fff':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
+        return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
     return {
       ...leadVals,
-      isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:client.name,
+      isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:curBiz? curBiz.name : client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
       // they cover, so one login serves the whole group.
       businesses:(client.businesses||[]).map(b=>({name:b.name,domain:b.domain||''})),
@@ -7195,7 +7750,7 @@ class Component extends DCLogic {
         if(!stratClient) return this.setState({syncError:'Pick a client first.'});
         this.setState({syncError:null});
         this.set(x=>{ x.strategy.unshift({id:this.uid(),clientId:stratClient,ts:Date.now(),
-          channel:chan.id,status:'idea',title:t,body:(d.stBody||'').trim(),
+          channel:chan.id,status:'idea',createdAt:new Date().toISOString(),title:t,body:(d.stBody||'').trim(),
           scheduledFor:d.stWhen||'',links:[],comments:[]}); return x; });
         this.setState(s2=>({d:{...s2.d,stTitle:'',stBody:'',stWhen:''}}));
       },
@@ -7419,7 +7974,15 @@ class Component extends DCLogic {
           // already tagged to one does not lose its reference.
           const names=(dr.brands||'').split(',').map(t=>t.trim()).filter(Boolean);
           const old=c.businesses||[];
-          c.businesses=names.map((n2,i)=>({id:(old[i]&&old[i].id)||id+'-b'+(i+1),name:n2,domain:(old[i]&&old[i].domain)||''}));
+          // A company keeps its id by name first, so reordering the list does
+          // not refile anyone's work; a renamed one keeps the id in its slot.
+          const used=new Set(), low=v=>String(v||'').trim().toLowerCase();
+          const byName=names.map(n2=>{ const o=old.find(b=>b&&low(b.name)===low(n2)&&!used.has(b.id)); if(o) used.add(o.id); return o||null; });
+          c.businesses=names.map((n2,i)=>{ let o=byName[i];
+            if(!o && old[i] && !used.has(old[i].id) && !names.some(nn=>low(nn)===low(old[i].name))){ o=old[i]; used.add(o.id); }
+            let bid=o? o.id : id+'-b'+(i+1); while(!o && (old.some(b=>b.id===bid)||used.has(bid))) bid=id+'-b'+Math.random().toString(36).slice(2,6);
+            used.add(bid);
+            return {id:bid,name:n2,domain:(o&&o.domain)||''}; });
           if(!c.businesses.length) c.businesses=[{id:id+'-main',name:nm,domain:c.domain}];
           return x; });
         this.setState({editClient:null,ecDraft:null});
@@ -7442,11 +8005,13 @@ class Component extends DCLogic {
       },
 
       // ----- the client's own portal access list -----
+
       // An invitation can fail after the account is made — the mail provider
       // rejecting the sender domain does exactly that — so the invite has to
       // be repeatable without recreating anybody.
       portalPeople:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===client.id)
         .map(pp=>({name:pp.name||pp.email,email:pp.email||'',isMe:pp.id===me.id,
+          ...scopeBits(pp),
           canResend:!!pp.email,
           resend:()=>{
             this.setState({syncError:null,flash:'Sending an invitation to '+pp.email+'\u2026'});
@@ -7473,12 +8038,13 @@ class Component extends DCLogic {
         if(isStaff && !isAdmin) return this.setState({syncError:'Only an admin can add a portal login.'});
         if(isStaff && !client.id) return this.setState({syncError:'Pick a client portal first.'});
         this.setState({syncError:null,flash:'Sending an invitation to '+em+'\u2026'});
+        const cos = orgWideMe? pmPicked : (pmPicked.length? pmPicked : myBizIds);
         (isStaff
-          ? window.SUData.createClientLogin(client.id, em, nm||em)
-          : window.SUData.invitePortalMember(em, nm||em))
+          ? window.SUData.createClientLogin(client.id, em, nm||em, cos)
+          : window.SUData.invitePortalMember(em, nm||em, cos))
           .then(()=>window.SUData.load())
           .then(data=>{ this.__synced=structuredClone(data);
-            this.setState({data,flash:'Invitation sent to '+em+'. They set their own password from the link.',
+            this.setState({data,pmBiz:[],flash:'Invitation sent to '+em+'. They set their own password from the link.',
               d:{...this.state.d,pmName:'',pmEmail:''}}); })
           .catch(err=>this.setState({flash:null,syncError:'Could not add: '+(err.message||err)}));
       },
@@ -7540,7 +8106,7 @@ class Component extends DCLogic {
       userName: (S.profile && (S.profile.name || S.profile.email)) || '',
       // Which portal you are in, for anyone whose own name is not the company's.
       // The team side says "Internal Dashboard" on every page, so it needs none.
-      showPortalName: !isTeam, portalName: client.name || '',
+      showPortalName: !isTeam, portalName: (curBiz? curBiz.name : client.name) || '',
       syncError: S.syncError || false,
       flash: S.flash || false,
       clearFlash: ()=>this.setState({flash:null}),
@@ -7566,6 +8132,12 @@ class Component extends DCLogic {
       pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL,
       calOpen:!!S.calOpen, calClosed:!S.calOpen, openCal:()=>this.setState({calOpen:true}), pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
+      showBizBar:!isTeam&&bizTabs.length>1, bizTabs, bizBarLabel:'Companies',
+      showFileUnder:!isTeam&&orgOverview&&portalBizs.length>1&&['home','requests','todos','strategy','messages','files'].indexOf(sectionNow)>-1,
+      fileUnderValue:fileUnderId, fileUnderOpts:portalBizs.map(b=>({v:b.id,l:b.name})),
+      onFileUnder:e=>{ const v=e.target.value; this.setState(s2=>({bizPick:{...(s2.bizPick||{}),[client.id]:v}})); },
+      showOrgOverview:!isTeam&&orgOverview&&secKey('home'), orgStats, orgCos,
+      pmHasCos:pmChoices.length>1||(!orgWideMe&&pmChoices.length>0), pmCoChips,
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
       homeQueueCards, queueCount:homeQueueCards.length, noQueueCards:homeQueueCards.length===0,
@@ -7614,14 +8186,22 @@ class Component extends DCLogic {
       clientCards, newRequests, noNewRequests:newRequests.length===0,
       teamCurrentReqs, noTeamCurrentReqs:teamCurrentReqs.length===0,
       teamDoneReqs, noTeamDoneReqs:teamDoneReqs.length===0,
-      msgTabs:D.clients.map(c=>{ const active=S.msgClient===c.id;
+      msgTabs:D.clients.flatMap(c=>{ const active=S.msgClient===c.id && (!isMultiOrg(c) || !teamMsgBiz);
         const un=unreadFor(c.id);
-        return {name:c.name,dot:clientDot(c.id),unread:un>0?un:false,
+        const row={name:c.name+(isMultiOrg(c)?' (all)':''),dot:clientDot(c.id),unread:un>0?un:false,
           // Selecting a thread is what marks it read.
-          select:()=>{ markRead(c.id); this.setState({msgClient:c.id}); },
+          select:()=>{ markRead(c.id); this.setState({msgClient:c.id,msgBiz:''}); },
           nameStyle:{flex:1,fontWeight:un?700:(active?600:400)},
-          style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(active?clientColor(c.id):'transparent'),padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}}; }),
-      thread, threadName:isTeam?cname(msgCid):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
+          style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(active?clientColor(c.id):'transparent'),padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}};
+        if(!isMultiOrg(c) || S.msgClient!==c.id) return [row];
+        // The companies open underneath the organization that is selected.
+        return [row].concat(bizList(c).map(b=>{ const on=teamMsgBiz===b.id;
+          const n=D.messages.filter(m=>m.clientId===c.id&&bizIdOf(m)===b.id&&m.from===otherSide&&m.ts>readTs(c.id)).length;
+          return {name:b.name, dot:{width:6,height:6,minWidth:6,borderRadius:'50%',background:'var(--gray-400)',marginLeft:14}, unread:n>0?n:false,
+            select:()=>{ markRead(c.id); this.setState({msgClient:c.id,msgBiz:b.id}); },
+            nameStyle:{flex:1,fontWeight:on?600:400,fontSize:13},
+            style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:on?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(on?clientColor(c.id):'transparent'),padding:'9px 16px',fontSize:13,color:'var(--navy)',cursor:'pointer'}}; })); }),
+      thread, threadName:isTeam?(isMultiOrg(msgOrg)? orgLabel({clientId:msgCid,businessId:teamMsgBiz||mainBizId(msgOrg)}) : cname(msgCid)):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
       onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
       portalUpdates, dFeedback:d.feedback||'', onFeedback:this.draft('feedback'),
       pulsePrompt:rated?'Thanks, your rating is in for '+month+'.':'Rate '+month+' from 1 to 5. It goes straight to the team.',
