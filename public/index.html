@@ -3006,7 +3006,7 @@
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
                   <select value="{{ dLineClient }}" onChange="{{ onLineClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
                     <option value="">Social Upgrades (internal)</option>
-                    <sc-for list="{{ clients }}" as="c" hint-placeholder-count="4"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                    <sc-for list="{{ payLineOpts }}" as="c" hint-placeholder-count="4"><option value="{{ c.value }}">{{ c.label }}</option></sc-for>
                   </select>
                   <input value="{{ dLineHours }}" onChange="{{ onLineHours }}" type="number" placeholder="h" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
                   <input value="{{ dLineMinutes }}" onChange="{{ onLineMinutes }}" type="number" placeholder="m" style="width:74px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
@@ -7061,9 +7061,11 @@ class Component extends DCLogic {
         // No clientId means internal work, unless the line carries its own name
         // (hours imported for someone who is not set up as a client yet).
         const internal = !b.clientId && (!b.name || /social upgrades/i.test(b.name) || b.name==='Internal');
-        const key = internal ? '__internal' : (b.clientId || 'name:'+b.name);
+        const cl = b.clientId ? D.clients.find(c=>c.id===b.clientId) : null;
+        const biz = cl && b.businessId ? (cl.businesses||[]).find(x=>x.id===b.businessId) : null;
+        const key = internal ? '__internal' : biz ? b.clientId+'|'+b.businessId : (b.clientId || 'name:'+b.name);
         const name = internal ? 'Social Upgrades'
-          : (b.clientId && cname(b.clientId)!=='Internal') ? cname(b.clientId) : (b.name||'Client');
+          : biz ? biz.name : cl ? cl.name : (b.name||'Client');
         if(!byKey[key]) byKey[key] = {key, name, internal, minutes:0};
         byKey[key].minutes += mins;
       });
@@ -8170,6 +8172,13 @@ class Component extends DCLogic {
       dPayNote:d.payNote||'', onPayNote:this.draft('payNote'),
       // Per-client split for an hours submission, built up line by line.
       dLineClient:d.lineClient||'', onLineClient:this.draft('lineClient'),
+      // Organizations with several companies list each company, so hours land
+      // on Costa Mesa Jiu Jitsu rather than just "Double Ops Inc".
+      payLineOpts: D.clients.slice().sort((a,b)=>a.name.localeCompare(b.name)).flatMap(c=>{
+        const bz=(c.businesses||[]);
+        return bz.length>1 ? bz.map(b=>({value:c.id+'|'+b.id, label:(b.name===c.name? c.name : c.name+' · '+b.name)}))
+                           : [{value:c.id, label:c.name}];
+      }),
       dLineHours:d.lineHours||'', onLineHours:this.draft('lineHours'),
       dLineMinutes:d.lineMinutes||'', onLineMinutes:this.draft('lineMinutes'),
       draftLines: (S.payLines||[]).map((l,i)=>({name:l.name,hours:hm(l.minutes),
@@ -8179,10 +8188,13 @@ class Component extends DCLogic {
       addLine:()=>{
         const mins=(Number(d.lineHours)||0)*60+(Number(d.lineMinutes)||0);
         if(!(mins>0)) return this.setState({syncError:'Enter hours or minutes for the line.'});
-        const cid=d.lineClient||'';
-        const nm=cid?cname(cid):'Social Upgrades (internal)';
+        const [cid,bid]=String(d.lineClient||'').split('|');
+        const biz=bid? ((D.clients.find(c=>c.id===cid)||{}).businesses||[]).find(b=>b.id===bid) : null;
+        const nm=biz? biz.name : cid? cname(cid) : 'Social Upgrades (internal)';
+        const line={clientId:cid||null,name:nm,minutes:mins};
+        if(biz) line.businessId=bid;
         this.setState(s=>({syncError:null,
-          payLines:(s.payLines||[]).concat([{clientId:cid||null,name:nm,minutes:mins}]),
+          payLines:(s.payLines||[]).concat([line]),
           d:{...s.d,lineHours:'',lineMinutes:''}}));
       },
       submitPay:()=>{
