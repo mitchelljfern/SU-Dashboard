@@ -73,7 +73,9 @@
     rate: 'rate', flatAmount: 'flat_amount', adjustment: 'adjustment',
     breakdown: 'breakdown', status: 'status', paidAt: 'paid_at',
     approvedBy: 'approved_by', approvedAt: 'approved_at', note: 'note',
-    changeRequested: 'change_requested', changeNote: 'change_note'
+    changeRequested: 'change_requested', changeNote: 'change_note',
+    // What actually went out: amount, recipient and processor reference.
+    paidAmount: 'paid_amount', paidTo: 'paid_to', paymentRef: 'payment_ref'
   };
 
   const NUMERIC_COLS = new Set([
@@ -169,6 +171,7 @@
   const payFromRow = r => {
     const o = mapFromRow(r, PAY_COLS);
     o.amount = Number(r.amount || 0);
+    o.paidAmount = r.paid_amount == null ? null : Number(r.paid_amount);
     if (!Array.isArray(o.breakdown)) o.breakdown = [];
     return o;
   };
