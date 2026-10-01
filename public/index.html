@@ -4810,8 +4810,11 @@ class Component extends DCLogic {
     // Three slots sit under 3:1 against the surface, which is allowed here only
     // because the client's name is always rendered next to the mark: colour is
     // a secondary cue, never the only one.
-    const CLIENT_PALETTE=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
-    const INTERNAL_COLOR='#7C84A3';   // Social Upgrades' own rows
+    // Each slot sits on its own part of the hue wheel (or, for brown and
+    // slate, its own lightness) so two clients never read as the same colour at
+    // a glance. The first ten are taken by current clients; new ones get the rest.
+    const CLIENT_PALETTE=['#2a78d6','#eb6834','#1baf7a','#e87ba4','#4a3aa7','#d9a400','#12a9c2','#c62828','#8c5a3c','#8db000','#8e44c9','#b83280','#00796b','#5d6d7e'];
+    const INTERNAL_COLOR='#0F1633';   // Social Upgrades' own rows: our navy
     const clientColor=id=>{
       if(!id) return INTERNAL_COLOR;
       const c=D.clients.find(x=>x.id===id);
@@ -4824,6 +4827,13 @@ class Component extends DCLogic {
     // keeps its edge when it lands on a tinted row.
     const clientDot=id=>({width:10,height:10,minWidth:10,borderRadius:'50%',
       background:clientColor(id),boxShadow:'0 0 0 2px rgba(255,255,255,.9)',display:'inline-block'});
+    // A company inside an organization can carry its own colour (Costa Mesa Jiu
+    // Jitsu under Double Ops); the first company, or one without, uses the client's.
+    const bizColor=(cid,bid)=>{
+      const c=D.clients.find(x=>x.id===cid);
+      const b=c&&bid? (c.businesses||[]).find(x=>x.id===bid) : null;
+      return (b&&b.color) || clientColor(cid);
+    };
     const clientBar=id=>({width:3,alignSelf:'stretch',minHeight:18,borderRadius:12,
       background:clientColor(id),display:'inline-block'});
     const URGENCIES=['Low','Normal','High','Urgent'];
@@ -5136,7 +5146,9 @@ class Component extends DCLogic {
     // no home at all. They are separate boards, and the payroll one is renamed
     // so nobody goes looking for a client's invoice under it.
     const nav = isTeam
-      ? [['overview','Overview'],['board','Workboard'],['clients','Clients'],['leads','Leads'],['content','Content Map'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Time'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['brand','Brand Kit']]
+      // Clients sits near the bottom with the setup pages, and opens into
+      // Brand Kits, which are per-client material.
+      ? [['overview','Overview'],['board','Workboard'],['leads','Leads'],['content','Content Map'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Hours'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['clients','Clients']]
           .filter(([id])=>id!=='invoicing'||canBilling)
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Meet with Social Upgrades'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           // Billing is the organization's; a company manager does not get it.
@@ -5255,7 +5267,7 @@ class Component extends DCLogic {
     };
     // Brand Kit opens into the client's files: both are the client's own
     // material, and Files on its own was a tab away from the kit it belongs to.
-    const SUBNAV = isTeam ? {} : {brand:[['files','Files']]};
+    const SUBNAV = isTeam ? {clients:[['brand','Brand Kits']]} : {brand:[['files','Files']]};
     // Everywhere that wants one flat list of reachable boards -- the phone's
     // More sheet, the label lookup for the tab bar -- wants the children in it
     // too, or a nested board simply cannot be opened on a phone.
@@ -5298,9 +5310,9 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Time Tracking'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
-    headings.brand=['Logos · Colors · Rules','Brand Kit'];
+    headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
     // Inside a company, the kicker says which one; the organization overview
     // is the dashboard's own heading.
@@ -6772,10 +6784,14 @@ class Component extends DCLogic {
           ipRate:undefined,ipPortal:undefined,niNum:undefined,niIssue:undefined,
           niDue:undefined,niAmount:undefined,niStatus:undefined,niMethod:undefined,
           niUrl:undefined,niNote:undefined}})),
-        style:{display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',
-          background:on?'var(--gray-100)':'transparent',
-          border:'1px solid '+(on?'var(--navy)':'var(--border-hairline)'),
-          borderRadius:12,padding:'11px 14px',cursor:'pointer',fontFamily:'var(--font-body)'}};
+        // border-box keeps the row inside the card; the left edge and a light
+        // wash carry the client's colour so it matches every other page.
+        style:{display:'flex',alignItems:'center',gap:12,width:'100%',boxSizing:'border-box',textAlign:'left',
+          background:this.rgba(clientColor(c.id), on? .14 : .06),
+          border:'1px solid '+(on? clientColor(c.id) : this.rgba(clientColor(c.id),.28)),
+          borderLeft:'5px solid '+clientColor(c.id),
+          borderRadius:12,padding:'11px 14px 11px 12px',cursor:'pointer',fontFamily:'var(--font-body)',
+          boxShadow:on?'0 4px 14px '+this.rgba(clientColor(c.id),.18):'none'}};
     });
     // Numbering follows whatever scheme the last invoice used — SP-0058 leads
     // to SP-0059 — rather than imposing one.
@@ -7175,14 +7191,22 @@ class Component extends DCLogic {
     const addMins = (into,from)=>{ for(const k in from) into[k]=(into[k]||0)+from[k]; return into; };
     const payNames = {__internal:'Social Upgrades', __none:'Not broken down'};
     (D.payments||[]).forEach(p=>(p.breakdown||[]).forEach(b=>{ const id=payLineId(b); if(!payNames[id.key]) payNames[id.key]=id.name; }));
-    // A client keeps one colour everywhere on this page. The biggest clients over
-    // all time take the most distinct slots.
+    // Clients use the same colour here as on the workboard, overview and
+    // invoicing. A line that only carries a name (no client record) borrows an
+    // unused palette slot so it still stands apart.
     const payTotalsByKey = {};
     (D.payments||[]).forEach(p=>addMins(payTotalsByKey, payMinsByKey(p)));
-    const payColorMap = {__internal:PAY_INTERNAL, __none:PAY_NONE};
-    Object.keys(payTotalsByKey).filter(k=>!payColorMap[k])
-      .sort((a,b)=>payTotalsByKey[b]-payTotalsByKey[a])
-      .forEach((k,i)=>{ payColorMap[k]=PAY_PALETTE[i%PAY_PALETTE.length]; });
+    const payColorMap = {__internal:INTERNAL_COLOR, __none:PAY_NONE};
+    Object.keys(payTotalsByKey).forEach(k=>{
+      if(payColorMap[k] || k.indexOf('name:')===0) return;
+      const [cid,bid]=k.split('|');
+      payColorMap[k] = bid ? bizColor(cid,bid) : clientColor(cid);
+    });
+    const payTaken = new Set(Object.values(payColorMap).map(x=>String(x).toLowerCase()));
+    Object.keys(payTotalsByKey).filter(k=>k.indexOf('name:')===0).forEach(k=>{
+      const free = PAY_PALETTE.find(c=>!payTaken.has(c.toLowerCase())) || '#8A93AE';
+      payTaken.add(free.toLowerCase()); payColorMap[k]=free;
+    });
     const payColor = k=>payColorMap[k]||'#8A93AE';
     const pctText = (part,total)=>{ const v = total>0 ? part/total*100 : 0;
       return (v>=10||v===0 ? Math.round(v) : Math.round(v*10)/10)+'%'; };
@@ -7195,7 +7219,7 @@ class Component extends DCLogic {
         .sort((a,b)=>(Number(a==='__none')-Number(b==='__none')) || byKey[b]-byKey[a]);
       const max=Math.max(1,...keys.map(k=>byKey[k]));
       return keys.map(k=>{
-        const c=payColor(k), ink = k==='__none' ? '#5E6685' : c;
+        const c=payColor(k), ink = k==='__none' ? '#5E6685' : this.mix(c,'#000000',.32);   // darkened so light hues stay readable
         return {
           name: payNames[k]||k, hours: hm(byKey[k]), pct: pctText(byKey[k],total),
           segStyle: 'flex:'+byKey[k]+' 1 0;min-width:4px;background:'+c,
@@ -8503,7 +8527,7 @@ class Component extends DCLogic {
             if(!o && old[i] && !used.has(old[i].id) && !names.some(nn=>low(nn)===low(old[i].name))){ o=old[i]; used.add(o.id); }
             let bid=o? o.id : id+'-b'+(i+1); while(!o && (old.some(b=>b.id===bid)||used.has(bid))) bid=id+'-b'+Math.random().toString(36).slice(2,6);
             used.add(bid);
-            return {id:bid,name:n2,domain:(o&&o.domain)||''}; });
+            return {...(o||{}), id:bid, name:n2, domain:(o&&o.domain)||''}; });
           if(!c.businesses.length) c.businesses=[{id:id+'-main',name:nm,domain:c.domain}];
           return x; });
         this.setState({editClient:null,ecDraft:null});
