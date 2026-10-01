@@ -7167,7 +7167,9 @@ class Component extends DCLogic {
         const m=Number(b.minutes)||0; if(!(m>0)) return;
         const id=payLineId(b); out[id.key]=(out[id.key]||0)+m; lined+=m;
       });
-      if(lined<total) out.__none=(out.__none||0)+(total-lined);
+      // A gap of a few minutes is rounding between the timesheet and the paid
+      // total, not real unsplit time, so it is not charted.
+      if(total-lined>5) out.__none=(out.__none||0)+(total-lined);
       return out;
     };
     const addMins = (into,from)=>{ for(const k in from) into[k]=(into[k]||0)+from[k]; return into; };
