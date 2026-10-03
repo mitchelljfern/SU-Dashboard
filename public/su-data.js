@@ -16,7 +16,10 @@
     'leads', 'lead_notes', 'lead_emails',
     // Metricool snapshots for the team Content Map. Team-only in Postgres, so a
     // client load gets an empty list. Written by the daily social agent.
-    'content_stats'];
+    'content_stats',
+    // Reports: dated reads of one channel with the plan that follows. A client
+    // load only gets its own published reports (migration 038).
+    'report_docs'];
 
   // How each collection is ordered when loaded, to match what the UI expects.
   // Messages read as a chat thread (oldest first); everything else is a feed.

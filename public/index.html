@@ -205,6 +205,13 @@
     @media (max-width:560px){
       .su-grid4,.su-cols{grid-template-columns:minmax(0,1fr) !important}
     }
+    /* Reports: the body lines up under the title on a desktop; on a phone the
+       indent is space the numbers need. KPI tiles go 4 -> 2 and stay at two,
+       because one tall column of numbers is harder to compare. */
+    .su-rdbody{padding:4px 20px 22px 46px}
+    .su-rdkpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    @media (max-width:860px){ .su-rdkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:560px){ .su-rdbody{padding:2px 14px 18px} }
   </style>
 </helmet>
 <div style="{{ rootStyle }}">
@@ -2524,45 +2531,171 @@
       </sc-if>
 
       <sc-if value="{{ secReports }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:18px">
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:16px;border-radius:12px">
-            <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
-              <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px">
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly report</h3>
-                <div style="font-size:12px;color:var(--text-muted)">What {{ repClientName }} sees on their Reports tab. Leave a tile blank to publish fewer than four.</div>
-              </div>
-              <select value="{{ dRepClient }}" onChange="{{ onRepClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
-              </select>
-            </div>
-
-            <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
-              <sc-for list="{{ repTiles }}" as="t" hint-placeholder-count="4">
-                <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
-                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Tile {{ t.n }}</div>
-                  <input value="{{ t.dLabel }}" onChange="{{ t.onLabel }}" placeholder="Label, e.g. Sessions" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
-                  <input value="{{ t.dValue }}" onChange="{{ t.onValue }}" placeholder="Value, e.g. 12.4K" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
-                  <input value="{{ t.dDelta }}" onChange="{{ t.onDelta }}" placeholder="Change, e.g. +18% vs Jul" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box">
-                  <select value="{{ t.dUp }}" onChange="{{ t.onUp }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                    <option value="up">Good news</option>
-                    <option value="down">Bad news</option>
-                  </select>
-                </div>
-              </sc-for>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Summary</div>
-              <textarea value="{{ dRepNote }}" onChange="{{ onRepNote }}" rows="4" placeholder="What the numbers mean, in plain words." style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 11px;font-size:13px;font-family:var(--font-body);width:100%;box-sizing:border-box;resize:vertical;line-height:1.6"></textarea>
-            </div>
-
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <button onClick="{{ saveReport }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;border-radius:12px" style-hover="background:#000">Publish report</button>
-              <sc-if value="{{ hasRepWhen }}" hint-placeholder-val="{{ true }}">
-                <div style="font-size:12px;color:var(--text-muted)">Last updated {{ repWhen }}<sc-if value="{{ hasRepBy }}" hint-placeholder-val="{{ true }}"> by {{ repBy }}</sc-if></div>
-              </sc-if>
-            </div>
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:13px;color:var(--text-muted);line-height:1.5">Reports from the scheduled agents and the team. Social Upgrades' own reports are team only. A client report shows in that client's portal once it's published.</div>
           </div>
+          <div role="tablist" aria-label="Whose reports" style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ rdScopes }}" as="sc" hint-placeholder-count="2">
+              <button role="tab" onClick="{{ sc.select }}" style="{{ sc.style }}" style-hover="border-color:var(--navy)"><span style="font-size:13.5px;font-weight:600">{{ sc.label }} <span style="opacity:.6;font-weight:500">{{ sc.n }}</span></span><span style="{{ sc.subStyle }}">{{ sc.sub }}</span></button>
+            </sc-for>
+          </div>
+          <sc-for list="{{ rdItems }}" as="r" hint-placeholder-count="2">
+            <article style="{{ r.cardStyle }}">
+              <div onClick="{{ r.toggle }}" role="button" aria-expanded="{{ r.open }}" style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
+                <span style="{{ r.chevronStyle }}">▶</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">
+                    <span>{{ r.period }}</span><span style="opacity:.5">·</span><span>{{ r.meta }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.25;color:var(--navy);margin:0">{{ r.title }}</h3>
+                    <sc-if value="{{ r.hasTone }}" hint-placeholder-val="{{ true }}">
+                      <span style="{{ r.toneStyle }}"><span style="{{ r.toneDot }}"></span>{{ r.toneLabel }}</span>
+                    </sc-if>
+                  </div>
+                  <sc-if value="{{ r.hasHeadline }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:14.5px;line-height:1.55;color:var(--text-body);max-width:760px">{{ r.headline }}</div>
+                  </sc-if>
+                  <sc-if value="{{ r.closed }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                      <sc-for list="{{ r.kpiChips }}" as="c" hint-placeholder-count="4">
+                        <span style="display:inline-flex;align-items:baseline;gap:6px;background:var(--gray-100);border-radius:10px;padding:5px 10px;font-size:12px;color:var(--text-muted)">{{ c.label }}<b style="font-family:var(--font-display);font-size:13.5px;color:var(--navy)">{{ c.value }}</b></span>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <sc-if value="{{ r.open }}" hint-placeholder-val="{{ true }}">
+                <div class="su-rdbody" style="display:flex;flex-direction:column;gap:22px">
+
+                  <sc-if value="{{ r.hasKpis }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <div class="su-rdkpi">
+                        <sc-for list="{{ r.kpis }}" as="k" hint-placeholder-count="4">
+                          <div onClick="{{ k.toggleTip }}" style="{{ k.tileStyle }}">
+                            <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                            <div style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.1;color:var(--navy)">{{ k.value }}</div>
+                            <sc-if value="{{ k.hasDelta }}" hint-placeholder-val="{{ true }}">
+                              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><span style="{{ k.markStyle }}"></span>{{ k.delta }}</div>
+                            </sc-if>
+                            <sc-if value="{{ k.hasMeaning }}" hint-placeholder-val="{{ true }}">
+                              <div style="font-size:11.5px;font-weight:600;color:var(--text-body);opacity:.75;text-decoration:underline dotted;text-underline-offset:3px;margin-top:4px">{{ k.tipLabel }}</div>
+                            </sc-if>
+                            <sc-if value="{{ k.tipOpen }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12.5px;line-height:1.55;color:var(--text-body);border-top:1px solid var(--border-card);padding-top:8px;margin-top:2px">{{ k.meaning }}</div>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasLists }}" hint-placeholder-val="{{ true }}">
+                    <div class="su-grid2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>What's working</div>
+                        <sc-for list="{{ r.working }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}</div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>What needs work</div>
+                        <sc-for list="{{ r.notWorking }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}</div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">What we recommend next</div>
+                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
+                        <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
+                          <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:12px">{{ a.n }}</span>
+                          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                              <span style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.4">{{ a.title }}</span>
+                              <span style="{{ a.whoStyle }}">{{ a.whoLabel }}</span>
+                              <sc-if value="{{ a.needsOk }}" hint-placeholder-val="{{ false }}">
+                                <span style="background:rgba(214,143,46,.16);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap">Needs your OK</span>
+                              </sc-if>
+                            </div>
+                            <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}">
+                              <div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasTeamNote }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body)">
+                      <span style="flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);padding-top:2px">Team note</span>
+                      <span>{{ r.teamNote }}</span>
+                    </div>
+                  </sc-if>
+
+                  <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border-card);padding-top:14px">
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                      <sc-if value="{{ r.hasTables }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ r.toggleMore }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--navy);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="background:var(--gray-100)">{{ r.moreLabel }}</button>
+                      </sc-if>
+                      <span style="font-size:12px;color:var(--text-muted)">{{ r.byLine }}</span>
+                    </div>
+                    <sc-if value="{{ r.more }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:18px">
+                        <sc-for list="{{ r.tables }}" as="tb" hint-placeholder-count="1">
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <div style="font-size:13px;font-weight:700;color:var(--navy)">{{ tb.title }}</div>
+                            <sc-if value="{{ tb.hasNote }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12px;color:var(--text-muted);line-height:1.5">{{ tb.note }}</div>
+                            </sc-if>
+                            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:6px">
+                              <div style="{{ tb.head.style }}">
+                                <sc-for list="{{ tb.head.cells }}" as="hc" hint-placeholder-count="4"><div style="{{ hc.style }}">{{ hc.v }}</div></sc-for>
+                              </div>
+                              <sc-for list="{{ tb.rows }}" as="row" hint-placeholder-count="3">
+                                <div style="{{ row.style }}">
+                                  <sc-for list="{{ row.cells }}" as="cc" hint-placeholder-count="4"><div style="{{ cc.style }}">{{ cc.v }}</div></sc-for>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </sc-for>
+                        <sc-if value="{{ r.hasSource }}" hint-placeholder-val="{{ true }}">
+                          <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Source: {{ r.source }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ r.showTeamBar }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:9px 12px">
+                        <span style="{{ r.visStyle }}"><span style="{{ r.visDot }}"></span>{{ r.visLabel }}</span>
+                        <span style="flex:1"></span>
+                        <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ r.togglePublish }}" style="background:var(--cta-bg);color:var(--cta-fg,#fff);border:none;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">{{ r.publishLabel }}</button>
+                        </sc-if>
+                        <sc-if value="{{ r.archiveAsk }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:12.5px;color:var(--text-body)">Archive this report?</span>
+                          <button onClick="{{ r.doArchive }}" style="background:var(--danger-wash,#fff5f4);color:var(--danger-fg,#a8352d);border:1px solid var(--danger-line,#D8564E);padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">Archive</button>
+                          <button onClick="{{ r.cancelArchive }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;font-family:var(--font-body)">Keep</button>
+                        </sc-if>
+                        <sc-if value="{{ r.noArchiveAsk }}" hint-placeholder-val="{{ true }}">
+                          <button onClick="{{ r.askArchive }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-muted);padding:6px 12px;font-size:12.5px;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="color:var(--navy)">Archive</button>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+            </article>
+          </sc-for>
+          <sc-if value="{{ rdEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">No reports here yet. The scheduled agents add one after each run.</div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -4027,6 +4160,164 @@
       </sc-if>
 
       <sc-if value="{{ pReports }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <sc-for list="{{ rdItems }}" as="r" hint-placeholder-count="2">
+            <article style="{{ r.cardStyle }}">
+              <div onClick="{{ r.toggle }}" role="button" aria-expanded="{{ r.open }}" style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
+                <span style="{{ r.chevronStyle }}">▶</span>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">
+                    <span>{{ r.period }}</span><span style="opacity:.5">·</span><span>{{ r.meta }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.25;color:var(--navy);margin:0">{{ r.title }}</h3>
+                    <sc-if value="{{ r.hasTone }}" hint-placeholder-val="{{ true }}">
+                      <span style="{{ r.toneStyle }}"><span style="{{ r.toneDot }}"></span>{{ r.toneLabel }}</span>
+                    </sc-if>
+                  </div>
+                  <sc-if value="{{ r.hasHeadline }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:14.5px;line-height:1.55;color:var(--text-body);max-width:760px">{{ r.headline }}</div>
+                  </sc-if>
+                  <sc-if value="{{ r.closed }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                      <sc-for list="{{ r.kpiChips }}" as="c" hint-placeholder-count="4">
+                        <span style="display:inline-flex;align-items:baseline;gap:6px;background:var(--gray-100);border-radius:10px;padding:5px 10px;font-size:12px;color:var(--text-muted)">{{ c.label }}<b style="font-family:var(--font-display);font-size:13.5px;color:var(--navy)">{{ c.value }}</b></span>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <sc-if value="{{ r.open }}" hint-placeholder-val="{{ true }}">
+                <div class="su-rdbody" style="display:flex;flex-direction:column;gap:22px">
+
+                  <sc-if value="{{ r.hasKpis }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <div class="su-rdkpi">
+                        <sc-for list="{{ r.kpis }}" as="k" hint-placeholder-count="4">
+                          <div onClick="{{ k.toggleTip }}" style="{{ k.tileStyle }}">
+                            <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                            <div style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.1;color:var(--navy)">{{ k.value }}</div>
+                            <sc-if value="{{ k.hasDelta }}" hint-placeholder-val="{{ true }}">
+                              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><span style="{{ k.markStyle }}"></span>{{ k.delta }}</div>
+                            </sc-if>
+                            <sc-if value="{{ k.hasMeaning }}" hint-placeholder-val="{{ true }}">
+                              <div style="font-size:11.5px;font-weight:600;color:var(--text-body);opacity:.75;text-decoration:underline dotted;text-underline-offset:3px;margin-top:4px">{{ k.tipLabel }}</div>
+                            </sc-if>
+                            <sc-if value="{{ k.tipOpen }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12.5px;line-height:1.55;color:var(--text-body);border-top:1px solid var(--border-card);padding-top:8px;margin-top:2px">{{ k.meaning }}</div>
+                            </sc-if>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasLists }}" hint-placeholder-val="{{ true }}">
+                    <div class="su-grid2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>What's working</div>
+                        <sc-for list="{{ r.working }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}</div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>What needs work</div>
+                        <sc-for list="{{ r.notWorking }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}</div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">What we recommend next</div>
+                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
+                        <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
+                          <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:12px">{{ a.n }}</span>
+                          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                              <span style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.4">{{ a.title }}</span>
+                              <span style="{{ a.whoStyle }}">{{ a.whoLabel }}</span>
+                              <sc-if value="{{ a.needsOk }}" hint-placeholder-val="{{ false }}">
+                                <span style="background:rgba(214,143,46,.16);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap">Needs your OK</span>
+                              </sc-if>
+                            </div>
+                            <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}">
+                              <div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ r.hasTeamNote }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body)">
+                      <span style="flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);padding-top:2px">Team note</span>
+                      <span>{{ r.teamNote }}</span>
+                    </div>
+                  </sc-if>
+
+                  <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border-card);padding-top:14px">
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                      <sc-if value="{{ r.hasTables }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ r.toggleMore }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--navy);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="background:var(--gray-100)">{{ r.moreLabel }}</button>
+                      </sc-if>
+                      <span style="font-size:12px;color:var(--text-muted)">{{ r.byLine }}</span>
+                    </div>
+                    <sc-if value="{{ r.more }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:18px">
+                        <sc-for list="{{ r.tables }}" as="tb" hint-placeholder-count="1">
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <div style="font-size:13px;font-weight:700;color:var(--navy)">{{ tb.title }}</div>
+                            <sc-if value="{{ tb.hasNote }}" hint-placeholder-val="{{ false }}">
+                              <div style="font-size:12px;color:var(--text-muted);line-height:1.5">{{ tb.note }}</div>
+                            </sc-if>
+                            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:6px">
+                              <div style="{{ tb.head.style }}">
+                                <sc-for list="{{ tb.head.cells }}" as="hc" hint-placeholder-count="4"><div style="{{ hc.style }}">{{ hc.v }}</div></sc-for>
+                              </div>
+                              <sc-for list="{{ tb.rows }}" as="row" hint-placeholder-count="3">
+                                <div style="{{ row.style }}">
+                                  <sc-for list="{{ row.cells }}" as="cc" hint-placeholder-count="4"><div style="{{ cc.style }}">{{ cc.v }}</div></sc-for>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </sc-for>
+                        <sc-if value="{{ r.hasSource }}" hint-placeholder-val="{{ true }}">
+                          <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Source: {{ r.source }}</div>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ r.showTeamBar }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:9px 12px">
+                        <span style="{{ r.visStyle }}"><span style="{{ r.visDot }}"></span>{{ r.visLabel }}</span>
+                        <span style="flex:1"></span>
+                        <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ r.togglePublish }}" style="background:var(--cta-bg);color:var(--cta-fg,#fff);border:none;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">{{ r.publishLabel }}</button>
+                        </sc-if>
+                        <sc-if value="{{ r.archiveAsk }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size:12.5px;color:var(--text-body)">Archive this report?</span>
+                          <button onClick="{{ r.doArchive }}" style="background:var(--danger-wash,#fff5f4);color:var(--danger-fg,#a8352d);border:1px solid var(--danger-line,#D8564E);padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">Archive</button>
+                          <button onClick="{{ r.cancelArchive }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;font-family:var(--font-body)">Keep</button>
+                        </sc-if>
+                        <sc-if value="{{ r.noArchiveAsk }}" hint-placeholder-val="{{ true }}">
+                          <button onClick="{{ r.askArchive }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-muted);padding:6px 12px;font-size:12.5px;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="color:var(--navy)">Archive</button>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+            </article>
+          </sc-for>
+        <sc-if value="{{ noReport }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">Your first report will appear here once we publish it.</div>
+        </sc-if>
+        <sc-if value="{{ hasLegacyReport }}" hint-placeholder-val="{{ false }}">
         <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px">
           <sc-for list="{{ reportStats }}" as="s" hint-placeholder-count="4">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:18px 20px;display:flex;flex-direction:column;gap:2px;border-radius:12px">
@@ -4036,9 +4327,6 @@
             </div>
           </sc-for>
         </div>
-        <sc-if value="{{ noReport }}" hint-placeholder-val="{{ false }}">
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">Your first report will appear here once we publish it.</div>
-        </sc-if>
         <sc-if value="{{ hasReportNote }}" hint-placeholder-val="{{ true }}">
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:8px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Monthly summary</h3>
@@ -4048,6 +4336,8 @@
             </sc-if>
           </div>
         </sc-if>
+        </sc-if>
+        </div>
       </sc-if>
 
       <sc-if value="{{ pBilling }}" hint-placeholder-val="{{ false }}">
@@ -4390,7 +4680,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],report_docs:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -4769,7 +5059,7 @@ class Component extends DCLogic {
     const bizScoped = portalBizs.length>0 && bizSel!=='all';
     const orgOverview = portalBizs.length>1 && bizSel==='all';
     const curBiz = bizScoped? bizById(client,bizSel) : null;
-    const BIZ_TABLES=['todos','work','requests','updates','messages','files','strategy','log'];
+    const BIZ_TABLES=['todos','work','requests','updates','messages','files','strategy','log','report_docs'];
     const D = bizScoped
       ? Object.assign({}, D0, Object.fromEntries(BIZ_TABLES.map(t=>[t,(D0[t]||[]).filter(x=>x.clientId!==client.id || bizIdOf(x)===bizSel)])))
       : D0;
@@ -5660,6 +5950,120 @@ class Component extends DCLogic {
         this.logEv(x,repCid,'Monthly report updated for '+cname(repCid)); return x; });
       this.setState(s2=>({d:repClearDrafts(s2.d), syncError:null}));
     };
+    // ===== reports (documents) =====
+    // A report is a dated read of one channel, written by an agent or the
+    // team: the numbers, what they mean, what is working, what is not, and
+    // what to do next. It opens in three layers so nobody gets buried: the
+    // card gives the verdict in one sentence, opening it gives the numbers in
+    // plain words and the plan, and "See the numbers" holds the tables for
+    // whoever wants to dig in. Social Upgrades' own reports (no client) are
+    // team-only; a client sees a report only once it is published to them,
+    // and the database enforces that (migration 038).
+    const RD_TONE={
+      good:{label:'On track', dot:'#1FB264', wash:'rgba(31,178,100,.13)'},
+      watch:{label:'Keep an eye on it', dot:'#D68F2E', wash:'rgba(214,143,46,.15)'},
+      bad:{label:'Needs attention', dot:'#D8564E', wash:'rgba(216,86,78,.14)'}};
+    const RD_CHAN={ads:'Paid ads',social:'Social media',website:'Website',email:'Email',seo:'Search',overview:'Overview'};
+    const RD_KIND={daily:'Daily report',weekly:'Weekly report',monthly:'Monthly report'};
+    const rdPub = r => (r.visibility||'team')==='client';
+    const rdLive = (D.report_docs||[]).filter(r=>!(r.archived&&r.archived.at));
+    // Where a report belongs: Social Upgrades itself, or one company.
+    const rdKey = r => (r.clientId||'')+'|'+(r.clientId? bizIdOf(r) : '');
+    const rdScopeName = k => { const [cid,bid]=k.split('|'); if(!cid) return 'Social Upgrades';
+      const c=orgRec(cid); if(!c) return cid; const b=(bid&&isMultiOrg(c))? bizById(c,bid) : null; return b? b.name : c.name; };
+    const rdScopeSub = k => { const [cid]=k.split('|'); if(!cid) return 'Internal · team only';
+      const c=orgRec(cid); return (c&&isMultiOrg(c))? c.name : 'Client'; };
+    const rdSort = (a,b)=> String((b.period&&b.period.end)||'').localeCompare(String((a.period&&a.period.end)||'')) || (Number(b.ts)||0)-(Number(a.ts)||0);
+    const rdScopeKeys = ['|'].concat(Array.from(new Set(rdLive.map(rdKey))).filter(k=>k!=='|')
+      .sort((a,b)=>rdScopeName(a).localeCompare(rdScopeName(b))));
+    const rdScope = rdScopeKeys.indexOf(S.rdScope)>-1 ? S.rdScope : '|';
+    const rdList = (isTeam
+      ? rdLive.filter(r=>rdKey(r)===rdScope)
+      // The portal (and the team previewing it) only ever shows what was
+      // published; for a real client login the database already did this.
+      : rdLive.filter(r=>r.clientId===client.id && rdPub(r))
+    ).slice().sort(rdSort);
+    const rdWhen = r => { const t=r.createdAt? Date.parse(r.createdAt) : Number(r.ts||0); if(!t||isNaN(t)) return '';
+      return new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:(new Date(t).getFullYear()===new Date().getFullYear()?undefined:'numeric')}); };
+    const rdFlip = (key,id,now)=>this.setState(s2=>({[key]:{...(s2[key]||{}),[id]:!now}}));
+    const rdSetDoc = (id, fn, logText)=>this.set(x=>{ const it=(x.report_docs||[]).find(r=>r.id===id); if(!it) return x;
+      fn(it); if(logText) this.logEv(x,it.clientId||null,logText); return x; });
+    const rdItems = rdList.map((r,i)=>{
+      const opened=(S.rdOpen||{})[r.id];
+      const open = opened===undefined ? i===0 : !!opened;
+      const more = !!(S.rdMore||{})[r.id];
+      const tone = RD_TONE[r.verdict]||null;
+      const kpis = (r.kpis||[]).slice(0,4).map((k,j)=>{
+        const tipKey=r.id+':'+j, tip=!!(S.rdTip||{})[tipKey], hasMeaning=!!k.meaning;
+        const mark = k.good===true? '#1FB264' : (k.good===false? '#D8564E' : 'var(--gray-400)');
+        return {label:k.label||'', value:k.value||'', delta:k.delta||'', hasDelta:!!k.delta,
+          markStyle:'width:7px;height:7px;border-radius:50%;flex:0 0 auto;background:'+mark,
+          meaning:k.meaning||'', hasMeaning, tipOpen:hasMeaning&&tip,
+          tipLabel: tip? 'Hide' : 'What this means',
+          toggleTip:()=>{ if(hasMeaning) rdFlip('rdTip',tipKey,tip); },
+          tileStyle:'border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;background:var(--surface-card);'
+            +(hasMeaning?'cursor:pointer;':'')+(tip?'border-color:var(--border-hairline);box-shadow:0 4px 14px rgba(15,22,51,.08);':'')};
+      });
+      const tables = (r.tables||[]).map(tb=>{
+        const cols=(tb.columns||[]), n=Math.max(cols.length,1);
+        const grid='display:grid;grid-template-columns:minmax(150px,2.2fr) repeat('+(n-1)+',minmax(68px,1fr));gap:0 14px;align-items:baseline;min-width:'+(170+(n-1)*82)+'px';
+        const cell=(v,c,head)=>({v:String(v===null||v===undefined?'':v),
+          style:'padding:'+(head?'0 0 8px':'9px 0')+';font-size:'+(head?'10.5px':'13px')+';'+(head?'font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);':'color:var(--text-body);')
+            +(c===0?'text-align:left;'+(head?'':'font-weight:600;color:var(--navy);'):'text-align:right;font-variant-numeric:tabular-nums;')});
+        return {title:tb.title||'', note:tb.note||'', hasNote:!!tb.note,
+          head:{style:grid+';border-bottom:1px solid var(--border-hairline)', cells:cols.map((c,ci)=>cell(c,ci,true))},
+          rows:(tb.rows||[]).map((row,ri)=>({style:grid+(ri? ';border-top:1px solid var(--border-card)':''), cells:row.map((v,ci)=>cell(v,ci,false))}))};
+      });
+      const who = a => a.who==='you'
+        ? {label:'Your move', style:'background:var(--pill-bg,var(--navy));color:var(--pill-fg,#fff);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap'}
+        : {label:'On us', style:'background:var(--gray-100);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap'};
+      const actions=(r.actions||[]).map((a,ai)=>{ const w=who(a); return {n:String(ai+1), title:a.title||'', detail:a.detail||'', hasDetail:!!a.detail,
+        whoLabel:w.label, whoStyle:w.style, needsOk:!!a.needsApproval}; });
+      const working=(r.working||[]).map(t=>({t})), notWorking=(r.notWorking||[]).map(t=>({t}));
+      const clientRow=!!r.clientId, pub=rdPub(r);
+      const metaBits=[RD_KIND[r.kind]||'Report', RD_CHAN[r.channel]||''].filter(Boolean);
+      return {
+        id:r.id, title:r.title||'Report', period:(r.period&&r.period.label)||rdWhen(r), meta:metaBits.join(' · '),
+        headline:r.headline||'', hasHeadline:!!r.headline,
+        hasTone:!!tone, toneLabel:tone?tone.label:'', toneStyle:tone? 'display:inline-flex;align-items:center;gap:6px;background:'+tone.wash+';color:var(--text-heading,var(--navy));font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:12px;white-space:nowrap' : '',
+        toneDot:tone? 'width:7px;height:7px;border-radius:50%;background:'+tone.dot : '',
+        open, closed:!open, toggle:()=>rdFlip('rdOpen',r.id,open),
+        chevronStyle:'display:inline-block;transition:transform .18s ease;color:var(--text-muted);font-size:12px;margin-top:5px;transform:rotate('+(open?90:0)+'deg)',
+        cardStyle:'background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden;transition:box-shadow .18s ease;'
+          +(open?'box-shadow:0 10px 28px rgba(15,22,51,.10), 0 2px 6px rgba(15,22,51,.05)':'box-shadow:0 1px 2px rgba(15,22,51,.05)'),
+        kpis, hasKpis:kpis.length>0,
+        kpiChips:kpis.map(k=>({label:k.label, value:k.value})),
+        working, notWorking, hasWorking:working.length>0, hasNotWorking:notWorking.length>0,
+        hasLists:working.length+notWorking.length>0,
+        actions, hasActions:actions.length>0,
+        tables, hasTables:tables.length>0, more, moreLabel: more? 'Hide the numbers' : 'See the numbers',
+        toggleMore:()=>rdFlip('rdMore',r.id,more),
+        source:r.source||'', hasSource:!!r.source,
+        byLine:[r.byName? 'Prepared by '+r.byName : 'Prepared by Social Upgrades', rdWhen(r)].filter(Boolean).join(' · '),
+        // Team-only controls and notes. The portal never renders these.
+        teamNote: isTeam? (r.teamNote||'') : '', hasTeamNote: isTeam && !!r.teamNote,
+        showTeamBar: isTeam,
+        visLabel: !clientRow? 'Team only · internal' : (pub? 'Published to client' : 'Draft · team only'),
+        visStyle: 'display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--text-body)',
+        visDot: 'width:7px;height:7px;border-radius:50%;background:'+(clientRow&&pub? '#1FB264' : 'var(--gray-400)'),
+        canPublish: isTeam && clientRow,
+        publishLabel: pub? 'Unpublish' : 'Publish to client',
+        togglePublish:()=>rdSetDoc(r.id, it=>{ it.visibility = pub? 'team' : 'client'; },
+          (pub? 'Report unpublished: ' : 'Report published to client: ')+(r.title||'Report')),
+        archiveAsk: (S.rdArchive===r.id), noArchiveAsk: (S.rdArchive!==r.id),
+        askArchive:()=>this.setState({rdArchive:r.id}),
+        cancelArchive:()=>this.setState({rdArchive:null}),
+        doArchive:()=>{ rdSetDoc(r.id, it=>{ it.archived={at:new Date().toISOString(), by:me.id||''}; }, 'Report archived: '+(r.title||'Report'));
+          this.setState({rdArchive:null}); }
+      };
+    });
+    const rdScopes = rdScopeKeys.map(k=>{ const on=k===rdScope; const n=rdLive.filter(r=>rdKey(r)===k).length;
+      return {label:rdScopeName(k), sub:rdScopeSub(k), n:String(n),
+        select:()=>this.setState({rdScope:k, rdOpen:{}, rdArchive:null}),
+        style:'display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:1px solid '+(on?'var(--navy)':'var(--border-card)')
+          +';background:'+(on?'var(--navy)':'var(--surface-card)')+';color:'+(on?'#fff':'var(--navy)')+';padding:9px 14px;border-radius:12px;cursor:pointer;font-family:var(--font-body);min-width:0',
+        subStyle:'font-size:11px;font-weight:500;opacity:'+(on?'.75':'.65')}; });
+    const rdScopeIsClient = rdScope!=='|';
     // ===== invoicing =====
     // An invoice used to be one line in a list: a number, an amount, a link.
     // What it actually covered lived in somebody's email. It is a card now,
@@ -8203,11 +8607,11 @@ class Component extends DCLogic {
     const orgTotals=orgOverview? portalBizs.map(coFigures).reduce((a,f)=>({open:a.open+f.open,doing:a.doing+f.doing,needs:a.needs+f.needs,week:a.week+f.week}),{open:0,doing:0,needs:0,week:0}) : null;
     const orgStats=orgTotals? [['Companies',portalBizs.length],['Open requests',orgTotals.open],['In progress',orgTotals.doing],['Needs your OK',orgTotals.needs],['Content this week',orgTotals.week],['Unread messages',unreadFor(client.id)]]
       .map(([label,value])=>({label,value:String(value)})) : [];
-    const pillOn=on=>({display:'inline-flex',alignItems:'center',gap:7,background:on?'var(--navy)':'var(--surface-card)',color:on?'#fff':'var(--navy)',
+    const pillOn=on=>({display:'inline-flex',alignItems:'center',gap:7,background:on?'var(--navy)':'var(--surface-card)',color:on?'var(--surface-card)':'var(--navy)',
       border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),borderRadius:999,padding:'7px 14px',fontSize:13,fontWeight:on?600:500,cursor:'pointer',whiteSpace:'nowrap'});
     const bizTabs = portalBizs.length? (((orgWideMe||portalBizs.length>1)? [{id:'all',label:orgWideMe?'All companies':'All my companies'}] : [])
       .concat(portalBizs.map(b=>({id:b.id,label:b.name}))).map(t=>{ const on=(t.id==='all'? !bizScoped : bizSel===t.id);
-        const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'#fff':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
+        const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'var(--surface-card)':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
         return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
     return {
       ...leadVals,
@@ -8665,6 +9069,7 @@ class Component extends DCLogic {
       dRepClient:repCid, onRepClient:e=>this.setState(s2=>({repClient:e.target.value,d:repClearDrafts(s2.d)})),
       dRepNote:(d.rpNote===undefined? (repFor.note||'') : d.rpNote), onRepNote:this.draft('rpNote'),
       saveReport, repClientName:cname(repCid),
+      rdItems, rdScopes, rdEmpty: rdItems.length===0, rdScopeIsClient,
       dTdClient:tdC, onTdClient:e=>this.setState({tdClient:e.target.value,todoEdit:null,todoDel:null}),
       dTdWho:tdW, onTdWho:e=>this.setState({tdWho:e.target.value,todoEdit:null,todoDel:null}),
       tdDone, noTdDone:tdDoneAll.length===0,
@@ -8830,7 +9235,8 @@ class Component extends DCLogic {
         ? new Date(rep.updatedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})
         : '',
       hasReportDate: !!rep.updatedAt,
-      noReport: !(rep.stats||[]).length && !rep.note,
+      hasLegacyReport: !!((rep.stats||[]).length || rep.note),
+      noReport: rdItems.length===0 && !(rep.stats||[]).length && !rep.note,
       // Stripe billing portal — only meaningful for recurring plans.
       managePlanUrl: client.billingPortalUrl||'',
       canManagePlan: !isHourly && !!client.billingPortalUrl,
