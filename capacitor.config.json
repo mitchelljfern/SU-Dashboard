@@ -1,0 +1,34 @@
+{
+  "appId": "com.socialupgrades.clienthub",
+  "appName": "Client Hub",
+  "webDir": "app/www",
+  "backgroundColor": "#0F1633",
+  "server": {
+    "url": "https://dashboard.socialupgrades.com",
+    "errorPath": "error.html",
+    "allowNavigation": ["dashboard.socialupgrades.com"]
+  },
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": true,
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 1200,
+      "launchFadeOutDuration": 250,
+      "backgroundColor": "#0F1633",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "overlaysWebView": true
+    },
+    "Keyboard": {
+      "resize": "native",
+      "resizeOnFullScreen": true
+    }
+  }
+}

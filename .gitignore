@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+*.log
+# Capacitor copies app/www here on every sync; the iOS .gitignore covers the rest.
+ios/App/App/public/
+# Signing material must never be committed.
+ios/fastlane/*.mobileprovision
+ios/fastlane/*.cer
+ios/fastlane/*.p12
+ios/fastlane/*.p8
+ios/*.ipa
+ios/*.dSYM.zip
+ios/fastlane/report.xml

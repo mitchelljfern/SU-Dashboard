@@ -1,0 +1,110 @@
+# Builds the Client Hub iOS shell and uploads it to TestFlight.
+#
+# Runs on GitHub Actions (see .github/workflows/ios-testflight.yml) or on a
+# Mac with the same environment variables set. Nothing here needs an Apple ID
+# login: App Store Connect is reached with an API key, and the distribution
+# certificate is supplied as an exported .p12. See docs/ios-app.md.
+default_platform(:ios)
+
+APP_ID   = "com.socialupgrades.clienthub"
+APP_NAME = "Client Hub"
+PROJECT  = "App/App.xcodeproj"
+SCHEME   = "App"
+
+platform :ios do
+  desc "Build a signed App Store build and upload it to TestFlight"
+  lane :beta do
+    # A throwaway keychain on CI so the certificate import needs no password
+    # prompt. Locally the login keychain is used.
+    setup_ci if ENV["CI"]
+    keychain = ENV["MATCH_KEYCHAIN_NAME"] || "login.keychain"
+    keychain_password = ENV["MATCH_KEYCHAIN_PASSWORD"] || ""
+
+    api_key = app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_content: ENV.fetch("ASC_KEY_P8_BASE64"),
+      is_key_content_base64: true,
+      in_house: false
+    )
+
+    # Make sure the bundle ID and the App Store Connect record exist. Harmless
+    # when they already do; if the API key cannot create them, the build still
+    # proceeds and the provisioning step reports what is missing.
+    begin
+      create_app_online(
+        api_key: api_key,
+        app_identifier: APP_ID,
+        app_name: APP_NAME,
+        language: "en-US",
+        sku: "SU-CLIENT-HUB",
+        enable_services: { push_notification: "on" }
+      )
+    rescue => e
+      UI.important("create_app_online skipped: #{e.message}")
+    end
+
+    # Distribution certificate + private key, exported once from Keychain
+    # Access on the Mac that holds them, stored base64-encoded in a secret.
+    cert_path = File.expand_path("dist.p12", __dir__)
+    File.binwrite(cert_path, Base64.decode64(ENV.fetch("IOS_DIST_CERT_P12_BASE64")))
+    import_certificate(
+      certificate_path: cert_path,
+      certificate_password: ENV.fetch("IOS_DIST_CERT_PASSWORD", ""),
+      keychain_name: keychain,
+      keychain_password: keychain_password
+    )
+
+    # App Store provisioning profile for the bundle ID, created on first run
+    # and refreshed when it no longer matches the certificate.
+    get_provisioning_profile(
+      api_key: api_key,
+      app_identifier: APP_ID,
+      readonly: false,
+      filename: "appstore.mobileprovision",
+      output_path: File.expand_path(".", __dir__)
+    )
+    profile_name = lane_context[SharedValues::SIGH_NAME]
+    profile_uuid = lane_context[SharedValues::SIGH_UUID]
+
+    update_code_signing_settings(
+      path: PROJECT,
+      targets: [SCHEME],
+      use_automatic_signing: false,
+      team_id: ENV.fetch("APPLE_TEAM_ID"),
+      bundle_identifier: APP_ID,
+      code_sign_identity: "Apple Distribution",
+      profile_name: profile_name,
+      profile_uuid: profile_uuid
+    )
+
+    # Marketing version comes from the tag (ios-v1.2.3) or the APP_VERSION
+    # input; the build number is the GitHub run number, which only ever grows.
+    version = ENV["APP_VERSION"].to_s
+    version = ENV["GITHUB_REF_NAME"].to_s.sub(/\Aios-v/, "") if version.empty? && ENV["GITHUB_REF_NAME"].to_s.start_with?("ios-v")
+    increment_version_number(version_number: version, xcodeproj: PROJECT) unless version.empty?
+    increment_build_number(build_number: ENV.fetch("BUILD_NUMBER"), xcodeproj: PROJECT)
+
+    build_app(
+      project: PROJECT,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build",
+      output_name: "ClientHub.ipa",
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: { APP_ID => profile_name }
+      }
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: "build/ClientHub.ipa",
+      skip_waiting_for_build_processing: true,
+      changelog: ENV["TESTFLIGHT_CHANGELOG"] || "Client Hub build #{ENV['BUILD_NUMBER']}"
+    )
+  ensure
+    FileUtils.rm_f(File.expand_path("dist.p12", __dir__))
+  end
+end

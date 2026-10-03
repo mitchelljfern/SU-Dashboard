@@ -924,6 +924,8 @@ been visible to the whole team, because RLS filters rows, not columns.
 - `public/site.webmanifest` — installable-app metadata
 - `supabase/migrations/` — schema, RLS policies, and user provisioning
 - `netlify.toml` — publish config, headers, SPA rewrite
+- `capacitor.config.json`, `app/`, `ios/` — the native iOS shell that wraps the deployed site; see `docs/ios-app.md`
+- `public/su-native.js` + `public/su-native.app.js` — loaded only inside the iOS app; a no-op in a browser
 
 The UI holds one nested data object in memory and mutates it wholesale via
 `set(fn)`. `su-data.js` preserves that contract: it loads rows into that exact
@@ -940,6 +942,13 @@ npx serve public
 ```
 
 It talks to the live Supabase project, so local and deployed share one dataset.
+
+## The iOS app
+
+The App Store app is a native shell around this site: it opens the deployed
+dashboard in a web view, so a web deploy updates the app and the data is the
+same Supabase project. Setup, secrets and the release flow are in
+`docs/ios-app.md`.
 
 ## Deploying
 

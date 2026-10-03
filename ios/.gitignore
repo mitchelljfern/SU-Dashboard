@@ -1,0 +1,16 @@
+node_modules/
+.DS_Store
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+ios/App/build/
+ios/App/output/
+ios/App/DerivedData/
+ios/fastlane/report.xml
+ios/fastlane/*.mobileprovision
+ios/fastlane/*.cer
+ios/fastlane/*.p12
+ios/fastlane/*.p8
+ios/*.ipa
+ios/*.dSYM.zip
+*.log
