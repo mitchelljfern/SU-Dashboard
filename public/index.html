@@ -285,14 +285,19 @@
   </div>
   <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ toggleMore }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:70"></div>
-    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--chrome);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:12px 14px 0 0">
+    <div style="position:fixed;bottom:0;left:0;right:0;background:var(--chrome);z-index:71;padding:20px 18px 28px;display:flex;flex-direction:column;gap:2px;border-radius:12px 14px 0 0;max-height:86vh;overflow-y:auto;box-sizing:border-box">
       <div style="font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.5);padding-bottom:10px">{{ hubLabel }}</div>
       <sc-for list="{{ sheetItems }}" as="n" hint-placeholder-count="7">
+        <sc-if value="{{ n.isHead }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.42);font-weight:600;padding:12px 12px 2px">{{ n.label }}</div>
+        </sc-if>
+        <sc-if value="{{ n.isItem }}" hint-placeholder-val="{{ true }}">
         <button onClick="{{ n.select }}" style="{{ n.style }}">
           <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%">{{ n.label }}
             <sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ n.badge }}</span></sc-if>
           </span>
         </button>
+        </sc-if>
       </sc-for>
       <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:10px;padding-top:12px">
         <sc-if value="{{ isTeam }}" hint-placeholder-val="{{ true }}">
@@ -5451,11 +5456,23 @@ class Component extends DCLogic {
     // Payments is the team's own payroll and always was; client invoicing had
     // no home at all. They are separate boards, and the payroll one is renamed
     // so nobody goes looking for a client's invoice under it.
+    // The team sidebar is six sections. Overview and Messages stand alone (the
+    // two pages opened all day); the rest are groups that open into their
+    // pages: Work is delivery, Clients is everything that belongs to a client,
+    // Growth is Social Upgrades' own pipeline, Team is people and pay.
+    // A group is not a page of its own: opening it opens its first child.
+    const TEAM_TREE = [
+      ['overview','Overview'],
+      ['g-work','Work',[['board','Workboard'],['requests','Requests'],['todos','To-Dos'],['time','Hours']]],
+      ['messages','Messages'],
+      ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['invoicing','Invoicing']]],
+      ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
+      ['g-team','Team',[['team','People'],['payments','Team Pay']]]
+    ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
+    const teamGroupOf = sid => TEAM_TREE.find(([,,kids])=>kids&&kids.some(([k])=>k===sid)) || null;
+    // Everything else reads the flat list of pages, in sidebar order.
     const nav = isTeam
-      // Clients sits near the bottom with the setup pages, and opens into
-      // Brand Kits, which are per-client material.
-      ? [['overview','Overview'],['board','Workboard'],['leads','Leads'],['content','Content Map'],['requests','Requests'],['todos','To-Dos'],['messages','Messages'],['time','Hours'],['reports','Reports'],['invoicing','Invoicing'],['payments','Team Pay'],['team','Team'],['clients','Clients']]
-          .filter(([id])=>id!=='invoicing'||canBilling)
+      ? TEAM_TREE.reduce((acc,[id,label,kids])=>acc.concat(kids||[[id,label]]), [])
       : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Meet with Social Upgrades'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
           // Billing is the organization's; a company manager does not get it.
           .filter(([id])=>id!=='billing'||(canSeeClientBilling&&orgWideMe));
@@ -5573,13 +5590,32 @@ class Component extends DCLogic {
     };
     // Brand Kit opens into the client's files: both are the client's own
     // material, and Files on its own was a tab away from the kit it belongs to.
-    const SUBNAV = isTeam ? {clients:[['brand','Brand Kits']]} : {brand:[['files','Files']]};
+    const SUBNAV = isTeam ? {} : {brand:[['files','Files']]};
     // Everywhere that wants one flat list of reachable boards -- the phone's
     // More sheet, the label lookup for the tab bar -- wants the children in it
     // too, or a nested board simply cannot be opened on a phone.
     const navFlat = nav.reduce((acc,[id,label])=>acc.concat([[id,label]], SUBNAV[id]||[]), []);
     const navItems = [];
-    nav.forEach(([id,label])=>{
+    const navBtn = (active,extra)=>Object.assign({display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':'rgba(255,255,255,.72)',padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'},extra||{});
+    // A closed group still reports what is waiting inside it.
+    const sumBadges = kids=>{ const n=kids.reduce((a,[k])=>a+(Number(badgeFor(k))||0),0); return n>0?n:false; };
+    if(isTeam) TEAM_TREE.forEach(([id,label,kids])=>{
+      if(!kids){
+        navItems.push({label,badge:badgeFor(id),arrow:false,select:openSection(id),style:navBtn(sectionNow===id)});
+        return;
+      }
+      const open = kids.some(([k])=>k===sectionNow);
+      navItems.push({label, badge: open?false:sumBadges(kids), arrow: open?'▾':'▸',
+        select: openSection(kids[0][0]),
+        style: navBtn(false, open?{color:'#fff',fontWeight:700}:null)});
+      if(!open) return;
+      kids.forEach(([kid,klabel])=>{
+        const on=sectionNow===kid;
+        navItems.push({label:klabel,badge:badgeFor(kid),arrow:false,select:openSection(kid),
+          style:navBtn(on,{padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,color:on?'#fff':'rgba(255,255,255,.62)'})});
+      });
+    });
+    if(!isTeam) nav.forEach(([id,label])=>{
       const kids = SUBNAV[id]||[];
       const kidOpen = kids.some(([kid])=>sectionNow===kid);
       const active=sectionNow===id||kidOpen, muted=id==='billing';
@@ -5616,7 +5652,7 @@ class Component extends DCLogic {
       }
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','Team']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
@@ -5628,7 +5664,10 @@ class Component extends DCLogic {
       if(orgOverview && headings.home) headings.home=[kick,'Overview'];
       if(curBiz && headings.todos) headings.todos=[kick, curBiz.name+' To-Dos'];
     }
-    const hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
+    let hk = headings[sectionNow]|| (isTeam?['Internal Dashboard','Overview']:[client.name,'Requests']);
+    // On a team page inside a group, the kicker names the group (Work, Growth…)
+    // so the heading says where in the sidebar you are.
+    if(isTeam){ const g=teamGroupOf(sectionNow); if(g) hk=[g[1],hk[1]]; }
     const secKey=k=>sectionNow===k;
     // notifications
     // Your own actions are not news to you, so they never reach the bell. The
@@ -7421,18 +7460,33 @@ class Component extends DCLogic {
     // place on it and its unread count is visible without opening anything.
     // A client loses Updates from the bar (it is a read-only feed); the team
     // loses Clients. Both stay one tap away in More.
-    const BAR = isTeam ? ['overview','board','requests','messages']
+    // The team bar follows the sidebar's sections: a group tab opens its first
+    // page, lights up for any page inside it, and carries the group's count.
+    const BAR = isTeam ? ['overview','g-work','messages','g-growth']
                        : ['home','messages','requests','todos'];
-    const bottomIds = BAR.filter(id=>nav.some(([n])=>n===id));
+    const barKids = id=>{ const g=isTeam&&TEAM_TREE.find(([gid])=>gid===id); return g&&g[2] ? g[2] : null; };
+    const bottomIds = BAR.filter(id=>barKids(id) || nav.some(([n])=>n===id));
     const bottomItems = bottomIds.map(id=>{
+      const kids=barKids(id);
+      if(kids){ const g=TEAM_TREE.find(([gid])=>gid===id);
+        return {label:g[1],badge:sumBadges(kids),select:openSection(kids[0][0]),style:mobStyle(kids.some(([k])=>k===sectionNow))}; }
       const label=(navFlat.find(([n])=>n===id)||[id,id])[1];
       return {label,badge:badgeFor(id),select:openSection(id),style:mobStyle(sectionNow===id)};
     });
     // Whatever is left behind More still reports its own count.
-    const moreBadge=nav.filter(([id])=>bottomIds.indexOf(id)<0)
+    const onBar = id=>bottomIds.some(b=>b===id || (barKids(b)||[]).some(([k])=>k===id));
+    const moreBadge=nav.filter(([id])=>!onBar(id))
       .reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
-    const sheetItems=navFlat.map(([id,label])=>({label,badge:badgeFor(id),select:openSection(id),
-      style:{width:'100%',textAlign:'left',background:sectionNow===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:sectionNow===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:sectionNow===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}));
+    // On a phone the team's More sheet lists every page under its section
+    // name, so "People" and "Reports" still say where they belong.
+    // Standalone pages go first, or Messages would sit under the Work heading.
+    const sheetRows = isTeam
+      ? TEAM_TREE.filter(([,,k])=>!k).concat(TEAM_TREE.filter(([,,k])=>k)).reduce((acc,[id,label,kids])=> kids
+          ? acc.concat([{head:label}], kids.map(([k,l])=>({id:k,label:l})))
+          : acc.concat([{id,label}]), [])
+      : navFlat.map(([id,label])=>({id,label}));
+    const sheetItems=sheetRows.map(r=> r.head ? {isHead:true,isItem:false,label:r.head,badge:false,select:()=>{},style:{}} : (({id,label})=>({isHead:false,isItem:true,label,badge:badgeFor(id),select:openSection(id),
+      style:{width:'100%',textAlign:'left',background:sectionNow===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:sectionNow===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:sectionNow===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}))(r));
     // stats & activity (team overview)
     const stats=[
       {label:'Active clients',value:D.clients.length},
