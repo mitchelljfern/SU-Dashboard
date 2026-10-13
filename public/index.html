@@ -2875,12 +2875,39 @@
             </div>
           </div>
 
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:8px">
+              <button onClick="{{ tmPrev }}" aria-label="Previous month" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:38px;height:38px;font-size:16px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">‹</button>
+              <select value="{{ tmValue }}" onChange="{{ onTmMonth }}" aria-label="Month" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy);background:var(--surface-card)">
+                <sc-for list="{{ tmOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+              <button onClick="{{ tmNext }}" aria-label="Next month" style="{{ tmNextStyle }}" style-hover="border-color:var(--navy)">›</button>
+              <sc-if value="{{ tmNotNow }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ tmToday }}" style="background:none;border:none;color:var(--link);font-size:13px;font-weight:500;cursor:pointer;padding:0 4px">This month</button>
+              </sc-if>
+            </div>
+            <div style="display:flex;gap:18px;align-items:baseline;flex-wrap:wrap">
+              <div style="font-size:12.5px;color:var(--text-muted)">Billable <strong style="font-family:var(--font-display);font-size:18px;color:var(--navy)">{{ tmBillable }} hrs</strong></div>
+              <sc-if value="{{ tmHasNonBill }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-muted)">Non-billable <strong style="color:var(--text-body)">{{ tmNonBill }} hrs</strong></div></sc-if>
+              <sc-if value="{{ tmHasValue }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-muted)">Hourly billing <strong style="font-family:var(--font-display);font-size:18px;color:var(--navy)">{{ tmValueTotal }}</strong></div></sc-if>
+            </div>
+          </div>
+
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">This month by client</h3>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ tmLabel }} by client</h3>
+              <div style="font-size:12px;color:var(--text-muted)">Click a client to see only their entries below.</div>
+            </div>
+            <sc-if value="{{ tmNoRows }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted)">No hours logged in {{ tmLabel }}.</div>
+            </sc-if>
             <sc-for list="{{ timeSummary }}" as="s" hint-placeholder-count="3">
-              <div onClick="{{ s.open }}" style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer">
+              <div onClick="{{ s.open }}" style="{{ s.style }}" style-hover="background:var(--gray-100)">
                 <span style="{{ s.dot }}"></span>
-                <div style="flex:1;font-size:14px;font-weight:500;color:var(--navy)">{{ s.name }}</div>
+                <div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:1px">
+                  <div style="{{ s.nameStyle }}">{{ s.name }}</div>
+                  <sc-if value="{{ s.hasNonBill }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:var(--text-muted)">+ {{ s.nonBill }} non-billable hrs</div></sc-if>
+                </div>
                 <div style="font-size:12.5px;color:var(--text-muted)">{{ s.rate }}</div>
                 <div style="font-size:13.5px;color:var(--text-body);min-width:70px;text-align:right">{{ s.hours }} hrs</div>
                 <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);min-width:90px;text-align:right">{{ s.value }}</div>
@@ -2889,22 +2916,89 @@
           </div>
 
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Recent entries</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">{{ tmEntriesTitle }}</h3>
+              <sc-if value="{{ tmFiltered }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ tmClearClient }}" style="background:var(--gray-100);border:none;border-radius:12px;padding:6px 12px;font-size:12.5px;color:var(--text-body);cursor:pointer">Show all clients ✕</button>
+              </sc-if>
+            </div>
             <sc-if value="{{ noRecentTime }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13.5px;color:var(--text-muted)">No hours logged yet.</div>
+              <div style="font-size:13.5px;color:var(--text-muted)">No entries for {{ tmLabel }}.</div>
             </sc-if>
             <sc-for list="{{ recentTime }}" as="e" hint-placeholder-count="6">
               <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
-                <div style="font-size:12.5px;color:var(--text-muted);min-width:92px">{{ e.date }}</div>
+                <div style="font-size:12.5px;color:var(--text-muted);min-width:92px">{{ e.dateLabel }}</div>
                 <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:1px">
                   <div style="font-size:14px;color:var(--text-body)">{{ e.desc }}</div>
                   <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ e.dot }}"></span><div style="font-size:11.5px;color:var(--text-muted)">{{ e.clientName }} · {{ e.who }} {{ e.tag }}</div></div>
                 </div>
                 <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy)">{{ e.hours }}</div>
-                <button onClick="{{ e.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
+                <button onClick="{{ e.edit }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Edit</button>
               </div>
             </sc-for>
           </div>
+
+          <sc-if value="{{ teOpen }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ teClose }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
+            <div role="dialog" aria-label="Edit hours" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(520px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
+                <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Edit hours</div>
+                <button onClick="{{ teClose }}" aria-label="Close" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
+              </div>
+              <div style="padding:22px 26px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours</span>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <button onClick="{{ teMinus }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">− 15 min</button>
+                    <input value="{{ teHours }}" onChange="{{ onTeHours }}" type="number" step="0.25" min="0" aria-label="Hours" style="width:110px;text-align:center;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy)">
+                    <button onClick="{{ tePlus }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">+ 15 min</button>
+                    <span style="font-size:12.5px;color:var(--text-muted)">{{ teHoursHint }}</span>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <label style="flex:1;min-width:170px;display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Client</span>
+                    <select value="{{ teClient }}" onChange="{{ onTeClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13.5px;background:var(--surface-card)">
+                      <sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                    </select>
+                  </label>
+                  <label style="flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Date</span>
+                    <input value="{{ teDate }}" onChange="{{ onTeDate }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13.5px">
+                  </label>
+                </div>
+                <label style="display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What was worked on</span>
+                  <input value="{{ teDesc }}" onChange="{{ onTeDesc }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13.5px">
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-body)">
+                  <input type="checkbox" checked="{{ teBillable }}" onChange="{{ onTeBillable }}"> Billable
+                </label>
+                <sc-if value="{{ teErr }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:12.5px;color:var(--danger-fg)">{{ teErr }}</div>
+                </sc-if>
+
+                <sc-if value="{{ teAsking }}" hint-placeholder-val="{{ false }}">
+                  <div style="border:1px solid var(--danger-line);background:var(--danger-wash);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+                    <div style="font-size:13.5px;color:var(--text-body);line-height:1.5"><strong style="color:var(--danger-fg)">Are you sure?</strong> {{ teDelWarning }}</div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+                      <button onClick="{{ teKeep }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer">Keep it</button>
+                      <button onClick="{{ teDelete }}" style="background:var(--danger-line);border:none;border-radius:12px;padding:9px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer" style-hover="opacity:.9">Yes, delete forever</button>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ teNotAsking }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;border-top:1px solid var(--border-hairline);padding-top:16px">
+                    <button onClick="{{ teAskDelete }}" style="background:none;border:1px solid var(--danger-line);border-radius:12px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--danger-fg);cursor:pointer" style-hover="background:var(--danger-wash)">Delete entry</button>
+                    <div style="display:flex;gap:8px">
+                      <button onClick="{{ teClose }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:9px 16px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer">Cancel</button>
+                      <button onClick="{{ teSave }}" style="background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="opacity:.9">Save changes</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
 
         </div>
       </sc-if>
@@ -6174,7 +6268,12 @@ class Component extends DCLogic {
       desc:t.description||'-', who:whoWorked(t.profileId),
       clientName:orgLabel(t),dot:clientDot(t.clientId),
       billable:t.billable!==false, tag:t.billable===false?'Non-billable':'',
-      remove:()=>this.set(x=>{ x.time=x.time.filter(y=>y.id!==t.id); return x; })
+      dateLabel:new Date(String(t.entryDate).slice(0,10)+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}),
+      // The X used to delete on one click. Editing opens a popup instead, and
+      // deleting from there asks first.
+      edit:()=>this.setState({timeEdit:{id:t.id,clientId:t.clientId,entryDate:String(t.entryDate).slice(0,10),
+        hours:String(Number(t.hours||0)),description:t.description||'',billable:t.billable!==false},
+        timeDelAsk:false,timeEditErr:null})
     });
     const monthEntries = monthTime.slice()
       .sort((a,b)=>String(b.entryDate).localeCompare(String(a.entryDate))).map(mkTimeRow);
@@ -8796,17 +8895,85 @@ class Component extends DCLogic {
           billable:d.timeBillable===undefined?true:!!d.timeBillable}); return x; });
         this.setState(s=>({d:{...s.d,timeHours:'',timeDesc:''}}));
       },
-      // Every client's hours this month, so the team can see where time is going.
-      timeSummary: D.clients.map(c=>{
-        const rows=(D.time||[]).filter(t=>t.clientId===c.id&&monthKey(t.entryDate)===thisMonth);
-        const bh=rows.filter(t=>t.billable!==false).reduce((s,t)=>s+Number(t.hours||0),0);
-        return {name:c.name, dot:clientDot(c.id), hours:bh.toFixed(2),
-          rate:c.billingType==='hourly'?money(c.hourlyRate)+'/hr':(c.plan||'Plan'),
-          value:c.billingType==='hourly'?money(bh*Number(c.hourlyRate||0)):'-',
-          open:()=>this.setState({viewClient:c.id,msgClient:c.id})};
-      }),
-      recentTime: (D.time||[]).slice(0,40).map(mkTimeRow),
-      noRecentTime: (D.time||[]).length===0,
+      // Hours by month. One month is in view at a time, so a missed invoice can
+      // be rebuilt from any past month. Clicking a client narrows the entries.
+      ...(()=>{
+        const tm = S.timeMonth || thisMonth;
+        const shift = (m,n)=>{ const [y,mo]=m.split('-').map(Number); const d0=new Date(Date.UTC(y,mo-1+n,1)); return d0.toISOString().slice(0,7); };
+        const label = m=>new Date(m+'-01T12:00:00Z').toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+        const months = Array.from(new Set((D.time||[]).map(t=>monthKey(t.entryDate)).concat([thisMonth,tm]))).sort().reverse();
+        const rows = (D.time||[]).filter(t=>monthKey(t.entryDate)===tm);
+        const cf = S.timeClientF && rows.some(t=>t.clientId===S.timeClientF) ? S.timeClientF : '';
+        const hrs = list=>list.reduce((a,t)=>a+Number(t.hours||0),0);
+        let valueTotal=0, anyHourly=false;
+        const summary = D.clients.map(c=>{
+          const r=rows.filter(t=>t.clientId===c.id); if(!r.length) return null;
+          const bh=hrs(r.filter(t=>t.billable!==false)), nb=hrs(r.filter(t=>t.billable===false));
+          const hourly=c.billingType==='hourly'; const v=hourly? bh*Number(c.hourlyRate||0) : 0;
+          if(hourly){ anyHourly=true; valueTotal+=v; }
+          const on=cf===c.id;
+          return {name:c.name, dot:clientDot(c.id), hours:bh.toFixed(2), nonBill:nb.toFixed(2), hasNonBill:nb>0,
+            rate:hourly?money(c.hourlyRate)+'/hr':(c.plan||'Retainer'), value:hourly?money(v):'-',
+            nameStyle:{fontSize:14,fontWeight:on?700:500,color:'var(--navy)'},
+            style:{display:'flex',alignItems:'center',gap:14,flexWrap:'wrap',padding:'11px 10px',margin:'0 -10px',borderBottom:'1px solid var(--border-hairline)',cursor:'pointer',borderRadius:10,background:on?'var(--gray-100)':'transparent'},
+            open:()=>this.setState({timeClientF:on?'':c.id})};
+        }).filter(Boolean).sort((a,b)=>Number(b.hours)-Number(a.hours));
+        const entries = rows.filter(t=>!cf||t.clientId===cf)
+          .sort((a,b)=>String(b.entryDate).localeCompare(String(a.entryDate)));
+        const cfName = cf ? ((D.clients.find(c=>c.id===cf)||{}).name||'') : '';
+        const goMonth = m=>this.setState({timeMonth:m,timeClientF:''});
+        const bTot=hrs(rows.filter(t=>t.billable!==false)), nTot=hrs(rows.filter(t=>t.billable===false));
+        return {
+          tmValue:tm, tmLabel:label(tm), tmOpts:months.map(m=>({v:m,l:label(m)})),
+          onTmMonth:e=>goMonth(e.target.value),
+          tmPrev:()=>goMonth(shift(tm,-1)), tmNext:()=>{ if(tm<thisMonth) goMonth(shift(tm,1)); },
+          tmNextStyle:{background:'var(--surface-card)',border:'1px solid var(--gray-200)',borderRadius:12,width:38,height:38,fontSize:16,color:'var(--navy)',cursor:tm<thisMonth?'pointer':'default',opacity:tm<thisMonth?1:.35},
+          tmNotNow:tm!==thisMonth, tmToday:()=>goMonth(thisMonth),
+          tmBillable:bTot.toFixed(2), tmNonBill:nTot.toFixed(2), tmHasNonBill:nTot>0,
+          tmHasValue:anyHourly, tmValueTotal:money(valueTotal),
+          timeSummary:summary, tmNoRows:rows.length===0,
+          tmFiltered:!!cf, tmClearClient:()=>this.setState({timeClientF:''}),
+          tmEntriesTitle:(cfName? cfName+' · ' : '')+label(tm)+' entries ('+entries.length+')',
+          recentTime:entries.map(mkTimeRow), noRecentTime:entries.length===0
+        };
+      })(),
+      // Edit popup for one entry. Delete asks first, because it cannot be undone.
+      ...(()=>{
+        const E=S.timeEdit; if(!E) return {teOpen:false};
+        const setE=patch=>this.setState(s2=>({timeEdit:{...s2.timeEdit,...patch},timeEditErr:null}));
+        const n=Number(E.hours);
+        const bump=dlt=>()=>{ const v=Math.max(0,Math.round(((Number(E.hours)||0)+dlt)*100)/100); setE({hours:String(v)}); };
+        const close=()=>this.setState({timeEdit:null,timeDelAsk:false,timeEditErr:null});
+        const cName=(D.clients.find(c=>c.id===E.clientId)||{}).name||'this client';
+        const orig=(D.time||[]).find(t=>t.id===E.id)||{};
+        const when=new Date(E.entryDate+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+        return {
+          teOpen:true, teClose:close,
+          teHours:E.hours, onTeHours:e=>setE({hours:e.target.value}),
+          teMinus:bump(-0.25), tePlus:bump(0.25),
+          teHoursHint: n>0 ? (Math.floor(n)+'h '+Math.round((n-Math.floor(n))*60)+'m') : '',
+          teClient:E.clientId, onTeClient:e=>setE({clientId:e.target.value}),
+          teDate:E.entryDate, onTeDate:e=>setE({entryDate:e.target.value}),
+          teDesc:E.description, onTeDesc:e=>setE({description:e.target.value}),
+          teBillable:!!E.billable, onTeBillable:e=>setE({billable:!!e.target.checked}),
+          teErr:S.timeEditErr||false,
+          teAsking:!!S.timeDelAsk, teNotAsking:!S.timeDelAsk,
+          teDelWarning:Number(orig.hours||0).toFixed(2)+' hours for '+((D.clients.find(c=>c.id===orig.clientId)||{}).name||cName)+' on '+when+' will be deleted for good. This can\u2019t be undone.',
+          teAskDelete:()=>this.setState({timeDelAsk:true}),
+          teKeep:()=>this.setState({timeDelAsk:false}),
+          teDelete:()=>{ this.set(x=>{ x.time=x.time.filter(y=>y.id!==E.id); return x; });
+            this.setState({timeEdit:null,timeDelAsk:false,flash:'Entry deleted.'}); },
+          teSave:()=>{
+            const h=Number(E.hours);
+            if(!(h>0)) return this.setState({timeEditErr:'Hours must be more than 0. To remove the entry, use Delete entry.'});
+            if(!E.clientId) return this.setState({timeEditErr:'Pick a client.'});
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(E.entryDate||'')) return this.setState({timeEditErr:'Pick a date.'});
+            this.set(x=>{ const it=x.time.find(y=>y.id===E.id); if(it) Object.assign(it,{clientId:E.clientId,entryDate:E.entryDate,
+              hours:Math.round(h*100)/100,description:(E.description||'').trim(),billable:!!E.billable}); return x; });
+            this.setState({timeEdit:null,timeDelAsk:false,flash:'Hours updated.'});
+          }
+        };
+      })(),
 
       // ----- team + payroll -----
       teamRows, payRows, noPayRows, payTotalPending, payTotalUnpaid,
