@@ -256,6 +256,9 @@
       <sc-if value="{{ showPortalName }}" hint-placeholder-val="{{ false }}">
         <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;line-height:1.3">{{ portalName }}</div>
       </sc-if>
+      <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ goSchedule }}" style="{{ bookCallStyle }}" style-hover="opacity:.9">Book a call</button>
+      </sc-if>
       <div title="{{ userTitle }}" style="font-size:11.5px;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">Signed in as <strong style="color:#fff;font-weight:600">{{ userName }}</strong></div>
       <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
       <sc-if value="{{ showSuMark }}" hint-placeholder-val="{{ false }}">
@@ -307,6 +310,7 @@
           </select>
           <button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button>
         </sc-if>
+        <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goSchedule }}" style="{{ bookCallStyle }}">Book a call</button></sc-if>
         <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
         <sc-if value="{{ showPortalName }}" hint-placeholder-val="{{ false }}">
           <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:#fff;padding:10px 2px 0">{{ portalName }}</div>
@@ -5470,12 +5474,22 @@ class Component extends DCLogic {
       ['g-team','Team',[['team','People'],['payments','Team Pay']]]
     ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
     const teamGroupOf = sid => TEAM_TREE.find(([,,kids])=>kids&&kids.some(([k])=>k===sid)) || null;
+    // The client portal mirrors it: Work is the queue and approvals, Growth is
+    // the plan next to its results, Brand is the client's own material, Account
+    // is who has access and what it costs. Booking a call is an action, so it
+    // is a button under the nav rather than a page in it.
+    const CLIENT_TREE = [
+      ['home','Dashboard'],
+      ['g-work','Work',[['updates','Updates'],['requests','Requests'],['todos','To-Dos']]],
+      ['messages','Messages'],
+      ['g-growth','Growth',[['strategy','Content Map'],['reports','Reports']]],
+      ['g-brand','Brand',[['brand','Brand Kit'],['files','Files']]],
+      // Billing is the organization's; a company manager does not get it.
+      ['g-account','Account',[['team','Team'],['billing','Billing']]]
+    ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='billing'||(canSeeClientBilling&&orgWideMe))] : [id,label]);
+    const NAV_TREE = isTeam ? TEAM_TREE : CLIENT_TREE;
     // Everything else reads the flat list of pages, in sidebar order.
-    const nav = isTeam
-      ? TEAM_TREE.reduce((acc,[id,label,kids])=>acc.concat(kids||[[id,label]]), [])
-      : [['home','Dashboard'],['updates','Updates'],['requests','Requests'],['todos','To-Dos'],['strategy','Content Map'],['messages','Messages'],['schedule','Meet with Social Upgrades'],['team','Team'],['reports','Reports'],['brand','Brand Kit'],['billing','Billing']]
-          // Billing is the organization's; a company manager does not get it.
-          .filter(([id])=>id!=='billing'||(canSeeClientBilling&&orgWideMe));
+    const nav = NAV_TREE.reduce((acc,[id,label,kids])=>acc.concat(kids||[[id,label]]), []);
     // Hiding the tab is not enough on its own: a member already sitting on
     // Billing — or returning to it — would be left staring at a blank page,
     // because no section would match. The view falls back to the dashboard.
@@ -5590,7 +5604,7 @@ class Component extends DCLogic {
     };
     // Brand Kit opens into the client's files: both are the client's own
     // material, and Files on its own was a tab away from the kit it belongs to.
-    const SUBNAV = isTeam ? {} : {brand:[['files','Files']]};
+    const SUBNAV = {};
     // Everywhere that wants one flat list of reachable boards -- the phone's
     // More sheet, the label lookup for the tab bar -- wants the children in it
     // too, or a nested board simply cannot be opened on a phone.
@@ -5599,7 +5613,7 @@ class Component extends DCLogic {
     const navBtn = (active,extra)=>Object.assign({display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':'rgba(255,255,255,.72)',padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'},extra||{});
     // A closed group still reports what is waiting inside it.
     const sumBadges = kids=>{ const n=kids.reduce((a,[k])=>a+(Number(badgeFor(k))||0),0); return n>0?n:false; };
-    if(isTeam) TEAM_TREE.forEach(([id,label,kids])=>{
+    NAV_TREE.forEach(([id,label,kids])=>{
       if(!kids){
         navItems.push({label,badge:badgeFor(id),arrow:false,select:openSection(id),style:navBtn(sectionNow===id)});
         return;
@@ -5614,42 +5628,6 @@ class Component extends DCLogic {
         navItems.push({label:klabel,badge:badgeFor(kid),arrow:false,select:openSection(kid),
           style:navBtn(on,{padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,color:on?'#fff':'rgba(255,255,255,.62)'})});
       });
-    });
-    if(!isTeam) nav.forEach(([id,label])=>{
-      const kids = SUBNAV[id]||[];
-      const kidOpen = kids.some(([kid])=>sectionNow===kid);
-      const active=sectionNow===id||kidOpen, muted=id==='billing';
-      const badge=badgeFor(id);
-      navItems.push({label,badge,
-        arrow: (id==='strategy'||(isTeam&&id==='content')||kids.length) ? (active?'▾':'▸') : false,
-        select:openSection(id),
-        style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:active?'rgba(255,255,255,.12)':'transparent',border:'none',color:active?'#fff':(muted?'rgba(255,255,255,.45)':'rgba(255,255,255,.72)'),padding:'10px 12px',fontSize:13.5,fontWeight:active?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
-      kids.forEach(([kid,klabel])=>{
-        if(!active) return;
-        const on=sectionNow===kid;
-        navItems.push({label:klabel,badge:badgeFor(kid),
-          select:openSection(kid),
-          style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.62)',padding:'8px 12px 8px 26px',fontSize:12.5,fontWeight:on?700:500,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
-      });
-      // The team Content Map opens into the same tabs as the client one.
-      if(id==='content'&&active){
-        const cmNavF=S.cmChan||'all';
-        [{id:'all',label:'Overview'}].concat(CHANNELS).forEach(ch=>{
-          const on=cmNavF===ch.id;
-          navItems.push({label:ch.label,badge:false,
-            select:()=>this.setState({section:'content',cmChan:ch.id,cmTile:'all',notifOpen:false,moreOpen:false}),
-            style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.6)',padding:'8px 12px 8px 22px',margin:'0 0 0 10px',fontSize:12.5,fontWeight:on?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
-        });
-      }
-      // Strategy opens into its three channels rather than being one long board.
-      if(id==='strategy'&&active){
-        CHANNELS.forEach(ch=>{
-          const on=chanId===ch.id;
-          navItems.push({label:ch.label,badge:false,
-            select:()=>this.setState({channel:ch.id,notifOpen:false,moreOpen:false}),
-            style:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,width:'100%',textAlign:'left',background:on?'rgba(255,255,255,.10)':'transparent',border:'none',color:on?'#fff':'rgba(255,255,255,.6)',padding:'8px 12px 8px 22px',margin:'0 0 0 10px',fontSize:12.5,fontWeight:on?600:400,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}});
-        });
-      }
     });
     const headings = isTeam
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
@@ -7463,12 +7441,12 @@ class Component extends DCLogic {
     // The team bar follows the sidebar's sections: a group tab opens its first
     // page, lights up for any page inside it, and carries the group's count.
     const BAR = isTeam ? ['overview','g-work','messages','g-growth']
-                       : ['home','messages','requests','todos'];
-    const barKids = id=>{ const g=isTeam&&TEAM_TREE.find(([gid])=>gid===id); return g&&g[2] ? g[2] : null; };
+                       : ['home','g-work','messages','g-growth'];
+    const barKids = id=>{ const g=NAV_TREE.find(([gid])=>gid===id); return g&&g[2] ? g[2] : null; };
     const bottomIds = BAR.filter(id=>barKids(id) || nav.some(([n])=>n===id));
     const bottomItems = bottomIds.map(id=>{
       const kids=barKids(id);
-      if(kids){ const g=TEAM_TREE.find(([gid])=>gid===id);
+      if(kids){ const g=NAV_TREE.find(([gid])=>gid===id);
         return {label:g[1],badge:sumBadges(kids),select:openSection(kids[0][0]),style:mobStyle(kids.some(([k])=>k===sectionNow))}; }
       const label=(navFlat.find(([n])=>n===id)||[id,id])[1];
       return {label,badge:badgeFor(id),select:openSection(id),style:mobStyle(sectionNow===id)};
@@ -7477,14 +7455,12 @@ class Component extends DCLogic {
     const onBar = id=>bottomIds.some(b=>b===id || (barKids(b)||[]).some(([k])=>k===id));
     const moreBadge=nav.filter(([id])=>!onBar(id))
       .reduce((n,[id])=>n+(Number(badgeFor(id))||0),0);
-    // On a phone the team's More sheet lists every page under its section
+    // On a phone the More sheet lists every page under its section
     // name, so "People" and "Reports" still say where they belong.
     // Standalone pages go first, or Messages would sit under the Work heading.
-    const sheetRows = isTeam
-      ? TEAM_TREE.filter(([,,k])=>!k).concat(TEAM_TREE.filter(([,,k])=>k)).reduce((acc,[id,label,kids])=> kids
+    const sheetRows = NAV_TREE.filter(([,,k])=>!k).concat(NAV_TREE.filter(([,,k])=>k)).reduce((acc,[id,label,kids])=> kids
           ? acc.concat([{head:label}], kids.map(([k,l])=>({id:k,label:l})))
-          : acc.concat([{id,label}]), [])
-      : navFlat.map(([id,label])=>({id,label}));
+          : acc.concat([{id,label}]), []);
     const sheetItems=sheetRows.map(r=> r.head ? {isHead:true,isItem:false,label:r.head,badge:false,select:()=>{},style:{}} : (({id,label})=>({isHead:false,isItem:true,label,badge:badgeFor(id),select:openSection(id),
       style:{width:'100%',textAlign:'left',background:sectionNow===id?'rgba(255,255,255,.12)':'transparent',border:'none',color:sectionNow===id?'#fff':'rgba(255,255,255,.75)',padding:'12px 12px',fontSize:14.5,fontWeight:sectionNow===id?700:600,cursor:'pointer',borderRadius:12,fontFamily:'var(--font-body)'}}))(r));
     // stats & activity (team overview)
@@ -9199,6 +9175,9 @@ class Component extends DCLogic {
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
       goUpdates:go('updates'), goRequests:go('requests'), goTodos:go('todos'), goMessages:go('messages'), goFiles:go('files'), goSchedule:go('schedule'),
+      // Filled, so the one action in the footer reads as an action. Marked
+      // while the booking page is open, since no nav item lights up for it.
+      bookCallStyle:{width:'100%',boxSizing:'border-box',background:sectionNow==='schedule'?'#fff':'rgba(255,255,255,.92)',color:'var(--chrome)',border:'none',borderRadius:12,padding:'10px 16px',fontWeight:700,fontSize:13,cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:sectionNow==='schedule'?'0 0 0 2px rgba(255,255,255,.45)':'none'},
       bottomItems, sheetItems, moreBadge:moreBadge>0?moreBadge:false, moreOpen:S.moreOpen, toggleMore:()=>this.setState(s=>({moreOpen:!s.moreOpen,notifOpen:false})),
       stats, activity, teamTodos, noTodayTasks:teamTodos.length===0,
       dTodo:d.todo||'', onTodo:this.draft('todo'), dTodoClient:d.todoClient, onTodoClient:this.draft('todoClient'), dTodoWho:d.todoWho, onTodoWho:this.draft('todoWho'),
