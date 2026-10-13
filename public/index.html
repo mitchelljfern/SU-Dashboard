@@ -1695,9 +1695,9 @@
               <button onClick="{{ clearCmFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear</button>
             </sc-if>
             <div style="display:flex;gap:6px">
-              <button onClick="{{ cmSetGallery }}" style="{{ cmGalleryStyle }}">Gallery</button>
-              <button onClick="{{ cmSetCalendar }}" style="{{ cmCalendarStyle }}">Calendar</button>
               <button onClick="{{ cmSetBoard }}" style="{{ cmBoardStyle }}">Board</button>
+              <button onClick="{{ cmSetCalendar }}" style="{{ cmCalendarStyle }}">Calendar</button>
+              <button onClick="{{ cmSetGallery }}" style="{{ cmGalleryStyle }}">Gallery</button>
             </div>
             <button onClick="{{ toggleCmAdd }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">{{ cmAddBtn }}</button>
           </div>
@@ -6426,7 +6426,8 @@ class Component extends DCLogic {
       : (cid===cmOrgF && (!cmBizF || !x || bizIdOf(Object.assign({},x,{clientId:cid}))===cmBizF)));
     const cmScopeLabel= cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'all clients' : cmClientF==='all'? 'every brand' : (cmBizF? orgLabel({clientId:cmOrgF,businessId:cmBizF}) : brandLabel(cmOrgF));
     const cmQ=String(d.cmQ||'').trim().toLowerCase();
-    const cmMode=S.cmMode||'gallery';
+    // Board is the default: the team works the Content Map as a pipeline.
+    const cmMode=S.cmMode||'board';
     const cmMatchesTile=(x,t)=>{ const st=stOf(x);
       if(t==='archived') return isArch(x);
       if(isArch(x)) return false;
