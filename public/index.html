@@ -250,6 +250,16 @@
         </select>
         <button onClick="{{ goClient }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Open client portal</button>
       </sc-if>
+      <sc-if value="{{ canPreviewTeam }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;padding-top:6px">Preview team view as</div>
+        <select value="{{ pvPick }}" onChange="{{ onPvPick }}" style="background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:8px 10px;font-size:13px">
+          <sc-for list="{{ pvMembers }}" as="m" hint-placeholder-count="1"><option value="{{ m.id }}">{{ m.name }}</option></sc-for>
+        </select>
+        <button onClick="{{ previewTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Preview as member</button>
+      </sc-if>
+      <sc-if value="{{ previewing }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ exitPreview }}" style="background:#fff;border:1px solid #fff;color:var(--navy);border-radius:12px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer" style-hover="opacity:.9">Exit preview</button>
+      </sc-if>
       <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ goTeam }}" style="background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:9px 16px;font-weight:500;font-size:13px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Back to team view</button>
       </sc-if>
@@ -310,6 +320,16 @@
           </select>
           <button onClick="{{ goClient }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Open client portal</button>
         </sc-if>
+        <sc-if value="{{ canPreviewTeam }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:10px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600;padding:12px 0 6px">Preview team view as</div>
+          <select value="{{ pvPick }}" onChange="{{ onPvPick }}" style="width:100%;box-sizing:border-box;background:var(--navy-800);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px;font-size:13px;margin-bottom:8px">
+            <sc-for list="{{ pvMembers }}" as="m" hint-placeholder-count="1"><option value="{{ m.id }}">{{ m.name }}</option></sc-for>
+          </select>
+          <button onClick="{{ previewTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Preview as member</button>
+        </sc-if>
+        <sc-if value="{{ previewing }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ exitPreview }}" style="width:100%;margin-top:8px;background:#fff;border:1px solid #fff;color:var(--navy);border-radius:12px;padding:10px 16px;font-weight:600;font-size:13px;cursor:pointer">Exit preview</button>
+        </sc-if>
         <sc-if value="{{ isClient }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goSchedule }}" style="{{ bookCallStyle }}">Book a call</button></sc-if>
         <sc-if value="{{ showBackToTeam }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goTeam }}" style="width:100%;background:transparent;border:1px solid rgba(255,255,255,.7);color:#fff;border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Back to team view</button></sc-if>
         <sc-if value="{{ showPortalName }}" hint-placeholder-val="{{ false }}">
@@ -332,6 +352,13 @@
     <div style="max-width:1720px;margin:0 auto;display:flex;flex-direction:column;gap:26px">
       <sc-if value="{{ syncError }}" hint-placeholder-val="{{ false }}">
         <div style="background:#FDECEA;border:1px solid #F3B9B4;color:#8E2B24;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45">{{ syncError }}</div>
+      </sc-if>
+      <sc-if value="{{ previewing }}" hint-placeholder-val="{{ false }}">
+        <div style="background:rgba(214,143,46,.10);border:1px solid rgba(214,143,46,.45);color:#7a4d0e;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#D68F2E;color:#fff;padding:3px 9px;border-radius:999px;white-space:nowrap">Preview</span>
+          <span style="flex:1;min-width:200px">{{ previewBanner }}</span>
+          <button onClick="{{ exitPreview }}" style="background:var(--navy);color:#fff;border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap" style-hover="opacity:.9">Exit preview</button>
+        </div>
       </sc-if>
       <sc-if value="{{ flash }}" hint-placeholder-val="{{ false }}">
         <div style="background:rgba(31,178,100,.10);border:1px solid rgba(31,178,100,.35);color:#158a4d;border-radius:12px;padding:12px 16px;font-size:13.5px;line-height:1.45;display:flex;align-items:center;gap:12px">
@@ -1218,7 +1245,7 @@
                 <select value="{{ ovSortReq.value }}" onChange="{{ ovSortReq.onChange }}" style="{{ ovSortSelectStyle }}">
                   <sc-for list="{{ ovSortReq.options }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
                 </select>
-              <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
+              <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
               </div>
             </div>
             <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
@@ -4784,6 +4811,9 @@ class Component extends DCLogic {
     // this in once Supabase has authenticated and returned the user's rows.
     this.state = {
       role:'team', section:'overview', viewClient:'af',
+      // Which team member a super admin is previewing the team view as, and
+      // which one is picked in the sidebar. Null means "myself".
+      previewAs:null, pvPick:'',
       msgClient:'af', fileFilter:'All', feedbackFor:null, notifOpen:false, moreOpen:false, detail:null,
       invClient:null, invoice:null,
       // Attachment lightbox, how many uploads are in flight, and which
@@ -4893,7 +4923,7 @@ class Component extends DCLogic {
   // batched edits still produce a complete set of writes. __synced only
   // advances on success — a failed write stays in the next diff and retries.
   save(){
-    if(!this.state.booted) return;
+    if(!this.state.booted || this.state.previewAs) return;
     const next = this.state.data;
     const prev = this.__synced || this.emptyData();
     this.__writing = true;
@@ -4914,7 +4944,11 @@ class Component extends DCLogic {
         : 'Could not save. Check your connection. We will retry on your next change.'});
     });
   }
-  set(fn){ this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; this.stampBiz(s.data,data); return {data}; }, ()=>this.save()); }
+  set(fn){
+    // Previewing as a team member is look-only: the write would run under the
+    // admin's own account, which is not what the preview is showing.
+    if(this.state.previewAs){ this.setState({flash:'Preview is read-only. Exit the preview to make changes.'}); return; }
+    this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; this.stampBiz(s.data,data); return {data}; }, ()=>this.save()); }
   // New rows for an organization with several companies are filed under one.
   // Something made from another row (work from its request, a log line about
   // a card) follows that row; anything else takes the company being viewed,
@@ -4993,7 +5027,8 @@ class Component extends DCLogic {
   }
   markRead(cid){
     const me = this.state.profile || {};
-    if(!cid || !me.id) return;
+    // Looking at a board while previewing as someone else is not reading it.
+    if(!cid || !me.id || this.state.previewAs) return;
     this.set(x=>{
       x.reads=(x.reads||[]).slice();
       const rid=me.id+':'+cid, row=x.reads.find(r=>r.id===rid), now=Date.now();
@@ -5121,7 +5156,27 @@ class Component extends DCLogic {
     };
   }
   renderVals(){
-    const S=this.state, D0=S.data, d=S.d;
+    const S=this.state, d=S.d;
+    // ===== previewing the team view as another member =====
+    // A super admin can see the team view the way one team member sees it,
+    // the same way they preview a client's portal. The member's row supplies
+    // the identity (name, admin and accountant flags); the data is trimmed to
+    // what Postgres would hand that member: no invoices, only their own pay
+    // and rate. Everything else staff can read is shared, so it stays.
+    const realMe = S.profile || {};
+    const realRow = (S.data.team||[]).find(t=>t.id===realMe.id) || {};
+    const realIsAdmin = realMe.role==='team' && !!(realMe.is_admin || realRow.isAdmin);
+    const pvRow = (realIsAdmin && S.previewAs) ? ((S.data.team||[]).find(t=>t.id===S.previewAs && t.id!==realMe.id && !t.isAgent) || null) : null;
+    const previewing = !!pvRow;
+    const pvBilling = !!(pvRow && (pvRow.isAdmin || pvRow.isAccountant));
+    const D0 = previewing ? Object.assign({}, S.data, {
+      invoices: pvBilling ? (S.data.invoices||[]) : [],
+      payments: pvBilling ? (S.data.payments||[]) : (S.data.payments||[]).filter(p=>p.profileId===pvRow.id),
+      rates: pvRow.isAdmin ? (S.data.rates||[]) : (S.data.rates||[]).filter(r=>r.profileId===pvRow.id),
+      // Read markers are private per person, so the member's own are not
+      // loaded here. The admin's stand in so the unread badges stay sane.
+      reads: (S.data.reads||[]).map(r=>r.profileId===realMe.id ? Object.assign({}, r, {id:pvRow.id+':'+r.clientId, profileId:pvRow.id}) : r)
+    }) : S.data;
     // Archived cards are gone from every list, on both sides. The client
     // cannot even read one — the row is invisible to them in Postgres — so the
     // team's lists have to drop them too, or the two sides would disagree
@@ -5135,13 +5190,21 @@ class Component extends DCLogic {
     // Declared up here because unread counts, colours and permissions all
     // depend on it, and several of those are computed well before the
     // people section further down.
-    const me = S.profile || {};
+    const me = previewing
+      ? {id:pvRow.id, name:pvRow.name||'', email:pvRow.email||'', role:'team', is_admin:!!pvRow.isAdmin, is_accountant:!!pvRow.isAccountant}
+      : realMe;
     // Cross-checked against the staff directory as well as the session profile:
     // if either says admin, treat as admin. A single missing column here
     // silently strips approvals, rate editing and the billing panel, and that
     // failure is invisible — the controls simply are not drawn.
     const meRow = (D0.team||[]).find(t=>t.id===me.id) || {};
     const isAdmin = !!(me.is_admin || meRow.isAdmin);
+    // Who a super admin may preview as: every active human on the team but
+    // themselves. Agents have no view of their own to look at.
+    const pvMembers = realIsAdmin ? (S.data.team||[]).filter(t=>t.active!==false && !t.isAgent && t.id!==realMe.id)
+      .sort((a,b)=>String(a.name||a.email||'').localeCompare(String(b.name||b.email||'')))
+      .map(t=>({id:t.id, name:(t.name||t.email||'')+(t.isAdmin?' (admin)':(t.isAccountant?' (accountant)':''))})) : [];
+    const pvPickId = pvMembers.some(m=>m.id===S.pvPick) ? S.pvPick : ((pvMembers[0]||{}).id||'');
     // Finance visibility: owner or accountant. Ordinary staff never see client
     // invoices or anyone else's pay. The database enforces this too — these
     // flags only decide what is worth rendering.
@@ -5565,7 +5628,9 @@ class Component extends DCLogic {
     // A group is not a page of its own: opening it opens its first child.
     const TEAM_TREE = [
       ['overview','Overview'],
-      ['g-work','Work',[['board','Workboard'],['requests','Requests'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
+      // Requests live on the Workboard (their own column, with approve and
+      // decline), so the team has no separate Requests page: one place to work.
+      ['g-work','Work',[['board','Workboard'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
       ['messages','Messages'],
       ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['invoicing','Invoicing']]],
       ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
@@ -5591,7 +5656,12 @@ class Component extends DCLogic {
     // Hiding the tab is not enough on its own: a member already sitting on
     // Billing — or returning to it — would be left staring at a blank page,
     // because no section would match. The view falls back to the dashboard.
-    const sectionNow = (S.section==='billing' && !(canSeeClientBilling&&orgWideMe)) ? 'home' : S.section;
+    // Same on the team side: a page that is not in this member's sidebar
+    // (Invoicing for non-finance staff, the retired Requests tab) falls back
+    // to the Workboard for work pages and the Overview for the rest.
+    const sectionNow = (S.section==='billing' && !(canSeeClientBilling&&orgWideMe)) ? 'home'
+      : (isTeam && S.section!=='schedule' && !nav.some(([k])=>k===S.section)) ? (S.section==='requests' ? 'board' : 'overview')
+      : S.section;
     // ===== unread messages =====
     // The marker belongs to the reader, so two people on the same board track
     // their own unread independently. "Unread" only ever counts the other
@@ -9351,8 +9421,26 @@ class Component extends DCLogic {
         } else done();
       },
       signOut:()=>window.SUSignOut(),
-      userName: (S.profile && (S.profile.name || S.profile.email)) || '',
-      userTitle: 'Signed in as '+((S.profile && (S.profile.name || S.profile.email)) || ''),
+      userName: previewing ? (pvRow.name||pvRow.email) : ((S.profile && (S.profile.name || S.profile.email)) || ''),
+      userTitle: previewing
+        ? 'Previewing as '+(pvRow.name||pvRow.email)+' (you are signed in as '+((S.profile && (S.profile.name || S.profile.email)) || '')+')'
+        : 'Signed in as '+((S.profile && (S.profile.name || S.profile.email)) || ''),
+      // ----- previewing the team view as a member -----
+      // Offered to a super admin on the team view; hidden once a preview is
+      // on, where an Exit button and a banner take its place.
+      canPreviewTeam: isTeam && realIsAdmin && !previewing && pvMembers.length>0,
+      pvMembers, pvPick: pvPickId,
+      onPvPick: e=>this.setState({pvPick:e.target.value}),
+      previewTeam: ()=>{ if(!realIsAdmin || !pvPickId) return;
+        window.SUData.readOnly = true;
+        this.setState({previewAs:pvPickId, role:'team', section:'overview', notifOpen:false, moreOpen:false, detail:null, flash:null, syncError:null}); },
+      previewing, previewBanner: previewing
+        ? 'You are seeing the team view as '+(pvRow.name||pvRow.email)+'. '
+          +(pvBilling ? 'This member can see finance pages.' : 'Invoicing, other people\u2019s pay and rates are hidden, just as they are for them.')
+          +' Changes are off until you exit.'
+        : '',
+      exitPreview: ()=>{ window.SUData.readOnly = false;
+        this.setState({previewAs:null, pvPick:'', section:'overview', notifOpen:false, moreOpen:false, detail:null, flash:null, syncError:null}); },
       // Which portal you are in, for anyone whose own name is not the company's.
       // The team side says "Internal Dashboard" on every page, so it needs none.
       showPortalName: !isTeam, portalName: (curBiz? curBiz.name : client.name) || '',
@@ -9403,7 +9491,7 @@ class Component extends DCLogic {
       teamQueueCards, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
       teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
       teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
-      goTeamRequests:go('requests'), goBoard:go('board'), lastMsgs,
+      goTeamRequests:go('board'), goBoard:go('board'), lastMsgs,
       boardReqs, boardReqCount:boardReqs.length, doneItems, doneCount:doneItems.length, noDone:doneItems.length===0,
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,

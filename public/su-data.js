@@ -713,13 +713,31 @@
     if (error) throw error;
   }
 
+  // A super admin previewing the team view as another member sees a read-only
+  // dashboard. Every write below refuses while the preview is on, so nothing
+  // can be saved under the admin's account while they are looking through
+  // somebody else's eyes.
+  let readOnly = false;
+  const guard = fn => async function () {
+    if (readOnly) throw new Error('Preview is read-only. Exit the preview to make changes.');
+    return fn.apply(this, arguments);
+  };
+  const g = {};
+  [['sync', sync], ['uploadAttachment', uploadAttachment], ['deleteAttachment', deleteAttachment],
+   ['uploadBrandAsset', uploadBrandAsset], ['deleteBrandAsset', deleteBrandAsset],
+   ['uploadContentMedia', uploadContentMedia], ['deleteContentMedia', deleteContentMedia],
+   ['queueMediaUrl', queueMediaUrl], ['retryMediaJob', retryMediaJob], ['dismissMediaJob', dismissMediaJob],
+   ['createClientLogin', createClientLogin], ['createTeamMember', createTeamMember],
+   ['invitePortalMember', invitePortalMember], ['setMemberCompanies', setMemberCompanies],
+   ['deleteUser', deleteUser]].forEach(([k, fn]) => { g[k] = guard(fn); });
+
   window.SUData = {
-    signIn, signOut, currentSession, loadProfile, load, sync, latestTs,
-    uploadAttachment, deleteAttachment, signedUrl, downloadUrl,
-    uploadBrandAsset, deleteBrandAsset, MAX_BRAND_BYTES,
-    uploadContentMedia, deleteContentMedia, queueMediaUrl, retryMediaJob, dismissMediaJob, whenIdle, MAX_CONTENT_BYTES,
+    signIn, signOut, currentSession, loadProfile, load, latestTs,
+    ...g,
+    get readOnly() { return readOnly; },
+    set readOnly(v) { readOnly = !!v; },
+    signedUrl, downloadUrl, MAX_BRAND_BYTES, whenIdle, MAX_CONTENT_BYTES,
     MAX_ATTACHMENT_BYTES: MAX_BYTES,
-    createClientLogin, createTeamMember, invitePortalMember, setMemberCompanies, deleteUser,
     sendPasswordLink, setPassword, mailAdvice,
     get profile() { return profile; },
     onAuthChange(cb) { client().auth.onAuthStateChange((e, s) => cb(e, s)); }
