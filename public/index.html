@@ -1572,18 +1572,22 @@
                   <option value="hourly">Hourly · custom invoices</option>
                 </select>
               </div>
+              <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label>
                 <input value="{{ dNewClientRate }}" onChange="{{ onNewClientRate }}" type="number" placeholder="0" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
+              </sc-if>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label>
                 <input value="{{ dNewClientPlan }}" onChange="{{ onNewClientPlan }}" placeholder="Growth" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
+              <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label>
                 <input value="{{ dNewClientPrice }}" onChange="{{ onNewClientPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
               </div>
+              </sc-if>
               <div style="display:flex;flex-direction:column;gap:5px">
                 <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label>
                 <input value="{{ dNewClientHours }}" onChange="{{ onNewClientHours }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
@@ -1629,12 +1633,12 @@
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Domain</label><input value="{{ ecDomain }}" onChange="{{ onEcDomain }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label><input value="{{ ecService }}" onChange="{{ onEcService }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label><input value="{{ ecPlan }}" onChange="{{ onEcPlan }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
-                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label><input value="{{ ecPrice }}" onChange="{{ onEcPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label><input value="{{ ecPrice }}" onChange="{{ onEcPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div></sc-if>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
                       <select value="{{ ecBillingType }}" onChange="{{ onEcBillingType }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card)">
                         <option value="retainer">Monthly plan</option><option value="hourly">Hourly</option>
                       </select></div>
-                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label><input value="{{ ecHourlyRate }}" onChange="{{ onEcHourlyRate }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hourly rate</label><input value="{{ ecHourlyRate }}" onChange="{{ onEcHourlyRate }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div></sc-if>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours used this month</label><div style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;color:var(--text-muted);background:var(--gray-100)">{{ ecHoursUsedLabel }}</div><div style="font-size:11px;color:var(--text-muted);line-height:1.4">Counted from approved work, not set by hand.</div></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Retainer hours</label><input value="{{ ecHoursTotal }}" onChange="{{ onEcHoursTotal }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                   </div>
@@ -2940,7 +2944,7 @@
                 </div>
                 <div style="font-size:12.5px;color:var(--text-muted)">{{ s.rate }}</div>
                 <div style="font-size:13.5px;color:var(--text-body);min-width:70px;text-align:right">{{ s.hours }} hrs</div>
-                <div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);min-width:90px;text-align:right">{{ s.value }}</div>
+                <sc-if value="{{ s.hasValue }}" hint-placeholder-val="{{ true }}"><div style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);min-width:90px;text-align:right">{{ s.value }}</div></sc-if>
               </div>
             </sc-for>
           </div>
@@ -9044,8 +9048,12 @@ class Component extends DCLogic {
           const hourly=c.billingType==='hourly'; const v=hourly? bh*Number(c.hourlyRate||0) : 0;
           if(hourly){ anyHourly=true; valueTotal+=v; }
           const on=cf===c.id;
+          // What a client pays Social Upgrades is finance's business. Ordinary
+          // staff see the hours and whether the client is hourly or on a plan,
+          // never the rate or the dollar value.
           return {name:c.name, dot:clientDot(c.id), hours:bh.toFixed(2), nonBill:nb.toFixed(2), hasNonBill:nb>0,
-            rate:hourly?money(c.hourlyRate)+'/hr':(c.plan||'Retainer'), value:hourly?money(v):'-',
+            rate:hourly?(canBilling? money(c.hourlyRate)+'/hr' : 'Hourly'):(c.plan||'Retainer'),
+            value:(canBilling&&hourly)?money(v):'-', hasValue:canBilling,
             nameStyle:{fontSize:14,fontWeight:on?700:500,color:'var(--navy)'},
             style:{display:'flex',alignItems:'center',gap:14,flexWrap:'wrap',padding:'11px 10px',margin:'0 -10px',borderBottom:'1px solid var(--border-hairline)',cursor:'pointer',borderRadius:10,background:on?'var(--gray-100)':'transparent'},
             open:()=>this.setState({timeClientF:on?'':c.id})};
@@ -9062,7 +9070,7 @@ class Component extends DCLogic {
           tmNextStyle:{background:'var(--surface-card)',border:'1px solid var(--gray-200)',borderRadius:12,width:38,height:38,fontSize:16,color:'var(--navy)',cursor:tm<thisMonth?'pointer':'default',opacity:tm<thisMonth?1:.35},
           tmNotNow:tm!==thisMonth, tmToday:()=>goMonth(thisMonth),
           tmBillable:bTot.toFixed(2), tmNonBill:nTot.toFixed(2), tmHasNonBill:nTot>0,
-          tmHasValue:anyHourly, tmValueTotal:money(valueTotal),
+          tmHasValue:anyHourly&&canBilling, tmValueTotal:money(valueTotal),
           timeSummary:summary, tmNoRows:rows.length===0,
           tmFiltered:!!cf, tmClearClient:()=>this.setState({timeClientF:''}),
           tmEntriesTitle:(cfName? cfName+' · ' : '')+label(tm)+' entries ('+entries.length+')',
