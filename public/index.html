@@ -1749,6 +1749,8 @@
                     <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateStyle }}"><div class="su-clamp3" style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
                     <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
                       <span style="background:rgba(255,255,255,.94);color:var(--navy);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px"><span style="{{ k.chanDot }}"></span>{{ k.chanLabel }}</span>
+                      <sc-if value="{{ k.hasFmtPill }}" hint-placeholder-val="{{ true }}"><span style="{{ k.fmtPillStyle }}">{{ k.fmtPillLabel }}</span></sc-if>
+                      <sc-if value="{{ k.isTop }}" hint-placeholder-val="{{ false }}"><span title="{{ k.topTitle }}" style="background:#F5C445;color:#3B2A00;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 2px rgba(15,22,51,.18)">{{ k.topLabel }}</span></sc-if>
                       <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ true }}"><span style="background:rgba(15,22,51,.72);color:#fff;font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:999px">{{ k.nets }}</span></sc-if>
                       <span style="flex:1"></span>
                       <sc-if value="{{ k.hasMore }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(15,22,51,.75);color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;white-space:nowrap">{{ k.mediaCount }}</span></sc-if>
@@ -1760,7 +1762,7 @@
                     <sc-if value="{{ k.hasExcerpt }}" hint-placeholder-val="{{ true }}"><div class="su-clamp2" style="font-size:12.5px;color:var(--text-body);line-height:1.45">{{ k.excerpt }}</div></sc-if>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                       <span style="{{ k.badgeStyle }}">{{ k.statusLabel }}</span>
-                      <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if>
+                      <sc-if value="{{ k.hasFmt }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ k.noFmtPill }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--text-muted)">{{ k.fmt }}</span></sc-if></sc-if>
                       <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#a2691a;font-weight:600">{{ k.pendingLabel }}</span></sc-if>
                       <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px">✎ {{ k.changeLabel }}</span></sc-if>
                       <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:#158a4d;font-weight:600">Revised</span></sc-if>
@@ -1858,6 +1860,8 @@
                       </div>
                       <sc-if value="{{ k.hasChips }}" hint-placeholder-val="{{ false }}">
                         <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+                          <sc-if value="{{ k.hasFmtPill }}" hint-placeholder-val="{{ true }}"><span style="{{ k.fmtPillSmall }}">{{ k.fmtPillLabel }}</span></sc-if>
+                          <sc-if value="{{ k.isTop }}" hint-placeholder-val="{{ false }}"><span title="{{ k.topTitle }}" style="background:#F5C445;color:#3B2A00;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:999px;white-space:nowrap">{{ k.topLabel }}</span></sc-if>
                           <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ false }}"><span style="background:var(--gray-100);color:var(--text-body);font-size:10px;font-weight:500;padding:1px 7px;border-radius:999px">{{ k.nets }}</span></sc-if>
                           <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">✎ Changes</span></sc-if>
                           <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(31,178,100,.12);color:#158a4d;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Revised</span></sc-if>
@@ -2556,7 +2560,7 @@
       <sc-if value="{{ secReports }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
           <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:13px;color:var(--text-muted);line-height:1.5">Reports from the scheduled agents and the team. Social Upgrades' own reports are team only. A client report shows in that client's portal once it's published.</div>
+            <div style="font-size:13px;color:var(--text-muted);line-height:1.5">{{ rdIntro }}</div>
           </div>
           <div role="tablist" aria-label="Whose reports" style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ rdScopes }}" as="sc" hint-placeholder-count="2">
@@ -2616,25 +2620,25 @@
                   </sc-if>
 
                   <sc-if value="{{ r.hasLists }}" hint-placeholder-val="{{ true }}">
-                    <div class="su-grid2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                    <div class="su-grid2" style="{{ r.listsStyle }}">
                       <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>What's working</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>{{ r.workingLabel }}</div>
                         <sc-for list="{{ r.working }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}</div>
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
                         </sc-for>
                       </div>
                       <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>What needs work</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>{{ r.notWorkingLabel }}</div>
                         <sc-for list="{{ r.notWorking }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}</div>
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
                         </sc-for>
                       </div>
                     </div>
                   </sc-if>
 
                   <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;flex-direction:column;gap:10px">
-                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">What we recommend next</div>
+                    <div style="{{ r.actStyle }}">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">{{ r.actionsLabel }}</div>
                       <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
                         <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
                           <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:12px">{{ a.n }}</span>
@@ -2649,6 +2653,7 @@
                             <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}">
                               <div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div>
                             </sc-if>
+                            <sc-if value="{{ a.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ a.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if>
                           </div>
                         </div>
                       </sc-for>
@@ -2656,13 +2661,13 @@
                   </sc-if>
 
                   <sc-if value="{{ r.hasTeamNote }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body)">
+                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body);order:3">
                       <span style="flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);padding-top:2px">Team note</span>
                       <span>{{ r.teamNote }}</span>
                     </div>
                   </sc-if>
 
-                  <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border-card);padding-top:14px">
+                  <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border-card);padding-top:14px;order:3">
                     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
                       <sc-if value="{{ r.hasTables }}" hint-placeholder-val="{{ true }}">
                         <button onClick="{{ r.toggleMore }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--navy);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="background:var(--gray-100)">{{ r.moreLabel }}</button>
@@ -2717,7 +2722,7 @@
             </article>
           </sc-for>
           <sc-if value="{{ rdEmpty }}" hint-placeholder-val="{{ false }}">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">No reports here yet. The scheduled agents add one after each run.</div>
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">{{ rdEmptyText }}</div>
           </sc-if>
         </div>
       </sc-if>
@@ -4333,15 +4338,15 @@
                   <sc-if value="{{ r.hasLists }}" hint-placeholder-val="{{ true }}">
                     <div class="su-grid2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
                       <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>What's working</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>{{ r.workingLabel }}</div>
                         <sc-for list="{{ r.working }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}</div>
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
                         </sc-for>
                       </div>
                       <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>What needs work</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>{{ r.notWorkingLabel }}</div>
                         <sc-for list="{{ r.notWorking }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}</div>
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
                         </sc-for>
                       </div>
                     </div>
@@ -4349,7 +4354,7 @@
 
                   <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;flex-direction:column;gap:10px">
-                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">What we recommend next</div>
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">{{ r.actionsLabel }}</div>
                       <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
                         <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
                           <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:12px">{{ a.n }}</span>
@@ -4364,6 +4369,7 @@
                             <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}">
                               <div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div>
                             </sc-if>
+                            <sc-if value="{{ a.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ a.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if>
                           </div>
                         </div>
                       </sc-for>
@@ -5559,7 +5565,7 @@ class Component extends DCLogic {
     // A group is not a page of its own: opening it opens its first child.
     const TEAM_TREE = [
       ['overview','Overview'],
-      ['g-work','Work',[['board','Workboard'],['requests','Requests'],['todos','To-Dos'],['time','Hours']]],
+      ['g-work','Work',[['board','Workboard'],['requests','Requests'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
       ['messages','Messages'],
       ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['invoicing','Invoicing']]],
       ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
@@ -5722,7 +5728,7 @@ class Component extends DCLogic {
       });
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
@@ -6088,22 +6094,32 @@ class Component extends DCLogic {
       good:{label:'On track', dot:'#1FB264', wash:'rgba(31,178,100,.13)'},
       watch:{label:'Keep an eye on it', dot:'#D68F2E', wash:'rgba(214,143,46,.15)'},
       bad:{label:'Needs attention', dot:'#D8564E', wash:'rgba(216,86,78,.14)'}};
-    const RD_CHAN={ads:'Paid ads',social:'Social media',website:'Website',email:'Email',seo:'Search',overview:'Overview'};
+    const RD_CHAN={ads:'Paid ads',social:'Social media',website:'Website',email:'Email',seo:'Search',overview:'Overview',team:'Team activity'};
     const RD_KIND={daily:'Daily report',weekly:'Weekly report',monthly:'Monthly report'};
     const rdPub = r => (r.visibility||'team')==='client';
-    const rdLive = (D.report_docs||[]).filter(r=>!(r.archived&&r.archived.at));
+    // Team activity reports (channel 'team': what a team member did, what
+    // needs Mitchell) are internal operations, not a client's results, so
+    // they live under Work > Reports and stay out of Clients > Reports.
+    const rdIsTeamOps = r => r.channel==='team';
+    const onWorkReports = isTeam && sectionNow==='workreports';
+    const rdAll = (D.report_docs||[]).filter(r=>!(r.archived&&r.archived.at));
+    const rdLive = rdAll.filter(r=> onWorkReports? (rdIsTeamOps(r)&&!r.clientId) : !rdIsTeamOps(r));
     // Where a report belongs: Social Upgrades itself, or one company.
-    const rdKey = r => (r.clientId||'')+'|'+(r.clientId? bizIdOf(r) : '');
-    const rdScopeName = k => { const [cid,bid]=k.split('|'); if(!cid) return 'Social Upgrades';
+    // Under Work > Reports the tabs are people: All, then one per subject.
+    const rdKey = r => onWorkReports? 'p:'+(r.subject||'Team')
+      : (r.clientId||'')+'|'+(r.clientId? bizIdOf(r) : '');
+    const rdScopeName = k => { if(onWorkReports) return k==='|'? 'Everyone' : k.slice(2);
+      const [cid,bid]=k.split('|'); if(!cid) return 'Social Upgrades';
       const c=orgRec(cid); if(!c) return cid; const b=(bid&&isMultiOrg(c))? bizById(c,bid) : null; return b? b.name : c.name; };
-    const rdScopeSub = k => { const [cid]=k.split('|'); if(!cid) return 'Internal · team only';
+    const rdScopeSub = k => { if(onWorkReports) return k==='|'? 'All team reports' : 'Daily activity';
+      const [cid]=k.split('|'); if(!cid) return 'Internal · team only';
       const c=orgRec(cid); return (c&&isMultiOrg(c))? c.name : 'Client'; };
     const rdSort = (a,b)=> String((b.period&&b.period.end)||'').localeCompare(String((a.period&&a.period.end)||'')) || (Number(b.ts)||0)-(Number(a.ts)||0);
     const rdScopeKeys = ['|'].concat(Array.from(new Set(rdLive.map(rdKey))).filter(k=>k!=='|')
       .sort((a,b)=>rdScopeName(a).localeCompare(rdScopeName(b))));
     const rdScope = rdScopeKeys.indexOf(S.rdScope)>-1 ? S.rdScope : '|';
     const rdList = (isTeam
-      ? rdLive.filter(r=>rdKey(r)===rdScope)
+      ? rdLive.filter(r=>(onWorkReports&&rdScope==='|') || rdKey(r)===rdScope)
       // The portal (and the team previewing it) only ever shows what was
       // published; for a real client login the database already did this.
       : rdLive.filter(r=>r.clientId===client.id && rdPub(r))
@@ -6142,9 +6158,17 @@ class Component extends DCLogic {
       const who = a => a.who==='you'
         ? {label:'Your move', style:'background:var(--pill-bg,var(--navy));color:var(--pill-fg,#fff);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap'}
         : {label:'On us', style:'background:var(--gray-100);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap'};
-      const actions=(r.actions||[]).map((a,ai)=>{ const w=who(a); return {n:String(ai+1), title:a.title||'', detail:a.detail||'', hasDetail:!!a.detail,
-        whoLabel:w.label, whoStyle:w.style, needsOk:!!a.needsApproval}; });
-      const working=(r.working||[]).map(t=>({t})), notWorking=(r.notWorking||[]).map(t=>({t}));
+      // Any entry may carry links: {label, url} pairs shown as small chips.
+      // Only http(s) links render.
+      const rdLinks = v => (Array.isArray(v&&v.links)? v.links : (v&&v.url? [{label:v.linkLabel||'Open',url:v.url}] : []))
+        .filter(l=>l&&/^https?:\/\//i.test(String(l.url||''))).map(l=>({label:String(l.label||'Open'), url:String(l.url)}));
+      const rdLine = v => { const o=(v&&typeof v==='object')? v : {t:String(v==null?'':v)};
+        const links=rdLinks(o); return {t:String(o.t||o.text||''), links, hasLinks:links.length>0}; };
+      const actions=(r.actions||[]).map((a,ai)=>{ const w=who(a); const links=rdLinks(a);
+        return {n:String(ai+1), title:a.title||'', detail:a.detail||'', hasDetail:!!a.detail,
+        whoLabel:w.label, whoStyle:w.style, needsOk:!!a.needsApproval, links, hasLinks:links.length>0}; });
+      const working=(r.working||[]).map(rdLine), notWorking=(r.notWorking||[]).map(rdLine);
+      const L=r.labels||{};
       const clientRow=!!r.clientId, pub=rdPub(r);
       const metaBits=[RD_KIND[r.kind]||'Report', RD_CHAN[r.channel]||''].filter(Boolean);
       return {
@@ -6161,7 +6185,13 @@ class Component extends DCLogic {
         working, notWorking, hasWorking:working.length>0, hasNotWorking:notWorking.length>0,
         hasLists:working.length+notWorking.length>0,
         actions, hasActions:actions.length>0,
-        tables, hasTables:tables.length>0, more, moreLabel: more? 'Hide the numbers' : 'See the numbers',
+        workingLabel:L.working||"What's working", notWorkingLabel:L.notWorking||'What needs work',
+        actionsLabel:L.actions||'What we recommend next',
+        // labels.actionsFirst puts the to-do list above the two lists, for
+        // reports whose point is what the reader has to do.
+        actStyle:'display:flex;flex-direction:column;gap:10px;order:'+(L.actionsFirst?1:2),
+        listsStyle:'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;order:'+(L.actionsFirst?2:1),
+        tables, hasTables:tables.length>0, more, moreLabel: more? (L.lessLabel||'Hide the numbers') : (L.moreLabel||'See the numbers'),
         toggleMore:()=>rdFlip('rdMore',r.id,more),
         source:r.source||'', hasSource:!!r.source,
         byLine:[r.byName? 'Prepared by '+r.byName : 'Prepared by Social Upgrades', rdWhen(r)].filter(Boolean).join(' · '),
@@ -6182,7 +6212,7 @@ class Component extends DCLogic {
           this.setState({rdArchive:null}); }
       };
     });
-    const rdScopes = rdScopeKeys.map(k=>{ const on=k===rdScope; const n=rdLive.filter(r=>rdKey(r)===k).length;
+    const rdScopes = rdScopeKeys.map(k=>{ const on=k===rdScope; const n=(onWorkReports&&k==='|')? rdLive.length : rdLive.filter(r=>rdKey(r)===k).length;
       return {label:rdScopeName(k), sub:rdScopeSub(k), n:String(n),
         select:()=>this.setState({rdScope:k, rdOpen:{}, rdArchive:null}),
         style:'display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:1px solid '+(on?'var(--navy)':'var(--border-card)')
@@ -6397,6 +6427,13 @@ class Component extends DCLogic {
     const FORMATS=[['single','Single image'],['carousel','Carousel'],['reel','Reel'],['story','Story'],['video','Video'],
       ['article','Article'],['newsletter','Newsletter'],['campaign','Campaign email'],['ad','Ad']];
     const FMT_LABEL=Object.fromEntries(FORMATS);
+    // Colored format pill on every card preview, so a reel, story, post or
+    // carousel reads at a glance without opening the card.
+    const FMT_PILL={single:['Post','#1FB264'],carousel:['Carousel','#189D99'],reel:['Reel','#2E3FD6'],story:['Story','#D6338A'],
+      video:['Video','#7A3FD1'],article:['Article','#0F1633'],newsletter:['Newsletter','#D68F2E'],campaign:['Email','#D68F2E'],ad:['Ad','#C8323C']};
+    const fmtPillOf=x=>{ const f=FMT_PILL[x.format]; if(!f) return null;
+      return {label:f[0], style:{background:f[1],color:'#fff',fontSize:10.5,fontWeight:700,letterSpacing:'.05em',textTransform:'uppercase',
+        padding:'3px 9px',borderRadius:999,whiteSpace:'nowrap',display:'inline-block',boxShadow:'0 1px 2px rgba(15,22,51,.18)'}}; };
     const netsOf=x=>Array.isArray(x.networks)&&x.networks.length? x.networks : (x.network? [x.network] : []);
     const netLabels=x=>netsOf(x).map(n=>NET_LABEL[n]||n);
     const stBadge=st=>{ st=ST_LEGACY[st]||st||'idea';
@@ -6447,7 +6484,11 @@ class Component extends DCLogic {
     // What is coming, then what has no date, then what already went out.
     const cmSort=S.cmSort||'date';
     const cmRank=x=> !x.scheduledFor? 1 : (x.scheduledFor>=todayIso? 0 : 2);
+    // Agent "Top 10" picks (data.topPick.rank, ideas only) float to the top,
+    // in rank order, whatever the sort.
+    const topRank=x=>{ const r=x&&x.topPick&&Number(x.topPick.rank); return (stOf(x)==='idea'&&!isArch(x)&&r>0)? r : 0; };
     const cmOrdered=cmTeamList.slice().sort((a,b)=>{
+      const ta=topRank(a)||999, tb=topRank(b)||999; if(ta!==tb) return ta-tb;
       if(cmSort==='new') return createdMs(b)-createdMs(a);
       if(cmSort==='old') return createdMs(a)-createdMs(b);
       const ra=cmRank(a), rb=cmRank(b);
@@ -6479,6 +6520,8 @@ class Component extends DCLogic {
         chanLabel:meta.label, chanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:meta.color},
         nets:netLabels(x).join(' · '), hasNets:netsOf(x).length>0,
         fmt:FMT_LABEL[x.format]||'', hasFmt:!!x.format,
+        hasFmtPill:!!fmtPillOf(x), noFmtPill:!fmtPillOf(x), isTop:topRank(x)>0, topLabel:topRank(x)? '★ Top pick #'+topRank(x) : '', topTitle:(x.topPick&&x.topPick.reason)||'', fmtPillLabel:(fmtPillOf(x)||{}).label||'', fmtPillStyle:(fmtPillOf(x)||{}).style||{},
+        fmtPillSmall:Object.assign({},(fmtPillOf(x)||{}).style||{},{fontSize:9.5,padding:'1px 7px',lineHeight:'14px',boxShadow:'none'}),
         brand:itemBrand(x), dot:clientDot(x.clientId),
         when: x.scheduledFor? niceDate(x.scheduledFor)+(x.scheduledTime?' · '+x.scheduledTime:'') : 'No date yet',
         whenStyle:{fontSize:11.5,fontWeight:600,color: x.scheduledFor? (x.scheduledFor<todayIso&&LIVE_ST.indexOf(x.status||'idea')<0? '#a2691a':'var(--blue)') : 'var(--text-muted)'},
@@ -6514,7 +6557,7 @@ class Component extends DCLogic {
             String(x.scheduledFor).slice(0,4)===todayIso.slice(0,4)? {month:'short',day:'numeric',timeZone:'UTC'} : {month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}) : 'No date',
           whenSmall:Object.assign({},c.whenStyle,{fontSize:11,whiteSpace:'nowrap',flex:'none'}),
           commentsN:String(nC),
-          hasChips: c.hasNets||c.hasChange||c.wasRevised||c.hasPending||nC>0||c.isAgent,
+          hasChips: c.isTop||c.hasFmtPill||c.hasNets||c.hasChange||c.wasRevised||c.hasPending||nC>0||c.isAgent,
           backTitle:'Back to '+cmBoardColsRaw[Math.max(i-1,0)][1],
           isLast:i>=cmBoardOrder.length-1 };
         return Object.assign(c,ext,{asking, notAsking:!asking, canBack:i>0,canFwd:i<cmBoardOrder.length-1,back:move(-1),fwd:move(1),
@@ -9322,7 +9365,11 @@ class Component extends DCLogic {
         return {text:l.text,when:(w.name?w.name+' · ':'')+this.fmt(l.ts),isAgent:w.isAgent}; }),
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
       secTodos:isTeam&&secKey('todos'), tdGroups, noTdGroups:tdGroups.length===0, tdStats, tdClientOpts,
-      secReports:isTeam&&secKey('reports'), repTiles, repWhen, repBy, hasRepWhen:!!repWhen, hasRepBy:!!repBy,
+      secReports:isTeam&&(secKey('reports')||secKey('workreports')),
+      rdIntro: onWorkReports
+        ? "Daily reports on what the team did and what needs you, written by the scheduled agents. Team only, never shown to clients."
+        : "Reports from the scheduled agents and the team. Social Upgrades' own reports are team only. A client report shows in that client's portal once it's published.",
+      rdEmptyText: onWorkReports? 'No team reports yet. The morning report adds one after each run.' : 'No reports here yet. The scheduled agents add one after each run.', repTiles, repWhen, repBy, hasRepWhen:!!repWhen, hasRepBy:!!repBy,
       dRepClient:repCid, onRepClient:e=>this.setState(s2=>({repClient:e.target.value,d:repClearDrafts(s2.d)})),
       dRepNote:(d.rpNote===undefined? (repFor.note||'') : d.rpNote), onRepNote:this.draft('rpNote'),
       saveReport, repClientName:cname(repCid),
