@@ -4591,6 +4591,381 @@
 
       </sc-if>
 
+      <sc-if value="{{ secShows }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+          <div style="display:flex;gap:12px;align-items:flex-start;background:rgba(46,63,214,.07);border:1px solid rgba(46,63,214,.18);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.5;color:var(--text-body)">
+            <span style="flex:0 0 auto;font-weight:700;color:var(--blue);font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding-top:2px">Preview</span>
+            <span style="flex:1">{{ shBanner }} <a href="{{ shStaging }}" target="_blank" rel="noopener" style="font-weight:600">Open the staging site ↗</a></span>
+          </div>
+
+          <div style="display:flex;flex-direction:row-reverse;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div role="tablist" aria-label="Shows sections" style="display:flex;gap:4px;border-bottom:1px solid var(--border-hairline);flex:1 1 340px;min-width:0;overflow-x:auto;order:2">
+              <sc-for list="{{ shTabs }}" as="t" hint-placeholder-count="4">
+                <button role="tab" aria-selected="{{ t.on }}" onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <button onClick="{{ shGoLaunch }}" style="order:1;display:inline-flex;align-items:center;gap:8px;background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer" style-hover="background:#2a2a2a">+ Launch a show</button>
+          </div>
+
+          <!-- ===== Shows: list ===== -->
+          <sc-if value="{{ shList }}" hint-placeholder-val="{{ true }}">
+            <div class="su-rdkpi">
+              <sc-for list="{{ shTiles }}" as="k" hint-placeholder-count="4">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                  <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+                  <div style="font-size:12px;color:var(--text-muted);line-height:1.45">{{ k.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ shHasLead }}" hint-placeholder-val="{{ true }}">
+              <section style="display:flex;flex-direction:column;gap:10px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">{{ shLead.heading }}</h3>
+                <div style="{{ shLead.cardStyle }}">
+                  <div role="img" aria-label="{{ shLead.title }} key art" style="{{ shLead.posterStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 280px;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shLead.statusStyle }}">{{ shLead.statusLabel }} · {{ shLead.cd }}</span><span style="font-size:12px;color:var(--text-muted)">{{ shLead.kind }}</span></div>
+                    <div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy);line-height:1.25">{{ shLead.title }}</div>
+                    <div style="font-size:13px;color:var(--text-muted)">{{ shLead.when }} PT · {{ shLead.rsvpText }}</div>
+                    <div style="height:6px;border-radius:3px;background:var(--gray-200);overflow:hidden;max-width:360px"><span style="{{ shLead.bar }}"></span></div>
+                    <div style="font-size:12.5px;color:var(--text-muted)">{{ shLead.mailLine }}</div>
+                  </div>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button onClick="{{ shLead.open }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Open show</button>
+                    <button onClick="{{ shLead.copyPw }}" style="background:var(--surface-card);color:var(--navy);border:1px solid rgba(15,22,51,.4);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Copy password</button>
+                    <a href="{{ shLead.view }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">View on site ↗</a>
+                  </div>
+                </div>
+              </section>
+            </sc-if>
+
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Upcoming and drafts</h3>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Window or date (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Status</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ shUpcoming }}" as="r" hint-placeholder-count="2">
+                      <tr>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><div style="font-weight:600;color:var(--navy)">{{ r.title }}</div><div style="font-size:12px;color:var(--text-muted)">{{ r.sub }}</div></td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);white-space:nowrap">{{ r.kind }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.when }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);min-width:120px"><div>{{ r.rsvpText }}</div><sc-if value="{{ r.hasBar }}" hint-placeholder-val="{{ true }}"><div style="height:6px;border-radius:3px;background:var(--gray-200);overflow:hidden;margin-top:4px"><span style="{{ r.bar }}"></span></div></sc-if></td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ r.statusStyle }}">{{ r.statusLabel }}</span></td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right"><button onClick="{{ r.open }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer;white-space:nowrap">{{ r.action }}</button></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Past shows</h3>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Closed</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Watched</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Thank-you</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ shPast }}" as="r" hint-placeholder-count="3">
+                      <tr onClick="{{ r.open }}" style="cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);font-weight:600;color:var(--navy)">{{ r.title }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);white-space:nowrap">{{ r.kind }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.closed }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.rsvpText }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.watched }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);color:var(--text-muted)">{{ r.thanks }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </sc-if>
+
+          <!-- ===== Shows: launch a show ===== -->
+          <sc-if value="{{ shLaunch }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <button onClick="{{ shBack }}" style="background:none;border:none;color:var(--blue);font:600 13px var(--font-body);cursor:pointer;padding:0">← All shows</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button onClick="{{ shSaveDraft }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Save draft</button>
+                <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid rgba(15,22,51,.4);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">Preview on site ↗</a>
+                <button onClick="{{ shPublish }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Publish</button>
+              </div>
+            </div>
+            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
+              <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">1 · Basics</h3>
+                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Title<input value="{{ dShTitle }}" onChange="{{ onShTitle }}" placeholder="A Fox Under a Pink Moon" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:-8px">Page address: viewslipstream.com/<b>{{ shSlug }}</b>/</div>
+                  <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Series or group<select value="{{ dShSeries }}" onChange="{{ onShSeries }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><sc-for list="{{ shSeriesOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Trailer (YouTube link)<input value="{{ dShTrailer }}" onChange="{{ onShTrailer }}" placeholder="https://youtube.com/watch?v=…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                  </div>
+                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">About the show<textarea value="{{ dShAbout }}" onChange="{{ onShAbout }}" rows="4" placeholder="The synopsis guests read before they RSVP." style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font:14px/1.5 var(--font-body);resize:vertical"></textarea></label>
+                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Conversation line<input value="{{ dShQa }}" onChange="{{ onShQa }}" placeholder="Followed by a conversation with…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                  <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px">
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Poster (2:3)<div style="height:140px;border:1px dashed rgba(15,22,51,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--text-muted);padding:8px">Drop image</div></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Key art (16:9)<div style="height:140px;border:1px dashed rgba(15,22,51,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--text-muted);padding:8px">Drop image, at least 1920 × 1080. Used on the page hero and in emails.</div></div>
+                  </div>
+                </section>
+
+                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">2 · Show type</h3>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+                    <sc-for list="{{ shTypeCards }}" as="c" hint-placeholder-count="5">
+                      <button onClick="{{ c.select }}" aria-pressed="{{ c.on }}" style="{{ c.style }}"><b style="font-size:13px;color:var(--navy)">{{ c.label }}</b><span style="font-size:12px;color:var(--text-muted)">{{ c.desc }}</span></button>
+                    </sc-for>
+                  </div>
+                  <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldA }}<input value="{{ dShTypeA }}" onChange="{{ onShTypeA }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:-6px">{{ fieldBHelp }}</div>
+                </section>
+
+                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">3 · Schedule <span style="font-weight:500;font-size:12px;color:var(--text-muted)">Pacific time</span></h3>
+                  <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window opens (or showtime)<input value="{{ dShStart }}" onChange="{{ onShStart }}" placeholder="Nov 19 · 7:00 PM" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                    <sc-if value="{{ shNeedsEnd }}" hint-placeholder-val="{{ true }}">
+                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window closes<input value="{{ dShEnd }}" onChange="{{ onShEnd }}" placeholder="Nov 25 · 12:00 AM" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-muted)">RSVPs open the moment you publish. The show appears on the site as Upcoming until the window opens.</div>
+                </section>
+
+                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">4 · Emails <span style="font-weight:500;font-size:12px;color:var(--text-muted)">times fill in from the schedule</span></h3>
+                  <sc-for list="{{ shEmailRows }}" as="e" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-card)">
+                      <div><div style="font-weight:600;color:var(--navy)">{{ e.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ e.sub }}</div></div>
+                      <div style="font-size:13px">{{ e.when }}</div>
+                      <a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:6px 12px;font:600 13px var(--font-body);text-decoration:none;white-space:nowrap">Preview ↗</a>
+                    </div>
+                  </sc-for>
+                  <button onClick="{{ shSendTest }}" style="align-self:flex-start;border:1px solid rgba(15,22,51,.4);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer;margin-top:4px">Send all three to me as a test</button>
+                </section>
+              </div>
+
+              <aside style="display:flex;flex-direction:column;gap:14px;position:sticky;top:16px">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Ready to publish?</h3><span style="font-size:12px;font-weight:600;color:var(--blue)">{{ shReady }}</span></div>
+                  <sc-for list="{{ shChecks }}" as="c" hint-placeholder-count="8">
+                    <div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border-card)"><span style="{{ c.box }}">{{ c.tick }}</span>{{ c.label }}</div>
+                  </sc-for>
+                  <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Publish unlocks when every line is checked. A show can go up as Upcoming before its DaCast embed is ready.</div>
+                </div>
+                <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;gap:6px;background:#000;color:#fff;border-radius:12px;padding:18px 20px;text-decoration:none">
+                  <span style="font:600 11px var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:#A9AFB7">See it on the site</span>
+                  <span style="font-weight:600">Every show page state, RSVP card and email on staging ↗</span>
+                </a>
+              </aside>
+            </div>
+          </sc-if>
+
+          <!-- ===== Shows: one show ===== -->
+          <sc-if value="{{ shDetail }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ shBack }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font:600 13px var(--font-body);cursor:pointer;padding:0">← All shows</button>
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+              <sc-if value="{{ shDet.hasPoster }}" hint-placeholder-val="{{ true }}"><div role="img" aria-label="{{ shDet.title }} key art" style="{{ shDet.posterStyle }}"></div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 320px;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shDet.statusStyle }}">{{ shDet.statusLabel }} · {{ shDet.cd }}</span><span style="font-size:12px;color:var(--text-muted)">{{ shDet.kind }} · {{ shDet.series }}</span></div>
+                <h2 style="font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--navy);margin:0">{{ shDet.title }}</h2>
+                <div style="font-size:13px;color:var(--text-muted)">{{ shDet.when }} PT · {{ shDet.url }}<sc-if value="{{ shDet.hasPw }}" hint-placeholder-val="{{ true }}"> · password <b style="font-family:var(--font-display);letter-spacing:.08em;color:var(--navy)">{{ shDet.pw }}</b></sc-if></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <a href="{{ shDet.view }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">View on site ↗</a>
+                <button onClick="{{ shGoLaunch }}" style="border:1px solid rgba(15,22,51,.4);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Edit show</button>
+                <button onClick="{{ shResend }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Resend “It’s showtime”</button>
+              </div>
+            </div>
+            <div class="su-rdkpi">
+              <sc-for list="{{ shDet.tiles }}" as="k" hint-placeholder-count="4">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:26px;line-height:1.1;color:var(--navy)">{{ k.value }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ k.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
+              <section style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Guests</h3><button onClick="{{ shExport }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Export CSV</button></div>
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;min-width:620px;font-size:13.5px">
+                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVP’d</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Watched</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Showtime email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ shDet.guests }}" as="g" hint-placeholder-count="5">
+                        <tr>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><div style="font-weight:600;color:var(--navy)">{{ g.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ g.email }}</div></td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.rsvpd }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.watched }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ g.mailStyle }}">{{ g.mail }}</span></td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card);text-align:right"><button onClick="{{ g.actClick }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">{{ g.act }}</button></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+              <aside style="display:flex;flex-direction:column;gap:14px">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:2px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0 0 10px">Email timeline</h3>
+                  <sc-for list="{{ shDet.timeline }}" as="t" hint-placeholder-count="4">
+                    <div style="display:flex;gap:12px">
+                      <div style="display:flex;flex-direction:column"><span style="{{ t.dotStyle }}"></span><span style="{{ t.lineStyle }}"></span></div>
+                      <div style="padding-bottom:14px"><div style="font-weight:600;color:var(--navy);font-size:13.5px">{{ t.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ t.sub }}</div></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ shDet.canExtend }}" hint-placeholder-val="{{ true }}">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Window</h3>
+                    <div style="font-size:13px;color:var(--text-body)">{{ shDet.when }} PT</div>
+                    <div style="display:flex;gap:8px"><button onClick="{{ shExtend }}" style="flex:1;border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">Extend 24h</button><button onClick="{{ shCloseNow }}" style="flex:1;border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">Close now</button></div>
+                    <div style="font-size:12px;color:var(--text-muted)">Closing early sends the thank-you right away and hides the player.</div>
+                  </div>
+                </sc-if>
+              </aside>
+            </div>
+          </sc-if>
+
+          <!-- ===== Emails ===== -->
+          <sc-if value="{{ shOnEmails }}" hint-placeholder-val="{{ false }}">
+            <div class="su-rdkpi">
+              <sc-for list="{{ shEmTiles }}" as="k" hint-placeholder-count="4">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                  <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ k.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Upcoming</h3>
+              <sc-if value="{{ shNoEmUpcoming }}" hint-placeholder-val="{{ false }}"><div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px;font-size:13.5px;color:var(--text-muted)">Nothing scheduled. Launching a show schedules its three emails.</div></sc-if>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Sends at (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">To</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ shEmUpcoming }}" as="e" hint-placeholder-count="3">
+                      <tr>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);font-weight:600;color:var(--navy);white-space:nowrap">{{ e.when }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.show }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.email }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.to }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right;white-space:nowrap"><a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a> <button onClick="{{ e.pause }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Pause</button></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Sent</h3>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;min-width:820px;font-size:13.5px">
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Sent (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Delivered</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Opened</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Clicked</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Bounced</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ shEmSent }}" as="e" hint-placeholder-count="4">
+                      <tr>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);white-space:nowrap">{{ e.when }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.show }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);font-weight:600;color:var(--navy)">{{ e.email }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.delivered }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.opened }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.clicked }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ e.bouncedStyle }}">{{ e.bounced }}</span></td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right"><button onClick="{{ e.report }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Report</button></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Templates</h3><span style="font-size:12.5px;color:var(--text-muted)">Edit once, every show uses it. Fills in {title}, {window}, {password}, {watch_link}, {venue}.</span></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+                <sc-for list="{{ shTemplates }}" as="t" hint-placeholder-count="6">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px">
+                    <div style="height:72px;border-radius:8px;background:#000;display:flex;align-items:flex-end;padding:10px;box-sizing:border-box"><span style="font:600 10px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">{{ t.kicker }}</span></div>
+                    <div style="font-weight:600;color:var(--navy)">{{ t.name }}</div>
+                    <div style="font-size:12px;color:var(--text-muted)">{{ t.sub }}</div>
+                    <div style="display:flex;gap:6px"><a href="{{ t.preview }}" target="_blank" rel="noopener" style="flex:1;text-align:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a><button onClick="{{ t.test }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Test</button></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </sc-if>
+
+          <!-- ===== Payments ===== -->
+          <sc-if value="{{ shOnPayments }}" hint-placeholder-val="{{ false }}">
+            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start">
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:28px;display:flex;flex-direction:column;gap:12px">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy);margin:0">No paid shows yet</h3>
+                <p style="margin:0;font-size:14px;line-height:1.6;color:var(--text-body)">When a show is set to <b>Paid</b>, every ticket sale lands here from Stripe: revenue by show, tickets sold, refunds and the next payout to Satiated Productions. Refund a ticket from this page and the guest’s access to the player is removed automatically, with a refund receipt emailed to them.</p>
+                <button onClick="{{ shGoLaunch }}" style="align-self:flex-start;background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Launch a paid show</button>
+              </div>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Stripe</h3><span style="display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--gray-100);color:var(--text-body)">Not connected yet</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><span style="color:var(--text-muted)">Account</span><span>Satiated Productions</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><span style="color:var(--text-muted)">Checkout</span><span>Stripe Checkout · Apple Pay · Google Pay</span></div>
+                <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><span style="color:var(--text-muted)">Receipts</span><span>Sent by Slipstream, styled like the other emails</span></div>
+                <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Connects in phase 2 with Slipstream’s own Stripe account. Payouts go to Slipstream, never through Social Upgrades.</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ===== Guests ===== -->
+          <sc-if value="{{ shOnGuests }}" hint-placeholder-val="{{ false }}">
+            <div class="su-rdkpi">
+              <sc-for list="{{ shGTiles }}" as="k" hint-placeholder-count="4">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+                  <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ k.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
+              <section style="display:flex;flex-direction:column;gap:10px;min-width:0">
+                <input value="{{ dShGuestQ }}" onChange="{{ onShGuestQ }}" placeholder="Search name or email" aria-label="Search guests" style="height:40px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body);max-width:420px" />
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;min-width:620px;font-size:13.5px">
+                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Joined</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Shows</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Last show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Newsletter</th></tr></thead>
+                    <tbody>
+                      <sc-for list="{{ shGuests }}" as="g" hint-placeholder-count="6">
+                        <tr onClick="{{ g.pick }}" style="{{ g.rowStyle }}">
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><div style="font-weight:600;color:var(--navy)">{{ g.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ g.email }}</div></td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.joined }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.shows }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.last }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ g.nlStyle }}">{{ g.newsletter }}</span></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                  <sc-if value="{{ shNoGuests }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;font-size:13.5px;color:var(--text-muted)">Nobody matches that search.</div></sc-if>
+                </div>
+              </section>
+              <aside style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;align-items:center;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:700 15px var(--font-display);flex:0 0 auto">{{ shGuest.initials }}</span><div style="min-width:0"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy)">{{ shGuest.name }}</div><div style="font-size:13px;color:var(--text-muted)">{{ shGuest.email }} · joined {{ shGuest.joined }}</div></div></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shGuestAction }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 14px;min-height:36px;font:600 13px var(--font-body);cursor:pointer">Resend last email</button><button onClick="{{ shGuestAction }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:36px;font:600 13px var(--font-body);cursor:pointer">Send sign-in link</button></div>
+                <div style="display:flex;flex-direction:column"><div style="font-weight:600;color:var(--navy);margin-bottom:4px">RSVP history</div>
+                  <sc-for list="{{ shGuest.history }}" as="h" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-card)"><span>{{ h.t }}</span><span style="color:var(--text-muted);white-space:nowrap">{{ h.s }}</span></div></sc-for>
+                </div>
+                <div style="display:flex;flex-direction:column"><div style="font-weight:600;color:var(--navy);margin-bottom:4px">Emails</div>
+                  <sc-for list="{{ shGuest.emails }}" as="h" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-card)"><span>{{ h.t }}</span><span style="color:var(--blue);font-weight:600">{{ h.s }}</span></div></sc-for>
+                </div>
+                <div style="display:flex;gap:8px;padding-top:4px"><button onClick="{{ shGuestAction }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Export their data</button><button onClick="{{ shGuestAction }}" style="border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Delete account</button></div>
+              </aside>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ secBrand }}" hint-placeholder-val="{{ false }}">
         <sc-if value="{{ brandBusy }}" hint-placeholder-val="{{ false }}">
           <div style="background:var(--gray-100);border:1px solid var(--border-hairline);color:var(--text-muted);padding:12px 18px;border-radius:12px;font-size:13px">Uploading…</div>
@@ -5159,6 +5534,235 @@ class Component extends DCLogic {
       this._copyT=setTimeout(()=>this.setState({copied:''}),1400);
     };
   }
+  // ===== Shows (Slipstream) =====
+  // Slipstream's admin: launch shows that appear on viewslipstream.com, and see
+  // every email, payment and guest. Visible to the team (Clients > Shows) and in
+  // Slipstream's own portal (client id 'vs').
+  //
+  // PREVIEW PHASE: the screens are real and clickable, but they run on sample
+  // data below. Show titles and dates are Slipstream's real program; RSVP, open
+  // and guest counts are samples. Phase 2 swaps SHOWS_SAMPLE for Slipstream's
+  // own Supabase project and the buttons start doing what they say.
+  showsVals({isTeam, client, sectionNow}){
+    const S=this.state, d=S.d||{};
+    const on = sectionNow==='shows' && (isTeam || (client && client.id==='vs'));
+    if(!on) return {secShows:false};
+    const STAGING='https://staging--viewslipstream.netlify.app';
+    const IMG='https://viewslipstream.com/wp-content/uploads/';
+    const PT='America/Los_Angeles';
+    const now=Date.now();
+    const fmt=(iso,o)=>new Intl.DateTimeFormat('en-US',Object.assign({timeZone:PT},o)).format(new Date(iso));
+    const when=iso=>{ const t=fmt(iso,{hour:'numeric',minute:'2-digit'}); return fmt(iso,{month:'short',day:'numeric'})+' · '+(t==='11:59 PM'?'12:00 AM':t); };
+    const span=ms=>{ ms=Math.max(0,ms); const dd=Math.floor(ms/864e5), hh=Math.floor(ms%864e5/36e5), mm=Math.floor(ms%36e5/6e4);
+      return dd? dd+'d '+hh+'h' : hh? hh+'h '+mm+'m' : mm+'m'; };
+
+    // Real program (titles, types, dates, venues). Counts are SAMPLE numbers.
+    const SHOWS=[
+      {id:'a-fox-under-a-pink-moon',title:'A Fox Under a Pink Moon',kind:'streaming',series:'Academy Award-Contender Series',
+       start:'2026-11-05T19:00:00-08:00',end:'2026-11-11T23:59:00-08:00',cap:500,rsvps:186,watched:0,opened:0.79,pw:'FOX-2026',
+       poster:IMG+'2026/10/a-fox-under-a-pink-moon-horizontal-poster.jpg',sub:'with LACMA · conversation with Mehrdad Oskouei and Soraya Akhlaghi'},
+      {id:'next-draft',title:'[Next streaming title]',kind:'streaming',series:'Academy Award-Contender Series',draft:true,
+       start:'2026-11-19T19:00:00-08:00',end:'2026-11-25T23:59:00-08:00',cap:500,rsvps:0,missing:'DaCast embed, password, key art'},
+      {id:'the-only-living-pickpocket-in-new-york',title:'The Only Living Pickpocket in New York',kind:'in-person',series:'October Screenings',
+       start:'2026-10-18T15:00:00-07:00',cap:150,rsvps:150,checkedIn:131,opened:0.66,venue:'Harmony Gold Theater',
+       poster:IMG+'2026/10/pickpoket.jpg',sub:'with LACMA · Harmony Gold Theater'},
+      {id:'klara-and-the-sun',title:'Klara and the Sun',kind:'giveaway',series:'October Screenings',
+       start:'2026-10-13T09:00:00-07:00',end:'2026-10-30T12:00:00-07:00',rsvps:212,winners:5,opened:0.71,
+       poster:IMG+'2026/10/klarta-and-the-sun.jpg',sub:'5 prize packs · with The Last Bookstore'},
+      {id:'the-love-hypothesis',title:'The Love Hypothesis',kind:'in-person',series:'September Screenings',start:'2026-09-17T19:00:00-07:00',cap:200,rsvps:200,checkedIn:174,opened:0.62,venue:'Culver Theater'},
+      {id:'ha-chan-shake-your-booty',title:'Ha-Chan, Shake Your Booty!',kind:'in-person',series:'September Screenings',start:'2026-09-16T19:30:00-07:00',cap:180,rsvps:180,checkedIn:151,opened:0.58,venue:'AMC The Grove 14'},
+      {id:'finding-emily',title:'Finding Emily',kind:'in-person',series:'August Screenings',start:'2026-08-26T19:00:00-07:00',cap:150,rsvps:150,checkedIn:131,opened:0.66,venue:'AMC The Grove 14'},
+      {id:'the-boys-season-5',title:'The Boys, Season 5',kind:'streaming',series:'Emmy-Nominated Screening Series',start:'2026-08-19T19:00:00-07:00',end:'2026-08-27T23:59:00-07:00',cap:500,rsvps:418,watched:0.71,opened:0.58},
+      {id:'spider-noir',title:'Spider-Noir',kind:'streaming',series:'Emmy-Nominated Screening Series',start:'2026-08-10T19:00:00-07:00',end:'2026-08-27T23:59:00-07:00',cap:500,rsvps:342,watched:0.63,opened:0.61}
+    ];
+    const phase=s=>{ const a=+new Date(s.start), b=s.end? +new Date(s.end) : a+3*36e5;
+      return s.draft? 'draft' : now<a? 'upcoming' : now<=b? 'live' : 'closed'; };
+    const KIND={streaming:'Streaming · DaCast','in-person':'In person',giveaway:'Giveaway',live:'Live · YouTube',paid:'Paid · Stripe'};
+    const art=url=>({width:120,aspectRatio:'16 / 9',flex:'0 0 auto',borderRadius:8,background:'var(--gray-100) center / cover no-repeat'+(url? ' url("'+url+'")' : '')});
+    const pill=(bg,fg)=>({display:'inline-flex',alignItems:'center',gap:6,height:24,padding:'0 9px',borderRadius:999,fontSize:12,fontWeight:600,background:bg,color:fg,whiteSpace:'nowrap'});
+    const ST={
+      live:['Live',pill('rgba(31,178,100,.14)','var(--navy)')],
+      upcoming:['RSVP open',pill('rgba(46,63,214,.10)','var(--blue)')],
+      draft:['Draft',pill('var(--gray-100)','var(--text-body)')],
+      closed:['Closed',pill('var(--gray-100)','var(--text-muted)')],
+      giveaway:['Entries open',pill('rgba(46,63,214,.10)','var(--blue)')]
+    };
+    const status=s=>{ const p=phase(s); return p==='live'&&s.kind==='giveaway'? ST.giveaway : ST[p]; };
+    const whenText=s=> s.kind==='in-person'? fmt(s.start,{weekday:'short',month:'short',day:'numeric'})+' · '+fmt(s.start,{hour:'numeric',minute:'2-digit'})
+      : s.kind==='giveaway'? 'Entries close '+when(s.end) : when(s.start)+' to '+when(s.end);
+    const flash=msg=>()=>this.setState({flash:msg});
+    const soon='Coming with phase 2: this button goes live once Slipstream’s database is connected.';
+    const bar=(pct,color)=>({display:'block',height:'100%',width:Math.round(Math.min(1,pct)*100)+'%',background:color||'var(--green)'});
+
+    const tab=S.shTab||'shows', view=S.shView||'list';
+    const tabStyle=on=>({padding:'10px 14px',fontWeight:500,fontSize:14,color:on?'var(--navy)':'var(--text-muted)',background:'none',border:'none',
+      borderBottom:'2px solid '+(on?'var(--green)':'transparent'),marginBottom:-1,cursor:'pointer',fontFamily:'var(--font-body)'});
+    const shTabs=[['shows','Shows'],['emails','Emails'],['payments','Payments'],['guests','Guests']].map(([k,l])=>({label:l,on:tab===k,style:tabStyle(tab===k),
+      select:()=>this.setState({shTab:k,shView:'list',shSel:null})}));
+
+    const upcoming=SHOWS.filter(s=>phase(s)!=='closed').sort((a,b)=>a.start.localeCompare(b.start));
+    const past=SHOWS.filter(s=>phase(s)==='closed').sort((a,b)=>b.start.localeCompare(a.start));
+    const leadShow=SHOWS.find(s=>phase(s)==='live'&&s.kind!=='giveaway') || upcoming.find(s=>!s.draft) || null;
+    const openShow=id=>()=>this.setState({shView:'detail',shSel:id,shTab:'shows'});
+
+    const lead = leadShow ? (()=>{ const p=phase(leadShow); const live=p==='live';
+      return {title:leadShow.title, kind:KIND[leadShow.kind], when:whenText(leadShow), poster:leadShow.poster||'',
+        heading: live? 'Live now' : 'Next up', posterStyle: art(leadShow.poster),
+        statusLabel: live? 'Live' : 'RSVP open', statusStyle: live? ST.live[1] : ST.upcoming[1],
+        cd: live? 'Closes in '+span(+new Date(leadShow.end)-now) : 'Opens in '+span(+new Date(leadShow.start)-now),
+        rsvpText: leadShow.rsvps+' of '+leadShow.cap+' RSVPs', bar: bar(leadShow.rsvps/leadShow.cap),
+        mailLine: live? '“It’s showtime” sent to '+leadShow.rsvps+' guests · '+Math.round((leadShow.opened||0)*100)+'% opened'
+          : '“It’s showtime” goes out '+when(leadShow.start)+' PT to everyone who RSVP’d',
+        cardStyle:{background:'var(--surface-card)',border:'1px solid var(--border-card)',borderLeft:'4px solid '+(live?'var(--green)':'var(--blue)'),borderRadius:12,padding:'18px 20px',display:'flex',gap:18,alignItems:'center',flexWrap:'wrap'},
+        open: openShow(leadShow.id), copyPw: ()=>{ try{ navigator.clipboard.writeText(leadShow.pw); }catch(e){} this.setState({flash:'Viewing password copied (sample).'}); },
+        view: STAGING+'/'+leadShow.id+'/'}; })() : null;
+
+    const row=s=>{ const [sl,ss]=status(s); const capped=s.cap&&s.kind!=='giveaway';
+      return {title:s.title, sub:s.draft? 'Missing: '+s.missing : (s.sub||s.series), kind:KIND[s.kind], when:whenText(s),
+        rsvpText: s.draft? 'Not published' : s.kind==='giveaway'? s.rsvps+' entries' : capped? s.rsvps+' / '+s.cap : String(s.rsvps),
+        hasBar: !!capped && !s.draft, bar: bar(capped? s.rsvps/s.cap : 0, s.rsvps>=s.cap? 'var(--blue)' : 'var(--green)'),
+        statusLabel:sl, statusStyle:ss, poster:s.poster||'', hasPoster:!!s.poster,
+        action: s.draft? 'Finish setup' : 'Manage', open: s.draft? ()=>this.setState({shView:'launch'}) : openShow(s.id),
+        watched: s.kind==='in-person'? (s.checkedIn? s.checkedIn+' checked in' : '') : s.kind==='giveaway'? s.winners+' winners' : Math.round((s.watched||0)*100)+'%',
+        closed: s.end? fmt(s.end,{month:'short',day:'numeric'}) : fmt(s.start,{month:'short',day:'numeric'}),
+        thanks:'Sent · '+Math.round((s.opened||0)*100)+'% opened'}; };
+
+    const totalUpcomingRsvps=upcoming.filter(s=>!s.draft).reduce((a,s)=>a+s.rsvps,0);
+    const shTiles=[
+      {label:lead&&phase(leadShow)==='live'? 'Live now' : 'Next show', value: leadShow? leadShow.title : 'None scheduled', sub: lead? lead.cd : 'Launch one to get started', small:true},
+      {label:'RSVPs on upcoming shows', value:String(totalUpcomingRsvps), sub: leadShow? Math.round(leadShow.rsvps/leadShow.cap*100)+'% of '+leadShow.title+'’s '+leadShow.cap+' cap' : ''},
+      {label:'Emails scheduled', value:'3', sub: leadShow? 'Next: “It’s showtime”, '+when(leadShow.start) : ''},
+      {label:'Past shows', value:'61', sub:'Since 2021 on viewslipstream.com'}
+    ].map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:t.small?18:28,lineHeight:1.15,color:'var(--navy)'}}));
+
+    // ---- Launch a show
+    const TYPES=[['streaming','Streaming','DaCast embed, password, date window'],['in-person','In person','Venue, capacity, seats'],
+      ['giveaway','Giveaway','Prize, entry close, winners'],['live','Live stream','YouTube Live, no password'],['paid','Paid','Stripe price, receipts']];
+    const ty=S.shType||'streaming';
+    const typeCards=TYPES.map(([k,l,desc])=>({label:l,desc,on:ty===k,select:()=>this.setState({shType:k}),
+      style:{display:'flex',flexDirection:'column',gap:4,padding:'12px 14px',border:'1px solid '+(ty===k?'var(--blue)':'var(--gray-200)'),boxShadow:ty===k?'0 0 0 1px var(--blue)':'none',borderRadius:8,cursor:'pointer',background:'var(--surface-card)',textAlign:'left',fontFamily:'var(--font-body)'}}));
+    const v=k=>d[k]===undefined? '' : String(d[k]);
+    const title=v('shTitle'), slug=(title||'your-show-title').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const startTxt=v('shStart'), endTxt=v('shEnd');
+    const checks=[
+      ['Title and about text', !!title && !!v('shAbout')],
+      ['Trailer link', /youtu/.test(v('shTrailer'))],
+      ['Poster and key art', false],
+      [ty==='streaming'||ty==='paid'? 'DaCast embed' : ty==='in-person'? 'Venue and capacity' : ty==='giveaway'? 'Prize and entry close' : 'YouTube Live ID', !!v('shTypeA')],
+      [ty==='streaming'||ty==='paid'? 'Viewing password' : 'Details', !!v('shTypeB')],
+      ['Window and time zone', !!startTxt && (!!endTxt || ty==='in-person')],
+      ['Three emails scheduled', !!startTxt],
+      ['Test email sent to you', !!S.shTestSent]
+    ];
+    const okN=checks.filter(c=>c[1]).length;
+    const box=ok=>({width:18,height:18,borderRadius:4,flex:'0 0 auto',display:'inline-flex',alignItems:'center',justifyContent:'center',background:ok?'var(--blue)':'transparent',border:ok?'none':'1px solid rgba(15,22,51,.3)',color:'#fff',fontSize:11,fontWeight:700});
+    const field=(a,b,c)=>({fieldA:a,fieldB:b,fieldBHelp:c});
+    const typeFields = ty==='in-person'? field('Venue (name and address)','Capacity','Guests can take 1 or 2 seats.')
+      : ty==='giveaway'? field('Prize','Number of winners','Winners are drawn at random when entries close.')
+      : ty==='live'? field('YouTube Live video ID','Replay window (hours)','No password: anyone with an RSVP can watch.')
+      : ty==='paid'? field('DaCast embed ID or code','Ticket price (USD)','Stripe Checkout with Apple Pay and Google Pay.')
+      : field('DaCast embed ID or code','Viewing password','Shown on the show page to RSVP’d guests and sent in the “It’s showtime” email.');
+    const emailRows=[
+      ['RSVP confirmation','“You’re in: '+(title||'[Title]')+' on Slipstream”','Instantly, on each RSVP','rsvp'],
+      ['It’s showtime', ty==='in-person'? 'Check-in details for the screening' : 'Viewing link + password', startTxt? startTxt+' PT' : 'When the window opens','live'],
+      ['Thank you','Conversation link + what’s next', endTxt? endTxt+' PT' : 'When the window closes','thanks']
+    ].map(([n,s,w,k])=>({name:n,sub:s,when:w,preview:STAGING+'/emails/'+k+'/'}));
+
+    // ---- Show detail
+    const sel=SHOWS.find(s=>s.id===S.shSel) || leadShow || SHOWS[0];
+    const selP=phase(sel);
+    const GUESTS=[['Dana Whitfield','dana.w@example.com','Mar 2024',11],['Marcus Lee','marcus@example.com','Oct 2026',1],['Priya Natarajan','priya.n@example.com','Jan 2025',6],
+      ['Tom Alvarez','t.alvarez@example.com','Oct 2026',1],['Jules Okafor','jules@example.com','Nov 2023',19],['Hana Sato','hana.s@example.com','Jun 2026',3],['Leo Brandt','leo.b@example.com','Sep 2025',4]];
+    const detGuests=GUESTS.slice(0,6).map((g,i)=>({name:g[0],email:g[1],rsvpd:fmt(new Date(+new Date(sel.start)-(9-i)*864e5).toISOString(),{month:'short',day:'numeric'}),
+      watched: selP==='live'||selP==='closed'? (i%3===1? 'Not yet' : sel.kind==='in-person'? 'Checked in' : (1+i%2)+'h '+(10+i*7)+'m') : '—',
+      mail: i===3? 'Bounced' : i===5? 'Delivered' : i%2? 'Opened' : 'Clicked',
+      mailStyle: i===3? pill('rgba(180,35,24,.08)','#b42318') : pill('rgba(46,63,214,.10)','var(--blue)'),
+      act: i===3? 'Fix email' : 'Resend', actClick: flash(soon)}));
+    const tl=[
+      ['RSVP confirmation', sel.rsvps+' sent as guests RSVP’d · '+Math.round(((sel.opened||0.7)+0.1)*100)+'% opened', true],
+      ['It’s showtime', selP==='upcoming'||selP==='draft'? 'Scheduled '+when(sel.start)+' PT · to everyone who RSVP’d' : 'Sent '+when(sel.start)+' · '+Math.round((sel.opened||0.6)*100)+'% opened', !(selP==='upcoming'||selP==='draft')],
+      ['Closing soon reminder', sel.end? (selP==='closed'? 'Sent '+when(new Date(+new Date(sel.end)-864e5).toISOString()) : 'Scheduled '+when(new Date(+new Date(sel.end)-864e5).toISOString())+' · opted-in guests') : 'Not used for in-person shows', selP==='closed'],
+      ['Thank you', selP==='closed'? 'Sent · '+Math.round((sel.opened||0.6)*100)+'% opened' : 'Scheduled '+(sel.end? when(sel.end) : 'after the screening')+' · to all '+sel.rsvps, selP==='closed']
+    ].map(([n,s,done],i,a)=>({name:n,sub:s,dotStyle:{width:12,height:12,borderRadius:'50%',flex:'0 0 auto',marginTop:4,boxSizing:'border-box',background:done?'var(--green)':'var(--surface-card)',border:done?'none':'2px solid var(--blue)'},
+      lineStyle:{width:2,flex:1,background:'rgba(15,22,51,.12)',margin:'4px 0 0 5px',display:i<a.length-1?'block':'none'}}));
+    const det={title:sel.title,kind:KIND[sel.kind],series:sel.series,when:whenText(sel),url:'viewslipstream.com/'+sel.id+'/',view:STAGING+'/'+(sel.draft?'':sel.id+'/'),
+      statusLabel:status(sel)[0],statusStyle:status(sel)[1],posterStyle:art(sel.poster),hasPoster:!!sel.poster,
+      hasPw:!!sel.pw, pw:sel.pw||'', cd: selP==='live'? 'Closes in '+span(+new Date(sel.end)-now) : selP==='upcoming'? 'Opens in '+span(+new Date(sel.start)-now) : 'Closed '+(sel.end? when(sel.end) : fmt(sel.start,{month:'short',day:'numeric'})),
+      tiles:[
+        {label:sel.kind==='giveaway'?'Entries':'RSVPs', value:String(sel.rsvps), sub: sel.cap&&sel.kind!=='giveaway'? 'of '+sel.cap+' cap' : ''},
+        {label:sel.kind==='in-person'?'Checked in':sel.kind==='giveaway'?'Winners':'Watched', value: sel.kind==='in-person'? String(sel.checkedIn||'—') : sel.kind==='giveaway'? String(sel.winners) : selP==='upcoming'? '—' : Math.round((sel.watched||0.6)*sel.rsvps)+'', sub: sel.kind==='streaming'&&selP!=='upcoming'? Math.round((sel.watched||0.6)*100)+'% of RSVPs' : selP==='upcoming'? 'Opens '+when(sel.start) : ''},
+        {label:'Showtime email opened', value: selP==='upcoming'? '—' : Math.round((sel.opened||0.6)*100)+'%', sub: selP==='upcoming'? 'Sends '+when(sel.start) : '3 bounced'},
+        {label:'Support requests', value: selP==='upcoming'? '0' : '4', sub: selP==='upcoming'? '' : '2 open · password typos'}
+      ],
+      guests:detGuests, timeline:tl, isLive:selP==='live', isUpcoming:selP==='upcoming', canExtend:selP==='live'||selP==='upcoming'};
+
+    // ---- Emails tab
+    const fox=SHOWS[0];
+    const emUpcoming=[
+      [fox.start,'A Fox Under a Pink Moon','It’s showtime (viewing link + password)',fox.rsvps+' so far'],
+      [new Date(+new Date(fox.end)-864e5).toISOString(),'A Fox Under a Pink Moon','Closing soon reminder','Opted-in guests'],
+      [fox.end,'A Fox Under a Pink Moon','Thank you','Everyone who RSVP’d']
+    ].filter(r=>+new Date(r[0])>now).map(([t,s,e,n])=>({when:when(t),show:s,email:e,to:n,
+      preview:STAGING+'/emails/'+(e.startsWith('Thank')?'thanks':e.startsWith('It')?'live':'rsvp')+'/?show=a-fox-under-a-pink-moon',
+      pause:flash(soon), sendNow:flash(soon)}));
+    const emSent=[
+      ['Rolling','A Fox Under a Pink Moon','RSVP confirmation',fox.rsvps,'81%','34%',0],
+      ['Oct 30 · 12:05 PM','Klara and the Sun','Giveaway winners + thanks for entering',212,'71%','22%',1],
+      ['Oct 19 · 12:00 AM','The Only Living Pickpocket in New York','Thank you',150,'66%','27%',0],
+      ['Oct 18 · 2:30 PM','The Only Living Pickpocket in New York','It’s showtime (check-in details)',150,'74%','41%',2],
+      ['Sep 18 · 12:00 AM','The Love Hypothesis','Thank you',200,'62%','25%',1]
+    ].map(([w,s,e,del,op,cl,b])=>({when:w,show:s,email:e,delivered:String(del),opened:op,clicked:cl,bounced:String(b),
+      bouncedStyle:{color:b?'#b42318':'inherit',fontWeight:b?600:400}, report:flash(soon)}));
+    const templates=[['RSVP confirmed','RSVP confirmation','“You’re in: {title} on Slipstream”','rsvp'],
+      ['Now showing','It’s showtime','Streaming, in-person and live variants','live'],
+      ['Thank you','Thank you','Conversation link + what’s next','thanks'],
+      ['Reminder','Closing soon','24h before the window ends, opt-in only','live'],
+      ['Giveaway','Entry received · Winner','Two templates, one card','rsvp'],
+      ['Receipt','Paid show receipt','Stripe receipt + the same viewing details','rsvp']]
+      .map(([k,n,s,p])=>({kicker:k,name:n,sub:s,preview:STAGING+'/emails/'+p+'/',test:flash(soon)}));
+
+    // ---- Guests tab
+    const q=(v('shGuestQ')).toLowerCase();
+    const gSel=S.shGuest||GUESTS[0][1];
+    const guests=GUESTS.filter(g=>!q||g[0].toLowerCase().includes(q)||g[1].includes(q)).map((g,i)=>({name:g[0],email:g[1],joined:g[2],shows:String(g[3]),
+      last:['A Fox Under a Pink Moon · RSVP’d','A Fox Under a Pink Moon · RSVP’d','Klara and the Sun · entered','Pickpocket · email bounced','Pickpocket · checked in','Klara and the Sun · entered','The Love Hypothesis · checked in'][GUESTS.indexOf(g)],
+      newsletter: i===2? 'Off':'On', nlStyle: i===2? pill('var(--gray-100)','var(--text-body)') : pill('rgba(31,178,100,.14)','var(--navy)'),
+      rowStyle:{cursor:'pointer',background:g[1]===gSel?'rgba(46,63,214,.05)':'transparent'}, pick:()=>this.setState({shGuest:g[1]})}));
+    const gs=GUESTS.find(g=>g[1]===gSel)||GUESTS[0];
+    const guest={name:gs[0],email:gs[1],joined:gs[2],initials:gs[0].split(' ').map(x=>x[0]).join(''),shows:gs[3],
+      history:[['A Fox Under a Pink Moon','Nov 2026 · RSVP’d'],['Klara and the Sun','Oct 2026 · entered'],['The Only Living Pickpocket in New York','Oct 2026 · checked in'],['Spider-Noir','Aug 2026 · watched']].slice(0,Math.min(4,gs[3])).map(([t,s])=>({t,s})),
+      emails:[['RSVP confirmation · A Fox Under a Pink Moon','Opened'],['Thank you · Pickpocket','Opened'],['It’s showtime · Pickpocket','Clicked']].map(([t,s])=>({t,s}))};
+
+    return {
+      secShows:true, shBanner:'Every screen here is clickable, with Slipstream’s real shows and sample numbers. It connects to Slipstream’s database in the next phase; then launching a show here publishes it to viewslipstream.com.',
+      shStaging:STAGING, shTabs, shOnShows:tab==='shows', shOnEmails:tab==='emails', shOnPayments:tab==='payments', shOnGuests:tab==='guests',
+      shList:tab==='shows'&&view==='list', shLaunch:tab==='shows'&&view==='launch', shDetail:tab==='shows'&&view==='detail',
+      shGoLaunch:()=>this.setState({shTab:'shows',shView:'launch'}), shBack:()=>this.setState({shView:'list',shSel:null}),
+      shTiles, shLead:lead||{}, shHasLead:!!lead, shUpcoming:upcoming.map(row), shPast:past.map(row),
+      shTypeCards:typeCards, ...typeFields, shSlug:slug,
+      dShTitle:v('shTitle'), onShTitle:this.draft('shTitle'), dShAbout:v('shAbout'), onShAbout:this.draft('shAbout'),
+      dShTrailer:v('shTrailer'), onShTrailer:this.draft('shTrailer'), dShQa:v('shQa'), onShQa:this.draft('shQa'),
+      dShTypeA:v('shTypeA'), onShTypeA:this.draft('shTypeA'), dShTypeB:v('shTypeB'), onShTypeB:this.draft('shTypeB'),
+      dShStart:startTxt, onShStart:this.draft('shStart'), dShEnd:endTxt, onShEnd:this.draft('shEnd'), shNeedsEnd: ty!=='in-person',
+      dShSeries:v('shSeries')||'Academy Award-Contender Series', onShSeries:this.draft('shSeries'),
+      shSeriesOpts:['Academy Award-Contender Series','November Screenings','Special Advance Screening','Emmy-Nominated Screening Series'].map(x=>({v:x,l:x})),
+      shChecks:checks.map(([l,ok])=>({label:l,ok,box:box(ok),tick:ok?'✓':''})), shReady:okN+' of '+checks.length,
+      shEmailRows:emailRows,
+      shSendTest:()=>this.setState({shTestSent:true,flash:'Preview: in phase 2 the three emails go to your inbox. Marked as sent for the checklist.'}),
+      shSaveDraft:flash('Preview: drafts save once Slipstream’s database is connected.'),
+      shPublish:flash('Preview: publishing turns on in phase 2. On the staging site you can already see how the show page will look.'),
+      shPreviewSite:STAGING+'/review/',
+      shDet:det, shResend:flash(soon), shExtend:flash(soon), shCloseNow:flash(soon), shExport:flash(soon), shCopyPw:()=>{ try{ navigator.clipboard.writeText(sel.pw||''); }catch(e){} this.setState({flash:'Viewing password copied (sample).'}); },
+      shEmTiles:[{label:'Scheduled',value:String(emUpcoming.length),sub:emUpcoming.length? 'next '+emUpcoming[0].when : 'none'},{label:'Sent, last 30 days',value:'1,214',sub:'across 3 shows'},{label:'Open rate',value:'68%',sub:'“It’s showtime” averages 74%'},{label:'Sending',value:'Not set up',sub:'Resend on viewslipstream.com in phase 2',small:true}]
+        .map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:t.small?18:28,lineHeight:1.15,color:'var(--navy)'}})),
+      shEmUpcoming:emUpcoming, shNoEmUpcoming:emUpcoming.length===0, shEmSent:emSent, shTemplates:templates,
+      shGTiles:[{label:'Accounts',value:'4,812',sub:'after migrating from WordPress'},{label:'New this month',value:'213',sub:'most from Pickpocket RSVPs'},{label:'Newsletter opted in',value:'81%',sub:'3,904 people'},{label:'Regulars (3+ shows)',value:'1,120',sub:'23% of accounts'}]
+        .map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:28,lineHeight:1.15,color:'var(--navy)'}})),
+      shGuests:guests, shNoGuests:guests.length===0, dShGuestQ:v('shGuestQ'), onShGuestQ:this.draft('shGuestQ'), shGuest:guest,
+      shGuestAction:flash(soon)
+    };
+  }
+
   renderVals(){
     const S=this.state, d=S.d;
     // ===== previewing the team view as another member =====
@@ -5636,7 +6240,7 @@ class Component extends DCLogic {
       // decline), so the team has no separate Requests page: one place to work.
       ['g-work','Work',[['board','Workboard'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
       ['messages','Messages'],
-      ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['invoicing','Invoicing']]],
+      ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['shows','Shows'],['invoicing','Invoicing']]],
       ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
       ['g-team','Team',[['team','People'],['payments','Team Pay']]]
     ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
@@ -5647,6 +6251,8 @@ class Component extends DCLogic {
     // is a button under the nav rather than a page in it.
     const CLIENT_TREE = [
       ['home','Dashboard'],
+      // Slipstream runs its screenings from here: launch shows, emails, guests.
+      ...(client && client.id==='vs' ? [['shows','Shows']] : []),
       ['g-work','Work',[['updates','Updates'],['requests','Requests'],['todos','To-Dos']]],
       ['messages','Messages'],
       ['g-growth','Growth',[['strategy','Content Map'],['reports','Reports']]],
@@ -5802,8 +6408,8 @@ class Component extends DCLogic {
       });
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
-      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing']};
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
+      : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing'],shows:[client.name,'Shows']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
     // Inside a company, the kicker says which one; the organization overview
@@ -8918,8 +9524,10 @@ class Component extends DCLogic {
       .concat(portalBizs.map(b=>({id:b.id,label:b.name}))).map(t=>{ const on=(t.id==='all'? !bizScoped : bizSel===t.id);
         const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'var(--surface-card)':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
         return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
+    const shv = this.showsVals({isTeam, client, sectionNow});
     return {
       ...leadVals,
+      ...shv,
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:curBiz? curBiz.name : client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
       // they cover, so one login serves the whole group.
