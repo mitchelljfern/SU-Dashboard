@@ -4681,6 +4681,24 @@
                 </table>
               </div>
             </section>
+
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Series and groups</h3><button onClick="{{ shGoNewSeries }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:38px;font:600 13.5px var(--font-body);cursor:pointer">+ New series or group</button></div>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;min-width:560px;font-size:13.5px">
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Name</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">On the home page</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Shows</th></tr></thead>
+                  <tbody>
+                    <sc-for list="{{ shSeriesRows }}" as="r" hint-placeholder-count="4">
+                      <tr>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);font-weight:600;color:var(--navy)">{{ r.name }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.kind }}</td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.count }}</td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </sc-if>
 
           <!-- ===== Shows: launch a show ===== -->
@@ -4703,6 +4721,17 @@
                     <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Series or group<select value="{{ dShSeries }}" onChange="{{ onShSeries }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><sc-for list="{{ shSeriesOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
                     <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Trailer (YouTube link)<input value="{{ dShTrailer }}" onChange="{{ onShTrailer }}" placeholder="https://youtube.com/watch?v=…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                   </div>
+                  <sc-if value="{{ shAddingSeries }}" hint-placeholder-val="{{ false }}">
+                    <div style="border:1px solid rgba(46,63,214,.25);background:rgba(46,63,214,.05);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                      <b style="font-size:13.5px;color:var(--navy)">New series or group</b>
+                      <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px">
+                        <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Name<input value="{{ dShNewSeries }}" onChange="{{ onShNewSeries }}" placeholder="Holiday Screening Series" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                        <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">On the home page<select value="{{ dShNewSeriesKind }}" onChange="{{ onShNewSeriesKind }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><option value="series">Its own row (a series)</option><option value="month">A month tab under Screenings</option></select></label>
+                      </div>
+                      <div style="font-size:12px;color:var(--text-muted);line-height:1.5">It appears on the home page with its first published show. Rows fill the full width on their own: 1 or 2 shows go horizontal, up to 5 posters per row.</div>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shAddSeries }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:38px;font:600 13.5px var(--font-body);cursor:pointer">Add series</button><button onClick="{{ shCancelSeries }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:38px;font:600 13.5px var(--font-body);cursor:pointer">Cancel</button></div>
+                    </div>
+                  </sc-if>
                   <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">About the show<textarea value="{{ dShAbout }}" onChange="{{ onShAbout }}" rows="4" placeholder="The synopsis guests read before they RSVP." style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font:14px/1.5 var(--font-body);resize:vertical"></textarea></label>
                   <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Conversation line<input value="{{ dShQa }}" onChange="{{ onShQa }}" placeholder="Followed by a conversation with…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                   <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px">
@@ -4723,6 +4752,13 @@
                     <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                   </div>
                   <div style="font-size:12px;color:var(--text-muted);margin-top:-6px">{{ fieldBHelp }}</div>
+                  <sc-if value="{{ shIsInPerson }}" hint-placeholder-val="{{ false }}">
+                    <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:end">
+                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Seats per guest<select value="{{ dShSeatsPer }}" onChange="{{ onShSeatsPer }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><option value="1">1 seat</option><option value="2">Up to 2 seats</option><option value="3">Up to 3 seats</option><option value="4">Up to 4 seats</option></select></label>
+                      <label style="display:flex;align-items:center;gap:10px;min-height:42px;font-size:13.5px;font-weight:500;color:var(--navy);cursor:pointer"><input type="checkbox" checked="{{ dShWaitlist }}" onChange="{{ onShWaitlist }}" style="width:18px;height:18px;accent-color:var(--blue)" />Waiting list when full</label>
+                    </div>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:-6px;line-height:1.5">Guests pick how many seats when they RSVP, no account needed. When every seat is taken, the RSVP card switches to “Join the waiting list”, and people on the list get an email when seats open up.</div>
+                  </sc-if>
                 </section>
 
                 <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
@@ -4934,7 +4970,7 @@
                 <input value="{{ dShGuestQ }}" onChange="{{ onShGuestQ }}" placeholder="Search name or email" aria-label="Search guests" style="height:40px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body);max-width:420px" />
                 <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
                   <table style="width:100%;border-collapse:collapse;min-width:620px;font-size:13.5px">
-                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Joined</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Shows</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Last show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Newsletter</th></tr></thead>
+                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Joined</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Shows</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Last show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Account</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Newsletter</th></tr></thead>
                     <tbody>
                       <sc-for list="{{ shGuests }}" as="g" hint-placeholder-count="6">
                         <tr onClick="{{ g.pick }}" style="{{ g.rowStyle }}">
@@ -4942,6 +4978,7 @@
                           <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.joined }}</td>
                           <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.shows }}</td>
                           <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)">{{ g.last }}</td>
+                          <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ g.acctStyle }}">{{ g.account }}</span></td>
                           <td style="padding:11px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ g.nlStyle }}">{{ g.newsletter }}</span></td>
                         </tr>
                       </sc-for>
@@ -5655,9 +5692,15 @@ class Component extends DCLogic {
       ['Test email sent to you', !!S.shTestSent]
     ];
     const okN=checks.filter(c=>c[1]).length;
+    // Series and groups: the ones Slipstream's shows already use, plus any added here.
+    const MONTH_RE=/^(January|February|March|April|May|June|July|August|September|October|November|December)\b.*Screenings?$/i;
+    const SERIES=[];
+    SHOWS.forEach(x=>{ const f=SERIES.find(y=>y.name===x.series); if(f) f.count++; else SERIES.push({name:x.series,kind:MONTH_RE.test(x.series)?'month':'series',count:1}); });
+    (S.shSeriesNew||[]).forEach(x=>{ if(!SERIES.some(y=>y.name===x.name)) SERIES.push({name:x.name,kind:x.kind,count:0}); });
+    const seriesPick=v('shSeries')||SERIES[0].name;
     const box=ok=>({width:18,height:18,borderRadius:4,flex:'0 0 auto',display:'inline-flex',alignItems:'center',justifyContent:'center',background:ok?'var(--blue)':'transparent',border:ok?'none':'1px solid rgba(15,22,51,.3)',color:'#fff',fontSize:11,fontWeight:700});
     const field=(a,b,c)=>({fieldA:a,fieldB:b,fieldBHelp:c});
-    const typeFields = ty==='in-person'? field('Venue (name and address)','Capacity','Guests can take 1 or 2 seats.')
+    const typeFields = ty==='in-person'? field('Venue (name and address)','Capacity','Total seats in the room.')
       : ty==='giveaway'? field('Prize','Number of winners','Winners are drawn at random when entries close.')
       : ty==='live'? field('YouTube Live video ID','Replay window (hours)','No password: anyone with an RSVP can watch.')
       : ty==='paid'? field('DaCast embed ID or code','Ticket price (USD)','Stripe Checkout with Apple Pay and Google Pay.')
@@ -5726,6 +5769,9 @@ class Component extends DCLogic {
     const gSel=S.shGuest||GUESTS[0][1];
     const guests=GUESTS.filter(g=>!q||g[0].toLowerCase().includes(q)||g[1].includes(q)).map((g,i)=>({name:g[0],email:g[1],joined:g[2],shows:String(g[3]),
       last:['A Fox Under a Pink Moon · RSVP’d','A Fox Under a Pink Moon · RSVP’d','Klara and the Sun · entered','Pickpocket · email bounced','Pickpocket · checked in','Klara and the Sun · entered','The Love Hypothesis · checked in'][GUESTS.indexOf(g)],
+      // Sample: people who RSVP'd with just a name and email have no account (and don't need one).
+      account: (GUESTS.indexOf(g)===1||GUESTS.indexOf(g)===3)? 'No account' : 'Account',
+      acctStyle: (GUESTS.indexOf(g)===1||GUESTS.indexOf(g)===3)? pill('var(--gray-100)','var(--text-body)') : pill('rgba(46,63,214,.10)','var(--blue)'),
       newsletter: i===2? 'Off':'On', nlStyle: i===2? pill('var(--gray-100)','var(--text-body)') : pill('rgba(31,178,100,.14)','var(--navy)'),
       rowStyle:{cursor:'pointer',background:g[1]===gSel?'rgba(46,63,214,.05)':'transparent'}, pick:()=>this.setState({shGuest:g[1]})}));
     const gs=GUESTS.find(g=>g[1]===gSel)||GUESTS[0];
@@ -5744,8 +5790,26 @@ class Component extends DCLogic {
       dShTrailer:v('shTrailer'), onShTrailer:this.draft('shTrailer'), dShQa:v('shQa'), onShQa:this.draft('shQa'),
       dShTypeA:v('shTypeA'), onShTypeA:this.draft('shTypeA'), dShTypeB:v('shTypeB'), onShTypeB:this.draft('shTypeB'),
       dShStart:startTxt, onShStart:this.draft('shStart'), dShEnd:endTxt, onShEnd:this.draft('shEnd'), shNeedsEnd: ty!=='in-person',
-      dShSeries:v('shSeries')||'Academy Award-Contender Series', onShSeries:this.draft('shSeries'),
-      shSeriesOpts:['Academy Award-Contender Series','November Screenings','Special Advance Screening','Emmy-Nominated Screening Series'].map(x=>({v:x,l:x})),
+      dShSeries:seriesPick, onShSeries:this.draft('shSeries'),
+      shSeriesOpts:SERIES.map(x=>({v:x.name,l:x.name})).concat([{v:'__new',l:'+ New series or group…'}]),
+      shAddingSeries: seriesPick==='__new',
+      dShNewSeries:v('shNewSeries'), onShNewSeries:this.draft('shNewSeries'),
+      dShNewSeriesKind:v('shNewSeriesKind')||'series', onShNewSeriesKind:this.draft('shNewSeriesKind'),
+      shAddSeries:()=>{
+        const kind=v('shNewSeriesKind')||'series';
+        let name=v('shNewSeries').trim().replace(/\s+/g,' ');
+        if(!name){ this.setState({flash:'Give the new series a name first.'}); return; }
+        if(kind==='month' && !/screenings?$/i.test(name)) name+=' Screenings';
+        if(SERIES.some(x=>x.name.toLowerCase()===name.toLowerCase())){ this.setState(s=>({d:{...s.d,shSeries:SERIES.find(x=>x.name.toLowerCase()===name.toLowerCase()).name},flash:'“'+name+'” already exists, so it’s selected.'})); return; }
+        this.setState(s=>({shSeriesNew:[...(s.shSeriesNew||[]),{name,kind}], d:{...s.d,shSeries:name,shNewSeries:''},
+          flash:'Added “'+name+'”. Preview: new series save to Slipstream’s database in phase 2.'}));
+      },
+      shCancelSeries:()=>this.setState(s=>({d:{...s.d,shSeries:SERIES[0].name,shNewSeries:''}})),
+      shGoNewSeries:()=>this.setState(s=>({shTab:'shows',shView:'launch',d:{...s.d,shSeries:'__new'}})),
+      shSeriesRows:SERIES.map(x=>({name:x.name,kind:x.kind==='month'?'Month tab under Screenings':'Its own row',count:x.count? (x.count+(x.count===1?' show':' shows')) : 'None yet'})),
+      shIsInPerson: ty==='in-person',
+      dShSeatsPer:v('shSeatsPer')||'2', onShSeatsPer:this.draft('shSeatsPer'),
+      dShWaitlist: d.shWaitlist===undefined? true : !!d.shWaitlist, onShWaitlist:this.draft('shWaitlist'),
       shChecks:checks.map(([l,ok])=>({label:l,ok,box:box(ok),tick:ok?'✓':''})), shReady:okN+' of '+checks.length,
       shEmailRows:emailRows,
       shSendTest:()=>this.setState({shTestSent:true,flash:'Preview: in phase 2 the three emails go to your inbox. Marked as sent for the checklist.'}),
