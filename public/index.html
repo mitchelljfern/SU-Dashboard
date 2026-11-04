@@ -755,6 +755,13 @@
                 <input value="{{ detailEst }}" onChange="{{ onDetailEst }}" onBlur="{{ saveDetailEst }}" type="number" min="0" step="0.25" placeholder="Not estimated yet" style="width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
                 <span style="font-size:11.5px;color:var(--text-muted)">Internal. Change it whenever the scope does.</span>
               </div>
+              <sc-if value="{{ showDetailActual }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours it took</label>
+                  <input value="{{ detailActual }}" onChange="{{ onDetailActual }}" onBlur="{{ saveDetailActual }}" type="number" min="0" step="0.25" placeholder="Blank uses the estimate" style="width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
+                  <span style="font-size:11.5px;color:var(--text-muted)">Optional. This is what counts when the client approves.</span>
+                </div>
+              </sc-if>
             </sc-if>
 
             <sc-if value="{{ hasDetailLinks }}" hint-placeholder-val="{{ false }}">
@@ -1469,12 +1476,6 @@
                   </sc-if>
                   <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                     <div style="font-size:11px;color:var(--text-muted)">Client needs by {{ w.needBy }}</div>
-                  </sc-if>
-                  <sc-if value="{{ w.showActual }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;flex-direction:column;gap:3px">
-                      <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours it took (optional)</label>
-                      <input value="{{ w.dActual }}" onChange="{{ w.onActual }}" onBlur="{{ w.saveActual }}" onClick="{{ swallow }}" type="number" min="0" step="0.25" placeholder="Leave blank to use the estimate" style="border:1px solid var(--gray-200);border-radius:12px;padding:5px 8px;font-size:12px;width:100%;box-sizing:border-box">
-                    </div>
                   </sc-if>
                   <sc-if value="{{ w.awaitingApproval }}" hint-placeholder-val="{{ false }}">
                     <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Waiting on the client. Approving counts these hours into this month.</div>
@@ -7862,6 +7863,15 @@ class Component extends DCLogic {
             this.set(x=>{ const it=findIt(x);
               it.hours = v===''? 0 : Math.max(0,Number(v)||0); return x; });
             this.setState(s2=>({d:{...s2.d,detailEst:undefined}})); },
+          // Hours it took lives in the opened card, not on the board preview.
+          // Same draft key the board card used, written on blur.
+          showDetailActual: isTeam&&ty==='work'&&(item.status==='progress'||item.status==='review'),
+          detailActual: d['act_'+item.id]===undefined? (item.actualHours||'') : d['act_'+item.id],
+          onDetailActual: this.draft('act_'+item.id),
+          saveDetailActual: ()=>{ if(!(isTeam&&ty==='work')) return;
+            const v=d['act_'+item.id]; if(v===undefined) return;
+            this.set(x=>{ const it=findIt(x);
+              it.actualHours = v===''? null : Math.max(0,Number(v)||0); return x; }); },
           onDetailProjected: e=>{ const v=e.target.value; this.set(x=>{ const it=findIt(x); it.projectedFinish=v; return x; }); },
           copyCard: ()=>copyText(cardMarkdown(item, ty), 'Card'),
           detailApprove: (ty==='update'&&item.needsApproval&&!item.approved&&!isTeam)
