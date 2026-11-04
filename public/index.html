@@ -3966,7 +3966,7 @@
                   </sc-if>
                   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px">
                     <sc-for list="{{ invAdminCards }}" as="ai" hint-placeholder-count="4">
-                      <div onClick="{{ ai.open }}" style="border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;cursor:pointer" style-hover="border-color:var(--navy);background:var(--gray-100)">
+                      <div onClick="{{ ai.open }}" style="{{ ai.tileStyle }}" style-hover="filter:brightness(.96);box-shadow:0 2px 10px rgba(15,22,51,.10)">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                           <div style="font-size:13px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ ai.num }}</div>
                           <span style="{{ ai.badgeStyle }}">{{ ai.status }}</span>
@@ -4536,7 +4536,7 @@
             </sc-if>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
               <sc-for list="{{ invoices }}" as="inv" hint-placeholder-count="4">
-                <div onClick="{{ inv.open }}" style="border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;cursor:pointer" style-hover="border-color:var(--navy);background:var(--gray-100)">
+                <div onClick="{{ inv.open }}" style="{{ inv.tileStyle }}" style-hover="filter:brightness(.96);box-shadow:0 2px 10px rgba(15,22,51,.10)">
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <div style="font-size:13px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ inv.num }}</div>
                     <span style="{{ inv.badgeStyle }}">{{ inv.status }}</span>
@@ -5469,7 +5469,7 @@ class Component extends DCLogic {
   box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'var(--surface-card)',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:12}; }
   badge(kind){
     const t=this._theme;
-    const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],red:['rgba(216,86,78,.14)','#a8352d']};
+    const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],orange:['rgba(234,118,38,.16)','#b4561a'],red:['rgba(216,86,78,.14)','#a8352d']};
     if(t){
       // On a dark card a pill has to lighten to stay legible; darkening the
       // text the way a white card wants would bury it.
@@ -5479,6 +5479,7 @@ class Component extends DCLogic {
       map.blue =[this.rgba(t.link, dk?.22:.11), ink(t.link)];
       map.gray =[this.rgba(dk?'#ffffff':'#0F1633',.09), 'var(--text-muted)'];
       map.amber=[this.rgba('#D68F2E',dk?.22:.14), dk?'#E2A857':'#a2691a'];
+      map.orange=[this.rgba('#EA7626',dk?.24:.16), dk?'#F4A266':'#b4561a'];
       if(map.red) map.red=[this.rgba('#D8564E',dk?.22:.14), dk?'#F08A83':'#9c332c'];
     }
     const [bg,fg]=map[kind]||map.gray;
@@ -6982,7 +6983,18 @@ class Component extends DCLogic {
     // Overdue is derived, never stored — a due date that has passed says it.
     const invIsLate=i=>!invIsPaid(i)&&!!i.dueDate&&String(i.dueDate)<todayIso;
     const invStatusOf=i=>invIsPaid(i)?'Paid':invIsLate(i)?'Overdue':(i.status||'Due');
-    const invBadge=i=>invIsPaid(i)?this.badge('green'):invIsLate(i)?this.badge('red'):this.badge('amber');
+    const invBadge=i=>invIsPaid(i)?this.badge('green'):invIsLate(i)?this.badge('red'):this.badge('orange');
+    // The whole tile wears its status so a row of invoices reads at a glance:
+    // paid green, overdue red, open orange. Fixed hues, not the client's brand
+    // accent, because these colors mean something; only the strength adapts
+    // to a dark portal card so the tint stays visible without glaring.
+    const invTileDark = !!(this._theme && this.lum(this._theme.card||'#ffffff') < 0.5);
+    const invTileStyle=i=>{
+      const hex = invIsPaid(i)? '#1FB264' : invIsLate(i)? '#D8564E' : '#EA7626';
+      return {background:this.rgba(hex, invTileDark? .24 : .17),
+        border:'1px solid '+this.rgba(hex, invTileDark? .60 : .50),
+        borderRadius:12, padding:'14px 16px', display:'flex', flexDirection:'column',
+        gap:7, cursor:'pointer'}; };
     const invDateOf=i=>i.issueDate? dayLabel(i.issueDate) : (i.date||'');
     const invsFor=cid=>D.invoices.filter(i=>i.clientId===cid).sort((a,b)=>(b.ts||0)-(a.ts||0));
     // A draft field falls back to what is stored, so the form is the row until
@@ -6994,7 +7006,7 @@ class Component extends DCLogic {
       d:{...s2.d,eiNum:undefined,eiIssue:undefined,eiDue:undefined,eiAmount:undefined,
          eiStatus:undefined,eiMethod:undefined,eiUrl:undefined,eiNote:undefined}}));
     const invCard=i=>({num:i.num||'Invoice', amount:invMoney(i.amount), date:invDateOf(i),
-      status:invStatusOf(i), badgeStyle:invBadge(i), hasUrl:!!i.url,
+      status:invStatusOf(i), badgeStyle:invBadge(i), tileStyle:invTileStyle(i), hasUrl:!!i.url,
       due:i.dueDate? 'Due '+dayLabel(i.dueDate) : '', hasDue:!!i.dueDate,
       // A settled invoice is a receipt, not a bill.
       payLabel: invIsPaid(i)? 'View invoice \u2192' : 'Open to pay \u2192',
