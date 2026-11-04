@@ -1470,12 +1470,6 @@
                   <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
                     <div style="font-size:11px;color:var(--text-muted)">Client needs by {{ w.needBy }}</div>
                   </sc-if>
-                  <!-- Projected finish is shown to the client on their request
-                       and in-progress cards. -->
-                  <div style="display:flex;flex-direction:column;gap:3px">
-                    <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
-                    <input value="{{ w.projected }}" onChange="{{ w.onProjected }}" onClick="{{ swallow }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:5px 8px;font-size:12px;width:100%;box-sizing:border-box">
-                  </div>
                   <sc-if value="{{ w.showActual }}" hint-placeholder-val="{{ true }}">
                     <div style="display:flex;flex-direction:column;gap:3px">
                       <label style="font-size:9.5px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours it took (optional)</label>
