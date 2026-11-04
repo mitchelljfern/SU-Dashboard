@@ -1237,112 +1237,97 @@
             <button onClick="{{ clearOvFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 12px;font-size:12px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Clear</button>
           </sc-if>
         </div>
-        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ tReqCount }})</h3>
+                <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests <span style="color:var(--text-muted);font-weight:600">{{ tReqCount }}</span></h3>
               <div style="display:flex;align-items:center;gap:8px">
                 <select value="{{ ovSortReq.value }}" onChange="{{ ovSortReq.onChange }}" style="{{ ovSortSelectStyle }}">
                   <sc-for list="{{ ovSortReq.options }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
                 </select>
-              <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
+                <button onClick="{{ goTeamRequests }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
               </div>
             </div>
-            <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <div style="display:flex;align-items:center;width:100%;gap:8px">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <span style="font-size:11px;color:var(--text-muted);margin-right:auto">{{ r.when }}</span>
-                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+            <sc-for list="{{ teamReqCards }}" as="r" hint-placeholder-count="3">
+              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;transition:box-shadow .12s ease,border-color .12s ease" style-hover="border-color:var(--navy);box-shadow:0 3px 10px rgba(15,22,51,.10)">
+                <div style="display:flex;align-items:center;gap:7px;width:100%;min-width:0">
+                  <span style="{{ r.dot }}"></span>
+                  <div class="su-cardtitle" style="flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ r.title }}">{{ r.title }}</div>
+                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▲</button></sc-if><sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▼</button></sc-if>
                 </div>
+                <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:15px">{{ r.clientName }} · {{ r.cat }} · {{ r.when }}</div>
               </div>
             </sc-for>
+            <sc-if value="{{ reqMoreHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:2px 2px;text-align:left" style-hover="color:var(--green)">{{ reqMore }}</button></sc-if>
             <sc-if value="{{ noTeamReqs }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No new requests.</div></sc-if>
           </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Queued ({{ tQueueCount }})</h3>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Queued <span style="color:var(--text-muted);font-weight:600">{{ tQueueCount }}</span></h3>
               <div style="display:flex;align-items:center;gap:8px">
                 <select value="{{ ovSortQueue.value }}" onChange="{{ ovSortQueue.onChange }}" style="{{ ovSortSelectStyle }}">
                   <sc-for list="{{ ovSortQueue.options }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
                 </select>
-              <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
+                <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
               </div>
             </div>
-            <sc-for list="{{ teamQueueCards }}" as="q" hint-placeholder-count="2">
-              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ q.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ q.clientName }}</div></div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;flex-wrap:wrap">
-                  <span style="font-size:11.5px;color:var(--text-muted)">{{ q.hoursLabel }}</span>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500">{{ q.commentsLabel }}</span>
+            <sc-for list="{{ teamQueueCards }}" as="q" hint-placeholder-count="3">
+              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;transition:box-shadow .12s ease,border-color .12s ease" style-hover="border-color:var(--navy);box-shadow:0 3px 10px rgba(15,22,51,.10)">
+                <div style="display:flex;align-items:center;gap:7px;width:100%;min-width:0">
+                  <span style="{{ q.dot }}"></span>
+                  <div class="su-cardtitle" style="flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ q.title }}">{{ q.title }}</div>
+                  <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▲</button></sc-if><sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▼</button></sc-if>
                 </div>
-                <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}">
-                  <span style="{{ q.urgencyStyle }};align-self:flex-start">{{ q.urgency }}</span>
-                </sc-if>
-                <sc-if value="{{ q.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">Client needs it by {{ q.needBy }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;gap:6px;width:100%">
-                                <button onClick="{{ q.start }}" style="flex:1;background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;margin-top:2px" style-hover="background:var(--navy-800)">Start ▸</button>
-                  <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
-                </div>
+                <div style="display:flex;align-items:center;gap:8px;width:100%;min-width:0"><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:15px;flex:1;min-width:0">{{ q.metaLine }}</div><button onClick="{{ q.start }}" title="Move it to In progress" style="flex:0 0 auto;background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Start ▸</button></div>
               </div>
             </sc-for>
+            <sc-if value="{{ queueMoreHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:2px 2px;text-align:left" style-hover="color:var(--green)">{{ queueMore }}</button></sc-if>
             <sc-if value="{{ noTeamQueue }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing queued.</div></sc-if>
           </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ tProgCount }})</h3>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress <span style="color:var(--text-muted);font-weight:600">{{ tProgCount }}</span></h3>
               <div style="display:flex;align-items:center;gap:8px">
                 <select value="{{ ovSortProg.value }}" onChange="{{ ovSortProg.onChange }}" style="{{ ovSortSelectStyle }}">
                   <sc-for list="{{ ovSortProg.options }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
                 </select>
-              <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
+                <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Board →</button>
               </div>
             </div>
-            <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="2">
-              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</div></div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
-                <div style="display:flex;align-items:center;width:100%;gap:8px">
-                  <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500;margin-right:auto">{{ w.commentsLabel }}</span>
-                  <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+            <sc-for list="{{ teamProgCards }}" as="w" hint-placeholder-count="3">
+              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;transition:box-shadow .12s ease,border-color .12s ease" style-hover="border-color:var(--navy);box-shadow:0 3px 10px rgba(15,22,51,.10)">
+                <div style="display:flex;align-items:center;gap:7px;width:100%;min-width:0">
+                  <span style="{{ w.dot }}"></span>
+                  <div class="su-cardtitle" style="flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ w.title }}">{{ w.title }}</div>
+                  <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▲</button></sc-if><sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:none;border:none;width:18px;height:18px;line-height:1;font-size:10px;color:var(--text-muted);cursor:pointer;padding:0;flex:0 0 auto" style-hover="color:var(--navy)">▼</button></sc-if>
                 </div>
-                <sc-if value="{{ w.canSubmit }}" hint-placeholder-val="{{ true }}">
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;border-top:1px solid var(--border-hairline);padding-top:10px">
-                    <div style="flex:1;min-width:130px;font-size:11.5px;color:var(--text-muted);line-height:1.4">{{ w.submitNote }}</div>
-                    <button onClick="{{ w.submit }}" style="background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit for approval</button>
-                  </div>
-                </sc-if>
+                <div style="display:flex;align-items:center;gap:8px;width:100%;min-width:0"><div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:15px;flex:1;min-width:0">{{ w.clientName }} · {{ w.commentsLabel }}</div><button onClick="{{ w.submit }}" title="{{ w.submitNote }}" style="flex:0 0 auto;background:var(--cta-bg);color:var(--cta-fg);border:none;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:var(--navy-800)">Submit ▸</button></div>
               </div>
             </sc-for>
+            <sc-if value="{{ progMoreHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:2px 2px;text-align:left" style-hover="color:var(--green)">{{ progMore }}</button></sc-if>
             <sc-if value="{{ noTeamProg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress.</div></sc-if>
           </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval ({{ tApprCount }})</h3>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:2px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval <span style="color:var(--text-muted);font-weight:600">{{ tApprCount }}</span></h3>
               <div style="display:flex;align-items:center;gap:8px">
                 <select value="{{ ovSortAppr.value }}" onChange="{{ ovSortAppr.onChange }}" style="{{ ovSortSelectStyle }}">
                   <sc-for list="{{ ovSortAppr.options }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
                 </select>
+                
               </div>
             </div>
-            <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="2">
-              <button onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ u.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.clientName }} · {{ u.kind }} · {{ u.when }}</div></div>
-                <div style="font-size:13.5px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
-                <sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted);line-height:1.45">{{ u.hoursNote }}</div>
-                </sc-if>
+            <sc-for list="{{ teamApprCards }}" as="u" hint-placeholder-count="3">
+              <button onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left;width:100%;box-sizing:border-box;transition:box-shadow .12s ease,border-color .12s ease" style-hover="border-color:var(--navy);box-shadow:0 3px 10px rgba(15,22,51,.10)">
+                <div style="display:flex;align-items:center;gap:7px;width:100%;min-width:0">
+                  <span style="{{ u.dot }}"></span>
+                  <div class="su-cardtitle" style="flex:1;min-width:0;font-size:13px;font-weight:500;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ u.title }}">{{ u.title }}</div>
+                  
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:15px">{{ u.clientName }} · {{ u.kind }} · {{ u.when }}</div>
               </button>
             </sc-for>
+            <sc-if value="{{ apprMoreHas }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:2px 2px;text-align:left" style-hover="color:var(--green)">{{ apprMore }}</button></sc-if>
             <sc-if value="{{ noTeamAppr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on clients.</div></sc-if>
           </div>
         </div>
@@ -1414,7 +1399,7 @@
                   <div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--text-muted)">
                     <span style="{{ lm.dot }}"></span>{{ lm.name }} · {{ lm.who }} · {{ lm.when }}
                   </div>
-                  <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ lm.text }}</div>
+                  <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{ lm.text }}</div>
                 </button>
               </sc-for>
             </div>
@@ -1446,13 +1431,13 @@
           <button onClick="{{ addWork }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to queue</button>
         </div>
         <div class="su-cols" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px">
+          <div style="{{ boardReqColStyle }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px">
               <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Requests</div>
               <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ boardReqCount }}</div>
             </div>
             <sc-for list="{{ boardReqs }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-top:3px solid #D68F2E;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border-radius:12px">
+              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1.5px solid var(--navy);box-shadow:0 2px 6px rgba(15,22,51,.14);padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border-radius:12px;transition:all .15s ease" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.20);transform:translateY(-1px)">
                 <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
                 <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
                 <div style="display:flex;gap:6px">
@@ -1467,13 +1452,13 @@
             </sc-for>
           </div>
           <sc-for list="{{ boardCols }}" as="col" hint-placeholder-count="4">
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px">
+            <div style="{{ col.colStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px">
                 <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</div>
                 <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
               </div>
               <sc-for list="{{ col.items }}" as="w" hint-placeholder-count="2">
-                <div onClick="{{ w.openComments }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-top:3px solid {{ col.accent }};padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
+                <div onClick="{{ w.openComments }}" style="background:var(--surface-card);border:1.5px solid var(--navy);box-shadow:0 2px 6px rgba(15,22,51,.14);padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.20);transform:translateY(-1px)">
                   <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span></span>
@@ -6582,7 +6567,12 @@ class Component extends DCLogic {
 
     // board
     const order=['queued','progress','review','done'];
-    const cols=[['queued','Queued','var(--gray-400)'],['progress','In Progress','var(--blue)'],['review','In Review','var(--teal)']];
+    // Each column sits on a tint of its own colour (the Content Map does the
+    // same), so the stage a card is in reads without finding the header.
+    const cols=[['queued','Queued','#8A6FE0'],['progress','In Progress','var(--blue)'],['review','In Review','var(--teal)']];
+    const boardColStyle=accent=>({background:'color-mix(in srgb, '+accent+' 15%, var(--surface-page))',
+      border:'1px solid color-mix(in srgb, '+accent+' 32%, transparent)',borderTop:'4px solid '+accent,
+      borderRadius:14,padding:'10px 10px 12px',display:'flex',flexDirection:'column',gap:10,minHeight:120});
     const boardCols=cols.map(([st,label,accent])=>{
       const inCol=ordered(liveWork.filter(w=>w.status===st), natWork);
       const colIds=inCol.map(w=>w.id);
@@ -6622,7 +6612,7 @@ class Component extends DCLogic {
           urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent'),
           ...moveBits('work',colIds,w.id)};
       });
-      return {label,accent,count:items.length,items};
+      return {label,accent,count:items.length,items,colStyle:boardColStyle(accent)};
     });
     const boardReqOrder=ordered(liveReqs.filter(r=>r.status==='new'), natReq);
     const boardReqIds=boardReqOrder.map(r=>r.id);
@@ -8293,6 +8283,9 @@ class Component extends DCLogic {
         hasNeedBy: !!w.needBy, needBy: niceDate(w.needBy),
         commentsLabel:cLabel((w.comments||[]).length),
         open:openDetail('work',w.id),
+        metaLine: [orgLabel(w), Number(w.hours)? Number(w.hours)+'h est.' : 'No estimate',
+          (w.urgency==='Urgent'||w.urgency==='High')? w.urgency : '', w.needBy? 'Need by '+niceDate(w.needBy) : '']
+          .filter(Boolean).join(' · '),
         // Starting is the whole point of the column, so it does not need a
         // trip to the board. The client sees it move into their In progress.
         start: stopThen(()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id);
@@ -8327,14 +8320,14 @@ class Component extends DCLogic {
     // person, so both belong in the same column.
     const teamApprRaw=[]
       .concat(D.updates.filter(u=>u.needsApproval&&!u.approved).map(u=>({
-        kind:'Update', sortTs:u.ts, text:u.text, clientId:u.clientId, category:'',
+        kind:'Update', sortTs:u.ts, text:u.text, title:u.text, clientId:u.clientId, category:'',
         clientName:orgLabel(u), dot:clientDot(u.clientId),
         when:this.fmt(u.ts), open:openDetail('update',u.id),
         hasHoursNote:false, hoursNote:''})))
       .concat(liveWork.filter(w=>w.status==='review').map(w=>{
         const willCount=Number(w.actualHours)||Number(w.hours)||0;
         const ts=w.approvalRequestedAt||w.ts;
-        return {kind:'Work item', sortTs:ts, text:w.title, clientId:w.clientId, category:w.category||'',
+        return {kind:'Work item', sortTs:ts, text:w.title, title:w.title, clientId:w.clientId, category:w.category||'',
           clientName:orgLabel(w), dot:clientDot(w.clientId),
           when:this.fmt(ts), open:openDetail('work',w.id),
           hasHoursNote:true,
@@ -8342,9 +8335,12 @@ class Component extends DCLogic {
             ? ('Approving counts '+willCount+(Number(w.actualHours)?'h':'h estimated')+' against their month.')
             : 'No hours recorded on this one.'};
       }));
+    const OV_TOP = 10;
+    const ovTop = list => list.slice(0, OV_TOP);
+    const ovMore = list => list.length>OV_TOP ? ('+'+(list.length-OV_TOP)+' more on the Workboard \u2192') : '';
     const teamApprCards = ovArrange(teamApprRaw.filter(ovMatch),
       'Appr', (a,b)=>(b.sortTs||0)-(a.sortTs||0), a=>a.sortTs||0, a=>a.text);
-    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{name:c.name,dot:clientDot(c.id),who:msgSigner(m),when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
+    const lastMsgs=D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id).sort((a,b)=>a.ts-b.ts); const m=ms[ms.length-1]; return m?{ts:m.ts||0,name:c.name,dot:clientDot(c.id),who:msgSigner(m),when:this.fmt(m.ts),text:m.text,open:()=>this.setState({section:'messages',msgClient:c.id,notifOpen:false})}:null; }).filter(Boolean);
     // The tile opens the file when one is stored, and falls back to the Files
     // tab for the seeded rows that never had bytes behind them.
     const brandFiles=myFiles.filter(f=>f.brand).map(f=>{ const r=fileRow(f);
@@ -10178,12 +10174,16 @@ class Component extends DCLogic {
       homeProgCards, progCount:homeProgCards.length, noProgCards:homeProgCards.length===0,
       todosTitle:client.name+' To-Dos', ...dv, ...pv, closeDetail,
       dComment:d.comment||'', onComment:this.draft('comment'),
-      teamReqCards, tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
+      // The overview is a glance, not the board: ten per column, with the
+      // rest one click away on the Workboard. Counts stay the full totals.
+      teamReqCards:ovTop(teamReqCards), tReqCount:teamReqCards.length, noTeamReqs:teamReqCards.length===0,
+      reqMore:ovMore(teamReqCards), reqMoreHas:teamReqCards.length>OV_TOP,
       archivedAll, archivedCount:archivedAll.length, noArchived:archivedAll.length===0,
-      teamQueueCards, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
-      teamProgCards, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
-      teamApprCards, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
-      goTeamRequests:go('board'), goBoard:go('board'), lastMsgs,
+      teamQueueCards:ovTop(teamQueueCards), queueMore:ovMore(teamQueueCards), queueMoreHas:teamQueueCards.length>OV_TOP, tQueueCount:teamQueueCards.length, noTeamQueue:teamQueueCards.length===0,
+      teamProgCards:ovTop(teamProgCards), progMore:ovMore(teamProgCards), progMoreHas:teamProgCards.length>OV_TOP, tProgCount:teamProgCards.length, noTeamProg:teamProgCards.length===0,
+      teamApprCards:ovTop(teamApprCards), apprMore:ovMore(teamApprCards), apprMoreHas:teamApprCards.length>OV_TOP, tApprCount:teamApprCards.length, noTeamAppr:teamApprCards.length===0,
+      goTeamRequests:go('board'), goBoard:go('board'),
+      lastMsgs: lastMsgs.slice().sort((a,b)=>b.ts-a.ts).slice(0,10),
       boardReqs, boardReqCount:boardReqs.length, doneItems, doneCount:doneItems.length, noDone:doneItems.length===0,
       catOptions:CATS.map(n=>({name:n})), dReqCat:d.reqCat||CATS[0], onReqCat:this.draft('reqCat'),
       homeTodos:clientTodos.filter(t=>!t.deco||t.deco==='none').slice(0,3), homeMsgs:thread.slice(-3), brandFiles,
@@ -10212,7 +10212,7 @@ class Component extends DCLogic {
       postUpdate:()=>{ const text=(d.updText||'').trim(); if(!text) return;
         this.set(x=>{ x.updates.unshift({id:this.uid(),clientId:d.updClient,text,ts:Date.now(),needsApproval:!!d.updApproval,approved:false,feedback:[]}); this.logEv(x,d.updClient,'Update posted for '+cname(d.updClient)); return x; });
         this.setState(s=>({d:{...s.d,updText:''}})); },
-      boardCols, dWork:d.work||'', onWork:this.draft('work'), dWorkClient:d.workClient, onWorkClient:this.draft('workClient'), dWorkHours:d.workHours||'', onWorkHours:this.draft('workHours'),
+      boardCols, boardReqColStyle:boardColStyle('#D68F2E'), dWork:d.work||'', onWork:this.draft('work'), dWorkClient:d.workClient, onWorkClient:this.draft('workClient'), dWorkHours:d.workHours||'', onWorkHours:this.draft('workHours'),
       // A blank estimate used to become 2 hours, which is a number nobody
       // chose and which the client is eventually billed against. Blank means
       // no estimate; it can be filled in from the card once it is known.
