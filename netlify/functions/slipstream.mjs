@@ -63,20 +63,21 @@ const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined
 
 // ---------- actions ----------
 async function load() {
-  const since = new Date(Date.now() - 120 * 864e5).toISOString();
+  // Every show (the past list keeps the full history); RSVPs and emails only exist for shows run on the new site.
+  const since = new Date(Date.now() - 365 * 864e5).toISOString();
   const [shows, series, links, settings, accounts] = await Promise.all([
-    sl('shows?select=*&or=(status.in.(draft,published),starts_at.gte."' + since + '")&order=starts_at.desc.nullsfirst'),
+    sl('shows?select=*&order=starts_at.desc.nullsfirst'),
     sl('series?select=id,title,kind,home_position&order=home_position.asc.nullslast,title.asc'),
     sl('show_series?select=show_slug,series_id,position'),
     sl('settings?select=key,value'),
     fetch(SL_URL + '/rest/v1/profiles?select=id&limit=1', { headers: slHeaders({ Prefer: 'count=exact' }) })
   ]);
-  const slugs = shows.map(s => s.slug);
-  const [access, rsvps, emails] = slugs.length ? await Promise.all([
-    sl('show_access?select=show_slug,film_embed,conversation_embed,access_code&show_slug=in.' + inList(slugs)),
-    sl('rsvps?select=id,show_slug,email,first_name,last_name,user_id,seats,status,created_at&show_slug=in.' + inList(slugs) + '&order=created_at.desc'),
-    sl('email_log?select=rsvp_id,show_slug,email,type,status,opened_at,clicked_at,created_at&show_slug=in.' + inList(slugs) + '&order=created_at.desc')
-  ]) : [[], [], []];
+  const current = shows.filter(s => s.status !== 'archived').map(s => s.slug);
+  const [access, rsvps, emails] = await Promise.all([
+    current.length ? sl('show_access?select=show_slug,film_embed,conversation_embed,access_code&show_slug=in.' + inList(current)) : [],
+    sl('rsvps?select=id,show_slug,email,first_name,last_name,user_id,seats,status,created_at&order=created_at.desc&limit=20000'),
+    sl('email_log?select=rsvp_id,show_slug,email,type,status,opened_at,clicked_at,created_at&created_at=gte.' + since + '&order=created_at.desc&limit=20000')
+  ]);
   const userIds = [...new Set(rsvps.map(r => r.user_id).filter(Boolean))];
   const profiles = userIds.length ? await sl('profiles?select=id,newsletter,created_at&id=in.' + inList(userIds)) : [];
   const range = accounts.headers.get('content-range') || '';
