@@ -73,10 +73,12 @@ async function load() {
     fetch(SL_URL + '/rest/v1/profiles?select=id&limit=1', { headers: slHeaders({ Prefer: 'count=exact' }) })
   ]);
   const current = shows.filter(s => s.status !== 'archived').map(s => s.slug);
-  const [access, rsvps, emails] = await Promise.all([
+  const [access, rsvps, emails, templates, overrides] = await Promise.all([
     current.length ? sl('show_access?select=show_slug,film_embed,conversation_embed,access_code&show_slug=in.' + inList(current)) : [],
     sl('rsvps?select=id,show_slug,email,first_name,last_name,user_id,seats,status,created_at&order=created_at.desc&limit=20000'),
-    sl('email_log?select=rsvp_id,show_slug,email,type,status,opened_at,clicked_at,created_at&created_at=gte.' + since + '&order=created_at.desc&limit=20000')
+    sl('email_log?select=rsvp_id,show_slug,email,type,status,subject,opened_at,clicked_at,delivered_at,bounced_at,complained_at,last_event,created_at&created_at=gte.' + since + '&order=created_at.desc&limit=20000'),
+    sl('email_templates?select=type,subject,heading,message,button,updated_at,updated_by'),
+    sl('email_overrides?select=*')
   ]);
   const userIds = [...new Set(rsvps.map(r => r.user_id).filter(Boolean))];
   const profiles = userIds.length ? await sl('profiles?select=id,newsletter,created_at&id=in.' + inList(userIds)) : [];
@@ -84,7 +86,7 @@ async function load() {
   const accountCount = Number(range.split('/')[1]) || 0;
   const setting = k => (settings.find(s => s.key === k) || {}).value;
   return {
-    shows, series, links, access, rsvps, emails, profiles, accountCount,
+    shows, series, links, access, rsvps, emails, profiles, accountCount, templates, overrides, emailDefaults: EMAIL_DEFAULTS,
     emailMode: setting('email_recipients') === 'everyone' ? 'everyone' : 'test',
     accessMode: setting('access_mode') || 'email',
     imageBase: SL_URL + '/storage/v1/object/public/' + BUCKET + '/'
@@ -209,7 +211,65 @@ async function deleteShow(body) {
   return { deleted: slug };
 }
 
-const ACTIONS = { load, saveShow, createSeries, setWindow, setStatus, upload, deleteShow };
+// ---------- Emails: templates, per-show changes, preview and test ----------
+const EMAIL_TYPES = ['rsvp', 'waitlist', 'promoted', 'live', 'reminder', 'thanks'];
+const EMAIL_DEFAULTS = {
+  rsvp: { subject: "You're in: {title} on Slipstream", heading: "You're in, {first_name}.", message: 'Your {seats} for {title} is saved. {schedule}', button: 'Add to calendar' },
+  promoted: { subject: "A seat opened up: you're in for {title}", heading: "Good news, {first_name}. You're in.", message: 'A seat opened up for {title}. {schedule}', button: 'Add to calendar' },
+  waitlist: { subject: "You're on the waiting list: {title}", heading: "You're on the waiting list, {first_name}.", message: "{title} is full right now. You're on the waiting list for {seats}.", button: null },
+  live: { subject: "It's showtime: {title} is streaming now", heading: '{title} is live.', message: 'Watch any time before {ends} PT. The button below takes you to the screening room. Sign in with your Slipstream account to watch.', button: 'Watch now' },
+  reminder: { subject: 'Tomorrow: {title}', heading: 'See you tomorrow, {first_name}.', message: '{title} screens {date} at {time}.', button: 'Show details' },
+  thanks: { subject: 'Thank you for watching {title}', heading: 'Thanks for joining us.', message: 'We hope you enjoyed {title}.', button: null }
+};
+const words = b => {
+  const w = {};
+  for (const k of ['subject', 'heading', 'message', 'button']) if (b[k] !== undefined) w[k] = b[k] === '' ? null : String(b[k]).slice(0, k === 'message' ? 4000 : 300);
+  return w;
+};
+const checkType = t => { if (!EMAIL_TYPES.includes(t)) throw new Bad('Unknown email type.'); return t; };
+
+async function saveTemplate(body, who) {
+  const type = checkType(body.type);
+  const w = body.reset ? EMAIL_DEFAULTS[type] : words(body);
+  if (!body.reset && (!w.subject || !w.heading || !w.message)) throw new Bad('Subject, heading and message can’t be empty.');
+  await sl('email_templates?on_conflict=type', { method: 'POST', body: JSON.stringify({ type, ...w, updated_at: new Date().toISOString(), updated_by: who.name }),
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' } });
+  return { type };
+}
+
+// One email for one show: new words, a new send time, cancelled, or back to standard (clear).
+async function saveOverride(body, who) {
+  const type = checkType(body.type);
+  const slug = String(body.slug || '');
+  const [show] = await sl('shows?select=slug&slug=eq.' + encodeURIComponent(slug));
+  if (!show) throw new Bad('That show no longer exists.', 404);
+  const key = 'show_slug=eq.' + encodeURIComponent(slug) + '&type=eq.' + type;
+  if (body.clear) { await sl('email_overrides?' + key, { method: 'DELETE' }); return { cleared: true }; }
+  const row = { show_slug: slug, type, ...words(body), updated_at: new Date().toISOString(), updated_by: who.name };
+  if (body.send_at !== undefined) row.send_at = body.send_at ? new Date(body.send_at).toISOString() : null;
+  if (body.cancelled !== undefined) row.cancelled = !!body.cancelled;
+  await sl('email_overrides?on_conflict=show_slug,type', { method: 'POST', body: JSON.stringify(row), headers: { Prefer: 'resolution=merge-duplicates,return=minimal' } });
+  if (body.sendNow) await callSender({ sweep: true }).catch(() => {});
+  return { saved: true };
+}
+
+async function callSender(payload) {
+  const [tok] = await sl('settings?select=value&key=eq.hub_token');
+  const res = await fetch(SL_URL + '/functions/v1/send-email', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-hub-token': tok ? tok.value : '' }, body: JSON.stringify(payload) });
+  const out = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Bad(out.error || 'The email service didn’t answer.', 502);
+  return out;
+}
+async function previewEmail(body) {
+  const out = await callSender({ preview: { type: checkType(body.type), show_slug: body.slug || null, fields: words(body.fields || {}) } });
+  return { subject: out.subject, html: out.html };
+}
+async function sendTest(body, who) {
+  await callSender({ test: { type: checkType(body.type), show_slug: body.slug || null, fields: words(body.fields || {}), to: who.email, first_name: String(who.name || '').split(' ')[0] } });
+  return { to: who.email };
+}
+
+const ACTIONS = { saveTemplate, saveOverride, previewEmail, sendTest, load, saveShow, createSeries, setWindow, setStatus, upload, deleteShow };
 
 export default async (req) => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);
