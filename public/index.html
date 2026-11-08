@@ -10050,10 +10050,12 @@ class Component extends DCLogic {
       // Clearing portalUrl matters: it is a draft seeded from the viewed client,
       // so carrying it across a switch would save one client's Stripe link onto
       // another.
+      // In client view, Slipstream opens on Shows (the tab their team lives in); others on Dashboard.
       onViewClient:e=>this.setState(s=>({viewClient:e.target.value,msgClient:e.target.value,
+        ...(s.role==='client' ? {section: e.target.value==='vs' ? 'shows' : (s.section==='shows' ? 'home' : s.section)} : {}),
         d:{...s.d,portalUrl:undefined,billingType:undefined,clientRate:undefined,
            invNum:'',invAmount:'',invUrl:''}})),
-      goClient:()=>this.setState({role:'client',section:'home',notifOpen:false,moreOpen:false,fileFilter:'All'}),
+      goClient:()=>this.setState(s=>({role:'client',section:s.viewClient==='vs'?'shows':'home',notifOpen:false,moreOpen:false,fileFilter:'All'})),
       // Guarded as well as hidden: a client account cannot switch to the team
       // view even if the control is reached some other way. The database would
       // refuse to hand over another tenant's rows regardless.
