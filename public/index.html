@@ -212,6 +212,52 @@
     .su-rdkpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     @media (max-width:860px){ .su-rdkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
     @media (max-width:560px){ .su-rdbody{padding:2px 14px 18px} }
+    /* Client portal: Requests, Updates, To-Dos */
+    .pw-sec{background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;min-width:0}
+    .pw-head{display:flex;align-items:center;gap:10px}
+    .pw-h{margin:0;font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--navy)}
+    .pw-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+    .pw-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;color:#fff;font-size:12px;font-weight:700}
+    .pw-card{background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+    .pw-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;border:1.5px solid var(--gray-200);background:var(--surface-card);color:var(--navy);font:700 14px var(--font-body);cursor:pointer;white-space:nowrap}
+    .pw-btn:hover{border-color:var(--navy)}
+    .pw-ghost{border-color:transparent;background:transparent;color:var(--blue)}
+    .pw-ghost:hover{background:rgba(46,63,214,.06);border-color:transparent}
+    .pw-link{background:none;border:none;padding:0;min-height:32px;color:var(--blue);font:700 13.5px var(--font-body);cursor:pointer;align-self:flex-start}
+    .pw-empty{font-size:14px;color:var(--text-muted)}
+    .pw-tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--text-body);background:var(--gray-100);white-space:nowrap}
+    .pw-feed{display:flex;flex-direction:column;gap:4px}
+    .pw-post{display:flex;gap:12px;padding:14px 4px;border-bottom:1px solid var(--border-card)}
+    .pw-post:last-child{border-bottom:none}
+    .pw-avatar{width:38px;height:38px;min-width:38px;border-radius:50%;background:var(--grad-brand, linear-gradient(135deg,#2E3FD6,#14A05A));color:#fff;font:800 12px var(--font-display);display:flex;align-items:center;justify-content:center}
+    .pw-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border:none;border-bottom:1px solid var(--border-card);background:none;cursor:pointer;font-family:var(--font-body);width:100%;min-height:56px}
+    .pw-row:last-child{border-bottom:none}
+    .pw-row:hover{background:rgba(46,63,214,.04)}
+    .pw-check{width:28px;height:28px;min-width:28px;border-radius:50%;background:rgba(20,160,90,.14);color:#14A05A;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+    .pw-face{transition:transform .12s ease,border-color .12s ease}
+    .pw-face:hover{transform:translateY(-2px);border-color:#14A05A !important}
+    .pw-seg{display:inline-flex;gap:4px;background:var(--gray-100);border-radius:12px;padding:4px}
+    .pw-label{font-size:13.5px;font-weight:700;color:var(--navy)}
+    .pw-opt{font-weight:500;color:var(--text-muted);font-size:12.5px}
+    .pw-field{display:flex;flex-direction:column;gap:7px;min-width:0}
+    .pw-input{min-height:46px;box-sizing:border-box;border:1.5px solid var(--gray-200);border-radius:12px;padding:0 14px;font:16px var(--font-body);color:var(--navy);background:var(--surface-card);width:100%}
+    textarea.pw-input{padding:12px 14px;line-height:1.5;resize:vertical}
+    .pw-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,63,214,.15)}
+    .pw-2col{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}
+    .pw-x{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;min-width:36px;min-height:36px}
+    .pw-reqgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .pw-req{background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;box-shadow:0 1px 3px rgba(15,22,51,.06);transition:transform .15s ease,box-shadow .15s ease;min-width:0}
+    .pw-req:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,22,51,.12)}
+    .pw-steplabels{display:flex;gap:4px;margin-top:-4px}
+    .pw-todo{display:flex;align-items:center;gap:14px;padding:12px 10px;border-bottom:1px solid var(--border-card);min-height:56px}
+    .pw-todo:last-child{border-bottom:none}
+    .pw-todo button:hover{border-color:#14A05A !important}
+    @media (max-width:560px){
+      .pw-sec{padding:16px;border-radius:14px}
+      .pw-2col{grid-template-columns:minmax(0,1fr)}
+      .pw-reqgrid{grid-template-columns:minmax(0,1fr)}
+      .pw-steplabels span{font-size:10px !important}
+    }
     /* Shows (Slipstream): Trello-style board, cards, past list and the show form. */
     .sh-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start}
     .sh-board>section{box-sizing:border-box;min-width:0}
@@ -4061,207 +4107,181 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ pOnWork }}" hint-placeholder-val="{{ false }}">
+        <div class="pw-seg" style="display:flex;max-width:520px;width:100%;box-sizing:border-box">
+          <sc-for list="{{ pWorkTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}<sc-if value="{{ t.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="pw-count" style="background:#C2407E">{{ t.badge }}</span></sc-if></button></sc-for>
+        </div>
+      </sc-if>
       <sc-if value="{{ pUpdates }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <sc-for list="{{ portalUpdates }}" as="u" hint-placeholder-count="3">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:20px 24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-                <div style="font-size:12px;color:var(--text-muted)">{{ u.when }}</div>
-                <sc-if value="{{ u.showApprove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;padding:7px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button></sc-if>
-                <sc-if value="{{ u.approvedBadge }}" hint-placeholder-val="{{ false }}"><span style="color:var(--green);font-size:12px;font-weight:600">✓ Approved</span></sc-if>
-              </div>
-              <div style="font-size:15px;color:var(--navy);line-height:1.55">{{ u.text }}</div>
-              <sc-for list="{{ u.feedback }}" as="f" hint-placeholder-count="0">
-                <div style="border-left:2px solid var(--gray-200);padding:4px 0 4px 14px;font-size:13px;color:var(--text-body)"><strong style="color:var(--navy)">{{ f.name }}:</strong> {{ f.text }}</div>
-              </sc-for>
-              <sc-if value="{{ u.showInput }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;gap:8px">
-                  <input value="{{ dFeedback }}" onChange="{{ onFeedback }}" placeholder="Your feedback" style="flex:1;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                  <button onClick="{{ u.sendFeedback }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 16px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Send</button>
+        <sc-if value="{{ pHasAppr }}" hint-placeholder-val="{{ false }}">
+          <section class="pw-sec" style="border-color:rgba(14,143,138,.35);background:linear-gradient(180deg,rgba(14,143,138,.07),var(--surface-card) 60%)">
+            <div class="pw-head"><span class="pw-dot" style="background:#0E8F8A"></span><h3 class="pw-h">Needs your OK</h3><span class="pw-count" style="background:#0E8F8A">{{ apprCount }}</span></div>
+            <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
+              <div class="pw-card">
+                <div style="font-size:15px;color:var(--navy);line-height:1.5;font-weight:600">{{ u.text }}</div>
+                <div style="font-size:12.5px;color:var(--text-muted)">{{ u.when }}<sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}"> · {{ u.hoursNote }}</sc-if></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button onClick="{{ u.approve }}" class="pw-btn" style="background:#14A05A;color:#fff;border-color:#14A05A">✓ Approve</button>
+                  <button onClick="{{ u.openFb }}" class="pw-btn">Ask for changes</button>
+                  <button onClick="{{ u.open }}" class="pw-btn pw-ghost">See details</button>
                 </div>
-              </sc-if>
-              <sc-if value="{{ u.showFbBtn }}" hint-placeholder-val="{{ true }}">
-                <button onClick="{{ u.openFeedback }}" style="align-self:flex-start;background:transparent;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">Leave feedback</button>
-              </sc-if>
-            </div>
-          </sc-for>
-        </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:10px;border-radius:12px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:200px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Completed work</h3>
-              <div style="font-size:12px;color:var(--text-muted)">Everything we have finished, newest first. Open any item for its details, comments and files.</div>
-            </div>
-            <button onClick="{{ exportCompleted }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
-          </div>
-          <sc-if value="{{ noCompletedWork }}" hint-placeholder-val="{{ false }}">
-            <div style="font-size:13.5px;color:var(--text-muted)">Nothing completed yet.</div>
-          </sc-if>
-          <sc-for list="{{ completedWork }}" as="cw" hint-placeholder-count="4">
-            <div onClick="{{ cw.open }}" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 6px;border-bottom:1px solid var(--border-hairline);cursor:pointer" style-hover="background:var(--gray-100)">
-              <div style="flex:1;min-width:190px;display:flex;flex-direction:column;gap:2px">
-                <div style="font-size:14px;font-weight:500;color:var(--navy)">{{ cw.title }}</div>
-                <div style="font-size:12px;color:var(--text-muted)">Completed {{ cw.completed }} · {{ cw.ago }}</div>
               </div>
-              <sc-if value="{{ cw.hasCat }}" hint-placeholder-val="{{ true }}">
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ cw.cat }}</span>
-              </sc-if>
-              <sc-if value="{{ cw.hasFiles }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:12px;color:var(--text-muted)">{{ cw.fileCount }} file(s)</span>
-              </sc-if>
-              <span style="font-size:12px;color:var(--blue);font-weight:500">{{ cw.commentsLabel }}</span>
-            </div>
-          </sc-for>
-        </div>
+            </sc-for>
+          </section>
+        </sc-if>
 
-        <div style="background:var(--chrome);color:#fff;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;border-radius:12px">
-          <div style="display:flex;flex-direction:column;gap:2px">
-            <div style="font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:var(--ls-caps)">How are we doing this month?</div>
-            <div style="font-size:13px;color:rgba(255,255,255,.65)">{{ pulsePrompt }}</div>
-          </div>
-          <div style="display:flex;gap:8px">
-            <sc-for list="{{ pulseBtns }}" as="p" hint-placeholder-count="5">
-              <button onClick="{{ p.rate }}" style="{{ p.style }}" style-hover="background:var(--green);border-color:var(--green)">{{ p.n }}</button>
+        <section class="pw-sec">
+          <div class="pw-head"><span class="pw-dot" style="background:#2E3FD6"></span><h3 class="pw-h">Updates from our team</h3></div>
+          <sc-if value="{{ pNoFeed }}" hint-placeholder-val="{{ false }}"><div class="pw-empty">No updates yet. We’ll post here as work moves along.</div></sc-if>
+          <div class="pw-feed">
+            <sc-for list="{{ pFeed }}" as="u" hint-placeholder-count="3">
+              <article class="pw-post">
+                <div class="pw-avatar">SU</div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b style="color:var(--navy);font-size:14px">Social Upgrades</b><span style="font-size:12.5px;color:var(--text-muted)">{{ u.date }}</span><sc-if value="{{ u.approved }}" hint-placeholder-val="{{ false }}"><span class="pw-tag" style="color:#0E7A44;background:rgba(20,160,90,.12)">✓ Approved</span></sc-if></div>
+                  <div style="font-size:15px;color:var(--navy);line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere">{{ u.text }}</div>
+                  <sc-if value="{{ u.hasFeedback }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                      <sc-for list="{{ u.feedback }}" as="f" hint-placeholder-count="0"><div style="{{ f.style }}"><b style="font-size:12px;display:block;color:var(--text-muted)">{{ f.name }}</b>{{ f.text }}</div></sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ u.replying }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                      <input value="{{ dFeedback }}" onChange="{{ onFeedback }}" placeholder="Write a reply" class="pw-input" style="flex:1 1 220px" />
+                      <button onClick="{{ u.send }}" class="pw-btn" style="background:#111;color:#fff;border-color:#111">Send</button>
+                      <button onClick="{{ u.cancel }}" class="pw-btn pw-ghost">Cancel</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ u.notReplying }}" hint-placeholder-val="{{ true }}"><button onClick="{{ u.reply }}" class="pw-link">Reply</button></sc-if>
+                </div>
+              </article>
             </sc-for>
           </div>
-        </div>
+        </section>
+
+        <section class="pw-sec">
+          <div class="pw-head"><span class="pw-dot" style="background:#14A05A"></span><h3 class="pw-h">Finished work</h3><span style="flex:1"></span><button onClick="{{ exportCompleted }}" class="pw-btn pw-ghost" style="min-height:36px">Download list</button></div>
+          <sc-if value="{{ noCompletedWork }}" hint-placeholder-val="{{ false }}"><div class="pw-empty">Nothing finished yet.</div></sc-if>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ completedWork }}" as="cw" hint-placeholder-count="4">
+              <button onClick="{{ cw.open }}" class="pw-row">
+                <span class="pw-check">✓</span>
+                <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left"><span style="font-size:14.5px;font-weight:600;color:var(--navy);overflow-wrap:anywhere">{{ cw.title }}</span><span style="font-size:12.5px;color:var(--text-muted)">{{ cw.completed }}<sc-if value="{{ cw.hasCat }}" hint-placeholder-val="{{ true }}"> · {{ cw.cat }}</sc-if></span></span>
+                <span style="font-size:12.5px;color:var(--blue);font-weight:600;white-space:nowrap">Open ›</span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+
+        <section class="pw-sec" style="background:var(--chrome);border-color:var(--chrome);color:#fff">
+          <h3 class="pw-h" style="color:#fff">How was {{ pMonth }} with us?</h3>
+          <sc-if value="{{ pNotRated }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:13.5px;color:rgba(255,255,255,.75)">One tap. It goes straight to our team.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ pPulse }}" as="p" hint-placeholder-count="5"><button onClick="{{ p.rate }}" style="{{ p.style }}" class="pw-face"><span style="font-size:26px;line-height:1">{{ p.face }}</span>{{ p.label }}</button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ pRated }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:rgba(255,255,255,.85)">Thanks, your rating for {{ pMonth }} is in.</div></sc-if>
+        </section>
       </sc-if>
 
       <sc-if value="{{ pRequests }}" hint-placeholder-val="{{ false }}">
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Request work</h3>
-          <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time. Everything else waits in your queue.</div>
-          <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-            <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
-          </select>
-          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
-          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Urgency</label>
-              <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-                <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
-              </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by (optional)</label>
-              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
-            </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div class="pw-seg">
+            <sc-for list="{{ pReqTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }} <span class="pw-count" style="background:var(--navy)">{{ t.count }}</span></button></sc-for>
           </div>
-          <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
-            <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</label>
-            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Attach files directly, or paste a share link from wherever they already live: Google Drive, Dropbox, WeTransfer, Figma, anywhere.</div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-              <label style="border:1px solid var(--gray-200);background:var(--surface-card);border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
-              <span style="font-size:12px;color:var(--text-muted)">Up to 50 MB a file</span>
+          <button onClick="{{ pReqToggle }}" class="pw-btn" style="background:#111;color:#fff;border-color:#111;padding:0 20px">{{ pReqToggleLabel }}</button>
+        </div>
+
+        <sc-if value="{{ pReqComposer }}" hint-placeholder-val="{{ true }}">
+          <section class="pw-sec" style="border-color:rgba(46,63,214,.35);box-shadow:0 8px 28px rgba(15,22,51,.08)">
+            <h3 class="pw-h" style="font-size:20px">What can we help with?</h3>
+            <div style="display:flex;flex-direction:column;gap:8px"><span class="pw-label">Type of work</span><div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ pCats }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</button></sc-for></div></div>
+            <label class="pw-field"><span class="pw-label">What should we do?</span><input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="e.g. Add our holiday hours to the website" class="pw-input" style="font-size:16px;font-weight:600" /></label>
+            <label class="pw-field"><span class="pw-label">Details <span class="pw-opt">optional</span></span><textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" rows="3" placeholder="Links, examples, anything that helps" class="pw-input"></textarea></label>
+            <div class="pw-2col">
+              <div class="pw-field"><span class="pw-label">How urgent?</span><div class="pw-seg" style="width:100%"><sc-for list="{{ pUrg }}" as="u" hint-placeholder-count="4"><button onClick="{{ u.pick }}" style="{{ u.style }}">{{ u.label }}</button></sc-for></div></div>
+              <label class="pw-field"><span class="pw-label">Need it by <span class="pw-opt">optional</span></span><input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" class="pw-input" /></label>
             </div>
-            <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
-              <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
-                <sc-if value="{{ rf.hasThumb }}" hint-placeholder-val="{{ false }}">
-                  <img sc-camel-src="{{ rf.thumb }}" alt="" style="width:32px;height:32px;min-width:32px;object-fit:cover;border-radius:8px;background:var(--surface-card)">
-                </sc-if>
-                <sc-if value="{{ rf.showExt }}" hint-placeholder-val="{{ true }}">
-                  <div style="width:32px;height:32px;min-width:32px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px;border-radius:8px">{{ rf.ext }}</div>
-                </sc-if>
-                <div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:1px">
-                  <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rf.name }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ rf.meta }}</div>
-                </div>
-                <button onClick="{{ rf.drop }}" title="Remove from this request" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
+            <div class="pw-field">
+              <span class="pw-label">Files or links <span class="pw-opt">optional</span></span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <label class="pw-btn" style="cursor:pointer"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
+                <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="or paste a link" class="pw-input" style="flex:1 1 200px" />
+                <button onClick="{{ addReqLink }}" class="pw-btn">Add link</button>
               </div>
-            </sc-for>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link (https://…)" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
-              <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
+              <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px">
+                  <div style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rf.name }}</div>
+                  <button onClick="{{ rf.drop }}" aria-label="Remove" class="pw-x">×</button>
+                </div>
+              </sc-for>
+              <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px">
+                  <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
+                  <button onClick="{{ rl.remove }}" aria-label="Remove" class="pw-x">×</button>
+                </div>
+              </sc-for>
             </div>
-            <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-hairline)">
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
-                <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
-                <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
-              </div>
-            </sc-for>
-          </div>
-          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:10px" style-hover="background:#000">Submit request <span style="color:#fff;font-size:14px;line-height:1">↗</span></button>
-        </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 8px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Current Requests</h3>
-            <button onClick="{{ exportRequests }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
-          </div>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
-            <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
-              <button onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+            <button onClick="{{ submitReq }}" class="pw-btn" style="align-self:flex-start;background:#2E3FD6;color:#fff;border-color:#2E3FD6;min-height:48px;padding:0 26px;font-size:15px">Send request</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ pReqShowOpen }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ pNoOpenReqs }}" hint-placeholder-val="{{ false }}"><div class="pw-sec pw-empty" style="text-align:center;padding:32px">Nothing open. Tap <b>+ New request</b> to send us something.</div></sc-if>
+          <div class="pw-reqgrid">
+            <sc-for list="{{ pOpenReqs }}" as="r" hint-placeholder-count="3">
+              <article class="pw-req" style="{{ r.cardStyle }}" onClick="{{ r.open }}">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="{{ r.stepChip.style }}">{{ r.stepChip.label }}</span><span class="pw-tag">{{ r.cat }}</span><sc-if value="{{ r.urgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgChip.style }}">{{ r.urgChip.label }}</span></sc-if></div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);line-height:1.35;overflow-wrap:anywhere">{{ r.title }}</div>
+                <div style="display:flex;gap:4px">
+                  <sc-for list="{{ r.bars }}" as="b" hint-placeholder-count="5"><span style="{{ b.style }}"></span></sc-for>
                 </div>
-              </button>
+                <div class="pw-steplabels"><sc-for list="{{ r.bars }}" as="b" hint-placeholder-count="5"><span style="{{ b.labelStyle }}">{{ b.label }}</span></sc-for></div>
+                <div style="{{ r.hintStyle }}">{{ r.hint }}</div>
+                <sc-if value="{{ r.needsReview }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.review }}" class="pw-btn" style="align-self:flex-start;background:#0E8F8A;color:#fff;border-color:#0E8F8A">Review and approve</button></sc-if>
+                <div style="font-size:12.5px;color:var(--text-muted);display:flex;gap:10px;flex-wrap:wrap"><span>{{ r.when }}</span><sc-if value="{{ r.hasDates }}" hint-placeholder-val="{{ false }}"><span>{{ r.dates }}</span></sc-if><sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}"><span>{{ r.files }}</span></sc-if></div>
+              </article>
             </sc-for>
-            <sc-if value="{{ noMyRequests }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13px;color:var(--text-muted)">Nothing open right now.</div>
-            </sc-if>
           </div>
-        </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed Requests</h3>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
-            <sc-for list="{{ myDoneRequests }}" as="r" hint-placeholder-count="3">
-              <button onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
-                </div>
-              </button>
+        </sc-if>
+        <sc-if value="{{ pReqShowDone }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;justify-content:flex-end"><button onClick="{{ exportRequests }}" class="pw-btn pw-ghost" style="min-height:36px">Download list</button></div>
+          <sc-if value="{{ pNoDoneReqs }}" hint-placeholder-val="{{ false }}"><div class="pw-sec pw-empty" style="text-align:center;padding:32px">Nothing finished yet.</div></sc-if>
+          <div class="pw-reqgrid">
+            <sc-for list="{{ pDoneReqs }}" as="r" hint-placeholder-count="3">
+              <article class="pw-req" style="{{ r.cardStyle }}" onClick="{{ r.open }}">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="{{ r.stepChip.style }}">{{ r.stepChip.label }}</span><span class="pw-tag">{{ r.cat }}</span></div>
+                <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);line-height:1.35;overflow-wrap:anywhere">{{ r.title }}</div>
+                <div style="{{ r.hintStyle }}">{{ r.hint }}</div>
+                <div style="font-size:12.5px;color:var(--text-muted)">{{ r.when }}</div>
+              </article>
             </sc-for>
-            <sc-if value="{{ noMyDoneRequests }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
-            </sc-if>
           </div>
-        </div>
+        </sc-if>
       </sc-if>
 
       <sc-if value="{{ pTodos }}" hint-placeholder-val="{{ false }}">
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
-          <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Things our team needs from you. Check them off when done.</div>
-          <sc-for list="{{ clientTodos }}" as="t" hint-placeholder-count="3">
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-hairline)">
-              <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
-              <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
-            </div>
+        <section class="pw-sec" style="flex-direction:row;align-items:center;gap:18px;flex-wrap:wrap">
+          <div style="{{ pTodoRing }}"><div style="width:50px;height:50px;border-radius:50%;background:var(--surface-card);display:flex;align-items:center;justify-content:center;font:800 13px var(--font-display);color:var(--navy)">{{ pTodoPct }}</div></div>
+          <div style="flex:1;min-width:180px"><h3 class="pw-h" style="font-size:20px">{{ pTodoSummary }}</h3><div style="font-size:13.5px;color:var(--text-muted)">{{ pTodoProgress }}</div></div>
+        </section>
+        <section class="pw-sec" style="gap:0;padding:6px 8px">
+          <sc-if value="{{ pNoTodoOpen }}" hint-placeholder-val="{{ false }}"><div class="pw-empty" style="padding:22px 14px;text-align:center"><span class="pw-check" style="width:40px;height:40px;font-size:20px;margin:0 auto 8px;display:flex">✓</span>You’re all caught up. We’ll add anything we need from you here.</div></sc-if>
+          <sc-for list="{{ pTodoOpen }}" as="t" hint-placeholder-count="3">
+            <div class="pw-todo"><button onClick="{{ t.toggle }}" aria-label="Mark done" style="{{ t.box }}"></button><div style="flex:1;min-width:0"><div style="{{ t.titleStyle }}">{{ t.title }}</div><div style="font-size:12.5px;color:var(--text-muted)">{{ t.meta }}</div></div></div>
           </sc-for>
-          <sc-if value="{{ noClientTodos }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing needed from you right now.</div></sc-if>
-        </div>
+        </section>
+        <sc-if value="{{ pHasTodoDone }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ pTodoToggleDone }}" class="pw-link" style="align-self:flex-start">{{ pTodoDoneLabel }}</button>
+          <sc-if value="{{ pTodoShowDone }}" hint-placeholder-val="{{ false }}">
+            <section class="pw-sec" style="gap:0;padding:6px 8px">
+              <sc-for list="{{ pTodoDone }}" as="t" hint-placeholder-count="2">
+                <div class="pw-todo"><button onClick="{{ t.toggle }}" aria-label="Mark not done" style="{{ t.box }}">✓</button><div style="flex:1;min-width:0"><div style="{{ t.titleStyle }}">{{ t.title }}</div><div style="font-size:12.5px;color:var(--text-muted)">{{ t.meta }}</div></div></div>
+              </sc-for>
+            </section>
+          </sc-if>
+        </sc-if>
       </sc-if>
 
       <sc-if value="{{ pMessages }}" hint-placeholder-val="{{ false }}">
@@ -7555,6 +7575,77 @@ class Component extends DCLogic {
         .map(w=>[w.title||'', w.category||'',
           w.completedAt? new Date(w.completedAt).toISOString().slice(0,10) : '',
           (Number(w.hoursApproved)||0), w.desc||'', listOf(w.links), listOf(w.files)]));
+    // ===== portal: Requests, Updates, To-Dos (client view) =====
+    // Built for clients with little tech background: one clear action per
+    // screen, plain words, big tap targets, and the state of every request
+    // shown as a five-step tracker instead of a status word.
+    const PSTEPS=['Sent','Approved','Working','Review','Done'];
+    const PSTEP_LONG=['Sent','Approved','In progress','Your review','Done'];
+    const PSTEP_COLOR=['#C47A12','#7B5CD6','#2E3FD6','#0E8F8A','#14A05A'];
+    const pChip=(label,c)=>({label,style:{display:'inline-flex',alignItems:'center',height:24,padding:'0 10px',borderRadius:999,fontSize:12,fontWeight:700,whiteSpace:'nowrap',
+      color:c,background:'color-mix(in srgb, '+c+' 12%, var(--surface-card))'}});
+    const URG_C={Low:'#5B6478',Normal:'#2E3FD6',High:'#C47A12',Urgent:'#B42318'};
+    const queueIds=homeQueue.map(w=>w.id);
+    const pReqCard=r=>{
+      const w=workForReq(r.id);
+      const step= r.status==='new'? 0 : (r.status==='done'||(w&&w.status==='done'))? 4 : !w? 1 : w.status==='review'? 3 : w.status==='progress'? 2 : 1;
+      const qpos= w&&w.status==='queued'? queueIds.indexOf(w.id)+1 : 0;
+      const hint= step===0? 'We’re reviewing your request.'
+        : step===1? (qpos? (qpos===1? 'Approved. It’s next in line.' : 'Approved. #'+qpos+' in your queue.') : 'Approved and in your queue.')
+        : step===2? 'We’re working on it now.'
+        : step===3? 'Ready for you. Take a look and approve it.'
+        : 'Finished'+(w&&w.completedAt? ' on '+new Date(w.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '')+'.';
+      const c=PSTEP_COLOR[step];
+      return {title:r.title, desc:(r.desc||'').slice(0,160)+((r.desc||'').length>160?'…':''), hasDesc:!!r.desc,
+        cat:r.category||'General', when:'Sent '+this.fmt(r.ts),
+        stepLabel:PSTEP_LONG[step], stepChip:pChip(PSTEP_LONG[step],c), hint, hintStyle:{fontSize:13.5,fontWeight:600,color:step===3?'#0E8F8A':'var(--navy)'},
+        bars:PSTEPS.map((lab,i)=>({label:lab,style:{flex:1,height:6,borderRadius:3,background:i<=step? c : 'var(--gray-200)'},labelStyle:{flex:1,fontSize:11,fontWeight:i===step?700:500,color:i===step?c:'var(--text-muted)',textAlign:'center',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}})),
+        needsReview: step===3, review: w? openDetail('work',w.id) : openDetail('request',r.id),
+        urgent: r.urgency==='High'||r.urgency==='Urgent', urgChip:pChip(r.urgency||'Normal',URG_C[r.urgency]||URG_C.Normal),
+        dates:[w&&w.projectedFinish? 'Est. finish '+niceDate(w.projectedFinish) : '', r.needBy? 'Needed by '+niceDate(r.needBy) : ''].filter(Boolean).join(' · '),
+        files:attachLabel(r), hasFiles:!!attachLabel(r), hasDates:!!((w&&w.projectedFinish)||r.needBy),
+        comments:(w? (w.comments||[]).length : 0)+((r.comments||[]).length), open:openDetail('request',r.id),
+        cardStyle:{borderLeft:'4px solid '+c}};
+    };
+    const pOpenReqs=myReqAll.filter(r=>!reqClosed(r)).sort((a,b)=>{ const sa=pReqCard(a), sb=pReqCard(b);
+      return (sb.needsReview-sa.needsReview) || b.ts-a.ts; }).map(pReqCard);
+    const pDoneReqs=myReqAll.filter(reqClosed).sort(byNewest).map(r=>{ const x=pReqCard(r);
+      if(r.status==='declined'){ x.stepChip=pChip('Not taken on','#5B6478'); x.hint='We passed on this one. Check the comments for why.'; x.bars=[]; x.cardStyle={borderLeft:'4px solid #9AA3B5'}; }
+      return x; });
+    const pReqTab=S.pReqTab||'open';
+    const pCats=CATS.map(n=>({label:n,on:(d.reqCat||CATS[0])===n,pick:()=>this.setState(s2=>({d:{...s2.d,reqCat:n}})),
+      style:{border:'1.5px solid '+((d.reqCat||CATS[0])===n?'var(--navy)':'var(--gray-200)'),background:(d.reqCat||CATS[0])===n?'var(--navy)':'var(--surface-card)',color:(d.reqCat||CATS[0])===n?'#fff':'var(--navy)',
+        borderRadius:999,padding:'0 14px',minHeight:40,font:'600 13.5px var(--font-body)',cursor:'pointer'}}));
+    const pUrg=URGENCIES.map(u=>{ const on=(d.reqUrgency||'Normal')===u, c=URG_C[u];
+      return {label:u,pick:()=>this.setState(s2=>({d:{...s2.d,reqUrgency:u}})),
+        style:{flex:1,border:'none',borderRadius:10,minHeight:40,font:'700 13.5px var(--font-body)',cursor:'pointer',background:on? c : 'transparent',color:on?'#fff':'var(--navy)'}}; });
+    const pReqComposer = S.pReqOpen!==undefined? !!S.pReqOpen : pOpenReqs.length===0;
+
+    // Updates: what needs their OK first, then the feed, then finished work.
+    const pFeed=D.updates.filter(u=>u.clientId===client.id&&!(u.needsApproval&&!u.approved)).sort((a,b)=>b.ts-a.ts).map(u=>({
+      when:this.fmt(u.ts), date:new Date(u.ts).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}), text:u.text,
+      approved:!!(u.needsApproval&&u.approved),
+      feedback:(u.feedback||[]).map(f=>({name:f.name,text:f.text,mine:f.by===me.id||f.name===cname(client.id),
+        style:{alignSelf:(f.by===me.id||f.name===cname(client.id))?'flex-end':'flex-start',maxWidth:'85%',background:(f.by===me.id||f.name===cname(client.id))?'rgba(46,63,214,.08)':'var(--gray-100)',borderRadius:14,padding:'8px 12px',fontSize:13.5,color:'var(--navy)'}})),
+      hasFeedback:(u.feedback||[]).length>0,
+      replying:S.feedbackFor===u.id, notReplying:S.feedbackFor!==u.id, reply:()=>this.setState({feedbackFor:u.id}),
+      send:()=>{ const text=(d.feedback||'').trim(); if(!text) return;
+        this.set(x=>{ x.updates.find(y=>y.id===u.id).feedback.push({id:this.uid(),by:me.id,name:cname(client.id),text,ts:Date.now()}); this.logEv(x,client.id,cname(client.id)+' left feedback on an update'); return x; });
+        this.setState(s=>({feedbackFor:null,d:{...s.d,feedback:''}})); },
+      cancel:()=>this.setState({feedbackFor:null})}));
+    const FACES=[['😞','Rough'],['🙁','Meh'],['😐','Okay'],['🙂','Good'],['😍','Great']];
+    const pPulse=FACES.map(([f,l],i)=>({face:f,label:l,rate:pulseBtns[i].rate,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:4,flex:1,minWidth:56,minHeight:72,justifyContent:'center',
+      border:'1.5px solid var(--gray-200)',borderRadius:14,background:'var(--surface-card)',cursor:'pointer',font:'600 12px var(--font-body)',color:'var(--navy)'}}));
+
+    // To-dos: a checklist with progress, done items tucked away.
+    const pMyTodos=D.todos.filter(t=>t.who==='client'&&t.clientId===client.id);
+    const tOpen=pMyTodos.filter(t=>!t.done).sort((a,b)=>a.ts-b.ts), tDone=pMyTodos.filter(t=>t.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
+    const pTodoRow=t=>({title:t.title, meta: t.done? 'Done '+(t.doneAt? new Date(t.doneAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '') : 'Added '+new Date(t.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'})+(t.assigneeName? ' · for '+t.assigneeName : ''),
+      done:!!t.done, toggle:()=>toggleTodo(t.id),
+      box:{width:30,height:30,minWidth:30,borderRadius:'50%',border:t.done?'none':'2px solid var(--gray-300, #C5CAD6)',background:t.done?'#14A05A':'var(--surface-card)',color:'#fff',
+        display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:15,fontWeight:800,cursor:'pointer',padding:0},
+      titleStyle:{fontSize:15,fontWeight:600,color:t.done?'var(--text-muted)':'var(--navy)',textDecoration:t.done?'line-through':'none',lineHeight:1.4}});
+    const tPct=pMyTodos.length? Math.round(tDone.length/pMyTodos.length*100) : 100;
     // ===== content calendar =====
     // The three channels need to be told apart, so their colours cannot come
     // from the kit: a kit is free to set the same colour for its accent and its
@@ -10585,6 +10676,12 @@ class Component extends DCLogic {
       tdToggleAll:()=>this.setState(s2=>({tdAll:!s2.tdAll,todoEdit:null,todoDel:null})),
       secRequests:isTeam&&secKey('requests'), secMessages:isTeam&&secKey('messages'),
       pUpdates:!isTeam&&secKey('updates'), pRequests:!isTeam&&secKey('requests'), pTodos:!isTeam&&secKey('todos'),
+      // One tap between the three Work pages, on phones too (the bottom bar only opens the first).
+      pOnWork:!isTeam&&(secKey('updates')||secKey('requests')||secKey('todos')),
+      pWorkTabs:[['updates','Updates'],['requests','Requests'],['todos','To-Dos']].map(([k,l])=>{ const on=sectionNow===k, b=Number(badgeFor(k))||0;
+        return {label:l, badge:String(b), hasBadge:b>0, select:openSection(k),
+          style:{flex:'1 1 0',border:'none',borderRadius:10,minHeight:42,padding:'0 8px',whiteSpace:'nowrap',font:'700 14px var(--font-body)',cursor:'pointer',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:6,
+            background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',boxShadow:on?'0 1px 3px rgba(15,22,51,.15)':'none'}}; }),
       pMessages:!isTeam&&secKey('messages'), pSchedule:!isTeam&&secKey('schedule'), calUrl:CAL_URL,
       calOpen:!!S.calOpen, calClosed:!S.calOpen, openCal:()=>this.setState({calOpen:true}), pFiles:!isTeam&&secKey('files'), pTeam:!isTeam&&secKey('team'), pReports:!isTeam&&secKey('reports'), pBilling:!isTeam&&canSeeClientBilling&&secKey('billing'),
       pHome:!isTeam&&secKey('home'),
@@ -10708,7 +10805,7 @@ class Component extends DCLogic {
           comments:[],files});
           this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
         this.__reqDraftId=null;
-        this.setState(s=>({reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
+        this.setState(s=>({reqLinks:[],reqFiles:[],pReqOpen:false,pReqTab:'open',flash:'Request sent. You can follow it below.',d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, noMyRequests:myRequests.length===0,
       myDoneRequests, noMyDoneRequests:myDoneRequests.length===0,
       exportRequests: ()=>saveCsv(
@@ -10722,6 +10819,22 @@ class Component extends DCLogic {
             listOf(r.links), listOf(r.files)];
         })),
       clientTodos, noClientTodos:clientTodos.length===0,
+      pOpenReqs, pDoneReqs, pReqShowOpen:pReqTab==='open', pReqShowDone:pReqTab==='done',
+      pNoOpenReqs:pOpenReqs.length===0, pNoDoneReqs:pDoneReqs.length===0,
+      pReqTabs:[['open','Open',pOpenReqs.length],['done','Finished',pDoneReqs.length]].map(([k,l,n])=>({label:l,count:String(n),pick:()=>this.setState({pReqTab:k}),
+        style:{border:'none',borderRadius:10,minHeight:40,padding:'0 16px',font:'700 14px var(--font-body)',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:8,
+          background:pReqTab===k?'var(--surface-card)':'transparent',color:pReqTab===k?'var(--navy)':'var(--text-muted)',boxShadow:pReqTab===k?'0 1px 3px rgba(15,22,51,.15)':'none'}})),
+      pReqComposer, pReqToggle:()=>this.setState({pReqOpen:!pReqComposer}), pReqToggleLabel: pReqComposer? 'Close' : '+ New request',
+      pCats, pUrg, pReviewCount:String(pOpenReqs.filter(x=>x.needsReview).length), pHasReview:pOpenReqs.some(x=>x.needsReview),
+      pFeed, pNoFeed:pFeed.length===0, pHasAppr:homeApprovals.length>0, pPulse, pRated:rated, pNotRated:!rated, pMonth:month,
+      pTodoOpen:tOpen.map(pTodoRow), pTodoDone:tDone.map(pTodoRow), pNoTodoOpen:tOpen.length===0, pHasTodoDone:tDone.length>0,
+      pTodoShowDone:!!S.pTodoShowDone, pTodoToggleDone:()=>this.setState(s2=>({pTodoShowDone:!s2.pTodoShowDone})),
+      pTodoDoneLabel:(S.pTodoShowDone?'Hide':'Show')+' finished ('+tDone.length+')',
+      pTodoSummary: pMyTodos.length? (tOpen.length? tOpen.length+' thing'+(tOpen.length===1?'':'s')+' we need from you' : 'You’re all caught up') : 'Nothing needed from you',
+      pTodoProgress: pMyTodos.length? tDone.length+' of '+pMyTodos.length+' done' : '',
+      pTodoRing:{width:64,height:64,borderRadius:'50%',flex:'0 0 auto',display:'flex',alignItems:'center',justifyContent:'center',
+        background:'conic-gradient(#14A05A '+tPct+'%, var(--gray-200) 0)'},
+      pTodoPct:tPct+'%',
       completedWork, noCompletedWork, exportCompleted,
       fileChips, portalFiles, noPortalFiles:portalFiles.length===0,
       // The library is the team's to fill — clients read it, staff add to it,
