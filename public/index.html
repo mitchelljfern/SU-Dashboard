@@ -212,6 +212,38 @@
     .su-rdkpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     @media (max-width:860px){ .su-rdkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
     @media (max-width:560px){ .su-rdbody{padding:2px 14px 18px} }
+    /* Shows (Slipstream): Trello-style board, cards, past list and the show form. */
+    .sh-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start}
+    .sh-board>section{box-sizing:border-box;min-width:0}
+    .sh-card{background:var(--surface-card);border:1px solid rgba(15,22,51,.12);border-radius:12px;box-shadow:0 1px 3px rgba(15,22,51,.08);cursor:pointer;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease}
+    .sh-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,22,51,.16)}
+    .sh-card:active{cursor:grabbing}
+    .sh-livedot{width:8px;height:8px;border-radius:50%;background:#14A05A;box-shadow:0 0 0 0 rgba(20,160,90,.5);animation:shpulse 1.8s infinite}
+    @keyframes shpulse{0%{box-shadow:0 0 0 0 rgba(20,160,90,.5)}70%{box-shadow:0 0 0 7px rgba(20,160,90,0)}100%{box-shadow:0 0 0 0 rgba(20,160,90,0)}}
+    .sh-addcard{background:transparent;border:none;border-radius:10px;padding:10px;text-align:left;font:600 13.5px var(--font-body);color:var(--text-muted);cursor:pointer;min-height:44px}
+    .sh-addcard:hover{background:rgba(15,22,51,.06);color:var(--navy)}
+    .sh-input{height:44px;box-sizing:border-box;border:1.5px solid var(--gray-200);border-radius:10px;padding:0 12px;font:15px var(--font-body);color:var(--navy);background:var(--surface-card);width:100%}
+    textarea.sh-input{height:auto;padding:12px;line-height:1.5;resize:vertical}
+    select.sh-input{padding:0 10px;width:auto}
+    .sh-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,63,214,.15)}
+    .sh-label{display:flex;flex-direction:column;gap:7px;font-size:13.5px;font-weight:700;color:var(--navy);min-width:0}
+    .sh-btn{border:1.5px solid var(--gray-200);background:var(--surface-card);color:var(--navy);border-radius:10px;padding:0 16px;min-height:44px;font:600 14px var(--font-body);cursor:pointer}
+    .sh-btn:hover{border-color:var(--navy)}
+    .sh-pastrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--border-card);cursor:pointer}
+    .sh-pastrow:hover{background:rgba(46,63,214,.04)}
+    .sh-pastrow:last-child{border-bottom:none}
+    .sh-pastmeta{font-size:13px;color:var(--text-muted);white-space:nowrap}
+    .sh-sec{background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;min-width:0}
+    .sh-h{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--navy)}
+    .sh-n{width:26px;height:26px;border-radius:50%;color:#fff;font-size:13px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+    .sh-opt{font-weight:500;font-size:12.5px;color:var(--text-muted)}
+    @media (max-width:560px){ .sh-sec{padding:16px} }
+    @media (max-width:1100px){ .sh-board{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:860px){
+      .sh-board{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:6px;margin:0 -18px;padding-left:18px;padding-right:18px;scroll-padding-left:18px}
+      .sh-board>section{flex:0 0 84%;scroll-snap-align:start}
+    }
+    @media (max-width:560px){ .sh-pastmeta{min-width:0 !important} }
   </style>
 </helmet>
 <div style="{{ rootStyle }}">
@@ -4588,79 +4620,60 @@
             <button onClick="{{ shGoLaunch }}" style="order:1;display:inline-flex;align-items:center;gap:8px;background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer" style-hover="background:#2a2a2a">+ Launch a show</button>
           </div>
 
-          <!-- ===== Shows: list ===== -->
+          <!-- ===== Shows: board ===== -->
           <sc-if value="{{ shList }}" hint-placeholder-val="{{ true }}">
-            <div class="su-rdkpi">
-              <sc-for list="{{ shTiles }}" as="k" hint-placeholder-count="4">
-                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0">
-                  <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
-                  <div style="{{ k.valueStyle }}">{{ k.value }}</div>
-                  <div style="font-size:12px;color:var(--text-muted);line-height:1.45">{{ k.sub }}</div>
-                </div>
+            <div class="sh-board">
+              <sc-for list="{{ shBoard }}" as="col" hint-placeholder-count="4">
+                <section style="{{ col.colStyle }}" onDragOver="{{ col.over }}" onDragLeave="{{ col.leave }}" onDrop="{{ col.drop }}" aria-label="{{ col.label }}">
+                  <div style="display:flex;align-items:center;gap:8px;padding:0 4px 2px">
+                    <span style="{{ col.dotStyle }}"></span>
+                    <h3 style="flex:1;margin:0;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy)">{{ col.label }}</h3>
+                    <span style="min-width:24px;height:22px;padding:0 7px;border-radius:999px;background:var(--surface-card);font-size:12px;font-weight:700;color:var(--navy);display:inline-flex;align-items:center;justify-content:center">{{ col.count }}</span>
+                  </div>
+                  <sc-for list="{{ col.cards }}" as="c" hint-placeholder-count="2">
+                    <article draggable="true" onDragStart="{{ c.drag }}" onClick="{{ c.open }}" class="sh-card">
+                      <sc-if value="{{ c.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ c.img }}" alt="" loading="lazy" style="{{ c.imgStyle }}" /></sc-if>
+                      <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px">
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="{{ c.type.style }}">{{ c.type.label }}</span><sc-if value="{{ c.live }}" hint-placeholder-val="{{ false }}"><span class="sh-livedot"></span></sc-if></div>
+                        <div style="font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.3;color:var(--navy);overflow-wrap:anywhere">{{ c.title }}</div>
+                        <div style="font-size:12.5px;color:var(--text-muted)">{{ c.when }}</div>
+                        <sc-if value="{{ c.hasRsvp }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:600;color:var(--navy)"><span>{{ c.rsvpText }}</span><sc-if value="{{ c.hasWait }}" hint-placeholder-val="{{ false }}"><span style="color:#7B5CD6">{{ c.waitText }}</span></sc-if></div>
+                          <sc-if value="{{ c.hasBar }}" hint-placeholder-val="{{ true }}"><div style="height:6px;border-radius:3px;background:var(--gray-200);overflow:hidden"><span style="{{ c.bar }}"></span></div></sc-if>
+                        </sc-if>
+                        <div style="{{ c.noteStyle }}">{{ c.note }}</div>
+                      </div>
+                    </article>
+                  </sc-for>
+                  <sc-if value="{{ col.empty }}" hint-placeholder-val="{{ false }}"><div style="border:1.5px dashed rgba(15,22,51,.18);border-radius:12px;padding:18px 14px;font-size:13px;color:var(--text-muted);text-align:center">{{ col.emptyText }}</div></sc-if>
+                  <sc-if value="{{ col.isDrafts }}" hint-placeholder-val="{{ true }}"><button onClick="{{ shAddDraft }}" class="sh-addcard">+ Add a show</button></sc-if>
+                </section>
               </sc-for>
             </div>
+            <div style="font-size:12.5px;color:var(--text-muted);margin-top:-6px">Drag a card from <b>Drafts</b> to <b>Upcoming</b> to publish it, or back to unpublish. Shows move to Live and Finished by date.</div>
 
-            <sc-if value="{{ shHasLead }}" hint-placeholder-val="{{ true }}">
-              <section style="display:flex;flex-direction:column;gap:10px">
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">{{ shLead.heading }}</h3>
-                <div style="{{ shLead.cardStyle }}">
-                  <div role="img" aria-label="{{ shLead.title }} key art" style="{{ shLead.posterStyle }}"></div>
-                  <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 280px;min-width:0">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shLead.statusStyle }}">{{ shLead.statusLabel }} · {{ shLead.cd }}</span><span style="font-size:12px;color:var(--text-muted)">{{ shLead.kind }}</span></div>
-                    <div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy);line-height:1.25">{{ shLead.title }}</div>
-                    <div style="font-size:13px;color:var(--text-muted)">{{ shLead.when }} PT · {{ shLead.rsvpText }}</div>
-                    <div style="height:6px;border-radius:3px;background:var(--gray-200);overflow:hidden;max-width:360px"><span style="{{ shLead.bar }}"></span></div>
-                    <div style="font-size:12.5px;color:var(--text-muted)">{{ shLead.mailLine }}</div>
-                  </div>
-                  <div style="display:flex;gap:8px;flex-wrap:wrap">
-                    <button onClick="{{ shLead.open }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Open show</button>
-                    <button onClick="{{ shLead.copyPw }}" style="background:var(--surface-card);color:var(--navy);border:1px solid rgba(15,22,51,.4);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Copy access code</button>
-                    <a href="{{ shLead.view }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">View on site ↗</a>
-                  </div>
+            <section style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy);margin:0">Past shows <span style="font-weight:500;font-size:13px;color:var(--text-muted)">{{ shPastCount }}</span></h3>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;flex:1 1 420px;justify-content:flex-end">
+                  <input value="{{ dShPastQ }}" onChange="{{ onShPastQ }}" placeholder="Search title or series" aria-label="Search past shows" class="sh-input" style="flex:1 1 200px;max-width:320px" />
+                  <select value="{{ dShPastType }}" onChange="{{ onShPastType }}" aria-label="Type" class="sh-input" style="flex:0 0 auto"><sc-for list="{{ shPastTypeOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+                  <select value="{{ dShPastSort }}" onChange="{{ onShPastSort }}" aria-label="Sort" class="sh-input" style="flex:0 0 auto"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="az">A to Z</option><option value="rsvps">Most RSVPs</option></select>
                 </div>
-              </section>
-            </sc-if>
-
-            <section style="display:flex;flex-direction:column;gap:10px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Upcoming and drafts</h3>
-              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
-                <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
-                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Window or date (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Status</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
-                  <tbody>
-                    <sc-for list="{{ shUpcoming }}" as="r" hint-placeholder-count="2">
-                      <tr>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><div style="font-weight:600;color:var(--navy)">{{ r.title }}</div><div style="font-size:12px;color:var(--text-muted)">{{ r.sub }}</div></td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);white-space:nowrap">{{ r.kind }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.when }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);min-width:120px"><div>{{ r.rsvpText }}</div><sc-if value="{{ r.hasBar }}" hint-placeholder-val="{{ true }}"><div style="height:6px;border-radius:3px;background:var(--gray-200);overflow:hidden;margin-top:4px"><span style="{{ r.bar }}"></span></div></sc-if></td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ r.statusStyle }}">{{ r.statusLabel }}</span></td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right"><button onClick="{{ r.open }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer;white-space:nowrap">{{ r.action }}</button></td>
-                      </tr>
-                    </sc-for>
-                  </tbody>
-                </table>
               </div>
-            </section>
-
-            <section style="display:flex;flex-direction:column;gap:10px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Past shows</h3>
-              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
-                <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
-                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Closed</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Waiting list</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Thank-you</th></tr></thead>
-                  <tbody>
-                    <sc-for list="{{ shPast }}" as="r" hint-placeholder-count="3">
-                      <tr onClick="{{ r.open }}" style="cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);font-weight:600;color:var(--navy)">{{ r.title }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);white-space:nowrap">{{ r.kind }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.closed }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.rsvpText }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ r.watched }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);color:var(--text-muted)">{{ r.thanks }}</td>
-                      </tr>
-                    </sc-for>
-                  </tbody>
-                </table>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;overflow:hidden">
+                <sc-for list="{{ shPastRows }}" as="r" hint-placeholder-count="4">
+                  <div onClick="{{ r.open }}" class="sh-pastrow">
+                    <span style="{{ r.thumbStyle }}"></span>
+                    <div style="flex:1 1 220px;min-width:0"><div style="font-weight:700;color:var(--navy);font-size:14px;overflow-wrap:anywhere">{{ r.title }}</div><div style="font-size:12px;color:var(--text-muted)">{{ r.series }}</div></div>
+                    <span style="{{ r.type.style }}">{{ r.type.label }}</span>
+                    <span class="sh-pastmeta" style="min-width:110px">{{ r.date }}</span>
+                    <span class="sh-pastmeta" style="min-width:70px;font-weight:600;color:var(--navy)">{{ r.rsvps }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ shPastEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:18px;font-size:13.5px;color:var(--text-muted)">No past shows match.</div></sc-if>
               </div>
+              <sc-if value="{{ shPastHasMore }}" hint-placeholder-val="{{ true }}"><button onClick="{{ shPastMore }}" class="sh-btn" style="align-self:center">Show more</button></sc-if>
             </section>
 
             <section style="display:flex;flex-direction:column;gap:10px">
@@ -4682,102 +4695,96 @@
             </section>
           </sc-if>
 
-          <!-- ===== Shows: launch a show ===== -->
+          <!-- ===== Shows: launch or edit a show ===== -->
           <sc-if value="{{ shLaunch }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <div style="display:flex;flex-direction:column;gap:4px"><button onClick="{{ shBack }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font:600 13px var(--font-body);cursor:pointer;padding:0">← All shows</button><h2 style="font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--navy);margin:0">{{ shLaunchTitle }}</h2></div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <button onClick="{{ shBack }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font:600 13.5px var(--font-body);cursor:pointer;padding:0;min-height:32px">← Back to shows</button>
+                <h2 style="font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--navy);margin:0;overflow-wrap:anywhere">{{ shLaunchTitle }}</h2>
+              </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <sc-if value="{{ shShowDraftBtn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ shSaveDraft }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Save draft</button></sc-if>
-                <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid rgba(15,22,51,.4);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">Preview on site ↗</a>
-                <button onClick="{{ shPublish }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">{{ shPublishLabel }}</button>
+                <sc-if value="{{ shShowDraftBtn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ shSaveDraft }}" class="sh-btn">Save draft</button></sc-if>
+                <button onClick="{{ shPublish }}" style="background:#111;color:#fff;border:none;border-radius:10px;padding:0 20px;min-height:44px;font:700 14px var(--font-body);cursor:pointer">{{ shPublishLabel }}</button>
               </div>
             </div>
-            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
+            <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px;align-items:start">
               <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
-                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">1 · Basics</h3>
-                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Title<input value="{{ dShTitle }}" onChange="{{ onShTitle }}" placeholder="A Fox Under a Pink Moon" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                  <div style="font-size:12px;color:var(--text-muted);margin-top:-8px">Page address: viewslipstream.com/<b>{{ shSlug }}</b>/</div>
+
+                <section class="sh-sec">
+                  <h3 class="sh-h"><span class="sh-n" style="background:#2E3FD6">1</span>Basics</h3>
+                  <label class="sh-label">Title<input value="{{ dShTitle }}" onChange="{{ onShTitle }}" placeholder="Show title" class="sh-input" /></label>
+                  <div style="font-size:12.5px;color:var(--text-muted);margin-top:-6px">viewslipstream.com/<b style="color:var(--navy)">{{ shSlug }}</b>/</div>
+                  <label class="sh-label">About<textarea value="{{ dShAbout }}" onChange="{{ onShAbout }}" rows="5" placeholder="What guests read before they RSVP. A blank line starts a new paragraph." class="sh-input"></textarea></label>
                   <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Series or group<select value="{{ dShSeries }}" onChange="{{ onShSeries }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><sc-for list="{{ shSeriesOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Trailer (YouTube link)<input value="{{ dShTrailer }}" onChange="{{ onShTrailer }}" placeholder="https://youtube.com/watch?v=…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                  </div>
-                  <sc-if value="{{ shAddingSeries }}" hint-placeholder-val="{{ false }}">
-                    <div style="border:1px solid rgba(46,63,214,.25);background:rgba(46,63,214,.05);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-                      <b style="font-size:13.5px;color:var(--navy)">New series or group</b>
-                      <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px">
-                        <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Name<input value="{{ dShNewSeries }}" onChange="{{ onShNewSeries }}" placeholder="Holiday Screening Series" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                        <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">On the home page<select value="{{ dShNewSeriesKind }}" onChange="{{ onShNewSeriesKind }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><option value="series">Its own row (a series)</option><option value="month">A month tab under Screenings</option></select></label>
-                      </div>
-                      <div style="font-size:12px;color:var(--text-muted);line-height:1.5">It appears on the home page with its first published show. Rows fill the full width on their own: 1 or 2 shows go horizontal, up to 5 posters per row.</div>
-                      <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shAddSeries }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:38px;font:600 13.5px var(--font-body);cursor:pointer">Add series</button><button onClick="{{ shCancelSeries }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:38px;font:600 13.5px var(--font-body);cursor:pointer">Cancel</button></div>
-                    </div>
-                  </sc-if>
-                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">About the show<textarea value="{{ dShAbout }}" onChange="{{ onShAbout }}" rows="4" placeholder="The synopsis guests read before they RSVP." style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font:14px/1.5 var(--font-body);resize:vertical"></textarea></label>
-                  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Conversation line<input value="{{ dShQa }}" onChange="{{ onShQa }}" placeholder="Followed by a conversation with…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                  <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px">
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Poster (2:3)<div style="{{ shPosterStyle }}">{{ shPosterText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShPosterFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Key art (16:9)<div style="{{ shHeroStyle }}">{{ shHeroText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShHeroFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
+                    <label class="sh-label"><span>Trailer <span class="sh-opt">YouTube link</span></span><input value="{{ dShTrailer }}" onChange="{{ onShTrailer }}" placeholder="https://youtu.be/…" class="sh-input" /></label>
+                    <label class="sh-label"><span>Conversation <span class="sh-opt">optional</span></span><input value="{{ dShQa }}" onChange="{{ onShQa }}" placeholder="Followed by a conversation with…" class="sh-input" /></label>
                   </div>
                 </section>
 
-                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
-                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">2 · Show type</h3>
-                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+                <section class="sh-sec">
+                  <h3 class="sh-h"><span class="sh-n" style="background:#C47A12">2</span>Type</h3>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
                     <sc-for list="{{ shTypeCards }}" as="c" hint-placeholder-count="5">
-                      <button onClick="{{ c.select }}" aria-pressed="{{ c.on }}" style="{{ c.style }}"><b style="font-size:13px;color:var(--navy)">{{ c.label }}</b><span style="font-size:12px;color:var(--text-muted)">{{ c.desc }}</span></button>
+                      <button onClick="{{ c.select }}" aria-pressed="{{ c.on }}" style="{{ c.style }}"><span style="{{ c.dot }}"></span>{{ c.label }}</button>
                     </sc-for>
                   </div>
                   <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldA }}<input value="{{ dShTypeA }}" onChange="{{ onShTypeA }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                    <sc-if value="{{ shHasB }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label></sc-if>
+                    <label class="sh-label">{{ fieldA }}<input value="{{ dShTypeA }}" onChange="{{ onShTypeA }}" class="sh-input" /></label>
+                    <sc-if value="{{ shHasB }}" hint-placeholder-val="{{ true }}"><label class="sh-label">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" class="sh-input" /></label></sc-if>
                   </div>
-                  <sc-if value="{{ shHasC }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldC }}<input value="{{ dShTypeC }}" onChange="{{ onShTypeC }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label></sc-if>
-                  <div style="font-size:12px;color:var(--text-muted);margin-top:-6px">{{ fieldBHelp }}</div>
+                  <sc-if value="{{ shHasC }}" hint-placeholder-val="{{ true }}"><label class="sh-label">{{ fieldC }}<input value="{{ dShTypeC }}" onChange="{{ onShTypeC }}" class="sh-input" /></label></sc-if>
                   <sc-if value="{{ shIsInPerson }}" hint-placeholder-val="{{ false }}">
                     <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:end">
-                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Seats per guest<select value="{{ dShSeatsPer }}" onChange="{{ onShSeatsPer }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 10px;font:14px var(--font-body)"><option value="1">1 seat</option><option value="2">Up to 2 seats</option><option value="3">Up to 3 seats</option><option value="4">Up to 4 seats</option></select></label>
-                      <label style="display:flex;align-items:center;gap:10px;min-height:42px;font-size:13.5px;font-weight:500;color:var(--navy);cursor:pointer"><input type="checkbox" checked="{{ dShWaitlist }}" onChange="{{ onShWaitlist }}" style="width:18px;height:18px;accent-color:var(--blue)" />Waiting list when full</label>
+                      <label class="sh-label">Seats per guest<select value="{{ dShSeatsPer }}" onChange="{{ onShSeatsPer }}" class="sh-input" style="width:100%"><option value="1">1 seat</option><option value="2">Up to 2</option><option value="3">Up to 3</option><option value="4">Up to 4</option></select></label>
+                      <label style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer"><input type="checkbox" checked="{{ dShWaitlist }}" onChange="{{ onShWaitlist }}" style="width:20px;height:20px;accent-color:var(--blue)" />Waiting list when full</label>
                     </div>
-                    <div style="font-size:12px;color:var(--text-muted);margin-top:-6px;line-height:1.5">Guests pick how many seats when they RSVP, no account needed. When every seat is taken, the RSVP card switches to “Join the waiting list”, and people on the list get an email when seats open up.</div>
                   </sc-if>
                 </section>
 
-                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
-                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">3 · Schedule <span style="font-weight:500;font-size:12px;color:var(--text-muted)">Pacific time</span></h3>
+                <section class="sh-sec">
+                  <h3 class="sh-h"><span class="sh-n" style="background:#14A05A">3</span>When <span class="sh-opt">Pacific time</span></h3>
                   <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window opens (or showtime)<input type="datetime-local" value="{{ dShStart }}" onChange="{{ onShStart }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                    <sc-if value="{{ shNeedsEnd }}" hint-placeholder-val="{{ true }}">
-                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window closes<input type="datetime-local" value="{{ dShEnd }}" onChange="{{ onShEnd }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                    </sc-if>
+                    <label class="sh-label">{{ shStartLabel }}<input type="datetime-local" value="{{ dShStart }}" onChange="{{ onShStart }}" class="sh-input" /></label>
+                    <sc-if value="{{ shNeedsEnd }}" hint-placeholder-val="{{ true }}"><label class="sh-label">{{ shEndLabel }}<input type="datetime-local" value="{{ dShEnd }}" onChange="{{ onShEnd }}" class="sh-input" /></label></sc-if>
                   </div>
-                  <div style="font-size:12px;color:var(--text-muted)">RSVPs open the moment you publish. The show appears on the site as Upcoming until the window opens. Times are Pacific.</div>
                 </section>
 
-                <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
-                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">4 · Emails <span style="font-weight:500;font-size:12px;color:var(--text-muted)">times fill in from the schedule</span></h3>
-                  <sc-for list="{{ shEmailRows }}" as="e" hint-placeholder-count="3">
-                    <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-card)">
-                      <div><div style="font-weight:600;color:var(--navy)">{{ e.name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ e.sub }}</div></div>
-                      <div style="font-size:13px">{{ e.when }}</div>
-                      <a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:6px 12px;font:600 13px var(--font-body);text-decoration:none;white-space:nowrap">Preview ↗</a>
+                <section class="sh-sec">
+                  <h3 class="sh-h"><span class="sh-n" style="background:#C2407E">4</span>Images</h3>
+                  <div style="display:grid;grid-template-columns:minmax(90px,0.42fr) minmax(0,1fr);gap:12px">
+                    <label class="sh-label"><span>Poster <span class="sh-opt">2:3</span></span><div style="{{ shPosterStyle }}">{{ shPosterText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShPosterFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
+                    <label class="sh-label"><span>Key art <span class="sh-opt">16:9, used on the page and in emails</span></span><div style="{{ shHeroStyle }}">{{ shHeroText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShHeroFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
+                  </div>
+                </section>
+
+                <section class="sh-sec">
+                  <h3 class="sh-h"><span class="sh-n" style="background:#7B5CD6">5</span>Home page row</h3>
+                  <label class="sh-label">Series or month<select value="{{ dShSeries }}" onChange="{{ onShSeries }}" class="sh-input" style="width:100%"><sc-for list="{{ shSeriesOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <sc-if value="{{ shAddingSeries }}" hint-placeholder-val="{{ false }}">
+                    <div style="border:1.5px solid rgba(123,92,214,.3);background:rgba(123,92,214,.06);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px">
+                      <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px">
+                        <label class="sh-label">New name<input value="{{ dShNewSeries }}" onChange="{{ onShNewSeries }}" placeholder="Holiday Screening Series" class="sh-input" /></label>
+                        <label class="sh-label">Shows as<select value="{{ dShNewSeriesKind }}" onChange="{{ onShNewSeriesKind }}" class="sh-input" style="width:100%"><option value="series">Its own row</option><option value="month">A month tab</option></select></label>
+                      </div>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shAddSeries }}" style="background:#111;color:#fff;border:none;border-radius:10px;padding:0 18px;min-height:44px;font:700 14px var(--font-body);cursor:pointer">Add</button><button onClick="{{ shCancelSeries }}" class="sh-btn">Cancel</button></div>
                     </div>
-                  </sc-for>
+                  </sc-if>
                 </section>
               </div>
 
               <aside style="display:flex;flex-direction:column;gap:14px;position:sticky;top:16px">
-                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
-                  <div style="display:flex;align-items:center;justify-content:space-between"><h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Ready to publish?</h3><span style="font-size:12px;font-weight:600;color:var(--blue)">{{ shReady }}</span></div>
-                  <sc-for list="{{ shChecks }}" as="c" hint-placeholder-count="8">
-                    <div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border-card)"><span style="{{ c.box }}">{{ c.tick }}</span>{{ c.label }}</div>
+                <div class="sh-sec" style="gap:4px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Ready to publish</h3><span style="{{ shReadyStyle }}">{{ shReady }}</span></div>
+                  <sc-for list="{{ shChecks }}" as="c" hint-placeholder-count="6">
+                    <div style="display:flex;align-items:center;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--border-card)"><span style="{{ c.box }}">{{ c.tick }}</span><span style="{{ c.textStyle }}">{{ c.label }}</span></div>
                   </sc-for>
-                  <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Publish needs every line checked. Save a draft any time; drafts never appear on the site.</div>
                 </div>
-                <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;gap:6px;background:#000;color:#fff;border-radius:12px;padding:18px 20px;text-decoration:none">
-                  <span style="font:600 11px var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:#A9AFB7">See it on the site</span>
-                  <span style="font-weight:600">Every show page state, RSVP card and email on staging ↗</span>
-                </a>
+                <div class="sh-sec" style="gap:4px">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0 0 6px">Emails</h3>
+                  <sc-for list="{{ shEmailRows }}" as="e" hint-placeholder-count="3">
+                    <div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-card);font-size:13.5px"><b style="color:var(--navy)">{{ e.name }}</b><span style="color:var(--text-muted);text-align:right">{{ e.when }}</span></div>
+                  </sc-for>
+                </div>
               </aside>
             </div>
           </sc-if>
@@ -4788,7 +4795,7 @@
             <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
               <sc-if value="{{ shDet.hasPoster }}" hint-placeholder-val="{{ true }}"><div role="img" aria-label="{{ shDet.title }} key art" style="{{ shDet.posterStyle }}"></div></sc-if>
               <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 320px;min-width:0">
-                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shDet.statusStyle }}">{{ shDet.statusLabel }} · {{ shDet.cd }}</span><span style="font-size:12px;color:var(--text-muted)">{{ shDet.kind }} · {{ shDet.series }}</span></div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shDet.statusStyle }}">{{ shDet.statusLabel }} · {{ shDet.cd }}</span><span style="{{ shDet.type.style }}">{{ shDet.type.label }}</span><span style="font-size:12.5px;color:var(--text-muted)">{{ shDet.series }}</span></div>
                 <h2 style="font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--navy);margin:0">{{ shDet.title }}</h2>
                 <div style="font-size:13px;color:var(--text-muted)">{{ shDet.when }} PT · {{ shDet.url }}<sc-if value="{{ shDet.hasPw }}" hint-placeholder-val="{{ true }}"> · access code <b style="font-family:var(--font-display);letter-spacing:.08em;color:var(--navy)">{{ shDet.pw }}</b></sc-if></div>
               </div>
@@ -5697,6 +5704,78 @@ class Component extends DCLogic {
         closed: s.end? fmt(s.end,{month:'short',day:'numeric'}) : s.start? fmt(s.start,{month:'short',day:'numeric'}) : '—',
         thanks: thanks? 'Sent to '+thanks : s.guests? 'Not sent' : '—'}; };
 
+    // ---- Board (Trello-style): Drafts, Upcoming, Live now, Recently finished (30 days).
+    // Columns follow the dates on their own; the one move that's yours is publishing,
+    // so dragging a card between Drafts and Upcoming publishes or unpublishes it.
+    const DAY=864e5;
+    const endMs=s=> s.end? +new Date(s.end) : s.start? +new Date(s.start)+3*36e5 : 0;
+    // Archived shows are off the site, so they only ever live in the history.
+    const colOf=s=> s.draft? 'drafts' : s.archived? 'past' : phase(s)==='upcoming'? 'upcoming' : phase(s)==='live'? 'live' : now-endMs(s)<30*DAY? 'recent' : 'past';
+    const TYPEC={streaming:['Streaming','#0E7FC0'],'in-person':['In person','#C47A12'],giveaway:['Giveaway','#C2407E'],live:['Live stream','#C8372D'],paid:['Paid','#0F8A5F']};
+    const typeChip=k=>{ const [l,c]=TYPEC[k]||[k,'#5B6478']; return {label:l, style:{display:'inline-flex',alignItems:'center',gap:6,height:22,padding:'0 9px',borderRadius:999,fontSize:11.5,fontWeight:700,
+      color:c,background:'color-mix(in srgb, '+c+' 12%, var(--surface-card))',border:'1px solid color-mix(in srgb, '+c+' 30%, transparent)',whiteSpace:'nowrap'}}; };
+    const missingFor=s=>{ const r=s.row, a=accessOf(s.id), out=[];
+      if(!(r.about||[]).length) out.push('About text');
+      if(!r.hero_image) out.push('Key art');
+      if(!r.starts_at) out.push('Date');
+      else if(r.kind!=='in-person'&&!r.ends_at) out.push('End of window');
+      if((r.kind==='streaming'||r.kind==='paid')&&!a.film_embed) out.push('DaCast embed');
+      if(r.kind==='streaming'&&!a.access_code) out.push('Access code');
+      if(r.kind==='in-person'&&!r.venue_name) out.push('Venue');
+      if(r.kind==='in-person'&&!r.capacity) out.push('Capacity');
+      if(r.kind==='live'&&!r.youtube_live_id) out.push('YouTube Live ID');
+      if(r.kind==='giveaway'&&!(r.giveaway||{}).prize) out.push('Prize');
+      return out; };
+    const COLS=[['drafts','Drafts','#7A8399'],['upcoming','Upcoming','#2E3FD6'],['live','Live now','#14A05A'],['recent','Recently finished','#7B5CD6']];
+    const shDrop=col=>e=>{ e.preventDefault(); e.currentTarget.style.outline='';
+      const s=SHOWS.find(x=>x.id===this._shDrag); this._shDrag=null; if(!s) return;
+      const from=colOf(s); if(from===col) return;
+      if(col==='upcoming'&&from==='drafts'){ const miss=missingFor(s);
+        if(miss.length){ this.setState({flash:'“'+s.title+'” needs '+miss.join(', ')+' before it can go live. Open it to finish.'}); return; }
+        this.setState({shBusy:true});
+        this.shCall('setStatus',{slug:s.id,status:'published'}).then(reload('Published “'+s.title+'”. It’s on the site now.')).catch(fail('Could not publish.')); return; }
+      if(col==='drafts'&&from!=='past'){
+        if(s.guests){ this.setState({flash:'People have RSVP’d to “'+s.title+'”. Open it and use Unpublish if you’re sure.'}); return; }
+        this.setState({shBusy:true});
+        this.shCall('setStatus',{slug:s.id,status:'draft'}).then(reload('Moved “'+s.title+'” back to Drafts. It’s off the site.')).catch(fail('Could not unpublish.')); return; }
+      this.setState({flash: col==='drafts'? 'Past shows stay in the history.' : 'Shows move to '+(col==='live'?'Live now':col==='recent'?'Recently finished':'Upcoming')+' on their own, by date.'}); };
+    const card=s=>{ const col=colOf(s), r=s.row, capped=s.cap&&s.kind!=='giveaway', p=phase(s);
+      const miss= col==='drafts'? missingFor(s) : [];
+      const note= col==='drafts'? (miss.length? 'Needs: '+miss.join(', ') : 'Ready to publish')
+        : col==='live'? (s.end? 'Closes in '+span(endMs(s)-now) : 'Today')
+        : col==='upcoming'? (s.start? (s.kind==='in-person'?'Starts in ':'Opens in ')+span(+new Date(s.start)-now) : 'No date yet')
+        : 'Ended '+fmt(new Date(endMs(s)).toISOString(),{month:'short',day:'numeric'})+(sentOf(s.id,'thanks').length? ' · thank-you sent' : '');
+      const noteColor= col==='drafts'? (miss.length? '#B4590C' : '#14A05A') : col==='live'? '#14A05A' : col==='upcoming'? 'var(--blue)' : 'var(--text-muted)';
+      return {id:s.id,title:s.title,type:typeChip(s.kind),when:s.start? whenText(s) : 'No date yet',
+        img:r.hero_image||r.poster||'', hasImg:!!(r.hero_image||r.poster),
+        imgStyle:{display:'block',width:'100%',aspectRatio:'16 / 9',objectFit:'cover',borderRadius:'10px 10px 0 0',background:'var(--gray-100)'},
+        rsvpText: col==='drafts'? '' : s.kind==='giveaway'? s.guests+' entries' : capped? s.rsvps+' of '+s.cap+' seats' : s.guests+' RSVP'+(s.guests===1?'':'s'),
+        hasRsvp: col!=='drafts', hasBar: !!capped && col!=='drafts', bar: bar(capped? s.rsvps/s.cap : 0, s.rsvps>=s.cap? '#7B5CD6' : '#14A05A'),
+        waitText: s.waitlist? s.waitlist+' waiting' : '', hasWait:!!s.waitlist,
+        note, noteStyle:{fontSize:12,fontWeight:700,color:noteColor,lineHeight:1.35},
+        open:openShow(s.id), drag:e=>{ this._shDrag=s.id; try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',s.id); }catch(x){} },
+        live: p==='live'}; };
+    const board=COLS.map(([k,label,c])=>{ let list=SHOWS.filter(s=>colOf(s)===k);
+      list = k==='recent'? list.sort((a,b)=>endMs(b)-endMs(a)) : list.sort((a,b)=>(a.start||'9').localeCompare(b.start||'9'));
+      return {key:k,label,count:String(list.length),cards:list.map(card),empty:list.length===0,isDrafts:k==='drafts',
+        emptyText:{drafts:'No drafts. Start a show and save it here.',upcoming:'Nothing scheduled. Publish a draft.',live:'Nothing live right now.',recent:'Nothing finished in the last 30 days.'}[k],
+        dotStyle:{width:10,height:10,borderRadius:'50%',background:c,flex:'0 0 auto'},
+        colStyle:{background:'color-mix(in srgb, '+c+' 9%, var(--surface-page, #F4F6FA))',border:'1px solid color-mix(in srgb, '+c+' 24%, transparent)',borderTop:'4px solid '+c,
+          borderRadius:14,padding:'12px 10px',display:'flex',flexDirection:'column',gap:10,minHeight:160},
+        over:e=>{ e.preventDefault(); e.currentTarget.style.outline='2px dashed '+c; }, leave:e=>{ e.currentTarget.style.outline=''; }, drop:shDrop(k)}; });
+
+    // ---- Past shows (finished more than 30 days ago): the full history with search, type and sort.
+    const v0=k=>d[k]===undefined||d[k]===null? '' : String(d[k]);
+    const pq=v0('shPastQ').toLowerCase(), pt=v0('shPastType')||'all', ps=v0('shPastSort')||'new';
+    let pastAll=SHOWS.filter(s=>colOf(s)==='past');
+    const pastList=pastAll.filter(s=>(pt==='all'||s.kind===pt)&&(!pq||s.title.toLowerCase().includes(pq)||(s.series||'').toLowerCase().includes(pq)))
+      .sort(ps==='old'? (a,b)=>(a.start||'').localeCompare(b.start||'') : ps==='az'? (a,b)=>a.title.localeCompare(b.title) : ps==='rsvps'? (a,b)=>b.guests-a.guests : (a,b)=>(b.start||'').localeCompare(a.start||''));
+    const pastShown=pastList.slice(0,S.shPastN||25);
+    const pastRows=pastShown.map(s=>{ const thanks=sentOf(s.id,'thanks').length;
+      return {title:s.title,series:s.series||'—',type:typeChip(s.kind),date:s.start? fmt(s.start,{month:'short',day:'numeric',year:'numeric'}) : '—',
+        rsvps:s.guests? s.guests+(s.guests===1?' RSVP':' RSVPs') : '', thanks: thanks? 'Sent to '+thanks : '—', open:openShow(s.id),
+        thumbStyle:{width:64,aspectRatio:'16 / 9',borderRadius:6,flex:'0 0 auto',background:'var(--gray-100) center / cover no-repeat'+(s.poster? ' url("'+s.poster+'")' : '')}}; });
+
     const liveUp=upcoming.filter(s=>!s.draft);
     const shTiles=[
       {label:lead&&phase(leadShow)==='live'? 'Live now' : 'Next show', value: leadShow? leadShow.title : 'None scheduled', sub: lead? lead.cd : 'Launch one to get started', small:true},
@@ -5710,8 +5789,11 @@ class Component extends DCLogic {
     const TYPES=[['streaming','Streaming','DaCast embed, access code, date window'],['in-person','In person','Venue, capacity, seats'],
       ['giveaway','Giveaway','Prize, entry close, winners'],['live','Live stream','YouTube Live, no access code'],['paid','Paid','Ticket price (Stripe comes later)']];
     const ty=S.shType||'streaming';
-    const typeCards=TYPES.map(([k,l,desc])=>({label:l,desc,on:ty===k,select:()=>this.setState({shType:k}),
-      style:{display:'flex',flexDirection:'column',gap:4,padding:'12px 14px',border:'1px solid '+(ty===k?'var(--blue)':'var(--gray-200)'),boxShadow:ty===k?'0 0 0 1px var(--blue)':'none',borderRadius:8,cursor:'pointer',background:'var(--surface-card)',textAlign:'left',fontFamily:'var(--font-body)'}}));
+    const typeCards=TYPES.map(([k,l])=>{ const c=(TYPEC[k]||[0,'#5B6478'])[1], on=ty===k;
+      return {label:l,on,select:()=>this.setState({shType:k}),
+        dot:{width:9,height:9,borderRadius:'50%',background:on?'#fff':c,flex:'0 0 auto'},
+        style:{display:'inline-flex',alignItems:'center',gap:8,padding:'0 16px',minHeight:44,borderRadius:999,cursor:'pointer',fontFamily:'var(--font-body)',fontSize:14,fontWeight:700,
+          border:'1.5px solid '+(on?c:'var(--gray-200)'),background:on?c:'var(--surface-card)',color:on?'#fff':'var(--navy)'}}; });
     const v=k=>d[k]===undefined||d[k]===null? '' : String(d[k]);
     const title=v('shTitle').trim();
     const slugify=t=>t.toLowerCase().replace(/&/g,'and').replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
@@ -5720,24 +5802,24 @@ class Component extends DCLogic {
     const ytId=u=>{ const m=/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/.exec(u||''); return m? m[1] : /^[A-Za-z0-9_-]{11}$/.test(u||'')? u : ''; };
     const embedSrc=x=>{ const m=/src=["']([^"']+)["']/.exec(x||''); return (m? m[1] : (x||'')).trim(); };
     const needsEnd= ty!=='in-person';
-    const typeFields = ty==='in-person'? {fieldA:'Venue name',fieldB:'Capacity (seats)',fieldBHelp:'Total seats in the room. RSVPs switch to the waiting list when they’re gone.',fieldC:'Venue address',shHasB:true,shHasC:true}
-      : ty==='giveaway'? {fieldA:'Prize',fieldB:'Number of winners',fieldBHelp:'Winners are drawn when entries close.',fieldC:'',shHasB:true,shHasC:false}
-      : ty==='live'? {fieldA:'YouTube Live video ID or link',fieldB:'',fieldBHelp:'No access code: anyone with an RSVP can watch.',fieldC:'',shHasB:false,shHasC:false}
-      : ty==='paid'? {fieldA:'DaCast embed (link or embed code)',fieldB:'Ticket price (USD)',fieldBHelp:'Stripe isn’t connected yet, so paid shows can be drafted but not sold.',fieldC:'Access code',shHasB:true,shHasC:true}
-      : {fieldA:'DaCast embed (link or embed code)',fieldB:'Access code',fieldBHelp:'Guests get it in the “It’s showtime” email and above the player.',fieldC:'Conversation video embed (optional)',shHasB:true,shHasC:true};
+    const typeFields = ty==='in-person'? {fieldA:'Venue',fieldB:'Seats',fieldC:'Venue address',shHasB:true,shHasC:true}
+      : ty==='giveaway'? {fieldA:'Prize',fieldB:'Winners',fieldC:'',shHasB:true,shHasC:false}
+      : ty==='live'? {fieldA:'YouTube Live link',fieldB:'',fieldC:'',shHasB:false,shHasC:false}
+      : ty==='paid'? {fieldA:'DaCast embed',fieldB:'Price (USD)',fieldC:'Access code',shHasB:true,shHasC:true}
+      : {fieldA:'DaCast embed',fieldB:'Access code',fieldC:'Conversation embed (optional)',shHasB:true,shHasC:true};
     const checks=[
-      ['Title and about text', !!title && !!v('shAbout').trim()],
-      ['Trailer link', !!ytId(v('shTrailer'))],
-      ['Key art (16:9)', !!v('shHero')],
-      [ty==='streaming'||ty==='paid'? 'DaCast embed' : ty==='in-person'? 'Venue' : ty==='giveaway'? 'Prize' : 'YouTube Live ID', !!v('shTypeA').trim()],
-      [ty==='streaming'? 'Access code' : ty==='in-person'? 'Capacity' : ty==='giveaway'? 'Number of winners' : ty==='paid'? 'Ticket price' : 'Window', ty==='live'? !!startIso : !!v('shTypeB').trim()],
-      ['Date'+(needsEnd?' and window':'')+' (Pacific)', !!startIso && (!needsEnd || !!endIso)]
+      ['Title and about', !!title && !!v('shAbout').trim()],
+      ['Trailer', !!ytId(v('shTrailer'))],
+      ['Key art', !!v('shHero')],
+      [ty==='streaming'||ty==='paid'? 'DaCast embed' : ty==='in-person'? 'Venue' : ty==='giveaway'? 'Prize' : 'YouTube Live link', !!v('shTypeA').trim()],
+      [ty==='streaming'? 'Access code' : ty==='in-person'? 'Seats' : ty==='giveaway'? 'Winners' : ty==='paid'? 'Price' : 'Date', ty==='live'? !!startIso : !!v('shTypeB').trim()],
+      [needsEnd? 'Start and end' : 'Date and time', !!startIso && (!needsEnd || !!endIso)]
     ];
     const okN=checks.filter(c=>c[1]).length;
     const SERIES=D.series.map(x=>({id:x.id,name:x.title,kind:x.kind,home:x.home_position!=null,count:D.links.filter(l=>l.series_id===x.id&&l.position<1000).length}));
     const homeSeries=SERIES.filter(x=>x.home);
     const seriesPick=v('shSeries')||(homeSeries[0]||{}).id||'';
-    const box=ok=>({width:18,height:18,borderRadius:4,flex:'0 0 auto',display:'inline-flex',alignItems:'center',justifyContent:'center',background:ok?'var(--blue)':'transparent',border:ok?'none':'1px solid rgba(15,22,51,.3)',color:'#fff',fontSize:11,fontWeight:700});
+    const box=ok=>({width:22,height:22,borderRadius:'50%',flex:'0 0 auto',display:'inline-flex',alignItems:'center',justifyContent:'center',background:ok?'#14A05A':'transparent',border:ok?'none':'1.5px solid rgba(15,22,51,.25)',color:'#fff',fontSize:12,fontWeight:800});
     const emailRows=(ty==='in-person'? [
       ['RSVP confirmation','“You’re in: '+(title||'[Title]')+' on Slipstream”','Instantly, on each RSVP','rsvp'],
       ['Day-before reminder','Venue, time and check-in', startIso? when(new Date(+new Date(startIso)-26*36e5).toISOString())+' PT' : 'The day before','live'],
@@ -5791,7 +5873,7 @@ class Component extends DCLogic {
 
     // ---- One show
     const sel=SHOWS.find(s=>s.id===S.shSel) || leadShow || SHOWS[0] || null;
-    let det={tiles:[],guests:[],timeline:[]};
+    let det={tiles:[],guests:[],timeline:[],type:{label:'',style:{}}};
     if(sel){
       const selP=phase(sel);
       const rs=D.rsvps.filter(x=>x.show_slug===sel.id);
@@ -5816,7 +5898,7 @@ class Component extends DCLogic {
       const tl=tlRows.map(([nm,s,done],i,a)=>({name:nm,sub:s,dotStyle:{width:12,height:12,borderRadius:'50%',flex:'0 0 auto',marginTop:4,boxSizing:'border-box',background:done?'var(--green)':'var(--surface-card)',border:done?'none':'2px solid var(--blue)'},
         lineStyle:{width:2,flex:1,background:'rgba(15,22,51,.12)',margin:'4px 0 0 5px',display:i<a.length-1?'block':'none'}}));
       const failed=D.emails.filter(e=>e.show_slug===sel.id&&e.status==='failed').length;
-      det={title:sel.title,kind:KIND[sel.kind]||sel.kind,series:sel.series||'No series',when:whenText(sel),url:'viewslipstream.com/'+sel.id+'/',view:SITE+'/'+sel.id+'/',
+      det={title:sel.title,kind:KIND[sel.kind]||sel.kind,type:typeChip(sel.kind),series:sel.series||'No series',when:whenText(sel),url:'viewslipstream.com/'+sel.id+'/',view:SITE+'/'+sel.id+'/',
         statusLabel:status(sel)[0],statusStyle:status(sel)[1],posterStyle:art(sel.poster),hasPoster:!!sel.poster,
         hasPw:!!sel.pw, pw:sel.pw, cd: selP==='draft'? 'Not on the site' : selP==='live'? (sel.end? 'Closes in '+span(+new Date(sel.end)-now) : 'Today') : selP==='upcoming'? (sel.start? (sel.kind==='in-person'? 'Starts in ' : 'Opens in ')+span(+new Date(sel.start)-now) : 'No date') : 'Closed '+(sel.end? when(sel.end) : sel.start? fmt(sel.start,{month:'short',day:'numeric'}) : ''),
         tiles:[
@@ -5894,14 +5976,20 @@ class Component extends DCLogic {
     return {
       secShows:true,
       shBanner: loading? (S.shErr? 'Couldn’t reach Slipstream’s database: '+S.shErr : 'Loading Slipstream’s shows…')
-        : 'Connected to Slipstream’s database. Publishing a show puts it on the site within seconds.'+(D.emailMode==='test'? ' Emails are in test mode until viewslipstream.com moves over.' : ''),
+        : 'Connected to Slipstream. Changes show on the site within seconds.'+(D.emailMode==='test'? ' Emails are in test mode.' : ''),
       shBannerLabel: S.shErr? 'Error' : loading? 'Loading' : 'Live', shRetry:()=>{ this.setState({shErr:null}); this.shLoad(); }, shHasErr:!!S.shErr,
       shStaging:SITE, shTabs, shOnShows:tab==='shows', shOnEmails:tab==='emails', shOnPayments:tab==='payments', shOnGuests:tab==='guests',
       shList:tab==='shows'&&view==='list', shLaunch:tab==='shows'&&view==='launch', shDetail:tab==='shows'&&view==='detail'&&!!sel,
       shGoLaunch:startNew, shBack:()=>this.setState({shView:'list',shSel:null,shEdit:null}),
       shTiles, shLead:lead||{}, shHasLead:!!lead, shUpcoming:upcoming.map(row), shPast:past.map(row),
       shNoUpcoming:!loading&&upcoming.length===0,
-      shTypeCards:typeCards, ...typeFields, shSlug:slug, shEditing:!!editing, shLaunchTitle: editing? 'Edit '+((SHOWS.find(s=>s.id===editing)||{}).title||'show') : 'Launch a show',
+      shBoard:board, shAddDraft:startNew,
+      shPastRows:pastRows, shPastEmpty:pastRows.length===0, shPastCount: pastList.length===pastAll.length? pastAll.length+' shows' : pastList.length+' of '+pastAll.length+' shows',
+      shPastHasMore: pastList.length>pastShown.length, shPastMore:()=>this.setState(s2=>({shPastN:(s2.shPastN||25)+50})),
+      dShPastQ:v0('shPastQ'), onShPastQ:e=>{ const val=e.target.value; this.setState(s2=>({shPastN:25,d:{...s2.d,shPastQ:val}})); },
+      dShPastType:pt, onShPastType:this.draft('shPastType'), dShPastSort:ps, onShPastSort:this.draft('shPastSort'),
+      shPastTypeOpts:[{v:'all',l:'All types'}].concat(Object.keys(TYPEC).map(k=>({v:k,l:TYPEC[k][0]}))),
+      shTypeCards:typeCards, ...typeFields, shSlug:slug, shEditing:!!editing, shLaunchTitle: editing? ((SHOWS.find(s=>s.id===editing)||{}).title||'Edit show') : 'New show',
       dShTitle:v('shTitle'), onShTitle:this.draft('shTitle'), dShAbout:v('shAbout'), onShAbout:this.draft('shAbout'),
       dShTrailer:v('shTrailer'), onShTrailer:this.draft('shTrailer'), dShQa:v('shQa'), onShQa:this.draft('shQa'),
       dShTypeA:v('shTypeA'), onShTypeA:this.draft('shTypeA'), dShTypeB:v('shTypeB'), onShTypeB:this.draft('shTypeB'), dShTypeC:v('shTypeC'), onShTypeC:this.draft('shTypeC'),
@@ -5928,13 +6016,15 @@ class Component extends DCLogic {
       shIsInPerson: ty==='in-person',
       dShSeatsPer:v('shSeatsPer')||'2', onShSeatsPer:this.draft('shSeatsPer'),
       dShWaitlist: d.shWaitlist===undefined? true : !!d.shWaitlist, onShWaitlist:this.draft('shWaitlist'),
-      shPosterStyle:{height:140,border:'1px dashed rgba(15,22,51,.3)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:12,color:'var(--text-muted)',padding:8,cursor:'pointer',background:'var(--gray-100) center / cover no-repeat'+(v('shPoster')? ' url("'+v('shPoster')+'")' : '')},
-      shHeroStyle:{height:140,border:'1px dashed rgba(15,22,51,.3)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:12,color:'var(--text-muted)',padding:8,cursor:'pointer',background:'var(--gray-100) center / cover no-repeat'+(v('shHero')? ' url("'+v('shHero')+'")' : '')},
-      shPosterText: S.shUploading==='poster'? 'Uploading…' : v('shPoster')? '' : 'Pick an image',
-      shHeroText: S.shUploading==='hero'? 'Uploading…' : v('shHero')? '' : 'Pick an image, at least 1920 × 1080. Used on the page and in emails.',
+      shPosterStyle:{aspectRatio:'2 / 3',border:'1.5px dashed rgba(46,63,214,.35)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:13,fontWeight:700,color:'var(--blue)',padding:8,cursor:'pointer',boxSizing:'border-box',background:'var(--gray-100) center / cover no-repeat'+(v('shPoster')? ' url("'+v('shPoster')+'")' : '')},
+      shHeroStyle:{aspectRatio:'16 / 9',border:'1.5px dashed rgba(46,63,214,.35)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:13,fontWeight:700,color:'var(--blue)',padding:8,cursor:'pointer',boxSizing:'border-box',background:'var(--gray-100) center / cover no-repeat'+(v('shHero')? ' url("'+v('shHero')+'")' : '')},
+      shPosterText: S.shUploading==='poster'? 'Uploading…' : v('shPoster')? '' : '+ Upload',
+      shHeroText: S.shUploading==='hero'? 'Uploading…' : v('shHero')? '' : '+ Upload (1920 × 1080 or larger)',
       onShPosterFile:e=>{ this.shUpload(e.target.files&&e.target.files[0],'poster'); e.target.value=''; },
       onShHeroFile:e=>{ this.shUpload(e.target.files&&e.target.files[0],'hero'); e.target.value=''; },
-      shChecks:checks.map(([l,ok])=>({label:l,ok,box:box(ok),tick:ok?'✓':''})), shReady:okN+' of '+checks.length,
+      shChecks:checks.map(([l,ok])=>({label:l,ok,box:box(ok),tick:ok?'✓':'',textStyle:{color:ok?'var(--navy)':'var(--text-muted)',fontWeight:ok?600:500}})), shReady:okN===checks.length? 'All set' : okN+' of '+checks.length,
+      shReadyStyle:{display:'inline-flex',alignItems:'center',height:24,padding:'0 10px',borderRadius:999,fontSize:12,fontWeight:700,background:okN===checks.length?'rgba(20,160,90,.14)':'rgba(196,122,18,.14)',color:okN===checks.length?'#0E7A44':'#9A5B0A'},
+      shStartLabel: ty==='in-person'? 'Showtime' : ty==='giveaway'? 'Entries open' : 'Opens', shEndLabel: ty==='giveaway'? 'Entries close' : 'Closes',
       shEmailRows:emailRows,
       shSaveDraft:save(false), shPublish:save(!editing || (SHOWS.find(s=>s.id===editing)||{}).draft ? true : false),
       shPublishLabel: S.shBusy? 'Saving…' : editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? 'Save changes' : 'Publish',
