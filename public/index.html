@@ -4574,8 +4574,9 @@
       <sc-if value="{{ secShows }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
           <div style="display:flex;gap:12px;align-items:flex-start;background:rgba(46,63,214,.07);border:1px solid rgba(46,63,214,.18);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.5;color:var(--text-body)">
-            <span style="flex:0 0 auto;font-weight:700;color:var(--blue);font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding-top:2px">Preview</span>
-            <span style="flex:1">{{ shBanner }} <a href="{{ shStaging }}" target="_blank" rel="noopener" style="font-weight:600">Open the staging site ↗</a></span>
+            <span style="flex:0 0 auto;font-weight:700;color:var(--blue);font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding-top:2px">{{ shBannerLabel }}</span>
+            <span style="flex:1">{{ shBanner }} <a href="{{ shStaging }}" target="_blank" rel="noopener" style="font-weight:600">Open the site ↗</a></span>
+            <sc-if value="{{ shHasErr }}" hint-placeholder-val="{{ false }}"><button onClick="{{ shRetry }}" style="flex:0 0 auto;border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Try again</button></sc-if>
           </div>
 
           <div style="display:flex;flex-direction:row-reverse;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -4613,7 +4614,7 @@
                   </div>
                   <div style="display:flex;gap:8px;flex-wrap:wrap">
                     <button onClick="{{ shLead.open }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Open show</button>
-                    <button onClick="{{ shLead.copyPw }}" style="background:var(--surface-card);color:var(--navy);border:1px solid rgba(15,22,51,.4);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Copy password</button>
+                    <button onClick="{{ shLead.copyPw }}" style="background:var(--surface-card);color:var(--navy);border:1px solid rgba(15,22,51,.4);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Copy access code</button>
                     <a href="{{ shLead.view }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">View on site ↗</a>
                   </div>
                 </div>
@@ -4645,7 +4646,7 @@
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Past shows</h3>
               <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse;min-width:720px;font-size:13.5px">
-                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Closed</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Watched</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Thank-you</th></tr></thead>
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Type</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Closed</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVPs</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Waiting list</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Thank-you</th></tr></thead>
                   <tbody>
                     <sc-for list="{{ shPast }}" as="r" hint-placeholder-count="3">
                       <tr onClick="{{ r.open }}" style="cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
@@ -4684,11 +4685,11 @@
           <!-- ===== Shows: launch a show ===== -->
           <sc-if value="{{ shLaunch }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <button onClick="{{ shBack }}" style="background:none;border:none;color:var(--blue);font:600 13px var(--font-body);cursor:pointer;padding:0">← All shows</button>
+              <div style="display:flex;flex-direction:column;gap:4px"><button onClick="{{ shBack }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font:600 13px var(--font-body);cursor:pointer;padding:0">← All shows</button><h2 style="font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--navy);margin:0">{{ shLaunchTitle }}</h2></div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <button onClick="{{ shSaveDraft }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Save draft</button>
+                <sc-if value="{{ shShowDraftBtn }}" hint-placeholder-val="{{ true }}"><button onClick="{{ shSaveDraft }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Save draft</button></sc-if>
                 <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid rgba(15,22,51,.4);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">Preview on site ↗</a>
-                <button onClick="{{ shPublish }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Publish</button>
+                <button onClick="{{ shPublish }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">{{ shPublishLabel }}</button>
               </div>
             </div>
             <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start">
@@ -4715,8 +4716,8 @@
                   <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">About the show<textarea value="{{ dShAbout }}" onChange="{{ onShAbout }}" rows="4" placeholder="The synopsis guests read before they RSVP." style="border:1px solid var(--gray-200);border-radius:4px;padding:10px 12px;font:14px/1.5 var(--font-body);resize:vertical"></textarea></label>
                   <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Conversation line<input value="{{ dShQa }}" onChange="{{ onShQa }}" placeholder="Followed by a conversation with…" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                   <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px">
-                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Poster (2:3)<div style="height:140px;border:1px dashed rgba(15,22,51,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--text-muted);padding:8px">Drop image</div></div>
-                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Key art (16:9)<div style="height:140px;border:1px dashed rgba(15,22,51,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--text-muted);padding:8px">Drop image, at least 1920 × 1080. Used on the page hero and in emails.</div></div>
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Poster (2:3)<div style="{{ shPosterStyle }}">{{ shPosterText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShPosterFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Key art (16:9)<div style="{{ shHeroStyle }}">{{ shHeroText }}</div><input type="file" accept="image/jpeg,image/png,image/webp" onChange="{{ onShHeroFile }}" style="position:absolute;width:1px;height:1px;opacity:0" /></label>
                   </div>
                 </section>
 
@@ -4729,8 +4730,9 @@
                   </div>
                   <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
                     <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldA }}<input value="{{ dShTypeA }}" onChange="{{ onShTypeA }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                    <sc-if value="{{ shHasB }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldB }}<input value="{{ dShTypeB }}" onChange="{{ onShTypeB }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label></sc-if>
                   </div>
+                  <sc-if value="{{ shHasC }}" hint-placeholder-val="{{ true }}"><label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">{{ fieldC }}<input value="{{ dShTypeC }}" onChange="{{ onShTypeC }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label></sc-if>
                   <div style="font-size:12px;color:var(--text-muted);margin-top:-6px">{{ fieldBHelp }}</div>
                   <sc-if value="{{ shIsInPerson }}" hint-placeholder-val="{{ false }}">
                     <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:end">
@@ -4744,12 +4746,12 @@
                 <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
                   <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">3 · Schedule <span style="font-weight:500;font-size:12px;color:var(--text-muted)">Pacific time</span></h3>
                   <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px">
-                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window opens (or showtime)<input value="{{ dShStart }}" onChange="{{ onShStart }}" placeholder="Nov 19 · 7:00 PM" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window opens (or showtime)<input type="datetime-local" value="{{ dShStart }}" onChange="{{ onShStart }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                     <sc-if value="{{ shNeedsEnd }}" hint-placeholder-val="{{ true }}">
-                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window closes<input value="{{ dShEnd }}" onChange="{{ onShEnd }}" placeholder="Nov 25 · 12:00 AM" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
+                      <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500;color:var(--navy)">Window closes<input type="datetime-local" value="{{ dShEnd }}" onChange="{{ onShEnd }}" style="height:42px;border:1px solid var(--gray-200);border-radius:4px;padding:0 12px;font:14px var(--font-body)" /></label>
                     </sc-if>
                   </div>
-                  <div style="font-size:12px;color:var(--text-muted)">RSVPs open the moment you publish. The show appears on the site as Upcoming until the window opens.</div>
+                  <div style="font-size:12px;color:var(--text-muted)">RSVPs open the moment you publish. The show appears on the site as Upcoming until the window opens. Times are Pacific.</div>
                 </section>
 
                 <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:10px">
@@ -4761,7 +4763,6 @@
                       <a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:6px 12px;font:600 13px var(--font-body);text-decoration:none;white-space:nowrap">Preview ↗</a>
                     </div>
                   </sc-for>
-                  <button onClick="{{ shSendTest }}" style="align-self:flex-start;border:1px solid rgba(15,22,51,.4);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer;margin-top:4px">Send all three to me as a test</button>
                 </section>
               </div>
 
@@ -4771,7 +4772,7 @@
                   <sc-for list="{{ shChecks }}" as="c" hint-placeholder-count="8">
                     <div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border-card)"><span style="{{ c.box }}">{{ c.tick }}</span>{{ c.label }}</div>
                   </sc-for>
-                  <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Publish unlocks when every line is checked. A show can go up as Upcoming before its DaCast embed is ready.</div>
+                  <div style="font-size:12px;color:var(--text-muted);line-height:1.5">Publish needs every line checked. Save a draft any time; drafts never appear on the site.</div>
                 </div>
                 <a href="{{ shPreviewSite }}" target="_blank" rel="noopener" style="display:flex;flex-direction:column;gap:6px;background:#000;color:#fff;border-radius:12px;padding:18px 20px;text-decoration:none">
                   <span style="font:600 11px var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:#A9AFB7">See it on the site</span>
@@ -4789,12 +4790,12 @@
               <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 320px;min-width:0">
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="{{ shDet.statusStyle }}">{{ shDet.statusLabel }} · {{ shDet.cd }}</span><span style="font-size:12px;color:var(--text-muted)">{{ shDet.kind }} · {{ shDet.series }}</span></div>
                 <h2 style="font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--navy);margin:0">{{ shDet.title }}</h2>
-                <div style="font-size:13px;color:var(--text-muted)">{{ shDet.when }} PT · {{ shDet.url }}<sc-if value="{{ shDet.hasPw }}" hint-placeholder-val="{{ true }}"> · password <b style="font-family:var(--font-display);letter-spacing:.08em;color:var(--navy)">{{ shDet.pw }}</b></sc-if></div>
+                <div style="font-size:13px;color:var(--text-muted)">{{ shDet.when }} PT · {{ shDet.url }}<sc-if value="{{ shDet.hasPw }}" hint-placeholder-val="{{ true }}"> · access code <b style="font-family:var(--font-display);letter-spacing:.08em;color:var(--navy)">{{ shDet.pw }}</b></sc-if></div>
               </div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
                 <a href="{{ shDet.view }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);text-decoration:none">View on site ↗</a>
-                <button onClick="{{ shGoLaunch }}" style="border:1px solid rgba(15,22,51,.4);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Edit show</button>
-                <button onClick="{{ shResend }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Resend “It’s showtime”</button>
+                <button onClick="{{ shToggle }}" style="border:1px solid var(--border-hairline);background:var(--surface-card);color:var(--navy);border-radius:6px;padding:0 14px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">{{ shDet.toggleLabel }}</button>
+                <button onClick="{{ shEditSel }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 16px;min-height:40px;font:600 14px var(--font-body);cursor:pointer">Edit show</button>
               </div>
             </div>
             <div class="su-rdkpi">
@@ -4811,7 +4812,7 @@
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Guests</h3><button onClick="{{ shExport }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Export CSV</button></div>
                 <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
                   <table style="width:100%;border-collapse:collapse;min-width:620px;font-size:13.5px">
-                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVP’d</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Watched</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Showtime email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                    <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Guest</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">RSVP’d</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Seats or account</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Latest email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
                     <tbody>
                       <sc-for list="{{ shDet.guests }}" as="g" hint-placeholder-count="5">
                         <tr>
@@ -4824,6 +4825,7 @@
                       </sc-for>
                     </tbody>
                   </table>
+                  <sc-if value="{{ shDet.noGuests }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;font-size:13.5px;color:var(--text-muted)">No RSVPs yet.</div></sc-if>
                 </div>
               </section>
               <aside style="display:flex;flex-direction:column;gap:14px">
@@ -4836,12 +4838,19 @@
                     </div>
                   </sc-for>
                 </div>
+                <sc-if value="{{ shDet.canDelete }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Delete</h3>
+                    <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Removes the show, its page and its images. Only possible while nobody has RSVP’d; after that, unpublish it instead.</div>
+                    <button onClick="{{ shDelete }}" style="border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">{{ shDet.deleteLabel }}</button>
+                  </div>
+                </sc-if>
                 <sc-if value="{{ shDet.canExtend }}" hint-placeholder-val="{{ true }}">
                   <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
                     <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Window</h3>
                     <div style="font-size:13px;color:var(--text-body)">{{ shDet.when }} PT</div>
                     <div style="display:flex;gap:8px"><button onClick="{{ shExtend }}" style="flex:1;border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">Extend 24h</button><button onClick="{{ shCloseNow }}" style="flex:1;border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">Close now</button></div>
-                    <div style="font-size:12px;color:var(--text-muted)">Closing early sends the thank-you right away and hides the player.</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Closing turns the player off now. The thank-you goes out the next morning.</div>
                   </div>
                 </sc-if>
               </aside>
@@ -4872,7 +4881,7 @@
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.show }}</td>
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.email }}</td>
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.to }}</td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right;white-space:nowrap"><a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a> <button onClick="{{ e.pause }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Pause</button></td>
+                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right;white-space:nowrap"><a href="{{ e.preview }}" target="_blank" rel="noopener" style="border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a></td>
                       </tr>
                     </sc-for>
                   </tbody>
@@ -4881,9 +4890,10 @@
             </section>
             <section style="display:flex;flex-direction:column;gap:10px">
               <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Sent</h3>
+              <sc-if value="{{ shNoEmSent }}" hint-placeholder-val="{{ false }}"><div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px;font-size:13.5px;color:var(--text-muted)">Nothing sent yet.</div></sc-if>
               <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow-x:auto">
                 <table style="width:100%;border-collapse:collapse;min-width:820px;font-size:13.5px">
-                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Sent (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Delivered</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Opened</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Clicked</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Bounced</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)"></th></tr></thead>
+                  <thead><tr style="text-align:left;font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Sent (PT)</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Show</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Email</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Delivered</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Opened</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Clicked</th><th style="padding:10px 14px;border-bottom:1px solid var(--border-hairline)">Failed</th></tr></thead>
                   <tbody>
                     <sc-for list="{{ shEmSent }}" as="e" hint-placeholder-count="4">
                       <tr>
@@ -4894,7 +4904,7 @@
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.opened }}</td>
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)">{{ e.clicked }}</td>
                         <td style="padding:12px 14px;border-bottom:1px solid var(--border-card)"><span style="{{ e.bouncedStyle }}">{{ e.bounced }}</span></td>
-                        <td style="padding:12px 14px;border-bottom:1px solid var(--border-card);text-align:right"><button onClick="{{ e.report }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Report</button></td>
+                        
                       </tr>
                     </sc-for>
                   </tbody>
@@ -4902,14 +4912,14 @@
               </div>
             </section>
             <section style="display:flex;flex-direction:column;gap:10px">
-              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Templates</h3><span style="font-size:12.5px;color:var(--text-muted)">Edit once, every show uses it. Fills in {title}, {window}, {password}, {watch_link}, {venue}.</span></div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Templates</h3><span style="font-size:12.5px;color:var(--text-muted)">Every show uses these. They fill in the title, dates, access code and venue.</span></div>
               <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
                 <sc-for list="{{ shTemplates }}" as="t" hint-placeholder-count="6">
                   <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px">
                     <div style="height:72px;border-radius:8px;background:#000;display:flex;align-items:flex-end;padding:10px;box-sizing:border-box"><span style="font:600 10px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75)">{{ t.kicker }}</span></div>
                     <div style="font-weight:600;color:var(--navy)">{{ t.name }}</div>
                     <div style="font-size:12px;color:var(--text-muted)">{{ t.sub }}</div>
-                    <div style="display:flex;gap:6px"><a href="{{ t.preview }}" target="_blank" rel="noopener" style="flex:1;text-align:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a><button onClick="{{ t.test }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:32px;font:600 13px var(--font-body);cursor:pointer">Test</button></div>
+                    <div style="display:flex;gap:6px"><a href="{{ t.preview }}" target="_blank" rel="noopener" style="flex:1;text-align:center;border:1px solid var(--border-hairline);color:var(--navy);border-radius:6px;padding:7px 12px;font:600 13px var(--font-body);text-decoration:none">Preview ↗</a></div>
                   </div>
                 </sc-for>
               </div>
@@ -4964,19 +4974,18 @@
                       </sc-for>
                     </tbody>
                   </table>
-                  <sc-if value="{{ shNoGuests }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;font-size:13.5px;color:var(--text-muted)">Nobody matches that search.</div></sc-if>
+                  <sc-if value="{{ shNoGuests }}" hint-placeholder-val="{{ false }}"><div style="padding:16px;font-size:13.5px;color:var(--text-muted)">Nobody here yet, or nobody matches that search.</div></sc-if>
                 </div>
               </section>
               <aside style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
                 <div style="display:flex;align-items:center;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:700 15px var(--font-display);flex:0 0 auto">{{ shGuest.initials }}</span><div style="min-width:0"><div style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--navy)">{{ shGuest.name }}</div><div style="font-size:13px;color:var(--text-muted)">{{ shGuest.email }} · joined {{ shGuest.joined }}</div></div></div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shGuestAction }}" style="background:#111;color:#fff;border:none;border-radius:6px;padding:0 14px;min-height:36px;font:600 13px var(--font-body);cursor:pointer">Resend last email</button><button onClick="{{ shGuestAction }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:36px;font:600 13px var(--font-body);cursor:pointer">Send sign-in link</button></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap"><button onClick="{{ shGuestCopy }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:36px;font:600 13px var(--font-body);cursor:pointer">Copy email</button></div>
                 <div style="display:flex;flex-direction:column"><div style="font-weight:600;color:var(--navy);margin-bottom:4px">RSVP history</div>
                   <sc-for list="{{ shGuest.history }}" as="h" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-card)"><span>{{ h.t }}</span><span style="color:var(--text-muted);white-space:nowrap">{{ h.s }}</span></div></sc-for>
                 </div>
                 <div style="display:flex;flex-direction:column"><div style="font-weight:600;color:var(--navy);margin-bottom:4px">Emails</div>
                   <sc-for list="{{ shGuest.emails }}" as="h" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-card)"><span>{{ h.t }}</span><span style="color:var(--blue);font-weight:600">{{ h.s }}</span></div></sc-for>
                 </div>
-                <div style="display:flex;gap:8px;padding-top:4px"><button onClick="{{ shGuestAction }}" style="border:1px solid var(--border-hairline);background:transparent;color:var(--navy);border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Export their data</button><button onClick="{{ shGuestAction }}" style="border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;padding:0 12px;min-height:34px;font:600 13px var(--font-body);cursor:pointer">Delete account</button></div>
               </aside>
             </div>
           </sc-if>
@@ -5553,51 +5562,98 @@ class Component extends DCLogic {
     };
   }
   // ===== Shows (Slipstream) =====
-  // Slipstream's admin: launch shows that appear on viewslipstream.com, and see
-  // every email, payment and guest. Visible to the team (Clients > Shows) and in
+  // Slipstream's admin: launch shows that appear on Slipstream's site, and see
+  // every RSVP, email and guest. Visible to the team (Clients > Shows) and in
   // Slipstream's own portal (client id 'vs').
   //
-  // PREVIEW PHASE: the screens are real and clickable, but they run on sample
-  // data below. Show titles and dates are Slipstream's real program; RSVP, open
-  // and guest counts are samples. Phase 2 swaps SHOWS_SAMPLE for Slipstream's
-  // own Supabase project and the buttons start doing what they say.
+  // LIVE DATA: everything here comes from Slipstream's own Supabase through the
+  // server function netlify/functions/slipstream.mjs. The browser sends the
+  // person's Hub session; the function checks it and holds Slipstream's secret
+  // key, which never reaches the browser. Saving a show publishes it to the
+  // site within seconds (the site reads the same database).
+  shCall(action, body){
+    if(window.SUData.readOnly) return Promise.reject(new Error('Preview is read-only. Exit the preview to make changes.'));
+    return window.SUData.currentSession().then(s=>{
+      if(!s) throw new Error('Your session has expired. Sign in again.');
+      return fetch('/.netlify/functions/slipstream',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.access_token},body:JSON.stringify(Object.assign({action},body||{}))});
+    }).then(r=>r.json().catch(()=>({ok:false,error:'The Shows service didn’t answer. Try again in a moment.'}))).then(j=>{ if(!j.ok) throw new Error(j.error||'Something went wrong.'); return j; });
+  }
+  shLoad(){
+    if(this.state.shLoading) return;
+    this.setState({shLoading:true});
+    this.shCall('load').then(j=>this.setState({shData:j,shLoading:false,shErr:null}))
+      .catch(err=>this.setState({shLoading:false,shErr:(err&&err.message)||'Could not load Slipstream’s shows.'}));
+  }
+  // Shrinks a picked image (longest side 2400px, JPEG) so it uploads fast and stays small in emails.
+  shUpload(file, role){
+    if(!file) return;
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type)){ this.setState({flash:'Pick a JPG, PNG or WebP image.'}); return; }
+    const key=role==='poster'?'shPoster':'shHero';
+    this.setState({shUploading:role});
+    const done=(url,err)=>this.setState(s=>({shUploading:null, flash:err||null, d: url? {...s.d,[key]:url} : s.d}));
+    const read=new FileReader();
+    read.onload=()=>{ const img=new Image(); img.onload=()=>{
+      const max=2400, k=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const data=c.toDataURL('image/jpeg',0.86).split(',')[1];
+      this.shCall('upload',{role,contentType:'image/jpeg',data,slug:(this.state.shEdit||this.state.d.shTitle||'show')})
+        .then(j=>done(j.url)).catch(err=>done(null,(err&&err.message)||'Upload failed.'));
+    }; img.onerror=()=>done(null,'That file isn’t an image we can read.'); img.src=read.result; };
+    read.readAsDataURL(file);
+  }
   showsVals({isTeam, client, sectionNow}){
     const S=this.state, d=S.d||{};
     const on = sectionNow==='shows' && (isTeam || (client && client.id==='vs'));
     if(!on) return {secShows:false};
+    if(!S.shData && !S.shLoading && !S.shErr) setTimeout(()=>this.shLoad(),0);
+    const SITE='https://viewslipstream.netlify.app';
     const STAGING='https://staging--viewslipstream.netlify.app';
-    const IMG='https://viewslipstream.com/wp-content/uploads/';
     const PT='America/Los_Angeles';
     const now=Date.now();
     const fmt=(iso,o)=>new Intl.DateTimeFormat('en-US',Object.assign({timeZone:PT},o)).format(new Date(iso));
     const when=iso=>{ const t=fmt(iso,{hour:'numeric',minute:'2-digit'}); return fmt(iso,{month:'short',day:'numeric'})+' · '+(t==='11:59 PM'?'12:00 AM':t); };
     const span=ms=>{ ms=Math.max(0,ms); const dd=Math.floor(ms/864e5), hh=Math.floor(ms%864e5/36e5), mm=Math.floor(ms%36e5/6e4);
       return dd? dd+'d '+hh+'h' : hh? hh+'h '+mm+'m' : mm+'m'; };
+    // Pacific wall time <-> ISO, for the datetime-local inputs.
+    const ptParts=ms=>{ const o={}; new Intl.DateTimeFormat('en-US',{timeZone:PT,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})
+      .formatToParts(new Date(ms)).forEach(p=>{ o[p.type]=p.value; }); return o; };
+    const toLocal=iso=>{ if(!iso) return ''; const p=ptParts(+new Date(iso)); return p.year+'-'+p.month+'-'+p.day+'T'+p.hour+':'+p.minute; };
+    const fromLocal=s=>{ const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s||''); if(!m) return null;
+      const want=Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5]); let t=want;
+      for(let i=0;i<2;i++){ const p=ptParts(t); t+= want-Date.UTC(+p.year,p.month-1,+p.day,+p.hour,+p.minute); }
+      return new Date(t).toISOString(); };
+    const pill=(bg,fg)=>({display:'inline-flex',alignItems:'center',gap:6,height:24,padding:'0 9px',borderRadius:999,fontSize:12,fontWeight:600,background:bg,color:fg,whiteSpace:'nowrap'});
+    const tile=t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:t.small?18:28,lineHeight:1.15,color:'var(--navy)'}});
+    const tab=S.shTab||'shows', view=S.shView||'list';
+    const tabStyle=on=>({padding:'10px 14px',fontWeight:500,fontSize:14,color:on?'var(--navy)':'var(--text-muted)',background:'none',border:'none',
+      borderBottom:'2px solid '+(on?'var(--green)':'transparent'),marginBottom:-1,cursor:'pointer',fontFamily:'var(--font-body)'});
+    const shTabs=[['shows','Shows'],['emails','Emails'],['payments','Payments'],['guests','Guests']].map(([k,l])=>({label:l,on:tab===k,style:tabStyle(tab===k),
+      select:()=>this.setState({shTab:k,shView:'list',shSel:null})}));
 
-    // Real program (titles, types, dates, venues). Counts are SAMPLE numbers.
-    const SHOWS=[
-      {id:'a-fox-under-a-pink-moon',title:'A Fox Under a Pink Moon',kind:'streaming',series:'Academy Award-Contender Series',
-       start:'2026-11-05T19:00:00-08:00',end:'2026-11-11T23:59:00-08:00',cap:500,rsvps:186,watched:0,opened:0.79,pw:'FOX-2026',
-       poster:IMG+'2026/10/a-fox-under-a-pink-moon-horizontal-poster.jpg',sub:'with LACMA · conversation with Mehrdad Oskouei and Soraya Akhlaghi'},
-      {id:'next-draft',title:'[Next streaming title]',kind:'streaming',series:'Academy Award-Contender Series',draft:true,
-       start:'2026-11-19T19:00:00-08:00',end:'2026-11-25T23:59:00-08:00',cap:500,rsvps:0,missing:'DaCast embed, password, key art'},
-      {id:'the-only-living-pickpocket-in-new-york',title:'The Only Living Pickpocket in New York',kind:'in-person',series:'October Screenings',
-       start:'2026-10-18T15:00:00-07:00',cap:150,rsvps:150,checkedIn:131,opened:0.66,venue:'Harmony Gold Theater',
-       poster:IMG+'2026/10/pickpoket.jpg',sub:'with LACMA · Harmony Gold Theater'},
-      {id:'klara-and-the-sun',title:'Klara and the Sun',kind:'giveaway',series:'October Screenings',
-       start:'2026-10-13T09:00:00-07:00',end:'2026-10-30T12:00:00-07:00',rsvps:212,winners:5,opened:0.71,
-       poster:IMG+'2026/10/klarta-and-the-sun.jpg',sub:'5 prize packs · with The Last Bookstore'},
-      {id:'the-love-hypothesis',title:'The Love Hypothesis',kind:'in-person',series:'September Screenings',start:'2026-09-17T19:00:00-07:00',cap:200,rsvps:200,checkedIn:174,opened:0.62,venue:'Culver Theater'},
-      {id:'ha-chan-shake-your-booty',title:'Ha-Chan, Shake Your Booty!',kind:'in-person',series:'September Screenings',start:'2026-09-16T19:30:00-07:00',cap:180,rsvps:180,checkedIn:151,opened:0.58,venue:'AMC The Grove 14'},
-      {id:'finding-emily',title:'Finding Emily',kind:'in-person',series:'August Screenings',start:'2026-08-26T19:00:00-07:00',cap:150,rsvps:150,checkedIn:131,opened:0.66,venue:'AMC The Grove 14'},
-      {id:'the-boys-season-5',title:'The Boys, Season 5',kind:'streaming',series:'Emmy-Nominated Screening Series',start:'2026-08-19T19:00:00-07:00',end:'2026-08-27T23:59:00-07:00',cap:500,rsvps:418,watched:0.71,opened:0.58},
-      {id:'spider-noir',title:'Spider-Noir',kind:'streaming',series:'Emmy-Nominated Screening Series',start:'2026-08-10T19:00:00-07:00',end:'2026-08-27T23:59:00-07:00',cap:500,rsvps:342,watched:0.63,opened:0.61}
-    ];
-    const phase=s=>{ const a=+new Date(s.start), b=s.end? +new Date(s.end) : a+3*36e5;
-      return s.draft? 'draft' : now<a? 'upcoming' : now<=b? 'live' : 'closed'; };
+    const D=S.shData||{shows:[],series:[],links:[],access:[],rsvps:[],emails:[],profiles:[],accountCount:0,emailMode:'test'};
+    const loading=!S.shData;
+    const fail=msg=>err=>this.setState({shBusy:false,flash:(err&&err.message)||msg});
+    const reload=msg=>()=>{ this.setState({shBusy:false,flash:msg}); this.shLoad(); };
+
+    // ---- shape the rows
+    const seriesById=new Map(D.series.map(x=>[x.id,x]));
+    const seriesOf=slug=>{ const ls=D.links.filter(l=>l.show_slug===slug).sort((a,b)=>b.position-a.position); const l=ls[0]; return l&&seriesById.get(l.series_id)? seriesById.get(l.series_id).title : ''; };
+    const homeSeriesOf=slug=>{ const l=D.links.find(l=>l.show_slug===slug&&l.position<1000); return l? l.series_id : ''; };
+    const accessOf=slug=>D.access.find(a=>a.show_slug===slug)||{};
+    const SHOWS=D.shows.map(r=>{
+      const rs=D.rsvps.filter(x=>x.show_slug===r.slug);
+      const conf=rs.filter(x=>x.status==='confirmed');
+      const seats=conf.reduce((a,x)=>a+(x.seats||1),0);
+      return {id:r.slug,row:r,title:r.title,kind:r.kind,series:seriesOf(r.slug),start:r.starts_at,end:r.ends_at,
+        draft:r.status==='draft', archived:r.status==='archived', cap:r.capacity||0, rsvps:r.kind==='in-person'? seats : conf.length, guests:conf.length,
+        waitlist:rs.filter(x=>x.status==='waitlisted').length, poster:r.hero_image||r.poster||'', pw:accessOf(r.slug).access_code||'',
+        venue:r.venue_name||'', sub:[r.partner_name? 'with '+r.partner_name : '', r.venue_name||''].filter(Boolean).join(' · ')};
+    });
+    const phase=s=>{ if(s.draft) return 'draft'; if(!s.start) return 'upcoming'; const a=+new Date(s.start), b=s.end? +new Date(s.end) : a+3*36e5;
+      return now<a? 'upcoming' : now<=b? 'live' : 'closed'; };
     const KIND={streaming:'Streaming · DaCast','in-person':'In person',giveaway:'Giveaway',live:'Live · YouTube',paid:'Paid · Stripe'};
     const art=url=>({width:120,aspectRatio:'16 / 9',flex:'0 0 auto',borderRadius:8,background:'var(--gray-100) center / cover no-repeat'+(url? ' url("'+url+'")' : '')});
-    const pill=(bg,fg)=>({display:'inline-flex',alignItems:'center',gap:6,height:24,padding:'0 9px',borderRadius:999,fontSize:12,fontWeight:600,background:bg,color:fg,whiteSpace:'nowrap'});
     const ST={
       live:['Live',pill('rgba(31,178,100,.14)','var(--navy)')],
       upcoming:['RSVP open',pill('rgba(46,63,214,.10)','var(--blue)')],
@@ -5606,173 +5662,252 @@ class Component extends DCLogic {
       giveaway:['Entries open',pill('rgba(46,63,214,.10)','var(--blue)')]
     };
     const status=s=>{ const p=phase(s); return p==='live'&&s.kind==='giveaway'? ST.giveaway : ST[p]; };
-    const whenText=s=> s.kind==='in-person'? fmt(s.start,{weekday:'short',month:'short',day:'numeric'})+' · '+fmt(s.start,{hour:'numeric',minute:'2-digit'})
-      : s.kind==='giveaway'? 'Entries close '+when(s.end) : when(s.start)+' to '+when(s.end);
-    const flash=msg=>()=>this.setState({flash:msg});
-    const soon='Coming with phase 2: this button goes live once Slipstream’s database is connected.';
+    const whenText=s=> !s.start? 'No date yet' : s.kind==='in-person'? fmt(s.start,{weekday:'short',month:'short',day:'numeric'})+' · '+fmt(s.start,{hour:'numeric',minute:'2-digit'})
+      : s.kind==='giveaway'&&s.end? 'Entries close '+when(s.end) : s.end? when(s.start)+' to '+when(s.end) : when(s.start);
     const bar=(pct,color)=>({display:'block',height:'100%',width:Math.round(Math.min(1,pct)*100)+'%',background:color||'var(--green)'});
+    const sentOf=(slug,type)=>D.emails.filter(e=>e.show_slug===slug&&e.type===type&&e.status==='sent');
+    const copy=(text,msg)=>()=>{ try{ navigator.clipboard.writeText(text); }catch(e){} this.setState({flash:msg}); };
 
-    const tab=S.shTab||'shows', view=S.shView||'list';
-    const tabStyle=on=>({padding:'10px 14px',fontWeight:500,fontSize:14,color:on?'var(--navy)':'var(--text-muted)',background:'none',border:'none',
-      borderBottom:'2px solid '+(on?'var(--green)':'transparent'),marginBottom:-1,cursor:'pointer',fontFamily:'var(--font-body)'});
-    const shTabs=[['shows','Shows'],['emails','Emails'],['payments','Payments'],['guests','Guests']].map(([k,l])=>({label:l,on:tab===k,style:tabStyle(tab===k),
-      select:()=>this.setState({shTab:k,shView:'list',shSel:null})}));
-
-    const upcoming=SHOWS.filter(s=>phase(s)!=='closed').sort((a,b)=>a.start.localeCompare(b.start));
-    const past=SHOWS.filter(s=>phase(s)==='closed').sort((a,b)=>b.start.localeCompare(a.start));
+    const upcoming=SHOWS.filter(s=>phase(s)!=='closed').sort((a,b)=>(a.start||'9').localeCompare(b.start||'9'));
+    const past=SHOWS.filter(s=>phase(s)==='closed').sort((a,b)=>(b.start||'').localeCompare(a.start||''));
     const leadShow=SHOWS.find(s=>phase(s)==='live'&&s.kind!=='giveaway') || upcoming.find(s=>!s.draft) || null;
     const openShow=id=>()=>this.setState({shView:'detail',shSel:id,shTab:'shows'});
 
-    const lead = leadShow ? (()=>{ const p=phase(leadShow); const live=p==='live';
-      return {title:leadShow.title, kind:KIND[leadShow.kind], when:whenText(leadShow), poster:leadShow.poster||'',
+    const lead = leadShow ? (()=>{ const p=phase(leadShow); const live=p==='live'; const sent=sentOf(leadShow.id,'live').length;
+      return {title:leadShow.title, kind:KIND[leadShow.kind], when:whenText(leadShow), poster:leadShow.poster,
         heading: live? 'Live now' : 'Next up', posterStyle: art(leadShow.poster),
         statusLabel: live? 'Live' : 'RSVP open', statusStyle: live? ST.live[1] : ST.upcoming[1],
-        cd: live? 'Closes in '+span(+new Date(leadShow.end)-now) : 'Opens in '+span(+new Date(leadShow.start)-now),
-        rsvpText: leadShow.rsvps+' of '+leadShow.cap+' RSVPs', bar: bar(leadShow.rsvps/leadShow.cap),
-        mailLine: live? '“It’s showtime” sent to '+leadShow.rsvps+' guests · '+Math.round((leadShow.opened||0)*100)+'% opened'
+        cd: live? (leadShow.end? 'Closes in '+span(+new Date(leadShow.end)-now) : 'Today') : (leadShow.kind==='in-person'? 'Starts in ' : 'Opens in ')+span(+new Date(leadShow.start)-now),
+        rsvpText: leadShow.cap? leadShow.rsvps+' of '+leadShow.cap+(leadShow.kind==='in-person'?' seats':' RSVPs') : leadShow.rsvps+(leadShow.rsvps===1?' RSVP':' RSVPs'),
+        bar: bar(leadShow.cap? leadShow.rsvps/leadShow.cap : 0),
+        mailLine: leadShow.kind==='in-person'? 'Reminder goes out the day before to everyone with a seat'
+          : live? '“It’s showtime” sent to '+sent+' guest'+(sent===1?'':'s')+'. New RSVPs get it right away.'
           : '“It’s showtime” goes out '+when(leadShow.start)+' PT to everyone who RSVP’d',
         cardStyle:{background:'var(--surface-card)',border:'1px solid var(--border-card)',borderLeft:'4px solid '+(live?'var(--green)':'var(--blue)'),borderRadius:12,padding:'18px 20px',display:'flex',gap:18,alignItems:'center',flexWrap:'wrap'},
-        open: openShow(leadShow.id), copyPw: ()=>{ try{ navigator.clipboard.writeText(leadShow.pw); }catch(e){} this.setState({flash:'Viewing password copied (sample).'}); },
-        view: STAGING+'/'+leadShow.id+'/'}; })() : null;
+        open: openShow(leadShow.id), copyPw: leadShow.pw? copy(leadShow.pw,'Access code copied.') : ()=>this.setState({flash:'This show has no access code yet. Add one in Edit show.'}),
+        view: SITE+'/'+leadShow.id+'/'}; })() : null;
 
-    const row=s=>{ const [sl,ss]=status(s); const capped=s.cap&&s.kind!=='giveaway';
-      return {title:s.title, sub:s.draft? 'Missing: '+s.missing : (s.sub||s.series), kind:KIND[s.kind], when:whenText(s),
+    const row=s=>{ const [sl,ss]=status(s); const capped=s.cap&&s.kind!=='giveaway'; const thanks=sentOf(s.id,'thanks').length;
+      return {title:s.title, sub:s.draft? 'Draft · not on the site' : (s.sub||s.series), kind:KIND[s.kind]||s.kind, when:whenText(s),
         rsvpText: s.draft? 'Not published' : s.kind==='giveaway'? s.rsvps+' entries' : capped? s.rsvps+' / '+s.cap : String(s.rsvps),
         hasBar: !!capped && !s.draft, bar: bar(capped? s.rsvps/s.cap : 0, s.rsvps>=s.cap? 'var(--blue)' : 'var(--green)'),
-        statusLabel:sl, statusStyle:ss, poster:s.poster||'', hasPoster:!!s.poster,
-        action: s.draft? 'Finish setup' : 'Manage', open: s.draft? ()=>this.setState({shView:'launch'}) : openShow(s.id),
-        watched: s.kind==='in-person'? (s.checkedIn? s.checkedIn+' checked in' : '') : s.kind==='giveaway'? s.winners+' winners' : Math.round((s.watched||0)*100)+'%',
-        closed: s.end? fmt(s.end,{month:'short',day:'numeric'}) : fmt(s.start,{month:'short',day:'numeric'}),
-        thanks:'Sent · '+Math.round((s.opened||0)*100)+'% opened'}; };
+        statusLabel:sl, statusStyle:ss, poster:s.poster, hasPoster:!!s.poster,
+        action: s.draft? 'Finish setup' : 'Manage', open: openShow(s.id),
+        watched: s.waitlist? String(s.waitlist) : '—',
+        closed: s.end? fmt(s.end,{month:'short',day:'numeric'}) : s.start? fmt(s.start,{month:'short',day:'numeric'}) : '—',
+        thanks: thanks? 'Sent to '+thanks : s.guests? 'Not sent' : '—'}; };
 
-    const totalUpcomingRsvps=upcoming.filter(s=>!s.draft).reduce((a,s)=>a+s.rsvps,0);
+    const liveUp=upcoming.filter(s=>!s.draft);
     const shTiles=[
       {label:lead&&phase(leadShow)==='live'? 'Live now' : 'Next show', value: leadShow? leadShow.title : 'None scheduled', sub: lead? lead.cd : 'Launch one to get started', small:true},
-      {label:'RSVPs on upcoming shows', value:String(totalUpcomingRsvps), sub: leadShow? Math.round(leadShow.rsvps/leadShow.cap*100)+'% of '+leadShow.title+'’s '+leadShow.cap+' cap' : ''},
-      {label:'Emails scheduled', value:'3', sub: leadShow? 'Next: “It’s showtime”, '+when(leadShow.start) : ''},
-      {label:'Past shows', value:'61', sub:'Since 2021 on viewslipstream.com'}
-    ].map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:t.small?18:28,lineHeight:1.15,color:'var(--navy)'}}));
+      {label:'RSVPs on upcoming shows', value:String(liveUp.reduce((a,s)=>a+s.guests,0)), sub: liveUp.length+' show'+(liveUp.length===1?'':'s')+' open'},
+      {label:'Drafts', value:String(SHOWS.filter(s=>s.draft).length), sub:'Not on the site yet'},
+      {label:'Emails', value: D.emailMode==='everyone'? 'Live' : 'Test mode', sub: D.emailMode==='everyone'? 'Sending to every guest' : 'Only @socialupgrades.com gets email until go-live', small:true}
+    ].map(tile);
 
-    // ---- Launch a show
-    const TYPES=[['streaming','Streaming','DaCast embed, password, date window'],['in-person','In person','Venue, capacity, seats'],
-      ['giveaway','Giveaway','Prize, entry close, winners'],['live','Live stream','YouTube Live, no password'],['paid','Paid','Stripe price, receipts']];
+    // ---- Launch or edit a show
+    const editing=S.shEdit||null;
+    const TYPES=[['streaming','Streaming','DaCast embed, access code, date window'],['in-person','In person','Venue, capacity, seats'],
+      ['giveaway','Giveaway','Prize, entry close, winners'],['live','Live stream','YouTube Live, no access code'],['paid','Paid','Ticket price (Stripe comes later)']];
     const ty=S.shType||'streaming';
     const typeCards=TYPES.map(([k,l,desc])=>({label:l,desc,on:ty===k,select:()=>this.setState({shType:k}),
       style:{display:'flex',flexDirection:'column',gap:4,padding:'12px 14px',border:'1px solid '+(ty===k?'var(--blue)':'var(--gray-200)'),boxShadow:ty===k?'0 0 0 1px var(--blue)':'none',borderRadius:8,cursor:'pointer',background:'var(--surface-card)',textAlign:'left',fontFamily:'var(--font-body)'}}));
-    const v=k=>d[k]===undefined? '' : String(d[k]);
-    const title=v('shTitle'), slug=(title||'your-show-title').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-    const startTxt=v('shStart'), endTxt=v('shEnd');
+    const v=k=>d[k]===undefined||d[k]===null? '' : String(d[k]);
+    const title=v('shTitle').trim();
+    const slugify=t=>t.toLowerCase().replace(/&/g,'and').replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
+    const slug=editing || slugify(title) || 'your-show-title';
+    const startIso=fromLocal(v('shStart')), endIso=fromLocal(v('shEnd'));
+    const ytId=u=>{ const m=/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/.exec(u||''); return m? m[1] : /^[A-Za-z0-9_-]{11}$/.test(u||'')? u : ''; };
+    const embedSrc=x=>{ const m=/src=["']([^"']+)["']/.exec(x||''); return (m? m[1] : (x||'')).trim(); };
+    const needsEnd= ty!=='in-person';
+    const typeFields = ty==='in-person'? {fieldA:'Venue name',fieldB:'Capacity (seats)',fieldBHelp:'Total seats in the room. RSVPs switch to the waiting list when they’re gone.',fieldC:'Venue address',shHasB:true,shHasC:true}
+      : ty==='giveaway'? {fieldA:'Prize',fieldB:'Number of winners',fieldBHelp:'Winners are drawn when entries close.',fieldC:'',shHasB:true,shHasC:false}
+      : ty==='live'? {fieldA:'YouTube Live video ID or link',fieldB:'',fieldBHelp:'No access code: anyone with an RSVP can watch.',fieldC:'',shHasB:false,shHasC:false}
+      : ty==='paid'? {fieldA:'DaCast embed (link or embed code)',fieldB:'Ticket price (USD)',fieldBHelp:'Stripe isn’t connected yet, so paid shows can be drafted but not sold.',fieldC:'Access code',shHasB:true,shHasC:true}
+      : {fieldA:'DaCast embed (link or embed code)',fieldB:'Access code',fieldBHelp:'Guests get it in the “It’s showtime” email and above the player.',fieldC:'Conversation video embed (optional)',shHasB:true,shHasC:true};
     const checks=[
-      ['Title and about text', !!title && !!v('shAbout')],
-      ['Trailer link', /youtu/.test(v('shTrailer'))],
-      ['Poster and key art', false],
-      [ty==='streaming'||ty==='paid'? 'DaCast embed' : ty==='in-person'? 'Venue and capacity' : ty==='giveaway'? 'Prize and entry close' : 'YouTube Live ID', !!v('shTypeA')],
-      [ty==='streaming'||ty==='paid'? 'Viewing password' : 'Details', !!v('shTypeB')],
-      ['Window and time zone', !!startTxt && (!!endTxt || ty==='in-person')],
-      ['Three emails scheduled', !!startTxt],
-      ['Test email sent to you', !!S.shTestSent]
+      ['Title and about text', !!title && !!v('shAbout').trim()],
+      ['Trailer link', !!ytId(v('shTrailer'))],
+      ['Key art (16:9)', !!v('shHero')],
+      [ty==='streaming'||ty==='paid'? 'DaCast embed' : ty==='in-person'? 'Venue' : ty==='giveaway'? 'Prize' : 'YouTube Live ID', !!v('shTypeA').trim()],
+      [ty==='streaming'? 'Access code' : ty==='in-person'? 'Capacity' : ty==='giveaway'? 'Number of winners' : ty==='paid'? 'Ticket price' : 'Window', ty==='live'? !!startIso : !!v('shTypeB').trim()],
+      ['Date'+(needsEnd?' and window':'')+' (Pacific)', !!startIso && (!needsEnd || !!endIso)]
     ];
     const okN=checks.filter(c=>c[1]).length;
-    // Series and groups: the ones Slipstream's shows already use, plus any added here.
-    const MONTH_RE=/^(January|February|March|April|May|June|July|August|September|October|November|December)\b.*Screenings?$/i;
-    const SERIES=[];
-    SHOWS.forEach(x=>{ const f=SERIES.find(y=>y.name===x.series); if(f) f.count++; else SERIES.push({name:x.series,kind:MONTH_RE.test(x.series)?'month':'series',count:1}); });
-    (S.shSeriesNew||[]).forEach(x=>{ if(!SERIES.some(y=>y.name===x.name)) SERIES.push({name:x.name,kind:x.kind,count:0}); });
-    const seriesPick=v('shSeries')||SERIES[0].name;
+    const SERIES=D.series.map(x=>({id:x.id,name:x.title,kind:x.kind,home:x.home_position!=null,count:D.links.filter(l=>l.series_id===x.id&&l.position<1000).length}));
+    const homeSeries=SERIES.filter(x=>x.home);
+    const seriesPick=v('shSeries')||(homeSeries[0]||{}).id||'';
     const box=ok=>({width:18,height:18,borderRadius:4,flex:'0 0 auto',display:'inline-flex',alignItems:'center',justifyContent:'center',background:ok?'var(--blue)':'transparent',border:ok?'none':'1px solid rgba(15,22,51,.3)',color:'#fff',fontSize:11,fontWeight:700});
-    const field=(a,b,c)=>({fieldA:a,fieldB:b,fieldBHelp:c});
-    const typeFields = ty==='in-person'? field('Venue (name and address)','Capacity','Total seats in the room.')
-      : ty==='giveaway'? field('Prize','Number of winners','Winners are drawn at random when entries close.')
-      : ty==='live'? field('YouTube Live video ID','Replay window (hours)','No password: anyone with an RSVP can watch.')
-      : ty==='paid'? field('DaCast embed ID or code','Ticket price (USD)','Stripe Checkout with Apple Pay and Google Pay.')
-      : field('DaCast embed ID or code','Viewing password','Shown on the show page to RSVP’d guests and sent in the “It’s showtime” email.');
-    const emailRows=[
+    const emailRows=(ty==='in-person'? [
       ['RSVP confirmation','“You’re in: '+(title||'[Title]')+' on Slipstream”','Instantly, on each RSVP','rsvp'],
-      ['It’s showtime', ty==='in-person'? 'Check-in details for the screening' : 'Viewing link + password', startTxt? startTxt+' PT' : 'When the window opens','live'],
-      ['Thank you','Conversation link + what’s next', endTxt? endTxt+' PT' : 'When the window closes','thanks']
-    ].map(([n,s,w,k])=>({name:n,sub:s,when:w,preview:STAGING+'/emails/'+k+'/'}));
+      ['Day-before reminder','Venue, time and check-in', startIso? when(new Date(+new Date(startIso)-26*36e5).toISOString())+' PT' : 'The day before','live'],
+      ['Thank you','The morning after', startIso? fmt(new Date(+new Date(startIso)+13*36e5).toISOString(),{month:'short',day:'numeric'})+' · morning' : 'The morning after','thanks']
+    ] : [
+      ['RSVP confirmation','“You’re in: '+(title||'[Title]')+' on Slipstream”','Instantly, on each RSVP','rsvp'],
+      ['It’s showtime','Watch link + access code', startIso? when(startIso)+' PT' : 'When the window opens','live'],
+      ['Thank you','After the window closes', endIso? fmt(new Date(+new Date(endIso)+10*36e5).toISOString(),{month:'short',day:'numeric'})+' · morning' : 'After the window closes','thanks']
+    ]).map(([n,s,w,k])=>({name:n,sub:s,when:w,preview:STAGING+'/emails/'+k+'/'}));
 
-    // ---- Show detail
-    const sel=SHOWS.find(s=>s.id===S.shSel) || leadShow || SHOWS[0];
-    const selP=phase(sel);
-    const GUESTS=[['Dana Whitfield','dana.w@example.com','Mar 2024',11],['Marcus Lee','marcus@example.com','Oct 2026',1],['Priya Natarajan','priya.n@example.com','Jan 2025',6],
-      ['Tom Alvarez','t.alvarez@example.com','Oct 2026',1],['Jules Okafor','jules@example.com','Nov 2023',19],['Hana Sato','hana.s@example.com','Jun 2026',3],['Leo Brandt','leo.b@example.com','Sep 2025',4]];
-    const detGuests=GUESTS.slice(0,6).map((g,i)=>({name:g[0],email:g[1],rsvpd:fmt(new Date(+new Date(sel.start)-(9-i)*864e5).toISOString(),{month:'short',day:'numeric'}),
-      watched: selP==='live'||selP==='closed'? (i%3===1? 'Not yet' : sel.kind==='in-person'? 'Checked in' : (1+i%2)+'h '+(10+i*7)+'m') : '—',
-      mail: i===3? 'Bounced' : i===5? 'Delivered' : i%2? 'Opened' : 'Clicked',
-      mailStyle: i===3? pill('rgba(180,35,24,.08)','#b42318') : pill('rgba(46,63,214,.10)','var(--blue)'),
-      act: i===3? 'Fix email' : 'Resend', actClick: flash(soon)}));
-    const tl=[
-      ['RSVP confirmation', sel.rsvps+' sent as guests RSVP’d · '+Math.round(((sel.opened||0.7)+0.1)*100)+'% opened', true],
-      ['It’s showtime', selP==='upcoming'||selP==='draft'? 'Scheduled '+when(sel.start)+' PT · to everyone who RSVP’d' : 'Sent '+when(sel.start)+' · '+Math.round((sel.opened||0.6)*100)+'% opened', !(selP==='upcoming'||selP==='draft')],
-      ['Closing soon reminder', sel.end? (selP==='closed'? 'Sent '+when(new Date(+new Date(sel.end)-864e5).toISOString()) : 'Scheduled '+when(new Date(+new Date(sel.end)-864e5).toISOString())+' · opted-in guests') : 'Not used for in-person shows', selP==='closed'],
-      ['Thank you', selP==='closed'? 'Sent · '+Math.round((sel.opened||0.6)*100)+'% opened' : 'Scheduled '+(sel.end? when(sel.end) : 'after the screening')+' · to all '+sel.rsvps, selP==='closed']
-    ].map(([n,s,done],i,a)=>({name:n,sub:s,dotStyle:{width:12,height:12,borderRadius:'50%',flex:'0 0 auto',marginTop:4,boxSizing:'border-box',background:done?'var(--green)':'var(--surface-card)',border:done?'none':'2px solid var(--blue)'},
-      lineStyle:{width:2,flex:1,background:'rgba(15,22,51,.12)',margin:'4px 0 0 5px',display:i<a.length-1?'block':'none'}}));
-    const det={title:sel.title,kind:KIND[sel.kind],series:sel.series,when:whenText(sel),url:'viewslipstream.com/'+sel.id+'/',view:STAGING+'/'+(sel.draft?'':sel.id+'/'),
-      statusLabel:status(sel)[0],statusStyle:status(sel)[1],posterStyle:art(sel.poster),hasPoster:!!sel.poster,
-      hasPw:!!sel.pw, pw:sel.pw||'', cd: selP==='live'? 'Closes in '+span(+new Date(sel.end)-now) : selP==='upcoming'? 'Opens in '+span(+new Date(sel.start)-now) : 'Closed '+(sel.end? when(sel.end) : fmt(sel.start,{month:'short',day:'numeric'})),
-      tiles:[
-        {label:sel.kind==='giveaway'?'Entries':'RSVPs', value:String(sel.rsvps), sub: sel.cap&&sel.kind!=='giveaway'? 'of '+sel.cap+' cap' : ''},
-        {label:sel.kind==='in-person'?'Checked in':sel.kind==='giveaway'?'Winners':'Watched', value: sel.kind==='in-person'? String(sel.checkedIn||'—') : sel.kind==='giveaway'? String(sel.winners) : selP==='upcoming'? '—' : Math.round((sel.watched||0.6)*sel.rsvps)+'', sub: sel.kind==='streaming'&&selP!=='upcoming'? Math.round((sel.watched||0.6)*100)+'% of RSVPs' : selP==='upcoming'? 'Opens '+when(sel.start) : ''},
-        {label:'Showtime email opened', value: selP==='upcoming'? '—' : Math.round((sel.opened||0.6)*100)+'%', sub: selP==='upcoming'? 'Sends '+when(sel.start) : '3 bounced'},
-        {label:'Support requests', value: selP==='upcoming'? '0' : '4', sub: selP==='upcoming'? '' : '2 open · password typos'}
-      ],
-      guests:detGuests, timeline:tl, isLive:selP==='live', isUpcoming:selP==='upcoming', canExtend:selP==='live'||selP==='upcoming'};
+    const payload=publish=>{
+      const A=v('shTypeA').trim(), B=v('shTypeB').trim(), C=v('shTypeC').trim();
+      const show={title, kind:ty, about:v('shAbout').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean),
+        conversation_line:v('shQa').trim()||null, trailer_youtube_id:ytId(v('shTrailer'))||null,
+        starts_at:startIso, ends_at: needsEnd? endIso : null, hero_image:v('shHero')||null, poster:v('shPoster')||null,
+        venue_name:null, venue_address:null, capacity:null, giveaway:null, price:null, youtube_live_id:null};
+      const orig=(SHOWS.find(s=>s.id===editing)||{}).row; if(show.poster && (!orig || orig.poster!==show.poster)) show.poster_ratio=0.667;
+      if(publish) show.status='published';
+      const access={};
+      if(ty==='streaming'){ access.film_embed=embedSrc(A)||null; access.access_code=B||null; access.conversation_embed=embedSrc(C)||null; }
+      if(ty==='paid'){ access.film_embed=embedSrc(A)||null; show.price=B||null; access.access_code=C||null; }
+      if(ty==='in-person'){ show.venue_name=A||null; show.capacity=B||null; show.venue_address=C||null; show.max_seats=+(v('shSeatsPer')||2); show.waitlist_enabled=d.shWaitlist===undefined? true : !!d.shWaitlist; }
+      if(ty==='giveaway'){ const old=(SHOWS.find(s=>s.id===editing)||{}).row; show.giveaway=Object.assign({},old&&old.giveaway||{}, {prize:A, winners:parseInt(B,10)||1}); }
+      if(ty==='live'){ show.youtube_live_id=ytId(A)||A||null; }
+      return {slug:editing, show, access: Object.keys(access).length? access : undefined, seriesId: seriesPick||undefined};
+    };
+    const save=publish=>()=>{
+      if(S.shBusy) return;
+      if(!title){ this.setState({flash:'Give the show a title first.'}); return; }
+      if(publish && okN<checks.length){ this.setState({flash:'Finish the checklist first: '+checks.filter(c=>!c[1]).map(c=>c[0]).join(', ')+'.'}); return; }
+      if(v('shStart')&&!startIso){ this.setState({flash:'The start date doesn’t look right.'}); return; }
+      if(startIso&&endIso&&endIso<=startIso){ this.setState({flash:'The window has to close after it opens.'}); return; }
+      this.setState({shBusy:true});
+      this.shCall('saveShow',payload(publish)).then(j=>{
+        this.setState({shBusy:false,shEdit:j.slug,shSel:j.slug,shView:'detail',
+          flash: publish? 'Published. It’s on the site now at viewslipstream.netlify.app/'+j.slug+'/' : 'Saved.'});
+        this.shLoad();
+      }).catch(fail('Could not save the show.'));
+    };
+    const blank={shTitle:'',shAbout:'',shTrailer:'',shQa:'',shTypeA:'',shTypeB:'',shTypeC:'',shStart:'',shEnd:'',shSeries:'',shSeatsPer:'2',shWaitlist:true,shPoster:'',shHero:'',shNewSeries:''};
+    const startNew=()=>this.setState(s=>({shTab:'shows',shView:'launch',shEdit:null,shType:'streaming',d:{...s.d,...blank}}));
+    const startEdit=x=>()=>{ const r=x.row, a=accessOf(x.id);
+      const A= r.kind==='in-person'? r.venue_name : r.kind==='giveaway'? (r.giveaway||{}).prize : r.kind==='live'? r.youtube_live_id : a.film_embed;
+      const B= r.kind==='in-person'? r.capacity : r.kind==='giveaway'? (r.giveaway||{}).winners : r.kind==='paid'? r.price : r.kind==='streaming'? a.access_code : '';
+      const C= r.kind==='in-person'? r.venue_address : r.kind==='paid'? a.access_code : r.kind==='streaming'? a.conversation_embed : '';
+      this.setState(s=>({shTab:'shows',shView:'launch',shEdit:x.id,shType:r.kind,d:{...s.d,...blank,
+        shTitle:r.title||'', shAbout:(r.about||[]).join('\n\n'), shTrailer:r.trailer_youtube_id? 'https://youtu.be/'+r.trailer_youtube_id : '',
+        shQa:r.conversation_line||'', shTypeA:A==null?'':String(A), shTypeB:B==null?'':String(B), shTypeC:C==null?'':String(C),
+        shStart:toLocal(r.starts_at), shEnd:toLocal(r.ends_at), shSeries:homeSeriesOf(x.id), shSeatsPer:String(r.max_seats||2),
+        shWaitlist:r.waitlist_enabled!==false, shPoster:r.poster||'', shHero:r.hero_image||''}})); };
+
+    // ---- One show
+    const sel=SHOWS.find(s=>s.id===S.shSel) || leadShow || SHOWS[0] || null;
+    let det={tiles:[],guests:[],timeline:[]};
+    if(sel){
+      const selP=phase(sel);
+      const rs=D.rsvps.filter(x=>x.show_slug===sel.id);
+      const mailFor=r=>{ const es=D.emails.filter(e=>e.rsvp_id===r.id); const e=es.find(e=>e.type==='live')||es[0]; return e; };
+      const MAIL={sent:'Delivered',failed:'Failed',queued:'Sending'};
+      const detGuests=rs.map(r=>{ const e=mailFor(r);
+        const label= !e? (D.emailMode==='test'&&!/@socialupgrades\.com$/i.test(r.email)? 'Held (test mode)' : 'Not sent yet') : (e.clicked_at? 'Clicked' : e.opened_at? 'Opened' : MAIL[e.status]||e.status)+' · '+({rsvp:'RSVP',waitlist:'Waiting list',promoted:'Seat opened',live:'Showtime',reminder:'Reminder',thanks:'Thank you'}[e.type]||e.type);
+        return {name:((r.first_name||'')+' '+(r.last_name||'')).trim()||r.email, email:r.email, rsvpd:fmt(r.created_at,{month:'short',day:'numeric'}),
+          watched: r.status==='waitlisted'? 'Waiting list' : r.status==='cancelled'? 'Cancelled' : (sel.kind==='in-person'? (r.seats||1)+' seat'+((r.seats||1)>1?'s':'') : r.user_id? 'Has account' : 'No account yet'),
+          mail:label, mailStyle: e&&e.status==='failed'? pill('rgba(180,35,24,.08)','#b42318') : e? pill('rgba(46,63,214,.10)','var(--blue)') : pill('var(--gray-100)','var(--text-body)'),
+          act:'Copy email', actClick:copy(r.email,'Copied '+r.email+'.')}; });
+      const n=t=>sentOf(sel.id,t).length;
+      const tlRows= sel.kind==='in-person'? [
+        ['RSVP confirmations', n('rsvp')+' sent as guests RSVP’d'+(n('waitlist')? ' · '+n('waitlist')+' waiting list' : ''), n('rsvp')>0],
+        ['Day-before reminder', n('reminder')? 'Sent to '+n('reminder') : sel.start? 'Goes out '+when(new Date(+new Date(sel.start)-26*36e5).toISOString())+' PT' : 'Needs a date', n('reminder')>0],
+        ['Thank you', n('thanks')? 'Sent to '+n('thanks') : 'The morning after', n('thanks')>0]
+      ] : [
+        ['RSVP confirmations', n('rsvp')+' sent as guests RSVP’d', n('rsvp')>0],
+        ['It’s showtime', n('live')? 'Sent to '+n('live')+(selP==='live'? ' · new RSVPs get it right away' : '') : sel.start? 'Goes out '+when(sel.start)+' PT' : 'Needs a date', n('live')>0],
+        ['Thank you', n('thanks')? 'Sent to '+n('thanks') : sel.end? 'Goes out the morning after '+fmt(sel.end,{month:'short',day:'numeric'}) : 'After the window closes', n('thanks')>0]
+      ];
+      const tl=tlRows.map(([nm,s,done],i,a)=>({name:nm,sub:s,dotStyle:{width:12,height:12,borderRadius:'50%',flex:'0 0 auto',marginTop:4,boxSizing:'border-box',background:done?'var(--green)':'var(--surface-card)',border:done?'none':'2px solid var(--blue)'},
+        lineStyle:{width:2,flex:1,background:'rgba(15,22,51,.12)',margin:'4px 0 0 5px',display:i<a.length-1?'block':'none'}}));
+      const failed=D.emails.filter(e=>e.show_slug===sel.id&&e.status==='failed').length;
+      det={title:sel.title,kind:KIND[sel.kind]||sel.kind,series:sel.series||'No series',when:whenText(sel),url:'viewslipstream.com/'+sel.id+'/',view:SITE+'/'+sel.id+'/',
+        statusLabel:status(sel)[0],statusStyle:status(sel)[1],posterStyle:art(sel.poster),hasPoster:!!sel.poster,
+        hasPw:!!sel.pw, pw:sel.pw, cd: selP==='draft'? 'Not on the site' : selP==='live'? (sel.end? 'Closes in '+span(+new Date(sel.end)-now) : 'Today') : selP==='upcoming'? (sel.start? (sel.kind==='in-person'? 'Starts in ' : 'Opens in ')+span(+new Date(sel.start)-now) : 'No date') : 'Closed '+(sel.end? when(sel.end) : sel.start? fmt(sel.start,{month:'short',day:'numeric'}) : ''),
+        tiles:[
+          {label:sel.kind==='giveaway'?'Entries':sel.kind==='in-person'?'Seats taken':'RSVPs', value:String(sel.rsvps), sub: sel.cap&&sel.kind!=='giveaway'? 'of '+sel.cap+' seats' : sel.guests+' guest'+(sel.guests===1?'':'s')},
+          {label:'Waiting list', value:String(sel.waitlist), sub: sel.kind==='in-person'? 'Moved up automatically when seats open' : 'Only used when a show is full'},
+          {label:'Emails sent', value:String(D.emails.filter(e=>e.show_slug===sel.id&&e.status==='sent').length), sub: failed? failed+' failed' : 'From hello@viewslipstream.com'},
+          {label:'With an account', value:String(rs.filter(r=>r.user_id).length), sub:'Needed to watch online'}
+        ],
+        guests:detGuests, noGuests:detGuests.length===0, timeline:tl, isLive:selP==='live', isUpcoming:selP==='upcoming',
+        canExtend:(selP==='live'||selP==='upcoming') && sel.kind!=='in-person',
+        isDraft:sel.draft, toggleLabel: sel.draft? 'Publish' : 'Unpublish',
+        canDelete: rs.length===0, deleteLabel: S.shDelArm===sel.id? 'Click again to delete for good' : 'Delete show'};
+    }
+    const windowOp=op=>()=>{ if(!sel||S.shBusy) return; this.setState({shBusy:true});
+      this.shCall('setWindow',{slug:sel.id,op}).then(reload(op==='extend'? 'Window extended 24 hours.' : 'Closed. The player is off; the thank-you goes out the next morning.')).catch(fail('Could not change the window.')); };
+    const toggleStatus=()=>{ if(!sel||S.shBusy) return;
+      if(sel.draft){ startEdit(sel)(); this.setState({flash:'Check the list on the right, then hit Publish.'}); return; }
+      this.setState({shBusy:true});
+      this.shCall('setStatus',{slug:sel.id,status:'draft'}).then(reload('Unpublished. It’s off the site and saved as a draft.')).catch(fail('Could not unpublish.')); };
+    const deleteShow=()=>{ if(!sel||S.shBusy) return;
+      if(S.shDelArm!==sel.id){ this.setState({shDelArm:sel.id}); return; }
+      this.setState({shBusy:true,shDelArm:null});
+      this.shCall('deleteShow',{slug:sel.id}).then(()=>{ this.setState({shBusy:false,shView:'list',shSel:null,shEdit:null,flash:'Deleted “'+sel.title+'”. It’s off the site.'}); this.shLoad(); })
+        .catch(fail('Could not delete the show.')); };
+    const csv=rows=>rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+    const download=(name,text)=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+    const exportGuests=()=>{ if(!sel) return; const rs=D.rsvps.filter(x=>x.show_slug===sel.id);
+      download(sel.id+'-guests.csv', csv([['First name','Last name','Email','Seats','Status','RSVP’d (PT)','Account']].concat(rs.map(r=>[r.first_name,r.last_name,r.email,r.seats,r.status,fmt(r.created_at,{dateStyle:'medium',timeStyle:'short'}),r.user_id?'Yes':'No'])))); };
 
     // ---- Emails tab
-    const fox=SHOWS[0];
-    const emUpcoming=[
-      [fox.start,'A Fox Under a Pink Moon','It’s showtime (viewing link + password)',fox.rsvps+' so far'],
-      [new Date(+new Date(fox.end)-864e5).toISOString(),'A Fox Under a Pink Moon','Closing soon reminder','Opted-in guests'],
-      [fox.end,'A Fox Under a Pink Moon','Thank you','Everyone who RSVP’d']
-    ].filter(r=>+new Date(r[0])>now).map(([t,s,e,n])=>({when:when(t),show:s,email:e,to:n,
-      preview:STAGING+'/emails/'+(e.startsWith('Thank')?'thanks':e.startsWith('It')?'live':'rsvp')+'/?show=a-fox-under-a-pink-moon',
-      pause:flash(soon), sendNow:flash(soon)}));
-    const emSent=[
-      ['Rolling','A Fox Under a Pink Moon','RSVP confirmation',fox.rsvps,'81%','34%',0],
-      ['Oct 30 · 12:05 PM','Klara and the Sun','Giveaway winners + thanks for entering',212,'71%','22%',1],
-      ['Oct 19 · 12:00 AM','The Only Living Pickpocket in New York','Thank you',150,'66%','27%',0],
-      ['Oct 18 · 2:30 PM','The Only Living Pickpocket in New York','It’s showtime (check-in details)',150,'74%','41%',2],
-      ['Sep 18 · 12:00 AM','The Love Hypothesis','Thank you',200,'62%','25%',1]
-    ].map(([w,s,e,del,op,cl,b])=>({when:w,show:s,email:e,delivered:String(del),opened:op,clicked:cl,bounced:String(b),
-      bouncedStyle:{color:b?'#b42318':'inherit',fontWeight:b?600:400}, report:flash(soon)}));
+    const pub=SHOWS.filter(s=>!s.draft&&!s.archived&&s.start);
+    const sched=[];
+    pub.forEach(s=>{ const conf=s.guests;
+      if(s.kind==='in-person'){ const t=+new Date(s.start)-26*36e5; if(t>now) sched.push([t,s,'Day-before reminder',conf+' with seats so far','live']); }
+      else if(+new Date(s.start)>now) sched.push([+new Date(s.start),s,'It’s showtime (watch link + access code)',conf+' so far','live']);
+      const end=s.end? +new Date(s.end) : +new Date(s.start)+3*36e5; if(end+10*36e5>now) sched.push([end+10*36e5,s,'Thank you','Everyone who RSVP’d','thanks']); });
+    const emUpcoming=sched.sort((a,b)=>a[0]-b[0]).map(([t,s,e,to,p])=>({when:when(new Date(t).toISOString()),show:s.title,email:e,to,preview:STAGING+'/emails/'+p+'/'}));
+    const TYPE={rsvp:'RSVP confirmation',waitlist:'Waiting list',promoted:'A seat opened up',live:'It’s showtime',reminder:'Day-before reminder',thanks:'Thank you'};
+    const groups=new Map();
+    D.emails.forEach(e=>{ const k=e.show_slug+'|'+e.type; const g=groups.get(k)||{slug:e.show_slug,type:e.type,last:e.created_at,sent:0,failed:0,opened:0,clicked:0};
+      if(e.status==='sent') g.sent++; if(e.status==='failed') g.failed++; if(e.opened_at) g.opened++; if(e.clicked_at) g.clicked++;
+      if(e.created_at>g.last) g.last=e.created_at; groups.set(k,g); });
+    const titleOf=slug=>(SHOWS.find(s=>s.id===slug)||{}).title||slug;
+    const emSent=[...groups.values()].sort((a,b)=>b.last.localeCompare(a.last)).map(g=>({when:when(g.last),show:titleOf(g.slug),email:TYPE[g.type]||g.type,
+      delivered:String(g.sent), opened:g.sent&&g.opened? Math.round(g.opened/g.sent*100)+'%' : '—', clicked:g.sent&&g.clicked? Math.round(g.clicked/g.sent*100)+'%' : '—',
+      bounced:String(g.failed), bouncedStyle:{color:g.failed?'#b42318':'inherit',fontWeight:g.failed?600:400}}));
+    const month=now-30*864e5;
+    const sent30=D.emails.filter(e=>e.status==='sent'&&+new Date(e.created_at)>month).length;
     const templates=[['RSVP confirmed','RSVP confirmation','“You’re in: {title} on Slipstream”','rsvp'],
-      ['Now showing','It’s showtime','Streaming, in-person and live variants','live'],
-      ['Thank you','Thank you','Conversation link + what’s next','thanks'],
-      ['Reminder','Closing soon','24h before the window ends, opt-in only','live'],
-      ['Giveaway','Entry received · Winner','Two templates, one card','rsvp'],
-      ['Receipt','Paid show receipt','Stripe receipt + the same viewing details','rsvp']]
-      .map(([k,n,s,p])=>({kicker:k,name:n,sub:s,preview:STAGING+'/emails/'+p+'/',test:flash(soon)}));
+      ['Now showing','It’s showtime','Watch link and access code','live'],
+      ['Thank you','Thank you','The morning after the window closes','thanks']]
+      .map(([k,n,s,p])=>({kicker:k,name:n,sub:s,preview:STAGING+'/emails/'+p+'/'}));
 
-    // ---- Guests tab
-    const q=(v('shGuestQ')).toLowerCase();
-    const gSel=S.shGuest||GUESTS[0][1];
-    const guests=GUESTS.filter(g=>!q||g[0].toLowerCase().includes(q)||g[1].includes(q)).map((g,i)=>({name:g[0],email:g[1],joined:g[2],shows:String(g[3]),
-      last:['A Fox Under a Pink Moon · RSVP’d','A Fox Under a Pink Moon · RSVP’d','Klara and the Sun · entered','Pickpocket · email bounced','Pickpocket · checked in','Klara and the Sun · entered','The Love Hypothesis · checked in'][GUESTS.indexOf(g)],
-      // Sample: people who RSVP'd with just a name and email have no account (and don't need one).
-      account: (GUESTS.indexOf(g)===1||GUESTS.indexOf(g)===3)? 'No account' : 'Account',
-      acctStyle: (GUESTS.indexOf(g)===1||GUESTS.indexOf(g)===3)? pill('var(--gray-100)','var(--text-body)') : pill('rgba(46,63,214,.10)','var(--blue)'),
-      newsletter: i===2? 'Off':'On', nlStyle: i===2? pill('var(--gray-100)','var(--text-body)') : pill('rgba(31,178,100,.14)','var(--navy)'),
-      rowStyle:{cursor:'pointer',background:g[1]===gSel?'rgba(46,63,214,.05)':'transparent'}, pick:()=>this.setState({shGuest:g[1]})}));
-    const gs=GUESTS.find(g=>g[1]===gSel)||GUESTS[0];
-    const guest={name:gs[0],email:gs[1],joined:gs[2],initials:gs[0].split(' ').map(x=>x[0]).join(''),shows:gs[3],
-      history:[['A Fox Under a Pink Moon','Nov 2026 · RSVP’d'],['Klara and the Sun','Oct 2026 · entered'],['The Only Living Pickpocket in New York','Oct 2026 · checked in'],['Spider-Noir','Aug 2026 · watched']].slice(0,Math.min(4,gs[3])).map(([t,s])=>({t,s})),
-      emails:[['RSVP confirmation · A Fox Under a Pink Moon','Opened'],['Thank you · Pickpocket','Opened'],['It’s showtime · Pickpocket','Clicked']].map(([t,s])=>({t,s}))};
+    // ---- Guests tab (everyone who has RSVP'd on the new site)
+    const people=new Map();
+    D.rsvps.forEach(r=>{ const k=r.email.toLowerCase(); const p=people.get(k)||{email:r.email,name:((r.first_name||'')+' '+(r.last_name||'')).trim()||r.email,first:r.created_at,rs:[],user:r.user_id};
+      p.rs.push(r); if(r.created_at<p.first) p.first=r.created_at; if(r.user_id) p.user=r.user_id; people.set(k,p); });
+    const profOf=id=>D.profiles.find(p=>p.id===id);
+    const q=v('shGuestQ').toLowerCase();
+    const plist=[...people.values()].sort((a,b)=>b.rs[0].created_at.localeCompare(a.rs[0].created_at));
+    const gSel=S.shGuest||(plist[0]||{}).email;
+    const guests=plist.filter(p=>!q||p.name.toLowerCase().includes(q)||p.email.toLowerCase().includes(q)).map(p=>{ const pr=p.user&&profOf(p.user);
+      return {name:p.name,email:p.email,joined:fmt(p.first,{month:'short',year:'numeric'}),shows:String(p.rs.length),
+        last:titleOf(p.rs[0].show_slug)+' · '+(p.rs[0].status==='waitlisted'?'waiting list':p.rs[0].status==='cancelled'?'cancelled':'RSVP’d'),
+        account: p.user? 'Account' : 'No account', acctStyle: p.user? pill('rgba(46,63,214,.10)','var(--blue)') : pill('var(--gray-100)','var(--text-body)'),
+        newsletter: pr? (pr.newsletter? 'On':'Off') : '—', nlStyle: pr&&pr.newsletter? pill('rgba(31,178,100,.14)','var(--navy)') : pill('var(--gray-100)','var(--text-body)'),
+        rowStyle:{cursor:'pointer',background:p.email===gSel?'rgba(46,63,214,.05)':'transparent'}, pick:()=>this.setState({shGuest:p.email})}; });
+    const gp=plist.find(p=>p.email===gSel);
+    const guest= gp? {name:gp.name,email:gp.email,joined:fmt(gp.first,{month:'short',year:'numeric'}),initials:gp.name.split(/\s+/).map(x=>x[0]||'').join('').slice(0,2).toUpperCase(),
+      history:gp.rs.map(r=>({t:titleOf(r.show_slug),s:fmt(r.created_at,{month:'short',day:'numeric'})+' · '+(r.status==='waitlisted'?'waiting list':r.status)})),
+      emails:D.emails.filter(e=>e.email.toLowerCase()===gp.email.toLowerCase()).map(e=>({t:(TYPE[e.type]||e.type)+' · '+titleOf(e.show_slug),s:e.clicked_at?'Clicked':e.opened_at?'Opened':e.status==='sent'?'Delivered':e.status==='failed'?'Failed':'Sending'})),
+      hasEmails:true} : {name:'No guests yet',email:'RSVPs on the new site show up here',joined:'',initials:'—',history:[],emails:[]};
+    const newThisMonth=plist.filter(p=>+new Date(p.first)>month).length;
 
     return {
-      secShows:true, shBanner:'Every screen here is clickable, with Slipstream’s real shows and sample numbers. It connects to Slipstream’s database in the next phase; then launching a show here publishes it to viewslipstream.com.',
-      shStaging:STAGING, shTabs, shOnShows:tab==='shows', shOnEmails:tab==='emails', shOnPayments:tab==='payments', shOnGuests:tab==='guests',
-      shList:tab==='shows'&&view==='list', shLaunch:tab==='shows'&&view==='launch', shDetail:tab==='shows'&&view==='detail',
-      shGoLaunch:()=>this.setState({shTab:'shows',shView:'launch'}), shBack:()=>this.setState({shView:'list',shSel:null}),
+      secShows:true,
+      shBanner: loading? (S.shErr? 'Couldn’t reach Slipstream’s database: '+S.shErr : 'Loading Slipstream’s shows…')
+        : 'Connected to Slipstream’s database. Publishing a show puts it on the site within seconds.'+(D.emailMode==='test'? ' Emails are in test mode until viewslipstream.com moves over.' : ''),
+      shBannerLabel: S.shErr? 'Error' : loading? 'Loading' : 'Live', shRetry:()=>{ this.setState({shErr:null}); this.shLoad(); }, shHasErr:!!S.shErr,
+      shStaging:SITE, shTabs, shOnShows:tab==='shows', shOnEmails:tab==='emails', shOnPayments:tab==='payments', shOnGuests:tab==='guests',
+      shList:tab==='shows'&&view==='list', shLaunch:tab==='shows'&&view==='launch', shDetail:tab==='shows'&&view==='detail'&&!!sel,
+      shGoLaunch:startNew, shBack:()=>this.setState({shView:'list',shSel:null,shEdit:null}),
       shTiles, shLead:lead||{}, shHasLead:!!lead, shUpcoming:upcoming.map(row), shPast:past.map(row),
-      shTypeCards:typeCards, ...typeFields, shSlug:slug,
+      shNoUpcoming:!loading&&upcoming.length===0,
+      shTypeCards:typeCards, ...typeFields, shSlug:slug, shEditing:!!editing, shLaunchTitle: editing? 'Edit '+((SHOWS.find(s=>s.id===editing)||{}).title||'show') : 'Launch a show',
       dShTitle:v('shTitle'), onShTitle:this.draft('shTitle'), dShAbout:v('shAbout'), onShAbout:this.draft('shAbout'),
       dShTrailer:v('shTrailer'), onShTrailer:this.draft('shTrailer'), dShQa:v('shQa'), onShQa:this.draft('shQa'),
-      dShTypeA:v('shTypeA'), onShTypeA:this.draft('shTypeA'), dShTypeB:v('shTypeB'), onShTypeB:this.draft('shTypeB'),
-      dShStart:startTxt, onShStart:this.draft('shStart'), dShEnd:endTxt, onShEnd:this.draft('shEnd'), shNeedsEnd: ty!=='in-person',
+      dShTypeA:v('shTypeA'), onShTypeA:this.draft('shTypeA'), dShTypeB:v('shTypeB'), onShTypeB:this.draft('shTypeB'), dShTypeC:v('shTypeC'), onShTypeC:this.draft('shTypeC'),
+      dShStart:v('shStart'), onShStart:this.draft('shStart'), dShEnd:v('shEnd'), onShEnd:this.draft('shEnd'), shNeedsEnd:needsEnd,
       dShSeries:seriesPick, onShSeries:this.draft('shSeries'),
-      shSeriesOpts:SERIES.map(x=>({v:x.name,l:x.name})).concat([{v:'__new',l:'+ New series or group…'}]),
+      shSeriesOpts:[{v:'',l:'No home page row'}].concat(homeSeries.map(x=>({v:x.id,l:x.name}))).concat([{v:'__new',l:'+ New series or group…'}]),
       shAddingSeries: seriesPick==='__new',
       dShNewSeries:v('shNewSeries'), onShNewSeries:this.draft('shNewSeries'),
       dShNewSeriesKind:v('shNewSeriesKind')||'series', onShNewSeriesKind:this.draft('shNewSeriesKind'),
@@ -5781,30 +5916,40 @@ class Component extends DCLogic {
         let name=v('shNewSeries').trim().replace(/\s+/g,' ');
         if(!name){ this.setState({flash:'Give the new series a name first.'}); return; }
         if(kind==='month' && !/screenings?$/i.test(name)) name+=' Screenings';
-        if(SERIES.some(x=>x.name.toLowerCase()===name.toLowerCase())){ this.setState(s=>({d:{...s.d,shSeries:SERIES.find(x=>x.name.toLowerCase()===name.toLowerCase()).name},flash:'“'+name+'” already exists, so it’s selected.'})); return; }
-        this.setState(s=>({shSeriesNew:[...(s.shSeriesNew||[]),{name,kind}], d:{...s.d,shSeries:name,shNewSeries:''},
-          flash:'Added “'+name+'”. Preview: new series save to Slipstream’s database in phase 2.'}));
+        this.setState({shBusy:true});
+        this.shCall('createSeries',{title:name,kind}).then(j=>{
+          this.setState(s=>({shBusy:false,d:{...s.d,shSeries:j.id,shNewSeries:''},flash: j.existed? '“'+j.title+'” already exists, so it’s selected.' : 'Added “'+j.title+'”. It shows on the home page once a published show is in it.'}));
+          this.shLoad();
+        }).catch(fail('Could not add the series.'));
       },
-      shCancelSeries:()=>this.setState(s=>({d:{...s.d,shSeries:SERIES[0].name,shNewSeries:''}})),
-      shGoNewSeries:()=>this.setState(s=>({shTab:'shows',shView:'launch',d:{...s.d,shSeries:'__new'}})),
-      shSeriesRows:SERIES.map(x=>({name:x.name,kind:x.kind==='month'?'Month tab under Screenings':'Its own row',count:x.count? (x.count+(x.count===1?' show':' shows')) : 'None yet'})),
+      shCancelSeries:()=>this.setState(s=>({d:{...s.d,shSeries:(homeSeries[0]||{}).id||'',shNewSeries:''}})),
+      shGoNewSeries:()=>{ startNew(); this.setState(s=>({d:{...s.d,shSeries:'__new'}})); },
+      shSeriesRows:homeSeries.map(x=>({name:x.name,kind:x.kind==='month'?'Month tab under Screenings':'Its own row',count:x.count? (x.count+(x.count===1?' show':' shows')) : 'None yet'})),
       shIsInPerson: ty==='in-person',
       dShSeatsPer:v('shSeatsPer')||'2', onShSeatsPer:this.draft('shSeatsPer'),
       dShWaitlist: d.shWaitlist===undefined? true : !!d.shWaitlist, onShWaitlist:this.draft('shWaitlist'),
+      shPosterStyle:{height:140,border:'1px dashed rgba(15,22,51,.3)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:12,color:'var(--text-muted)',padding:8,cursor:'pointer',background:'var(--gray-100) center / cover no-repeat'+(v('shPoster')? ' url("'+v('shPoster')+'")' : '')},
+      shHeroStyle:{height:140,border:'1px dashed rgba(15,22,51,.3)',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',fontSize:12,color:'var(--text-muted)',padding:8,cursor:'pointer',background:'var(--gray-100) center / cover no-repeat'+(v('shHero')? ' url("'+v('shHero')+'")' : '')},
+      shPosterText: S.shUploading==='poster'? 'Uploading…' : v('shPoster')? '' : 'Pick an image',
+      shHeroText: S.shUploading==='hero'? 'Uploading…' : v('shHero')? '' : 'Pick an image, at least 1920 × 1080. Used on the page and in emails.',
+      onShPosterFile:e=>{ this.shUpload(e.target.files&&e.target.files[0],'poster'); e.target.value=''; },
+      onShHeroFile:e=>{ this.shUpload(e.target.files&&e.target.files[0],'hero'); e.target.value=''; },
       shChecks:checks.map(([l,ok])=>({label:l,ok,box:box(ok),tick:ok?'✓':''})), shReady:okN+' of '+checks.length,
       shEmailRows:emailRows,
-      shSendTest:()=>this.setState({shTestSent:true,flash:'Preview: in phase 2 the three emails go to your inbox. Marked as sent for the checklist.'}),
-      shSaveDraft:flash('Preview: drafts save once Slipstream’s database is connected.'),
-      shPublish:flash('Preview: publishing turns on in phase 2. On the staging site you can already see how the show page will look.'),
-      shPreviewSite:STAGING+'/review/',
-      shDet:det, shResend:flash(soon), shExtend:flash(soon), shCloseNow:flash(soon), shExport:flash(soon), shCopyPw:()=>{ try{ navigator.clipboard.writeText(sel.pw||''); }catch(e){} this.setState({flash:'Viewing password copied (sample).'}); },
-      shEmTiles:[{label:'Scheduled',value:String(emUpcoming.length),sub:emUpcoming.length? 'next '+emUpcoming[0].when : 'none'},{label:'Sent, last 30 days',value:'1,214',sub:'across 3 shows'},{label:'Open rate',value:'68%',sub:'“It’s showtime” averages 74%'},{label:'Sending',value:'Not set up',sub:'Resend on viewslipstream.com in phase 2',small:true}]
-        .map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:t.small?18:28,lineHeight:1.15,color:'var(--navy)'}})),
-      shEmUpcoming:emUpcoming, shNoEmUpcoming:emUpcoming.length===0, shEmSent:emSent, shTemplates:templates,
-      shGTiles:[{label:'Accounts',value:'4,812',sub:'after migrating from WordPress'},{label:'New this month',value:'213',sub:'most from Pickpocket RSVPs'},{label:'Newsletter opted in',value:'81%',sub:'3,904 people'},{label:'Regulars (3+ shows)',value:'1,120',sub:'23% of accounts'}]
-        .map(t=>Object.assign(t,{valueStyle:{fontFamily:'var(--font-display)',fontWeight:700,fontSize:28,lineHeight:1.15,color:'var(--navy)'}})),
+      shSaveDraft:save(false), shPublish:save(!editing || (SHOWS.find(s=>s.id===editing)||{}).draft ? true : false),
+      shPublishLabel: S.shBusy? 'Saving…' : editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? 'Save changes' : 'Publish',
+      shDraftLabel: editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? '' : 'Save draft', shShowDraftBtn: !(editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft),
+      shPreviewSite: editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? SITE+'/'+editing+'/' : STAGING+'/review/',
+      shDet:det, shEditSel: sel? startEdit(sel) : ()=>{}, shToggle:toggleStatus, shDelete:deleteShow, shExtend:windowOp('extend'), shCloseNow:windowOp('close'), shExport:exportGuests,
+      shEmTiles:[{label:'Scheduled',value:String(emUpcoming.length),sub:emUpcoming.length? 'next '+emUpcoming[0].when : 'none'},
+        {label:'Sent, last 30 days',value:String(sent30),sub:'From hello@viewslipstream.com'},
+        {label:'Failed',value:String(D.emails.filter(e=>e.status==='failed').length),sub:'Retried on the next run'},
+        {label:'Sending',value:D.emailMode==='everyone'? 'Live' : 'Test mode',sub:D.emailMode==='everyone'? 'Every guest gets email' : 'Only @socialupgrades.com until go-live',small:true}].map(tile),
+      shEmUpcoming:emUpcoming, shNoEmUpcoming:emUpcoming.length===0, shEmSent:emSent, shNoEmSent:emSent.length===0, shTemplates:templates,
+      shGTiles:[{label:'Guests',value:String(plist.length),sub:'Everyone who has RSVP’d on the new site'},{label:'New this month',value:String(newThisMonth),sub:'First RSVP in the last 30 days'},
+        {label:'Accounts',value:String(D.accountCount),sub:'Signed up on the new site'},{label:'Regulars (3+ shows)',value:String(plist.filter(p=>p.rs.length>=3).length),sub:'On the new site so far'}].map(tile),
       shGuests:guests, shNoGuests:guests.length===0, dShGuestQ:v('shGuestQ'), onShGuestQ:this.draft('shGuestQ'), shGuest:guest,
-      shGuestAction:flash(soon)
+      shGuestCopy: gp? copy(gp.email,'Copied '+gp.email+'.') : ()=>{}
     };
   }
 
