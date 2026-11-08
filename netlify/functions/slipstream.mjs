@@ -192,7 +192,23 @@ async function upload(body) {
   return { url: SL_URL + '/storage/v1/object/public/' + BUCKET + '/' + path };
 }
 
-const ACTIONS = { load, saveShow, createSeries, setWindow, setStatus, upload };
+// Delete a show for good: only when nobody has RSVP'd (otherwise unpublish it).
+// Its series link and access code go with it (cascade), and so do its uploaded images.
+async function deleteShow(body) {
+  const slug = String(body.slug || '');
+  const [show] = await sl('shows?select=slug&slug=eq.' + encodeURIComponent(slug));
+  if (!show) throw new Bad('That show no longer exists.', 404);
+  const rs = await sl('rsvps?select=id&limit=1&show_slug=eq.' + encodeURIComponent(slug));
+  if (rs.length) throw new Bad('People have RSVP’d to this show, so it can’t be deleted. Unpublish it instead.');
+  await sl('shows?slug=eq.' + encodeURIComponent(slug), { method: 'DELETE' });
+  const st = { apikey: SL_KEY, Authorization: 'Bearer ' + SL_KEY, 'Content-Type': 'application/json' };
+  const list = await fetch(SL_URL + '/storage/v1/object/list/' + BUCKET, { method: 'POST', headers: st, body: JSON.stringify({ prefix: slug + '/', limit: 100 }) });
+  const files = list.ok ? (await list.json()).map(f => slug + '/' + f.name) : [];
+  if (files.length) await fetch(SL_URL + '/storage/v1/object/' + BUCKET, { method: 'DELETE', headers: st, body: JSON.stringify({ prefixes: files }) });
+  return { deleted: slug };
+}
+
+const ACTIONS = { load, saveShow, createSeries, setWindow, setStatus, upload, deleteShow };
 
 export default async (req) => {
   if (req.method !== 'POST') return json({ error: 'POST only' }, 405);

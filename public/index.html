@@ -4838,6 +4838,13 @@
                     </div>
                   </sc-for>
                 </div>
+                <sc-if value="{{ shDet.canDelete }}" hint-placeholder-val="{{ false }}">
+                  <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Delete</h3>
+                    <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Removes the show, its page and its images. Only possible while nobody has RSVP’d; after that, unpublish it instead.</div>
+                    <button onClick="{{ shDelete }}" style="border:1px solid rgba(180,35,24,.4);background:var(--surface-card);color:#b42318;border-radius:6px;min-height:38px;font:600 13px var(--font-body);cursor:pointer">{{ shDet.deleteLabel }}</button>
+                  </div>
+                </sc-if>
                 <sc-if value="{{ shDet.canExtend }}" hint-placeholder-val="{{ true }}">
                   <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
                     <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Window</h3>
@@ -5820,7 +5827,8 @@ class Component extends DCLogic {
         ],
         guests:detGuests, noGuests:detGuests.length===0, timeline:tl, isLive:selP==='live', isUpcoming:selP==='upcoming',
         canExtend:(selP==='live'||selP==='upcoming') && sel.kind!=='in-person',
-        isDraft:sel.draft, toggleLabel: sel.draft? 'Publish' : 'Unpublish'};
+        isDraft:sel.draft, toggleLabel: sel.draft? 'Publish' : 'Unpublish',
+        canDelete: rs.length===0, deleteLabel: S.shDelArm===sel.id? 'Click again to delete for good' : 'Delete show'};
     }
     const windowOp=op=>()=>{ if(!sel||S.shBusy) return; this.setState({shBusy:true});
       this.shCall('setWindow',{slug:sel.id,op}).then(reload(op==='extend'? 'Window extended 24 hours.' : 'Closed. The player is off; the thank-you goes out the next morning.')).catch(fail('Could not change the window.')); };
@@ -5828,6 +5836,11 @@ class Component extends DCLogic {
       if(sel.draft){ startEdit(sel)(); this.setState({flash:'Check the list on the right, then hit Publish.'}); return; }
       this.setState({shBusy:true});
       this.shCall('setStatus',{slug:sel.id,status:'draft'}).then(reload('Unpublished. It’s off the site and saved as a draft.')).catch(fail('Could not unpublish.')); };
+    const deleteShow=()=>{ if(!sel||S.shBusy) return;
+      if(S.shDelArm!==sel.id){ this.setState({shDelArm:sel.id}); return; }
+      this.setState({shBusy:true,shDelArm:null});
+      this.shCall('deleteShow',{slug:sel.id}).then(()=>{ this.setState({shBusy:false,shView:'list',shSel:null,shEdit:null,flash:'Deleted “'+sel.title+'”. It’s off the site.'}); this.shLoad(); })
+        .catch(fail('Could not delete the show.')); };
     const csv=rows=>rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
     const download=(name,text)=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
     const exportGuests=()=>{ if(!sel) return; const rs=D.rsvps.filter(x=>x.show_slug===sel.id);
@@ -5927,7 +5940,7 @@ class Component extends DCLogic {
       shPublishLabel: S.shBusy? 'Saving…' : editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? 'Save changes' : 'Publish',
       shDraftLabel: editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? '' : 'Save draft', shShowDraftBtn: !(editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft),
       shPreviewSite: editing&&!(SHOWS.find(s=>s.id===editing)||{}).draft? SITE+'/'+editing+'/' : STAGING+'/review/',
-      shDet:det, shEditSel: sel? startEdit(sel) : ()=>{}, shToggle:toggleStatus, shExtend:windowOp('extend'), shCloseNow:windowOp('close'), shExport:exportGuests,
+      shDet:det, shEditSel: sel? startEdit(sel) : ()=>{}, shToggle:toggleStatus, shDelete:deleteShow, shExtend:windowOp('extend'), shCloseNow:windowOp('close'), shExport:exportGuests,
       shEmTiles:[{label:'Scheduled',value:String(emUpcoming.length),sub:emUpcoming.length? 'next '+emUpcoming[0].when : 'none'},
         {label:'Sent, last 30 days',value:String(sent30),sub:'From hello@viewslipstream.com'},
         {label:'Failed',value:String(D.emails.filter(e=>e.status==='failed').length),sub:'Retried on the next run'},
