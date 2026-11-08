@@ -5340,7 +5340,8 @@ class Component extends DCLogic {
       this.setState({
         profile, data, booted:true,
         role: isTeam ? 'team' : 'client',
-        section: isTeam ? 'overview' : 'home',
+        // Slipstream's team runs their screenings from Shows, so they land there.
+        section: isTeam ? 'overview' : (cid==='vs' ? 'shows' : 'home'),
         viewClient: cid, msgClient: cid,
         d:{todoClient:'', todoWho:'team', updClient:cid, updApproval:false, workClient:cid}
       });
@@ -7151,7 +7152,7 @@ class Component extends DCLogic {
         pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
         pulse:avg?avg.toFixed(1):'-', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
         activeTitle:act?act.title:'Nothing in progress',
-        openPortal:()=>this.setState({role:'client',viewClient:c.id,section:'home',notifOpen:false})};
+        openPortal:()=>this.setState({role:'client',viewClient:c.id,section:c.id==='vs'?'shows':'home',notifOpen:false})};
     });
     // files
     const types=['All','Design','Documents','Content','Assets'];
