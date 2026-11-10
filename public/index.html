@@ -2050,6 +2050,14 @@
 
       <sc-if value="{{ secLeads }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">How we reach them</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ leadRouteTiles }}" as="t" hint-placeholder-count="5">
+                <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--green)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span><span style="{{ t.subStyle }}">{{ t.sub }}</span></button>
+              </sc-for>
+            </div>
+          </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ leadTiles }}" as="t" hint-placeholder-count="9">
               <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
@@ -2133,11 +2141,13 @@
                         </div>
                         <div style="font-size:12px;color:var(--text-muted)">{{ l.meta }}</div>
                         <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-if value="{{ l.hasRoute }}" hint-placeholder-val="{{ true }}"><span style="{{ l.routeStyle }}">{{ l.routeLabel }}</span></sc-if>
                           <sc-if value="{{ l.hasCamp }}" hint-placeholder-val="{{ true }}"><span style="{{ l.campStyle }}">{{ l.camp }}</span></sc-if>
                           <sc-if value="{{ l.isMockup }}" hint-placeholder-val="{{ false }}"><span style="{{ l.mockStyle }}" title="9.5 and up: worth a homepage mockup">Mockup</span></sc-if>
                           <sc-if value="{{ l.hasQual }}" hint-placeholder-val="{{ true }}"><span style="{{ l.qualStyle }}" title="{{ l.qualTitle }}">{{ l.qual }}</span></sc-if>
                           <sc-if value="{{ l.hasScore }}" hint-placeholder-val="{{ true }}"><span style="{{ l.scoreStyle }}">{{ l.score }}</span></sc-if>
                         </div>
+                        <sc-if value="{{ l.hasPhone }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:600;color:#a2691a">{{ l.phone }}</div></sc-if>
                         <sc-if value="{{ l.hasHook }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ l.hook }}</div></sc-if>
                         <sc-if value="{{ l.hasFoot }}" hint-placeholder-val="{{ false }}"><div style="{{ l.footStyle }}">{{ l.foot }}</div></sc-if>
                       </button>
@@ -2162,11 +2172,13 @@
                   <div style="font-size:12px;color:var(--text-muted)">{{ l.meta }}</div>
                   <div style="display:flex;gap:6px;flex-wrap:wrap">
                     <sc-if value="{{ l.showStage }}" hint-placeholder-val="{{ true }}"><span style="{{ l.stageStyle }}">{{ l.stageLabel }}</span></sc-if>
+                    <sc-if value="{{ l.hasRoute }}" hint-placeholder-val="{{ true }}"><span style="{{ l.routeStyle }}">{{ l.routeLabel }}</span></sc-if>
                     <sc-if value="{{ l.hasCamp }}" hint-placeholder-val="{{ false }}"><span style="{{ l.campStyle }}">{{ l.camp }}</span></sc-if>
                     <sc-if value="{{ l.isMockup }}" hint-placeholder-val="{{ false }}"><span style="{{ l.mockStyle }}" title="9.5 and up: worth a homepage mockup">Mockup</span></sc-if>
                     <sc-if value="{{ l.hasQual }}" hint-placeholder-val="{{ true }}"><span style="{{ l.qualStyle }}" title="{{ l.qualTitle }}">{{ l.qual }}</span></sc-if>
                     <sc-if value="{{ l.hasScore }}" hint-placeholder-val="{{ true }}"><span style="{{ l.scoreStyle }}">{{ l.score }}</span></sc-if>
                   </div>
+                  <sc-if value="{{ l.hasPhone }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;font-weight:600;color:#a2691a">{{ l.phone }}</div></sc-if>
                   <sc-if value="{{ l.hasHook }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-body);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ l.hook }}</div></sc-if>
                   <sc-if value="{{ l.hasFoot }}" hint-placeholder-val="{{ false }}"><div style="{{ l.footStyle }}">{{ l.foot }}</div></sc-if>
                 </button>
@@ -9609,8 +9621,20 @@ class Component extends DCLogic {
     const LEAD_LABEL=Object.fromEntries(LEAD_STAGES);
     const LEAD_PIPE=['researched','drafted','sent','replied','meeting','won'];
     const LEAD_TONE={new:'gray',researched:'gray',drafted:'amber',sent:'blue',replied:'green',meeting:'green',won:'green',notnow:'gray',skip:'gray'};
-    const LEAD_CAMPAIGNS={A:'A · Free build',B:'B · Straight to checkout',C:'C · Chat assistant demo'};
+    const LEAD_CAMPAIGNS={A:'A · Free build',B:'B · Straight to checkout',C:'C · Chat assistant demo',D:'D · 7-day free trial',F:'F · Contact form'};
     const LEAD_STATUS={ok:'Email found',form_only:'Contact form only',site_down:'Site is down',skip:'Not a fit',unresearched:'Not researched yet'};
+    // How we reach a lead: email, their website's contact form, or a phone
+    // call. The nightly run writes contactMethod; older rows fall back to the
+    // contact route so every lead lands in exactly one bucket.
+    const LEAD_ROUTES=[['email','Email'],['form','Form only'],['call','Call only'],['none','Needs research']];
+    const LEAD_ROUTE_LABEL=Object.fromEntries(LEAD_ROUTES);
+    const leadRoute=l=>{ const m=l.contactMethod; if(m && LEAD_ROUTE_LABEL[m]) return m;
+      const st=l.status||''; const ph=!!String(l.phone||'').trim();
+      if(st==='ok') return 'email';
+      if(st==='form_only') return 'form';
+      if((st==='site_down'||st==='bounced') && ph) return 'call';
+      if(st==='skip'||st==='test'||l.stage==='skip') return '';
+      return 'none'; };
     // Dates here are calendar days, not instants: a follow-up is due on the
     // 3rd wherever the reader is, so they are compared as local yyyy-mm-dd.
     const leadToday=new Date().toLocaleDateString('en-CA');
@@ -9642,7 +9666,7 @@ class Component extends DCLogic {
     const leadLogN=S.leadLogN||40;
     const leadLogPeople=[...new Set(leadLogRows.map(l=>l.by).filter(Boolean))]
       .map(id=>({v:id,l:logWho({by:id}).name||'Someone'})).sort((a,b)=>a.l.localeCompare(b.l));
-    const lf={stage:S.leadStage||'active', q:String(d.leadQ||'').trim().toLowerCase(),
+    const lf={stage:S.leadStage||'active', route:S.leadRoute||'', q:String(d.leadQ||'').trim().toLowerCase(),
       county:d.leadCounty||'', camp:d.leadCamp||'', who:d.leadWho||'',
       qmin:parseFloat(d.leadQmin)||0, sort:d.leadSort||'due'};
     // Lead quality, 1 to 10, is computed by the database (lead_quality(),
@@ -9651,6 +9675,7 @@ class Component extends DCLogic {
     const leadQ=l=>{ const n=parseFloat(l.quality); return isNaN(n)?null:n; };
     const LEAD_MOCKUP=9.5;
     const leadMatch=l=>{
+      if(lf.route && leadRoute(l)!==lf.route) return false;
       if(lf.qmin && !(leadQ(l)>=lf.qmin)) return false;
       if(lf.county && l.county!==lf.county) return false;
       if(lf.camp && (l.campaign||'')!==lf.camp) return false;
@@ -9679,6 +9704,9 @@ class Component extends DCLogic {
         meta:[l.county, l.niche].filter(Boolean).join(' · '),
         hook:l.hook||'', hasHook:!!l.hook,
         showStage:!leadBoard, stageLabel:LEAD_LABEL[l.stage]||l.stage||'', stageStyle:this.badge(LEAD_TONE[l.stage]||'gray'),
+        hasRoute:!!leadRoute(l), routeLabel:(LEAD_ROUTE_LABEL[leadRoute(l)]||'')+(leadRoute(l)==='form'&&l.formCaptcha?' · captcha':''),
+        routeStyle:this.badge(leadRoute(l)==='call'?'amber':leadRoute(l)==='form'?'blue':leadRoute(l)==='email'?'green':'gray'),
+        hasPhone:leadRoute(l)==='call' && !!String(l.phone||'').trim(), phone:'Call '+String(l.phone||'').trim(),
         hasCamp:!!l.campaign, camp:'Campaign '+(l.campaign||''),
         campStyle:this.badge(l.campaign==='C'?'green':l.campaign==='B'?'blue':'amber'),
         hasScore, score:'Site '+(hasScore?l.siteScore:''), scoreStyle:this.badge('gray'),
@@ -9695,6 +9723,19 @@ class Component extends DCLogic {
           boxShadow:'0 2px 8px rgba(15,22,51,.06)',padding:'14px 16px',display:'flex',flexDirection:'column',gap:7,
           textAlign:'left',cursor:'pointer',width:'100%',boxSizing:'border-box',borderRadius:12,transition:'all .15s ease',fontFamily:'var(--font-body)'}};
     };
+    const leadsNoRoute=leadsAll.filter(l=>{ const r=lf.route; lf.route=''; const ok=leadMatch(l); lf.route=r; return ok; })
+      .filter(l=>l.stage!=='skip' && l.stage!=='test');
+    const leadRouteTiles=[['','All routes',leadsNoRoute.length]].concat(LEAD_ROUTES.map(([k,lab])=>[k,lab,leadsNoRoute.filter(l=>leadRoute(l)===k).length]))
+      .filter(([k,,n])=>k===''||n>0||lf.route===k)
+      .map(([k,lab,n])=>{ const on=lf.route===k;
+        const fresh=leadsNoRoute.filter(l=>(k===''||leadRoute(l)===k) && (l.stage==='researched'||l.stage==='new')).length;
+        return {label:lab, n, sub:fresh+' not contacted', select:()=>this.setState({leadRoute:k}),
+          style:{background:on?'var(--green)':'var(--surface-card)',border:'1px solid '+(on?'var(--green)':'var(--border-card)'),
+            borderRadius:12,padding:'10px 16px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:3,
+            cursor:'pointer',minWidth:120,fontFamily:'var(--font-body)'},
+          numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':'var(--navy)'},
+          labStyle:{fontSize:10.5,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',color:on?'#fff':'var(--navy)'},
+          subStyle:{fontSize:11,color:on?'rgba(255,255,255,.85)':'var(--text-muted)'}}; });
     const leadTiles=[['active','Pipeline',leadsF.filter(l=>LEAD_PIPE.indexOf(l.stage)>-1).length]]
       .concat(LEAD_STAGES.filter(([k])=>k!=='skip').map(([k,lab])=>[k,lab,leadsF.filter(l=>l.stage===k).length]))
       .concat([['due','Follow-up due',leadsF.filter(leadDue).length]])
@@ -9713,7 +9754,7 @@ class Component extends DCLogic {
       return {label:LEAD_LABEL[k], count:items.length, items, empty:items.length===0}; }) : [];
     const leadGrid=leadBoard ? [] : leadsF.filter(l=>lf.stage==='due'?leadDue(l):l.stage===lf.stage).sort(leadOrder).map(leadCard);
     const leadCounties=[...new Set(leadsAll.map(l=>l.county).filter(Boolean))].sort();
-    const leadFiltered=!!(lf.q||lf.county||lf.camp||lf.who||lf.qmin);
+    const leadFiltered=!!(lf.q||lf.county||lf.camp||lf.who||lf.qmin||lf.route);
     const setLead=(id,fn)=>this.set(x=>{
       const l=(x.leads||[]).find(y=>y.id===id);
       if(l){ fn(l,x); l.updatedAt=new Date().toISOString(); l.updatedBy=me.id||''; }
@@ -9736,7 +9777,8 @@ class Component extends DCLogic {
       {k:'googleRating',label:'Google rating',ph:'4.8'},
       {k:'size',label:'About the company',ph:'Small, family-owned, est. 1998'},
       {k:'status',label:'Contact route',type:'select',opts:[{v:'unresearched',l:'Not researched yet'},{v:'ok',l:'Email found'},{v:'form_only',l:'Contact form only'},{v:'site_down',l:'Site is down'},{v:'skip',l:'Not a fit'}]},
-      {k:'campaign',label:'Campaign',type:'select',opts:[{v:'',l:'Not assigned yet'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Straight to checkout'},{v:'C',l:'C · Chat assistant demo'}]},
+      {k:'campaign',label:'Campaign',type:'select',opts:[{v:'',l:'Not assigned yet'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Straight to checkout'},{v:'C',l:'C · Chat assistant demo'},{v:'D',l:'D · 7-day free trial'},{v:'F',l:'F · Contact form'}]},
+      {k:'contactMethod',label:'How we reach them',type:'select',opts:[{v:'',l:'Work it out from the contact route'},{v:'email',l:'Email'},{v:'form',l:'Website form only'},{v:'call',l:'Call only'},{v:'none',l:'Needs research'}]},
       {k:'subject',label:'Subject line',ph:'Filled in once an email is drafted'},
       {k:'hook',label:'What we found on their site',type:'area',ph:'One true, specific thing, e.g. the Book Online button goes to a contact form'},
       {k:'notes',label:'Research notes',type:'area',ph:'Anything the next person should know'}
@@ -9915,7 +9957,7 @@ class Component extends DCLogic {
 
     const leadVals={
       secLeads:isTeam&&secKey('leads'),
-      leadTiles, leadBoard, leadGridOn:!leadBoard, leadCols, leadGrid, noLeadGrid:!leadBoard&&leadGrid.length===0,
+      leadRouteTiles, leadTiles, leadBoard, leadGridOn:!leadBoard, leadCols, leadGrid, noLeadGrid:!leadBoard&&leadGrid.length===0,
       leadSummary: leadsF.length===leadsAll.length
         ? (leadsAll.length+' leads. Replies and due follow-ups are highlighted, and each column lists the highest quality leads first.')
         : ('Showing '+leadsF.length+' of '+leadsAll.length+' leads.'),
@@ -9927,7 +9969,7 @@ class Component extends DCLogic {
       leadSortOpts:[{v:'due',l:'Due first, then quality'},{v:'quality',l:'Highest quality first'}],
       dLeadQmin:d.leadQmin||'', onLeadQmin:this.draft('leadQmin'),
       leadQminOpts:[{v:'',l:'Any quality'},{v:'8',l:'Quality 8 and up'},{v:'9',l:'Quality 9 and up'},{v:'9.5',l:'9.5 and up (mockup)'}],
-      leadCampOpts:[{v:'',l:'All campaigns'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Checkout'},{v:'C',l:'C · Chat demo'}],
+      leadCampOpts:[{v:'',l:'All campaigns'},{v:'A',l:'A · Free build'},{v:'B',l:'B · Checkout'},{v:'C',l:'C · Chat demo'},{v:'D',l:'D · Free trial'},{v:'F',l:'F · Contact form'}],
       dLeadWho:d.leadWho||'', onLeadWho:this.draft('leadWho'),
       leadWhoOpts:[{v:'',l:'Everyone'},{v:'me',l:'Assigned to me'},{v:'none',l:'Unassigned'}],
       leadFiltered, openAddLead,
@@ -9941,7 +9983,7 @@ class Component extends DCLogic {
       leadLogCount:leadLogF.length+(leadLogF.length===1?' change':' changes')+(logWhoFilter?' by '+(logWho({by:logWhoFilter}).name||'this person'):' by everyone'),
       dLeadLogWho:logWhoFilter, onLeadLogWho:this.draft('leadLogWho'),
       leadLogWhoOpts:[{v:'',l:'Everyone'}].concat(leadLogPeople),
-      clearLeadFilters:()=>this.setState(s2=>({d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:'',leadQmin:''}})),
+      clearLeadFilters:()=>this.setState(s2=>({leadRoute:'',d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:'',leadQmin:''}})),
       ...leadModal
     };
 
