@@ -1728,6 +1728,11 @@
                 <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:{{ c.pulseColor }}">{{ c.pulse }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pulse / 5</span></div>
               </div>
               <div style="font-size:13px;color:var(--text-body);border-top:1px solid var(--border-hairline);padding-top:12px">Now: <strong style="color:var(--navy)">{{ c.activeTitle }}</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span style="{{ c.cbPill }}">{{ c.cbPillLabel }}</span>
+                <button onClick="{{ c.cbToggle }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;color:var(--text-body);padding:4px 10px;font-size:12px;cursor:pointer" style-hover="border-color:var(--navy)">{{ c.cbToggleLabel }}</button>
+                <sc-if value="{{ c.cbOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.cbOpen }}" style="background:transparent;border:none;color:var(--link);padding:4px 6px;font-size:12px;font-weight:600;cursor:pointer">Open intake →</button></sc-if>
+              </div>
               <button onClick="{{ c.openPortal }}" style="align-self:flex-start;background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open portal</button>
             </div>
           </sc-for>
@@ -5094,6 +5099,306 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secChatbot }}" hint-placeholder-val="{{ false }}">
+
+        <sc-if value="{{ cbLocked }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="background:var(--chrome);padding:30px 30px 26px;display:flex;flex-direction:column;gap:12px;color:#fff">
+              <div style="display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                Locked
+              </div>
+              <h2 style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.15;text-transform:uppercase;letter-spacing:var(--ls-caps);margin:0;color:#fff;max-width:640px">Answer every visitor in seconds, even at 2am</h2>
+              <div style="font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.82);max-width:620px">An AI chatbot trained on your services, prices and FAQs. It answers questions, captures leads and books appointments on your website around the clock.</div>
+            </div>
+            <div style="padding:26px 30px 30px;display:flex;flex-direction:column;gap:22px">
+              <div class="su-cols" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+                <div style="display:flex;flex-direction:column;gap:6px;border:1px solid var(--border-card);border-radius:12px;padding:16px 18px">
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--green);line-height:1">24/7</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--navy)">Instant replies</div>
+                  <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Leads get an answer before they click over to a competitor.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;border:1px solid var(--border-card);border-radius:12px;padding:16px 18px">
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--green);line-height:1">Leads</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--navy)">Sent straight to you</div>
+                  <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Name, phone and what they need, delivered by email or text.</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px;border:1px solid var(--border-card);border-radius:12px;padding:16px 18px">
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--green);line-height:1">Done for you</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--navy)">We build and update it</div>
+                  <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">You approve it before launch. We keep it current every month.</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What unlocks here</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <sc-for list="{{ cbUnlockList }}" as="u" hint-placeholder-count="7">
+                    <span style="background:var(--gray-100);border:1px solid var(--border-hairline);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--text-body)">{{ u.label }}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--border-hairline);padding-top:20px">
+                <a href="{{ cbBuyUrl }}" target="_blank" rel="noopener noreferrer" style="background:var(--cta-bg);color:var(--cta-fg);text-decoration:none;border-radius:12px;padding:12px 24px;font-family:var(--font-display);font-weight:700;font-size:14px;white-space:nowrap">See AI Chatbot plans</a>
+                <button onClick="{{ cbAsk }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);border-radius:12px;padding:11px 20px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--font-body)" style-hover="background:rgba(15,22,51,.06)">Ask us about it</button>
+                <div style="font-size:13px;color:var(--text-muted);line-height:1.5">Plans from $99/mo. Month to month, pause anytime.</div>
+              </div>
+              <div style="font-size:12.5px;color:var(--text-muted)">Already signed up? This tab unlocks as soon as we activate your chatbot.</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cbTeam }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 18px 12px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 4px">
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Chatbot clients</h3>
+              <span style="font-size:12px;color:var(--text-muted)">Sent and waiting on us sit at the top. Click a row to open it.</span>
+            </div>
+            <sc-if value="{{ cbNoRoster }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;color:var(--text-muted);padding:8px 4px 10px">No client has the AI Chatbot badge yet. Pick a client below and turn it on.</div>
+            </sc-if>
+            <div style="overflow-x:auto">
+              <div style="min-width:640px;display:flex;flex-direction:column;gap:2px">
+                <sc-if value="{{ cbHasRoster }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:grid;grid-template-columns:minmax(0,2fr) repeat(4,minmax(0,1fr)) 70px;gap:10px;padding:4px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)">
+                    <span>Client</span><span>Badge</span><span>Intake</span><span>Essentials</span><span>Stage</span><span>Updated</span>
+                  </div>
+                </sc-if>
+                <sc-for list="{{ cbRoster }}" as="r" hint-placeholder-count="3">
+                  <div onClick="{{ r.select }}" style="{{ r.rowStyle }}" style-hover="background:var(--gray-100)">
+                    <span style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;color:var(--navy);min-width:0"><span style="{{ r.dot }}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.label }}</span></span>
+                    <span><span style="{{ r.badgeStyle }}">{{ r.badgeLabel }}</span></span>
+                    <span><span style="{{ r.statusStyle }}">{{ r.statusLabel }}</span></span>
+                    <span style="font-size:13px;font-weight:600;color:var(--navy)">{{ r.progress }}</span>
+                    <span><span style="{{ r.stageStyle }}">{{ r.stageLabel }}</span></span>
+                    <span style="font-size:12px;color:var(--text-muted)">{{ r.updated }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <select value="{{ cbClientId }}" onChange="{{ cbPickClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:14px;font-weight:600;background:var(--surface-card);color:var(--navy);font-family:var(--font-body);min-width:220px">
+                <sc-for list="{{ cbClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+              <span style="{{ cbBadgeStyle }}">{{ cbBadgeLabel }}</span>
+              <button onClick="{{ cbToggleBadge }}" style="{{ cbMiniBtn }}" style-hover="border-color:var(--navy)">{{ cbToggleLabel }}</button>
+              <span style="flex:1"></span>
+              <span style="{{ cbStatusStyle }}">{{ cbStatusLabel }}</span>
+            </div>
+            <sc-if value="{{ cbHasBizTabs }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ cbBizTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+              </div>
+            </sc-if>
+            <div class="su-cols" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Build stage</label>
+                <select value="{{ cbStage }}" onChange="{{ cbOnStage }}" style="{{ cbFieldStyle }}">
+                  <sc-for list="{{ cbStageOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Bot link or admin URL</label>
+                <input value="{{ cbBotUrl }}" onChange="{{ cbOnBotUrl }}" onBlur="{{ cbFlush }}" placeholder="https://..." style="{{ cbFieldStyle }}">
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Team notes (never shown to the client)</label>
+              <textarea value="{{ cbNotes }}" onChange="{{ cbOnNotes }}" onBlur="{{ cbFlush }}" placeholder="What is missing, what we promised, what platform we are building on." style="{{ cbAreaStyle }}"></textarea>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <span style="width:8px;height:8px;background:var(--green)"></span>
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Build kit · {{ cbTitle }}</h3>
+              <span style="font-size:12px;color:var(--text-muted)">Generated live from the intake below. Copy straight into the bot builder.</span>
+              <span style="flex:1"></span>
+              <button onClick="{{ cbCopyAll }}" style="{{ cbCopyAllStyle }}">{{ cbCopyAllLabel }}</button>
+            </div>
+            <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:14px">
+              <sc-for list="{{ cbKit }}" as="k" hint-placeholder-count="4">
+                <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0">
+                  <div style="display:flex;align-items:flex-start;gap:10px">
+                    <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--navy)">{{ k.title }}</div>
+                      <div style="font-size:12px;color:var(--text-muted)">{{ k.note }} · {{ k.lineCount }}</div>
+                    </div>
+                    <sc-if value="{{ k.hasDl }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.download }}" style="{{ cbMiniBtn }}">{{ k.dlLabel }}</button></sc-if>
+                    <button onClick="{{ k.copy }}" style="{{ k.copyStyle }}">{{ k.copyLabel }}</button>
+                  </div>
+                  <pre style="{{ cbPreStyle }}">{{ k.text }}</pre>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px;padding-top:6px">
+            <span style="width:8px;height:8px;background:var(--navy)"></span>
+            <h3 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:var(--navy);margin:0">Client intake</h3>
+            <span style="font-size:12px;color:var(--text-muted)">The same form the client sees. Your edits save to their copy.</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cbShowForm }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ cbClientView }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ cbHasBizTabs }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span style="font-size:12px;color:var(--text-muted);margin-right:4px">Which company's chatbot?</span>
+                <sc-for list="{{ cbBizTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:220px">
+                <sc-if value="{{ cbHasBizNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--green)">{{ cbBizNote }}</div></sc-if>
+                <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)">{{ cbPct }} ready</div>
+                <div style="font-size:13px;color:var(--text-muted)">{{ cbDoneLabel }} · {{ cbSaveHint }}</div>
+              </div>
+              <sc-if value="{{ cbCanSubmit }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ cbSubmit }}" style="{{ cbCtaBtn }}" style-hover="opacity:.9">{{ cbSubmitLabel }}</button>
+              </sc-if>
+            </div>
+            <div style="height:8px;background:var(--gray-200);border-radius:999px;overflow:hidden"><div style="{{ cbBarStyle }}"></div></div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <sc-for list="{{ cbEssentials }}" as="e" hint-placeholder-count="8"><span style="{{ e.style }}"><span>{{ e.mark }}</span>{{ e.label }}</span></sc-for>
+            </div>
+            <sc-if value="{{ cbClientView }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ cbSent }}" hint-placeholder-val="{{ false }}">
+                <div style="background:rgba(31,178,100,.08);border:1px solid rgba(31,178,100,.3);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text-body);line-height:1.5">{{ cbSentNote }}</div>
+              </sc-if>
+              <sc-if value="{{ cbNotSent }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:13px;color:var(--text-muted);line-height:1.55">Fill in what you can, in any order. Everything saves as you go. Hit "Send to Social Upgrades" when the essentials are in and we start building. Not sure about something? Skip it and we will ask.</div>
+              </sc-if>
+            </sc-if>
+          </div>
+
+          <sc-for list="{{ cbSections }}" as="sec" hint-placeholder-count="3">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:flex-start;gap:12px">
+                <span style="{{ sec.dotStyle }}">{{ sec.dotLabel }}</span>
+                <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+                  <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0;text-transform:uppercase;letter-spacing:var(--ls-caps)">{{ sec.title }}</h3>
+                  <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">{{ sec.help }}</div>
+                </div>
+              </div>
+
+              <sc-if value="{{ sec.hasFields }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
+                  <sc-for list="{{ sec.fields }}" as="f" hint-placeholder-count="4">
+                    <div style="{{ f.boxStyle }}">
+                      <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ f.label }}</label>
+                      <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                        <input value="{{ f.value }}" onChange="{{ f.onChange }}" onBlur="{{ f.onBlur }}" placeholder="{{ f.ph }}" style="{{ f.inputStyle }}">
+                      </sc-if>
+                      <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                        <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" onBlur="{{ f.onBlur }}" placeholder="{{ f.ph }}" style="{{ f.areaStyle }}"></textarea>
+                      </sc-if>
+                      <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                        <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="{{ f.inputStyle }}">
+                          <sc-for list="{{ f.opts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                        </select>
+                      </sc-if>
+                      <sc-if value="{{ f.isChips }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                          <sc-for list="{{ f.chips }}" as="ch" hint-placeholder-count="5"><button onClick="{{ ch.toggle }}" style="{{ ch.style }}">{{ ch.label }}</button></sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ sec.isOfferings }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <sc-if value="{{ cbNoOffers }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:13px;color:var(--text-muted);border:1px dashed var(--border-hairline);border-radius:10px;padding:14px 16px">Nothing added yet. Add your services one by one, or import a spreadsheet saved as CSV (columns like Name, Price, Description, Link).</div>
+                  </sc-if>
+                  <sc-for list="{{ cbOfferRows }}" as="o" hint-placeholder-count="2">
+                    <div style="border:1px solid var(--border-card);border-radius:12px;padding:12px;display:grid;grid-template-columns:28px minmax(0,1.3fr) minmax(0,.7fr) auto;gap:10px;align-items:start">
+                      <span style="font-size:12px;font-weight:700;color:var(--text-muted);padding-top:10px;text-align:center">{{ o.n }}</span>
+                      <input value="{{ o.name }}" onChange="{{ o.onName }}" onBlur="{{ o.onBlur }}" placeholder="Water heater install" style="{{ cbFieldStyle }}">
+                      <input value="{{ o.price }}" onChange="{{ o.onPrice }}" onBlur="{{ o.onBlur }}" placeholder="From $1,200" style="{{ cbFieldStyle }}">
+                      <button onClick="{{ o.remove }}" title="Remove" style="{{ cbMiniBtn }}" style-hover="border-color:var(--danger-line);color:var(--danger-fg)">Remove</button>
+                      <span></span>
+                      <textarea value="{{ o.description }}" onChange="{{ o.onDescription }}" onBlur="{{ o.onBlur }}" placeholder="What is included, who it is for, how long it takes" style="grid-column:2 / 4;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13.5px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body);resize:vertical;line-height:1.5;min-height:56px;box-sizing:border-box;width:100%"></textarea>
+                      <span></span><span></span>
+                      <input value="{{ o.link }}" onChange="{{ o.onLink }}" onBlur="{{ o.onBlur }}" placeholder="Link to the page (optional)" style="grid-column:2 / 4;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body);box-sizing:border-box;width:100%">
+                    </div>
+                  </sc-for>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button onClick="{{ cbAddOffer }}" style="{{ cbMiniBtn }}" style-hover="border-color:var(--navy)">+ Add a product or service</button>
+                    <label style="{{ cbMiniBtn }}" style-hover="border-color:var(--navy)">Import CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" onChange="{{ cbImportOffers }}" style="display:none"></label>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ sec.isFaqs }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <sc-if value="{{ cbHasStarters }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Common questions, tap to add</div>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <sc-for list="{{ cbFaqStarters }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.add }}" style="{{ q.style }}">{{ q.label }}</button></sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-for list="{{ cbFaqRows }}" as="q" hint-placeholder-count="2">
+                    <div style="border:1px solid var(--border-card);border-radius:12px;padding:12px;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:start">
+                      <span style="font-size:12px;font-weight:700;color:var(--text-muted);padding-top:10px;text-align:center">{{ q.n }}</span>
+                      <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+                        <input value="{{ q.q }}" onChange="{{ q.onQ }}" onBlur="{{ q.onBlur }}" placeholder="Question" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13.5px;font-weight:600;background:var(--surface-card);color:var(--navy);font-family:var(--font-body);box-sizing:border-box;width:100%">
+                        <textarea value="{{ q.a }}" onChange="{{ q.onA }}" onBlur="{{ q.onBlur }}" placeholder="Your answer, the way you would say it to a customer" style="{{ cbAreaStyle }}"></textarea>
+                      </div>
+                      <button onClick="{{ q.remove }}" title="Remove" style="{{ cbMiniBtn }}" style-hover="border-color:var(--danger-line);color:var(--danger-fg)">Remove</button>
+                    </div>
+                  </sc-for>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                    <button onClick="{{ cbAddFaq }}" style="{{ cbMiniBtn }}" style-hover="border-color:var(--navy)">+ Add a question</button>
+                    <label style="{{ cbMiniBtn }}" style-hover="border-color:var(--navy)">Import CSV<input type="file" accept=".csv,.tsv,.txt,text/csv" onChange="{{ cbImportFaqs }}" style="display:none"></label>
+                    <span style="font-size:12px;color:var(--text-muted)">{{ cbFaqCount }}</span>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ sec.hasFiles }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</div>
+                  <sc-for list="{{ cbFiles }}" as="fl" hint-placeholder-count="1">
+                    <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border-card);border-radius:10px;padding:9px 12px">
+                      <div style="display:flex;flex-direction:column;flex:1;min-width:0">
+                        <span style="font-size:13px;font-weight:600;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ fl.name }}</span>
+                        <span style="font-size:11.5px;color:var(--text-muted)">{{ fl.meta }}</span>
+                      </div>
+                      <button onClick="{{ fl.download }}" style="{{ cbMiniBtn }}">Download</button>
+                      <sc-if value="{{ fl.canRemove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ fl.remove }}" style="{{ cbMiniBtn }}">Remove</button></sc-if>
+                    </div>
+                  </sc-for>
+                  <label style="border:1px dashed var(--border-hairline);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;text-align:center" style-hover="border-color:var(--navy)">
+                    <input type="file" multiple="{{ true }}" onChange="{{ cbOnFiles }}" style="display:none">
+                    <span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--green);line-height:1">+</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--navy)">Upload files</span>
+                    <span style="font-size:11.5px;color:var(--text-muted)">PDF, Word, Excel, CSV or images · up to 50 MB each</span>
+                  </label>
+                  <sc-if value="{{ cbUploading }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-muted)">Uploading…</div></sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <sc-if value="{{ cbCanSubmit }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 22px">
+              <div style="font-size:13px;color:var(--text-muted)">{{ cbDoneLabel }}. You can keep editing after you send it.</div>
+              <button onClick="{{ cbSubmit }}" style="{{ cbCtaBtn }}" style-hover="opacity:.9">{{ cbSubmitLabel }}</button>
+            </div>
+          </sc-if>
+        </sc-if>
+      </sc-if>
+
       <sc-if value="{{ secBrand }}" hint-placeholder-val="{{ false }}">
         <sc-if value="{{ brandBusy }}" hint-placeholder-val="{{ false }}">
           <div style="background:var(--gray-100);border:1px solid var(--border-hairline);color:var(--text-muted);padding:12px 18px;border-radius:12px;font-size:13px">Uploading…</div>
@@ -5340,7 +5645,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],report_docs:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],report_docs:[],chatbot_intake:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -5713,6 +6018,505 @@ class Component extends DCLogic {
         .then(j=>done(j.url)).catch(err=>done(null,(err&&err.message)||'Upload failed.'));
     }; img.onerror=()=>done(null,'That file isn’t an image we can read.'); img.src=read.result; };
     read.readAsDataURL(file);
+  }
+  // ===== AI Chatbot =====
+  // The intake a client fills in so the team can build their chatbot, and the
+  // team's copy-ready build kit made from it. A client without the
+  // ai_chatbot badge still sees the tab, locked, with a way to buy it.
+  // One row per company (migration 040). Text fields edit a working copy
+  // and save when the field loses focus; list changes save straight away.
+  parseCsv(text){
+    const rows=[]; let row=[], cell='', q=false;
+    const s=String(text||'').replace(/^﻿/,'');
+    for(let i=0;i<s.length;i++){
+      const ch=s[i];
+      if(q){
+        if(ch==='"'){ if(s[i+1]==='"'){ cell+='"'; i++; } else q=false; }
+        else cell+=ch;
+      } else if(ch==='"') q=true;
+      else if(ch===','||ch==='\t'){ row.push(cell); cell=''; }
+      else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&s[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=''; }
+      else cell+=ch;
+    }
+    if(cell!==''||row.length){ row.push(cell); rows.push(row); }
+    return rows.map(r=>r.map(c=>String(c).trim())).filter(r=>r.some(c=>c!==''));
+  }
+  chatbotVals(ctx){
+    const {isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
+      saveCsv, copyFallback, downloadFile, startUploads, takeFiles, clientColor} = ctx;
+    const S=this.state;
+    const on = sectionNow==='chatbot';
+    if(!on) return {secChatbot:false};
+    const BADGE='ai_chatbot';
+    const BUY_URL='https://socialupgrades.com/ai-agent-website-chatbot/';
+    const clone=v=>JSON.parse(JSON.stringify(v===undefined?null:v));
+    const hasBadge=c=>!!(c&&Array.isArray(c.badges)&&c.badges.indexOf(BADGE)>-1);
+    const rowsAll=(D0.chatbot_intake||[]);
+    const rowKey=(cid,bid,multi)=> multi? 'cb-'+cid+'-'+bid : 'cb-'+cid;
+
+    // ---- which client and company this page is about
+    const cbClient = isTeam
+      ? (D0.clients.find(c=>c.id===(S.cbClient||S.viewClient)) || D0.clients[0] || client)
+      : client;
+    const bizs = bizList(cbClient);
+    const multi = bizs.length>1;
+    let bizId = '';
+    if(multi){
+      if(!isTeam && curBiz) bizId = curBiz.id;
+      else {
+        const pool = isTeam ? bizs : (portalBizs.length? portalBizs : bizs);
+        const pick = (S.cbBiz||{})[cbClient.id];
+        bizId = pool.some(b=>b.id===pick) ? pick : ((pool[0]||{}).id||'');
+      }
+    }
+    const biz = multi ? (bizs.find(b=>b.id===bizId)||null) : null;
+    const rowId = rowKey(cbClient.id, bizId, multi);
+    const unlocked = hasBadge(cbClient);
+    const bizName = biz ? biz.name : (cbClient.name||'');
+
+    // ---- the stored row and the working copy over it
+    const SECTIONS=['basics','bot','offerings','faqs','policies','sources','tech','files','team'];
+    const blank=()=>({basics:{},bot:{goals:[],collect:[]},offerings:[],faqs:[],policies:{},sources:{},tech:{},files:[],team:{}});
+    const shape=r=>{ const v=blank(); if(!r) return v;
+      SECTIONS.forEach(k=>{ if(r[k]!==undefined && r[k]!==null) v[k]=clone(r[k]); });
+      ['goals','collect'].forEach(k=>{ if(!Array.isArray(v.bot[k])) v.bot[k]=[]; });
+      ['offerings','faqs','files'].forEach(k=>{ if(!Array.isArray(v[k])) v[k]=[]; });
+      return v; };
+    const stored = rowsAll.find(r=>r.id===rowId) || null;
+    const work = (S.cbWork && S.cbWork.id===rowId) ? S.cbWork : null;
+    const V = work ? work.v : shape(stored);
+
+    const commit = mutate => this.set(x=>{
+      x.chatbot_intake = (x.chatbot_intake||[]).slice();
+      let i = x.chatbot_intake.findIndex(r=>r.id===rowId);
+      let row = i>-1 ? Object.assign({}, x.chatbot_intake[i]) : {id:rowId, clientId:cbClient.id, ts:Date.now()};
+      if(multi) row.businessId = bizId;
+      mutate(row);
+      row.updatedAt = new Date().toISOString(); row.updatedBy = me.id||''; row.ts = Date.now();
+      if(i>-1) x.chatbot_intake[i]=row; else x.chatbot_intake.push(row);
+      return x; });
+    // Edit the working copy only (typing). Saved on blur by flush(). The base
+    // is always the latest stored row, never the one this render closed over.
+    const latest = s=>((s.data&&s.data.chatbot_intake)||[]).find(r=>r.id===rowId)||null;
+    const edit = (k, mutate) => this.setState(s=>{
+      const w = (s.cbWork && s.cbWork.id===rowId) ? s.cbWork : {id:rowId, v:shape(latest(s)), dirty:{}};
+      const v = clone(w.v); mutate(v);
+      return {cbWork:{id:rowId, v, dirty:Object.assign({}, w.dirty, {[k]:true})}}; });
+    const flush = () => {
+      const w = this.state.cbWork; if(!w || w.id!==rowId) return;
+      const keys = Object.keys(w.dirty||{}); if(!keys.length){ this.setState({cbWork:null}); return; }
+      commit(row=>{ keys.forEach(k=>{ row[k]=clone(w.v[k]); }); });
+      this.setState({cbWork:null});
+    };
+    // Change and save in one go (adding a row, ticking a chip, a finished
+    // upload). Applied to the row as it is at write time, so two uploads
+    // finishing together both land.
+    const editNow = (k, mutate) => {
+      const w = (this.state.cbWork && this.state.cbWork.id===rowId) ? this.state.cbWork : null;
+      commit(row=>{
+        const v = shape(row);
+        const keys = new Set([k].concat(w? Object.keys(w.dirty||{}) : []));
+        if(w) Object.keys(w.dirty||{}).forEach(kk=>{ v[kk]=clone(w.v[kk]); });
+        mutate(v);
+        keys.forEach(kk=>{ row[kk]=clone(v[kk]); });
+      });
+      if(w) this.setState({cbWork:null});
+    };
+
+    // ---- the form, as data
+    const GOALS=['Answer questions','Capture leads','Book appointments','Give quotes or price ranges','Recommend products','Help existing customers'];
+    const COLLECT=['Name','Phone','Email','ZIP or address','Service needed','Preferred day and time','Budget','Order number'];
+    const TONES=['Friendly and casual','Professional','Warm and caring','Short and direct','Fun and playful'];
+    const PLATFORMS=['WordPress','Shopify','Squarespace','Wix','Webflow','GoDaddy','Custom built','Not sure'];
+    const F=(key,label,type,ph,extra)=>Object.assign({key,label,type,ph:ph||''},extra||{});
+    const FORM=[
+      {id:'basics', num:'01', title:'Your business', help:'The facts your chatbot will repeat to customers. Write it the way you would say it on the phone.',
+        fields:[
+          F('businessName','Business name','text',bizName),
+          F('website','Website','text','yourbusiness.com'),
+          F('oneLiner','What you do, in one sentence','area','Family-owned plumbing company fixing leaks, water heaters and drains across Orange County since 2009.',{wide:true}),
+          F('about','What makes you different','area','Licensed and insured, upfront pricing, same-day service, 4.9 stars on Google, 2,000+ jobs done.',{wide:true}),
+          F('serviceArea','Service area or locations','text','Costa Mesa, Newport Beach, Irvine'),
+          F('address','Address','text','123 Main St, Costa Mesa, CA'),
+          F('phone','Phone for customers','text','(949) 555-0123'),
+          F('email','Email for customers','text','hello@yourbusiness.com'),
+          F('hours','Business hours','area','Mon to Fri 8am to 6pm, Sat 9am to 2pm, closed Sunday. Emergency line 24/7.'),
+          F('bookingLink','Booking or scheduling link','text','calendly.com/yourbusiness')
+        ]},
+      {id:'bot', num:'02', title:'What the chatbot should do', help:'Pick its jobs and set the rules. This becomes its instructions.',
+        fields:[
+          F('goals','Its main jobs (pick all that apply)','chips','',{opts:GOALS,wide:true}),
+          F('name','Chatbot name','text','Ava'),
+          F('tone','How it should sound','select','',{opts:TONES}),
+          F('greeting','First message visitors see','area','Hi! Need a quote or have a question? I can help in seconds.',{wide:true}),
+          F('collect','What to ask a new lead for','chips','',{opts:COLLECT,wide:true}),
+          F('leadsTo','Where should new leads go?','text','Email owner@yourbusiness.com and text (949) 555-0123'),
+          F('languages','Languages','text','English, Spanish'),
+          F('handoff','When should it hand off to a real person?','area','Emergencies, upset customers, billing questions. Give our phone number and say we call back within 1 hour.',{wide:true}),
+          F('avoid','Things it should never say or promise','area','Never quote exact install prices. No medical or legal advice. Never mention competitors.',{wide:true})
+        ]},
+      {id:'offerings', num:'03', title:'Products and services', help:'Everything you sell, with a price or "starts at" range if you share one. Have a spreadsheet? Import a CSV.', list:true},
+      {id:'faqs', num:'04', title:'Frequently asked questions', help:'The questions you answer over and over. Aim for at least 10. Tap a suggestion to add it, or import a CSV with question and answer columns.', list:true},
+      {id:'policies', num:'05', title:'Policies', help:'Only fill in what applies. The chatbot will quote these exactly, so keep them accurate.',
+        fields:[
+          F('payment','Payment methods and financing','area','Cash, card, Zelle. Financing available on jobs over $1,000.'),
+          F('refunds','Refunds and returns','area','Full refund within 30 days on unused products.'),
+          F('cancellation','Cancellations and rescheduling','area','Free to reschedule up to 24 hours before.'),
+          F('warranty','Warranties and guarantees','area','1-year labor warranty on every repair.'),
+          F('shipping','Shipping and delivery','area','Free shipping over $50. Ships in 1 to 2 business days.'),
+          F('other','Anything else customers should know','area','Pets welcome. Parking in the rear lot.')
+        ]},
+      {id:'sources', num:'06', title:'Where it can learn more', help:'Pages and files we should train it on: menus, price sheets, brochures, product lists, policies.',
+        fields:[
+          F('pages','Website pages to read (one link per line)','area','yourbusiness.com/services\nyourbusiness.com/pricing',{wide:true}),
+          F('notes','Anything else we should know','area','Seasonal specials, busy times, words your customers use.',{wide:true})
+        ], files:true},
+      {id:'tech', num:'07', title:'Setup details', help:'So we can install it and send leads to the right place.',
+        fields:[
+          F('platform','Website platform','select','',{opts:PLATFORMS}),
+          F('calendar','Calendar or booking tool','text','Calendly, Cal.com, Google Calendar, none'),
+          F('crm','CRM or email tool','text','HubSpot, Mailchimp, none'),
+          F('access','Who can give us access to install it?','text','Name and email'),
+          F('placement','Which pages should it show on?','text','Every page')
+        ]}
+    ];
+    const FAQ_STARTERS=['What areas do you serve?','How much does it cost?','How soon can you get to me?','What are your hours?',
+      'Are you licensed and insured?','Do you offer financing?','Do you offer a warranty or guarantee?','How do I book?',
+      'What forms of payment do you accept?','Do you offer free estimates?'];
+
+    // ---- progress: the essentials a bot cannot be built without
+    const val=(sec,k)=>String(((V[sec]||{})[k])||'').trim();
+    const answered=(V.faqs||[]).filter(f=>String(f.q||'').trim()&&String(f.a||'').trim()).length;
+    const ESSENTIALS=[
+      ['What you do', !!val('basics','oneLiner')],
+      ['Website', !!val('basics','website')],
+      ['Phone or email', !!(val('basics','phone')||val('basics','email'))],
+      ['Hours', !!val('basics','hours')],
+      ['Chatbot jobs', (V.bot.goals||[]).length>0],
+      ['Where leads go', !!val('bot','leadsTo')],
+      ['A product or service', (V.offerings||[]).some(o=>String(o.name||'').trim())],
+      ['5 answered FAQs', answered>=5]
+    ];
+    const doneN = ESSENTIALS.filter(e=>e[1]).length;
+    const pct = Math.round(100*doneN/ESSENTIALS.length);
+    const sectionDone = id=>{
+      if(id==='basics') return ESSENTIALS.slice(0,4).every(e=>e[1]);
+      if(id==='bot') return ESSENTIALS[4][1] && ESSENTIALS[5][1];
+      if(id==='offerings') return ESSENTIALS[6][1];
+      if(id==='faqs') return ESSENTIALS[7][1];
+      if(id==='files') return (V.files||[]).length>0;
+      const o=V[id]||{}; return Object.keys(o).some(k=>String(o[k]||'').trim());
+    };
+
+    // ---- styles
+    const fieldBox={border:'1px solid var(--gray-200)',borderRadius:12,padding:'9px 12px',fontSize:13.5,background:'var(--surface-card)',
+      color:'var(--text-body)',fontFamily:'var(--font-body)',minWidth:0,width:'100%',boxSizing:'border-box'};
+    const areaBox=Object.assign({},fieldBox,{resize:'vertical',lineHeight:1.5,minHeight:72});
+    const chip=on=>({background:on?'var(--green)':'var(--surface-card)',color:on?'#fff':'var(--text-body)',
+      border:'1px solid '+(on?'var(--green)':'var(--gray-200)'),borderRadius:999,padding:'7px 14px',fontSize:12.5,
+      fontWeight:on?600:500,cursor:'pointer',fontFamily:'var(--font-body)'});
+    const miniBtn={background:'var(--surface-card)',border:'1px solid var(--gray-200)',borderRadius:10,color:'var(--text-body)',
+      fontSize:12,fontWeight:500,padding:'6px 12px',cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap'};
+    const ctaBtn={background:'var(--cta-bg)',color:'var(--cta-fg)',border:'none',borderRadius:12,padding:'11px 22px',
+      fontFamily:'var(--font-display)',fontWeight:700,fontSize:13.5,cursor:'pointer',whiteSpace:'nowrap'};
+
+    // ---- form view-models
+    const fieldVM=(sec,f)=>{
+      const cur=(V[sec]||{})[f.key];
+      const base={label:f.label, ph:f.ph, isText:f.type==='text', isArea:f.type==='area', isSelect:f.type==='select', isChips:f.type==='chips',
+        boxStyle:{display:'flex',flexDirection:'column',gap:6,gridColumn:f.wide?'1 / -1':'auto',minWidth:0},
+        inputStyle:fieldBox, areaStyle:areaBox};
+      if(f.type==='chips'){
+        const arr=Array.isArray(cur)?cur:[];
+        base.chips=f.opts.map(o=>{ const onC=arr.indexOf(o)>-1;
+          return {label:o, style:chip(onC), toggle:()=>editNow(sec,v=>{ const a=Array.isArray(v[sec][f.key])?v[sec][f.key]:[];
+            v[sec][f.key]= onC? a.filter(x=>x!==o) : a.concat([o]); })}; });
+        return base;
+      }
+      base.value = cur===undefined||cur===null ? '' : String(cur);
+      if(f.type==='select'){
+        base.opts=[{v:'',l:'Choose one'}].concat(f.opts.map(o=>({v:o,l:o})));
+        base.onChange=e=>{ const x=e.target.value; editNow(sec,v=>{ v[sec][f.key]=x; }); };
+        return base;
+      }
+      base.onChange=e=>{ const x=e.target.value; edit(sec,v=>{ v[sec][f.key]=x; }); };
+      base.onBlur=flush;
+      return base;
+    };
+
+    const offerRows=(V.offerings||[]).map((o,i)=>{
+      const set=k=>e=>{ const x=e.target.value; edit('offerings',v=>{ const it=v.offerings.find(y=>y.id===o.id); if(it) it[k]=x; }); };
+      return {n:i+1, name:o.name||'', price:o.price||'', description:o.description||'', link:o.link||'',
+        onName:set('name'), onPrice:set('price'), onDescription:set('description'), onLink:set('link'), onBlur:flush,
+        remove:()=>editNow('offerings',v=>{ v.offerings=v.offerings.filter(y=>y.id!==o.id); })};
+    });
+    const faqRows=(V.faqs||[]).map((q,i)=>{
+      const set=k=>e=>{ const x=e.target.value; edit('faqs',v=>{ const it=v.faqs.find(y=>y.id===q.id); if(it) it[k]=x; }); };
+      return {n:i+1, q:q.q||'', a:q.a||'', onQ:set('q'), onA:set('a'), onBlur:flush,
+        missing:!String(q.a||'').trim(),
+        remove:()=>editNow('faqs',v=>{ v.faqs=v.faqs.filter(y=>y.id!==q.id); })};
+    });
+    const haveQ=new Set((V.faqs||[]).map(f=>String(f.q||'').trim().toLowerCase()));
+    const faqStarters=FAQ_STARTERS.filter(q=>!haveQ.has(q.toLowerCase())).map(q=>({label:'+ '+q, style:chip(false),
+      add:()=>editNow('faqs',v=>{ v.faqs.push({id:this.uid(),q,a:''}); })}));
+
+    // CSV import: columns are matched by name, so a client's own export works
+    // as it is. Anything unrecognised is kept, appended to the description.
+    const importCsv=(kind,e)=>{
+      const file=(takeFiles(e)||[])[0]; if(!file) return;
+      if(file.size>3*1024*1024){ this.setState({flash:'That CSV is over 3 MB. Upload it under "Where it can learn more" instead.'}); return; }
+      const rd=new FileReader();
+      rd.onload=()=>{
+        const rows=this.parseCsv(rd.result);
+        if(!rows.length){ this.setState({flash:'That file looks empty.'}); return; }
+        const head=rows[0].map(h=>h.toLowerCase());
+        const find=re=>head.findIndex(h=>re.test(h));
+        let out=[];
+        if(kind==='faqs'){
+          let qi=find(/^(q|question|questions|faq)$|question/), ai=find(/^(a|answer|answers)$|answer|response/);
+          const hasHead=qi>-1||ai>-1; if(qi<0) qi=0; if(ai<0) ai=1;
+          out=rows.slice(hasHead?1:0).map(r=>({id:this.uid(),q:r[qi]||'',a:r[ai]||''})).filter(x=>x.q||x.a);
+          editNow('faqs',v=>{ v.faqs=v.faqs.concat(out).slice(0,400); });
+        } else {
+          let ni=find(/name|title|product|service|item/), pi=find(/price|cost|rate|amount/),
+              di=find(/desc|detail|summary|body|about/), li=find(/url|link|handle/);
+          const hasHead=[ni,pi,di,li].some(x=>x>-1);
+          if(!hasHead){ ni=0; pi=1; di=2; li=3; }
+          const used=new Set([ni,pi,di,li]);
+          out=rows.slice(hasHead?1:0).map(r=>{
+            const extra=hasHead? r.map((c,ci)=>(!used.has(ci)&&c)? rows[0][ci]+': '+c : '').filter(Boolean).join('; ') : '';
+            const desc=[ni>-1||!hasHead? (r[di]||'') : '', extra].filter(Boolean).join(' | ');
+            return {id:this.uid(),name:(ni>-1?r[ni]:r[0])||'',price:(pi>-1?r[pi]:'')||'',description:desc,link:(li>-1?r[li]:'')||''};
+          }).filter(x=>x.name||x.description);
+          editNow('offerings',v=>{ v.offerings=v.offerings.concat(out).slice(0,600); });
+        }
+        this.setState({flash:'Imported '+out.length+' '+(kind==='faqs'?'questions':'items')+' from '+file.name+'. Check them over below.'});
+      };
+      rd.onerror=()=>this.setState({flash:'That file could not be read.'});
+      rd.readAsText(file);
+    };
+    const fileRows=(V.files||[]).map(f=>({name:f.name||'File', meta:[(String(f.name||'').split('.').pop()||'').toUpperCase().slice(0,4),
+        f.size? (f.size>1048576? (f.size/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(f.size/1024))+' KB') : ''].filter(Boolean).join(' · '),
+      download:downloadFile(f),
+      canRemove:isTeam,
+      remove:()=>editNow('files',v=>{ v.files=v.files.filter(y=>y.path!==f.path); })}));
+    const onFiles=e=>{ const picked=takeFiles(e); if(!picked.length) return;
+      startUploads(picked, {clientId:cbClient.id, kind:'chatbot', itemId:rowId},
+        meta=>editNow('files',v=>{ v.files=(v.files||[]).concat([meta]); })); };
+
+    const sections=FORM.map(sec=>({
+      num:sec.num, title:sec.title, help:sec.help,
+      done:sectionDone(sec.id),
+      hasFields:!!sec.fields, fields:(sec.fields||[]).map(f=>fieldVM(sec.id,f)),
+      isOfferings:sec.id==='offerings', isFaqs:sec.id==='faqs', hasFiles:!!sec.files,
+      dotStyle:{width:26,height:26,minWidth:26,borderRadius:999,display:'inline-flex',alignItems:'center',justifyContent:'center',
+        fontSize:11,fontWeight:700,fontFamily:'var(--font-display)',
+        background:sectionDone(sec.id)?'var(--green)':'var(--gray-100)',color:sectionDone(sec.id)?'#fff':'var(--text-muted)'},
+      dotLabel:sectionDone(sec.id)?'✓':sec.num
+    }));
+
+    // ---- submit
+    const sent = (stored&&stored.status)==='submitted';
+    const sentAt = stored&&stored.submittedAt ? new Date(stored.submittedAt) : null;
+    const editedSince = sent && sentAt && stored.updatedAt && Date.parse(stored.updatedAt)>sentAt.getTime()+60000;
+    const niceDay=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const submit=()=>{
+      flush();
+      commit(row=>{ row.status='submitted'; row.submittedAt=new Date().toISOString(); });
+      this.set(x=>{ this.logEv(x, cbClient.id, (sent?'Updated':'Sent')+' AI chatbot info'+(biz?' for '+biz.name:'')+' ('+doneN+'/'+ESSENTIALS.length+' essentials)'); return x; });
+      this.setState({flash: sent? 'Updates sent. We will work them into your chatbot.' : 'Sent to Social Upgrades. We will start building and message you if anything is missing.'});
+    };
+
+    // ---- company tabs (organizations)
+    const tabsPool = isTeam ? bizs : (curBiz? [] : (portalBizs.length>1? portalBizs : []));
+    const cbBizTabs = (multi ? tabsPool : []).map(b=>{ const onB=b.id===bizId;
+      return {label:b.name, style:chip(onB), select:()=>{ flush(); this.setState(s=>({cbBiz:Object.assign({}, s.cbBiz||{}, {[cbClient.id]:b.id})})); }}; });
+
+    // ---- the build kit (team)
+    const b=V.basics||{}, bt=V.bot||{}, po=V.policies||{}, src=V.sources||{}, te=V.tech||{};
+    const nm = String(b.businessName||bizName||'').trim() || 'the business';
+    // null drops a line; '' is a deliberate blank line between sections.
+    const lines=(arr)=>arr.filter(x=>x!==null&&x!==undefined).join('\n').replace(/\n{3,}/g,'\n\n').trim();
+    const opt=(cond,x)=>cond? x : null;
+    const bullet=(label,x)=>String(x||'').trim()? '- '+label+': '+String(x).trim().replace(/\n+/g,'; ') : null;
+    const block=arr=>{ const t=lines(arr); return t? t : null; };
+    const GOAL_LINES={'Answer questions':'Answer visitor questions using only the knowledge base.',
+      'Capture leads':'Turn interested visitors into leads by collecting their contact details.',
+      'Book appointments':'Help visitors book a time'+(b.bookingLink?' using '+b.bookingLink:'')+'.',
+      'Give quotes or price ranges':'Share prices and ranges exactly as listed. Never invent a price.',
+      'Recommend products':'Recommend the best fit from the products and services list.',
+      'Help existing customers':'Help existing customers with policies, hours and next steps.'};
+    const offersMd=(V.offerings||[]).filter(o=>o.name||o.description).map(o=>'- **'+(o.name||'Item')+'**'+(o.price?' ('+o.price+')':'')+(o.description?': '+o.description:'')+(o.link?' '+o.link:''));
+    const faqList=(V.faqs||[]).filter(f=>f.q||f.a);
+    const polMd=[['Payment and financing',po.payment],['Refunds and returns',po.refunds],['Cancellations',po.cancellation],
+      ['Warranties',po.warranty],['Shipping and delivery',po.shipping],['Other',po.other]].filter(p=>String(p[1]||'').trim());
+    const contactLine=[b.phone&&('call '+b.phone),b.email&&('email '+b.email),b.bookingLink&&('book at '+b.bookingLink)].filter(Boolean).join(', ');
+    const hasCollect=(bt.collect||[]).length>0;
+    const sysPrompt=lines([
+      'You are '+(String(bt.name||'').trim()||'the website assistant')+', the AI assistant on the '+nm+' website'+(b.website?' ('+b.website+')':'')+'.',
+      opt(!!b.oneLiner, String(b.oneLiner||'').trim()),
+      '',
+      'YOUR JOBS',
+      block((bt.goals||[]).map(g=>'- '+(GOAL_LINES[g]||g))) || '- Answer visitor questions using only the knowledge base.',
+      '',
+      'HOW YOU TALK',
+      '- Tone: '+(bt.tone||'Friendly and professional')+'. Keep replies to 1 to 3 short sentences.',
+      opt(!!bt.languages, '- Reply in the visitor\'s language when it is one of: '+bt.languages+'.'),
+      opt(!!bt.greeting, '- Opening message: "'+String(bt.greeting||'').trim()+'"'),
+      opt(hasCollect, ''),
+      opt(hasCollect, 'CAPTURING LEADS'),
+      opt(hasCollect, '- When someone is interested, ask for: '+(bt.collect||[]).join(', ')+'. Ask for one or two at a time.'),
+      opt(hasCollect, '- Confirm the details back and tell them what happens next.'),
+      '',
+      'HANDING OFF TO A PERSON',
+      bt.handoff? '- '+String(bt.handoff).trim().replace(/\n+/g,' ') : '- If you cannot help, offer to connect them with the team.',
+      opt(!!contactLine, '- To reach the team: '+contactLine+'.'),
+      opt(!!b.hours, '- Hours: '+String(b.hours||'').trim().replace(/\n+/g,'; ')),
+      '',
+      'RULES',
+      '- Use only the knowledge base for facts about '+nm+'. If the answer is not there, say so and offer the team\'s contact details.',
+      '- Never make up prices, policies, availability or promises.',
+      opt(!!bt.avoid, block(String(bt.avoid||'').split(/\n+/).filter(x=>x.trim()).map(x=>'- '+x.trim())))
+    ]);
+    const kbMd=lines([
+      '# '+nm+': chatbot knowledge base','',
+      '## Business',
+      bullet('What we do',b.oneLiner), bullet('What makes us different',b.about), bullet('Website',b.website),
+      bullet('Service area',b.serviceArea), bullet('Address',b.address), bullet('Phone',b.phone), bullet('Email',b.email),
+      bullet('Hours',b.hours), bullet('Booking',b.bookingLink),
+      opt(offersMd.length>0, ''), opt(offersMd.length>0, '## Products and services'), block(offersMd),
+      opt(polMd.length>0, ''), opt(polMd.length>0, '## Policies'), block(polMd.map(p=>'- '+p[0]+': '+String(p[1]).trim().replace(/\n+/g,'; '))),
+      opt(faqList.length>0, ''), opt(faqList.length>0, '## FAQs'),
+      block(faqList.map(f=>'**Q: '+String(f.q||'').trim()+'**\nA: '+(String(f.a||'').trim()||'(no answer yet)')+'\n')),
+      opt(!!src.notes, '\n## Notes from the client\n'+String(src.notes||'').trim()),
+      opt(!!src.pages, '\n## Pages to crawl\n'+String(src.pages||'').trim())
+    ]);
+    const faqTxt=faqList.map(f=>'Q: '+String(f.q||'').trim()+'\nA: '+String(f.a||'').trim()).join('\n\n');
+    const prodTsv=['Name\tPrice\tDescription\tLink'].concat((V.offerings||[]).map(o=>[o.name,o.price,o.description,o.link].map(x=>String(x||'').replace(/[\t\n]+/g,' ')).join('\t'))).join('\n');
+    const leadTxt=lines([bullet('Bot name',bt.name), bullet('Jobs',(bt.goals||[]).join(', ')), bullet('Tone',bt.tone),
+      bullet('Greeting',bt.greeting), bullet('Collect',(bt.collect||[]).join(', ')), bullet('Send leads to',bt.leadsTo),
+      bullet('Languages',bt.languages), bullet('Hand off when',bt.handoff), bullet('Never',bt.avoid)]);
+    const techTxt=lines([bullet('Platform',te.platform), bullet('Website',b.website), bullet('Show on',te.placement),
+      bullet('Calendar',te.calendar), bullet('CRM / email',te.crm), bullet('Access contact',te.access), bullet('Leads to',bt.leadsTo)]);
+    const slug=String(nm).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'client';
+    const dlText=(name,text,type)=>()=>{ const blob=new Blob([text],{type:type||'text/markdown;charset=utf-8'}); const u=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=u; a.download=name; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),1000); this.setState({flash:'Downloaded '+name+'.'}); };
+    const copyId=k=>'cb:'+rowId+':'+k;
+    const doCopy=(k,text)=>()=>{
+      const ok=()=>{ this.setState({copied:copyId(k)}); clearTimeout(this._copyT); this._copyT=setTimeout(()=>this.setState({copied:''}),1600); };
+      const bad=()=>this.setState({flash:'Copy was blocked by the browser. Select the text and copy it by hand.'});
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok,()=>{ copyFallback(text)? ok() : bad(); });
+      else copyFallback(text)? ok() : bad(); };
+    const kitBlock=(k,title,note,text,dl)=>{ const empty=!String(text||'').trim(); const copied=S.copied===copyId(k);
+      return {title, note, text: empty? 'Nothing here yet.' : text, empty, lineCount:empty?'Empty':String(text).split('\n').length+' lines',
+        copy:doCopy(k,text), copyLabel:copied?'Copied ✓':'Copy',
+        copyStyle:Object.assign({},miniBtn,copied?{borderColor:'var(--green)',color:'var(--green)',fontWeight:600}:{}),
+        hasDl:!!dl&&!empty, dlLabel:dl?dl[0]:'', download:dl?dl[1]:()=>{}}; };
+    const kit = isTeam ? [
+      kitBlock('prompt','System prompt','Paste into the bot\'s instructions.',sysPrompt),
+      kitBlock('kb','Knowledge base','Business facts, products, policies and FAQs in one doc.',kbMd,['.md',dlText(slug+'-chatbot-knowledge.md',kbMd)]),
+      kitBlock('faq','FAQs','Q and A pairs, ready for an FAQ or training upload.',faqTxt,['.csv',()=>saveCsv(slug+'-faqs.csv',['Question','Answer'],faqList.map(f=>[f.q||'',f.a||'']))]),
+      kitBlock('products','Products and services','Tab separated, so it pastes straight into a sheet.',(V.offerings||[]).length?prodTsv:'',['.csv',()=>saveCsv(slug+'-products.csv',['Name','Price','Description','Link'],(V.offerings||[]).map(o=>[o.name||'',o.price||'',o.description||'',o.link||'']))]),
+      kitBlock('lead','Behavior and lead routing','Settings for the bot builder.',leadTxt),
+      kitBlock('tech','Install details','Who and where to install.',techTxt)
+    ] : [];
+    const copyAll = doCopy('all', sysPrompt+'\n\n---\n\n'+kbMd);
+    const copiedAll = S.copied===copyId('all');
+
+    // ---- team roster: every client with the badge or an intake
+    const STAGES=[['','Not started'],['waiting','Waiting on client'],['building','Building'],['review','In review'],['live','Live']];
+    const STAGE_TONE={'':'gray',waiting:'amber',building:'blue',review:'orange',live:'green'};
+    const roster = isTeam ? (()=>{
+      const out=[];
+      D0.clients.forEach(c=>{
+        const bl=bizList(c), mul=bl.length>1;
+        const units= mul? bl.map(x=>({bid:x.id,label:c.name+' · '+x.name})) : [{bid:'',label:c.name}];
+        units.forEach(u=>{
+          const id=rowKey(c.id,u.bid,mul), r=rowsAll.find(x=>x.id===id);
+          if(!hasBadge(c) && !r) return;
+          const v=shape(r), st=(v.team||{}).stage||'';
+          const ans=(v.faqs||[]).filter(f=>f.q&&f.a).length;
+          const ess=[!!String(v.basics.oneLiner||'').trim(),!!String(v.basics.website||'').trim(),!!String(v.basics.phone||v.basics.email||'').trim(),
+            !!String(v.basics.hours||'').trim(),(v.bot.goals||[]).length>0,!!String(v.bot.leadsTo||'').trim(),
+            (v.offerings||[]).some(o=>o.name),ans>=5].filter(Boolean).length;
+          const isSent=(r&&r.status)==='submitted';
+          const onRow = c.id===cbClient.id && (!mul || u.bid===bizId);
+          out.push({label:u.label, sort:(isSent&&(st===''||st==='waiting'))?0:(st==='live'?3:(isSent?1:2)),
+            statusLabel: isSent? 'Sent' : (r? 'Drafting' : 'Not started'),
+            statusStyle: this.badge(isSent?'green':(r?'amber':'gray')),
+            badgeLabel: hasBadge(c)? 'Active' : 'No badge', badgeStyle:this.badge(hasBadge(c)?'blue':'red'),
+            progress: ess+'/8', stageLabel: (STAGES.find(s=>s[0]===st)||STAGES[0])[1], stageStyle:this.badge(STAGE_TONE[st]||'gray'),
+            updated: r&&r.updatedAt? this.fmt(Date.parse(r.updatedAt)) : '',
+            dot:{width:9,height:9,minWidth:9,borderRadius:999,background:clientColor(c.id)},
+            rowStyle:{display:'grid',gridTemplateColumns:'minmax(0,2fr) repeat(4,minmax(0,1fr)) 70px',gap:10,alignItems:'center',padding:'11px 14px',
+              borderRadius:10,cursor:'pointer',background:onRow?'rgba(31,178,100,.08)':'transparent',border:'1px solid '+(onRow?'rgba(31,178,100,.35)':'transparent')},
+            select:()=>{ flush(); this.setState(s=>({cbClient:c.id, cbBiz:Object.assign({}, s.cbBiz||{}, u.bid?{[c.id]:u.bid}:{})})); }});
+        });
+      });
+      return out.sort((a,b)=>a.sort-b.sort||a.label.localeCompare(b.label));
+    })() : [];
+    const teamV=V.team||{};
+    const setTeam=(k,live)=> e=>{ const x=e.target.value; (live?editNow:edit)('team',v=>{ v.team=Object.assign({},v.team,{[k]:x}); }); };
+    const toggleBadge=()=>this.set(x=>{ const c=x.clients.find(y=>y.id===cbClient.id); if(!c) return x;
+      const arr=Array.isArray(c.badges)?c.badges.slice():[];
+      c.badges= arr.indexOf(BADGE)>-1 ? arr.filter(y=>y!==BADGE) : arr.concat([BADGE]);
+      this.logEv(x, c.id, (arr.indexOf(BADGE)>-1?'Turned off':'Turned on')+' the AI Chatbot badge for '+c.name, {quiet:true});
+      return x; });
+
+    const showForm = isTeam || unlocked;
+    return {
+      secChatbot:true,
+      cbTeam:isTeam, cbClientView:!isTeam,
+      cbLocked:!isTeam && !unlocked,
+      cbShowForm:showForm,
+      cbBuyUrl:BUY_URL,
+      cbAsk:()=>this.setState({section:'messages',notifOpen:false,moreOpen:false}),
+      cbUnlockList:FORM.map(f=>({label:f.title})),
+      cbBizTabs, cbHasBizTabs:cbBizTabs.length>1,
+      cbBizNote: biz? 'Chatbot for '+biz.name : '',
+      cbHasBizNote: !!biz,
+      cbTitle: nm==='the business'? (cbClient.name||'') : nm,
+      cbPct: pct+'%', cbDoneLabel: doneN+' of '+ESSENTIALS.length+' essentials done',
+      cbBarStyle:{width:pct+'%',height:'100%',background:pct>=100?'var(--green)':'var(--grad-brand)',borderRadius:999,transition:'width .3s'},
+      cbEssentials: ESSENTIALS.map(([label,ok])=>({label, style:{display:'inline-flex',alignItems:'center',gap:6,fontSize:12,
+        color:ok?'var(--green)':'var(--text-muted)',fontWeight:ok?600:500}, mark:ok?'✓':'○'})),
+      cbSent: sent, cbNotSent: !sent,
+      cbSentNote: sent? ('Sent to Social Upgrades on '+niceDay(sentAt||new Date())+(editedSince?'. You have made changes since, send them when ready.':'. You can keep editing; we see every change.')) : '',
+      cbSubmitLabel: sent? 'Send updates' : 'Send to Social Upgrades',
+      cbSubmit: submit,
+      cbCanSubmit: !isTeam,
+      cbSaveHint: work? 'Saving when you click away…' : 'Changes save automatically',
+      cbSections: sections,
+      cbOfferRows: offerRows, cbNoOffers: offerRows.length===0,
+      cbAddOffer: ()=>editNow('offerings',v=>{ v.offerings.push({id:this.uid(),name:'',price:'',description:'',link:''}); }),
+      cbFaqRows: faqRows, cbNoFaqs: faqRows.length===0, cbFaqCount: answered+' answered',
+      cbFaqStarters: faqStarters, cbHasStarters: faqStarters.length>0,
+      cbAddFaq: ()=>editNow('faqs',v=>{ v.faqs.push({id:this.uid(),q:'',a:''}); }),
+      cbImportOffers: e=>importCsv('offerings',e),
+      cbImportFaqs: e=>importCsv('faqs',e),
+      cbFiles: fileRows, cbNoFiles: fileRows.length===0,
+      cbOnFiles: onFiles, cbUploading: (S.uploading||0)>0,
+      cbFieldStyle: fieldBox, cbAreaStyle: areaBox, cbMiniBtn: miniBtn, cbCtaBtn: ctaBtn,
+      // team
+      cbRoster: roster, cbNoRoster: roster.length===0, cbHasRoster: roster.length>0,
+      cbClientOpts: D0.clients.map(c=>({v:c.id,l:c.name+(hasBadge(c)?'  ✓':'')})),
+      cbClientId: cbClient.id,
+      cbPickClient: e=>{ flush(); const v=e.target.value; this.setState({cbClient:v}); },
+      cbHasBadge: unlocked, cbNoBadge: !unlocked,
+      cbBadgeLabel: unlocked? 'AI Chatbot badge is on' : 'No AI Chatbot badge',
+      cbBadgeStyle: this.badge(unlocked?'green':'red'),
+      cbToggleBadge: toggleBadge, cbToggleLabel: unlocked? 'Turn off badge' : 'Turn on badge',
+      cbStageOpts: STAGES.map(([v,l])=>({v,l})), cbStage: teamV.stage||'', cbOnStage: setTeam('stage',true),
+      cbBotUrl: teamV.botUrl||'', cbOnBotUrl: setTeam('botUrl'), cbNotes: teamV.notes||'', cbOnNotes: setTeam('notes'), cbFlush: flush,
+      cbStatusLabel: sent? 'Client sent it '+niceDay(sentAt||new Date())+(editedSince?' · edited since':'') : (stored? 'Client is still filling it in' : 'Client has not started'),
+      cbStatusStyle: this.badge(sent?'green':(stored?'amber':'gray')),
+      cbKit: kit, cbCopyAll: copyAll, cbCopyAllLabel: copiedAll? 'Copied ✓' : 'Copy prompt + knowledge base',
+      cbCopyAllStyle: Object.assign({},ctaBtn,{padding:'9px 18px',fontSize:12.5}),
+      cbPreStyle:{margin:0,whiteSpace:'pre-wrap',wordBreak:'break-word',fontFamily:'ui-monospace,SFMono-Regular,Menlo,monospace',fontSize:12,
+        lineHeight:1.55,color:'var(--text-body)',background:'var(--gray-100)',border:'1px solid var(--border-hairline)',borderRadius:10,
+        padding:'12px 14px',maxHeight:260,overflow:'auto'}
+    };
   }
   showsVals({isTeam, client, sectionNow}){
     const S=this.state, d=S.d||{};
@@ -6717,7 +7521,7 @@ class Component extends DCLogic {
       // decline), so the team has no separate Requests page: one place to work.
       ['g-work','Work',[['board','Workboard'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
       ['messages','Messages'],
-      ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['reports','Reports'],['shows','Shows'],['invoicing','Invoicing']]],
+      ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['chatbot','AI Chatbots'],['reports','Reports'],['shows','Shows'],['invoicing','Invoicing']]],
       ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
       ['g-team','Team',[['team','People'],['payments','Team Pay']]]
     ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
@@ -6733,6 +7537,9 @@ class Component extends DCLogic {
       ['g-work','Work',[['updates','Updates'],['requests','Requests'],['todos','To-Dos']]],
       ['messages','Messages'],
       ['g-growth','Growth',[['strategy','Content Map'],['reports','Reports']]],
+      // Shown to every client: unlocked with the ai_chatbot badge, otherwise a
+      // locked page with a way to buy it.
+      ['chatbot','AI Chatbot'],
       ['g-brand','Brand',[['brand','Brand Kit'],['files','Files']]],
       // Billing is the organization's; a company manager does not get it.
       ['g-account','Account',[['team','Team'],['billing','Billing']]]
@@ -6841,6 +7648,10 @@ class Component extends DCLogic {
       // a count of everyone's to-dos is not a number anyone can act on.
       if(isTeam && id==='todos'){ const n=D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id).length; if(n) return n; }
       if(id==='messages' && unreadTotal) return unreadTotal;
+      // Intakes a client has sent that nobody has started building yet.
+      if(isTeam && id==='chatbot'){
+        const n=(D0.chatbot_intake||[]).filter(r=>r.status==='submitted' && (!r.team||!r.team.stage||r.team.stage==='waiting')).length;
+        if(n) return n; }
       // A reply is the one moment in the pipeline that needs a person, so that
       // is what the Leads tab counts.
       if(isTeam && id==='leads'){ const n=(D.leads||[]).filter(l=>l.stage==='replied').length; if(n) return n; }
@@ -6888,6 +7699,7 @@ class Component extends DCLogic {
       ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing'],shows:[client.name,'Shows']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
+    headings.chatbot = isTeam ? ['Clients','AI Chatbots'] : [client.name,'AI Chatbot'];
     if(headings.strategy) headings.strategy=[client.name, cmOverview? 'Content Map' : 'Content Map · '+chan.label];
     // Inside a company, the kicker says which one; the organization overview
     // is the dashboard's own heading.
@@ -7164,6 +7976,18 @@ class Component extends DCLogic {
         pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
         pulse:avg?avg.toFixed(1):'-', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
         activeTitle:act?act.title:'Nothing in progress',
+        // Add-on badges. Today just the AI Chatbot, which unlocks that tab in
+        // the client's portal.
+        cbOn:(c.badges||[]).indexOf('ai_chatbot')>-1,
+        cbPill:this.badge((c.badges||[]).indexOf('ai_chatbot')>-1?'green':'gray'),
+        cbPillLabel:(c.badges||[]).indexOf('ai_chatbot')>-1?'AI Chatbot · on':'AI Chatbot · off',
+        cbToggleLabel:(c.badges||[]).indexOf('ai_chatbot')>-1?'Turn off':'Turn on',
+        cbToggle:()=>this.set(x=>{ const cc=x.clients.find(y=>y.id===c.id); if(!cc) return x;
+          const arr=Array.isArray(cc.badges)?cc.badges.slice():[]; const was=arr.indexOf('ai_chatbot')>-1;
+          cc.badges= was? arr.filter(y=>y!=='ai_chatbot') : arr.concat(['ai_chatbot']);
+          this.logEv(x, cc.id, (was?'Turned off':'Turned on')+' the AI Chatbot badge for '+cc.name, {quiet:true});
+          return x; }),
+        cbOpen:()=>this.setState({section:'chatbot',cbClient:c.id}),
         openPortal:()=>this.setState({role:'client',viewClient:c.id,section:c.id==='vs'?'shows':'home',notifOpen:false})};
     });
     // files
@@ -10063,9 +10887,12 @@ class Component extends DCLogic {
         const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'var(--surface-card)':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
         return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
     const shv = this.showsVals({isTeam, client, sectionNow});
+    const cbv = this.chatbotVals({isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
+      saveCsv, copyFallback, downloadFile, startUploads, takeFiles, clientColor});
     return {
       ...leadVals,
       ...shv,
+      ...cbv,
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:curBiz? curBiz.name : client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
       // they cover, so one login serves the whole group.

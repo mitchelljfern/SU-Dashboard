@@ -19,7 +19,10 @@
     'content_stats',
     // Reports: dated reads of one channel with the plan that follows. A client
     // load only gets its own published reports (migration 038).
-    'report_docs'];
+    'report_docs',
+    // AI Chatbot intake: one row per company, filled in by the client (once
+    // they hold the ai_chatbot badge) and finished by the team (migration 040).
+    'chatbot_intake'];
 
   // How each collection is ordered when loaded, to match what the UI expects.
   // Messages read as a chat thread (oldest first); everything else is a feed.
@@ -34,7 +37,10 @@
     billingType: 'billing_type', hourlyRate: 'hourly_rate', color: 'color',
     // The client's brand kit. One jsonb body, always written whole; the
     // database decides what a client is allowed to change in it.
-    brand: 'brand'
+    brand: 'brand',
+    // Add-ons a client has bought beyond the plan, e.g. ['ai_chatbot'].
+    // Team-only to change; the database pins it on a client's own update.
+    badges: 'badges'
   };
 
   // Per-reader marker for message threads. Composite key, so the app-side id
@@ -147,6 +153,7 @@
     if (!Array.isArray(o.pulse)) o.pulse = [];
     if (!Array.isArray(o.businesses)) o.businesses = [];
     if (!o.brand || typeof o.brand !== 'object') o.brand = {};
+    if (!Array.isArray(o.badges)) o.badges = [];
     ['logos', 'photos', 'palette'].forEach(k => {
       if (!Array.isArray(o.brand[k])) o.brand[k] = [];
     });
