@@ -1577,7 +1577,12 @@
       </sc-if>
 
       <sc-if value="{{ secClients }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;justify-content:flex-end">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div role="tablist" aria-label="Client status" style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ clientTabs }}" as="ct" hint-placeholder-count="4">
+              <button role="tab" onClick="{{ ct.select }}" style="{{ ct.style }}" style-hover="border-color:var(--navy)">{{ ct.label }}<span style="{{ ct.countStyle }}">{{ ct.n }}</span></button>
+            </sc-for>
+          </div>
           <button onClick="{{ toggleNewClient }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">+ New client</button>
         </div>
         <sc-if value="{{ newClientOpen }}" hint-placeholder-val="{{ true }}">
@@ -1643,16 +1648,22 @@
             </div>
           </div>
         </sc-if>
-        <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px">
+        <sc-if value="{{ noClientCards }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--surface-card);border:1px dashed var(--border-card);border-radius:12px;padding:28px;text-align:center;font-size:13px;color:var(--text-muted)">{{ noClientCardsText }}</div>
+        </sc-if>
+        <div class="su-half" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;align-items:start">
           <sc-for list="{{ clientCards }}" as="c" hint-placeholder-count="2">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-top:4px solid {{ c.accent }};padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
+            <div style="{{ c.cardStyle }}">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-                <div style="display:flex;flex-direction:column;gap:2px">
-                  <div style="display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy);text-transform:uppercase;letter-spacing:var(--ls-caps)"><span style="{{ c.dot }}"></span>{{ c.name }}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ c.domain }} · {{ c.service }}</div>
+                <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.2;color:var(--navy);text-transform:uppercase;letter-spacing:.02em"><span style="{{ c.dot }}"></span><span style="min-width:0;overflow-wrap:break-word">{{ c.name }}</span></div>
+                  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                    <span style="{{ c.statusPill }}">{{ c.statusLabel }}</span>
+                    <sc-if value="{{ c.hasPlan }}" hint-placeholder-val="{{ true }}"><span style="background:var(--grad-brand);color:#fff;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:12px;white-space:nowrap">{{ c.plan }}</span></sc-if>
+                  </div>
+                  <div style="font-size:12px;line-height:1.35;color:var(--text-muted);overflow-wrap:break-word">{{ c.subline }}</div>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px">
-                  <span style="background:var(--grad-brand);color:#fff;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:var(--ls-caps);text-transform:uppercase;padding:4px 12px;border-radius:12px">{{ c.plan }}</span>
+                <div style="display:flex;align-items:center;flex-shrink:0">
                   <button onClick="{{ c.startEdit }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:6px 14px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Edit</button>
                 </div>
               </div>
@@ -1663,6 +1674,10 @@
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Name</label><input value="{{ ecName }}" onChange="{{ onEcName }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Domain</label><input value="{{ ecDomain }}" onChange="{{ onEcDomain }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label><input value="{{ ecService }}" onChange="{{ onEcService }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
+                    <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Status</label>
+                      <select value="{{ ecStatus }}" onChange="{{ onEcStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card)">
+                        <option value="active">Active</option><option value="stalled">Stalled · no active work</option><option value="inactive">Not active</option>
+                      </select></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label><input value="{{ ecPlan }}" onChange="{{ onEcPlan }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label><input value="{{ ecPrice }}" onChange="{{ onEcPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div></sc-if>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Billing</label>
@@ -1718,22 +1733,24 @@
                   </div>
                 </div>
               </sc-if>
-              <div style="display:flex;flex-direction:column;gap:6px">
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)"><span>Retainer hours</span><span>{{ c.hoursLabel }}</span></div>
-                <div style="height:6px;background:var(--gray-200);border-radius:12px;overflow:hidden"><div style="{{ c.barStyle }}"></div></div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--gray-100);border-radius:10px;padding:10px 12px">
+                <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.1;color:var(--navy);white-space:nowrap">{{ c.hoursShort }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);white-space:nowrap">Hours</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.1;color:var(--navy)">{{ c.openWork }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Working</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.1;color:var(--navy)">{{ c.pendingReqs }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);white-space:nowrap">Requests</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.1;color:{{ c.pulseColor }}">{{ c.pulse }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);white-space:nowrap">Pulse /5</span></div>
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ c.openWork }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">In progress</span></div>
-                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy)">{{ c.pendingReqs }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">New requests</span></div>
-                <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-display);font-weight:800;font-size:22px;color:{{ c.pulseColor }}">{{ c.pulse }}</span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Pulse / 5</span></div>
+              <sc-if value="{{ c.showBar }}" hint-placeholder-val="{{ true }}">
+                <div style="height:5px;background:var(--gray-200);border-radius:12px;overflow:hidden;margin-top:-4px"><div style="{{ c.barStyle }}"></div></div>
+              </sc-if>
+              <div style="font-size:13px;line-height:1.4;color:var(--text-body)"><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted);margin-right:6px">Now</span><span style="{{ c.nowStyle }}">{{ c.activeTitle }}</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border-hairline);padding-top:12px">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <span style="{{ c.cbPill }}">{{ c.cbPillLabel }}</span>
+                  <button onClick="{{ c.cbToggle }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;color:var(--text-body);padding:3px 9px;font-size:12px;cursor:pointer" style-hover="border-color:var(--navy)">{{ c.cbToggleLabel }}</button>
+                  <sc-if value="{{ c.cbOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.cbOpen }}" style="background:transparent;border:none;color:var(--link);padding:3px 4px;font-size:12px;font-weight:600;cursor:pointer">Intake →</button></sc-if>
+                </div>
+                <button onClick="{{ c.openPortal }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:7px 16px;font-size:12.5px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open portal</button>
               </div>
-              <div style="font-size:13px;color:var(--text-body);border-top:1px solid var(--border-hairline);padding-top:12px">Now: <strong style="color:var(--navy)">{{ c.activeTitle }}</strong></div>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <span style="{{ c.cbPill }}">{{ c.cbPillLabel }}</span>
-                <button onClick="{{ c.cbToggle }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;color:var(--text-body);padding:4px 10px;font-size:12px;cursor:pointer" style-hover="border-color:var(--navy)">{{ c.cbToggleLabel }}</button>
-                <sc-if value="{{ c.cbOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.cbOpen }}" style="background:transparent;border:none;color:var(--link);padding:4px 6px;font-size:12px;font-weight:600;cursor:pointer">Open intake →</button></sc-if>
-              </div>
-              <button onClick="{{ c.openPortal }}" style="align-self:flex-start;background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:8px 20px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Open portal</button>
             </div>
           </sc-for>
         </div>
@@ -7972,18 +7989,38 @@ class Component extends DCLogic {
     const pulseBtns=[1,2,3,4,5].map(n=>({n,rate:()=>this.set(x=>{ const c2=x.clients.find(c=>c.id===client.id); c2.pulse.push(n); c2.pulseMonth=month; this.logEv(x,client.id,cname(client.id)+' rated the month '+n+'/5'); return x; }),
       style:{width:40,height:40,borderRadius:12,border:'1px solid rgba(255,255,255,.5)',background:'transparent',color:'#fff',fontFamily:'var(--font-display)',fontWeight:700,fontSize:15,cursor:'pointer'}}));
     // clients (team)
-    const clientCards=D.clients.map(c=>{
+    // The Clients page splits by status. Every client sits in exactly one of
+    // active, stalled or inactive; "All" shows the lot. Opens on Active.
+    const CL_STATUS={active:['Active','green'],stalled:['Stalled','amber'],inactive:['Not active','gray']};
+    const clStatusOf=c=> CL_STATUS[c.status]? c.status : 'active';
+    const clTab=S.clientTab||'active';
+    const clientTabs=[['active','Active'],['stalled','Stalled'],['inactive','Not active'],['all','All']].map(([k,l])=>{
+      const n=k==='all'? D.clients.length : D.clients.filter(c=>clStatusOf(c)===k).length; const on=clTab===k;
+      return {label:l, n, select:()=>this.setState({clientTab:k}),
+        style:{display:'inline-flex',alignItems:'center',gap:8,background:on?'var(--pill-bg)':'var(--surface-card)',color:on?'var(--pill-fg)':'var(--text-body)',
+          border:'1px solid '+(on?'var(--pill-bg)':'var(--gray-200)'),borderRadius:12,padding:'7px 14px',fontSize:13,fontWeight:500,cursor:'pointer'},
+        countStyle:{fontSize:11,fontWeight:700,minWidth:18,textAlign:'center',padding:'1px 6px',borderRadius:10,
+          background:on?'rgba(255,255,255,.22)':'rgba(15,22,51,.07)',color:on?'var(--pill-fg)':'var(--text-muted)'}}; });
+    const clientsShown=D.clients.filter(c=> clTab==='all' || clStatusOf(c)===clTab);
+    const clientCards=clientsShown.map(c=>{
+      const st=clStatusOf(c);
       const usedThisMonth=hoursThisMonth(c.id);
       const pct=c.hoursTotal>0?Math.min(100,Math.round(100*usedThisMonth/c.hoursTotal)):0;
       const avg=c.pulse.length? (c.pulse.reduce((a,b)=>a+b,0)/c.pulse.length):0;
       const act=liveWork.find(w=>w.clientId===c.id&&w.status==='progress');
-      return {name:c.name,domain:c.domain,service:c.service,plan:c.plan,
+      const hourly=c.billingType==='hourly';
+      return {name:c.name,domain:c.domain,service:c.service,plan:c.plan, hasPlan:!!(c.plan||'').trim(),
+        subline:[c.domain,c.service].filter(v=>(v||'').trim()).join(' · ') || 'No domain or service set',
+        statusLabel:CL_STATUS[st][0], statusPill:this.badge(CL_STATUS[st][1]),
+        cardStyle:{background:'var(--surface-card)',border:'1px solid var(--border-card)',borderTop:'4px solid '+clientColor(c.id),
+          padding:'18px 20px',display:'flex',flexDirection:'column',gap:12,borderRadius:12,opacity:st==='inactive'?.72:1},
         dot:clientDot(c.id), accent:clientColor(c.id),
         editing:S.editClient===c.id,
         startEdit:()=>this.setState({editClient:c.id, syncError:null, ecDraft:{
           name:c.name||'', domain:c.domain||'', service:c.service||'', plan:c.plan||'',
           price:c.price||0, hoursUsed:c.hoursUsed||0, hoursTotal:c.hoursTotal||0,
           billingType:c.billingType||'retainer', hourlyRate:c.hourlyRate||0,
+          status:clStatusOf(c),
           color:c.color||clientColor(c.id),
           brands:(c.businesses||[]).map(b=>b.name).join(', ')
         }}),
@@ -7997,11 +8034,16 @@ class Component extends DCLogic {
             canRemove:isAdmin})),
         noMembers:(D.people||[]).filter(pp=>pp.role==='client'&&pp.clientId===c.id).length===0,
         hoursLabel:usedThisMonth+' / '+c.hoursTotal+' hrs',
+        // Retainer clients read against their hours; hourly ones just show
+        // what has been approved this month.
+        hoursShort: (!hourly && c.hoursTotal>0)? usedThisMonth+'/'+c.hoursTotal : String(usedThisMonth),
+        showBar: !hourly && c.hoursTotal>0,
         barStyle:{width:pct+'%',height:'100%',background:pct>90?'#D68F2E':'var(--grad-brand)'},
         openWork:liveWork.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
         pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
         pulse:avg?avg.toFixed(1):'-', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
-        activeTitle:act?act.title:'Nothing in progress',
+        activeTitle:act?act.title:(st==='active'?'Nothing in progress':st==='stalled'?'Stalled · no active work':'Not an active client'),
+        nowStyle:{color:act?'var(--navy)':'var(--text-muted)',fontWeight:act?600:400},
         // Add-on badges. Today just the AI Chatbot, which unlocks that tab in
         // the client's portal.
         cbOn:(c.badges||[]).indexOf('ai_chatbot')>-1,
@@ -11277,6 +11319,7 @@ class Component extends DCLogic {
       ecHoursUsedLabel:(S.editClient? hoursThisMonth(S.editClient) : 0)+' hrs',
       ecHoursTotal:(S.ecDraft||{}).hoursTotal===undefined?'':(S.ecDraft||{}).hoursTotal, onEcHoursTotal:this.clientDraft('hoursTotal'),
       ecBillingType:(S.ecDraft||{}).billingType||'retainer', onEcBillingType:this.clientDraft('billingType'),
+      ecStatus:(S.ecDraft||{}).status||'active', onEcStatus:this.clientDraft('status'),
       ecHourlyRate:(S.ecDraft||{}).hourlyRate===undefined?'':(S.ecDraft||{}).hourlyRate, onEcHourlyRate:this.clientDraft('hourlyRate'),
       ecBrands:(S.ecDraft||{}).brands||'', onEcBrands:this.clientDraft('brands'),
       ecColor:(S.ecDraft||{}).color||'', onEcColor:this.clientDraft('color'),
@@ -11296,6 +11339,7 @@ class Component extends DCLogic {
           c.plan=(dr.plan||'').trim(); c.price=Number(dr.price)||0;
           c.hoursTotal=Number(dr.hoursTotal)||0;
           c.billingType=dr.billingType||'retainer'; c.hourlyRate=Number(dr.hourlyRate)||0;
+          if(['active','stalled','inactive'].indexOf(dr.status)>-1) c.status=dr.status;
           if(dr.color) c.color=dr.color;
           // Keep the ids of businesses that survive the rename, so anything
           // already tagged to one does not lose its reference.
@@ -11541,7 +11585,8 @@ class Component extends DCLogic {
         this.set(x=>{ x.work.unshift({id:this.uid(),clientId:d.workClient,title,
           status:'queued',hours:Math.max(0,Number(d.workHours)||0),ts:Date.now()}); return x; });
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
-      clientCards, newRequests, noNewRequests:newRequests.length===0,
+      clientCards, clientTabs, noClientCards:clientCards.length===0,
+      noClientCardsText:({active:'No active clients.',stalled:'No stalled clients.',inactive:'No inactive clients.'}[S.clientTab||'active']||'No clients yet.'), newRequests, noNewRequests:newRequests.length===0,
       teamCurrentReqs, noTeamCurrentReqs:teamCurrentReqs.length===0,
       teamDoneReqs, noTeamDoneReqs:teamDoneReqs.length===0,
       msgTabs:D.clients.flatMap(c=>{ const active=S.msgClient===c.id && (!isMultiOrg(c) || !teamMsgBiz);

@@ -40,7 +40,9 @@
     brand: 'brand',
     // Add-ons a client has bought beyond the plan, e.g. ['ai_chatbot'].
     // Team-only to change; the database pins it on a client's own update.
-    badges: 'badges'
+    badges: 'badges',
+    // Where the client stands: active | stalled | inactive. Team-only.
+    status: 'status'
   };
 
   // Per-reader marker for message threads. Composite key, so the app-side id
@@ -154,6 +156,7 @@
     if (!Array.isArray(o.businesses)) o.businesses = [];
     if (!o.brand || typeof o.brand !== 'object') o.brand = {};
     if (!Array.isArray(o.badges)) o.badges = [];
+    if (['active', 'stalled', 'inactive'].indexOf(o.status) < 0) o.status = 'active';
     ['logos', 'photos', 'palette'].forEach(k => {
       if (!Array.isArray(o.brand[k])) o.brand[k] = [];
     });
