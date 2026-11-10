@@ -5667,15 +5667,28 @@ class Component extends DCLogic {
       this.setState({syncError:'Could not load your dashboard. Refresh to try again.'});
     });
 
-    // Pick up other people's changes. Skipped while a write is in flight so an
-    // in-progress edit is never clobbered.
+    // Pick up other people's changes. A full load takes a second or two, and
+    // checking for a write only at the start was not enough: an edit made
+    // while the load was still downloading got painted over by the older
+    // snapshot when it landed. The card jumped back to its old column and the
+    // comment vanished, even though both were saved. So every local edit bumps
+    // __gen, and a load that finishes after an edit is thrown away and run
+    // again once the writes have landed. Only one load runs at a time.
+    this.__gen = 0;
     this.__pull = ()=>{
-      if(!this.state.booted || this.__writing) return Promise.resolve();
-      return window.SUData.load().then(data=>{
+      if(!this.state.booted) return Promise.resolve();
+      if(this.__writing || this.__pulling){ this.__pullAgain = true; return this.__pulling || Promise.resolve(); }
+      const gen = this.__gen;
+      this.__pulling = window.SUData.load().then(data=>{
+        if(gen !== this.__gen || this.__writing){ this.__pullAgain = true; return; }
         this.__synced = structuredClone(data);
         this.__seenTs = this.watermark(data);
         this.setState({data});
-      }).catch(err=>console.error('[hub] refresh failed', err));
+      }).catch(err=>console.error('[hub] refresh failed', err)).then(()=>{
+        this.__pulling = null;
+        if(this.__pullAgain && !this.__writing){ this.__pullAgain = false; this.__pull(); }
+      });
+      return this.__pulling;
     };
     this.__onFocus = ()=>{ this.__pull(); };
     window.addEventListener('focus', this.__onFocus);
@@ -5739,18 +5752,29 @@ class Component extends DCLogic {
     if(!this.state.booted || this.state.previewAs) return;
     const next = this.state.data;
     const prev = this.__synced || this.emptyData();
+    // Counted, not a flag: with two quick edits the first one finishing used
+    // to clear "writing" while the second was still on its way.
+    this.__inflight = (this.__inflight||0) + 1;
     this.__writing = true;
+    const settle = ()=>{
+      this.__inflight = Math.max(0, this.__inflight - 1);
+      this.__writing = this.__inflight > 0;
+      // A refresh that was skipped or thrown away while this was saving.
+      if(!this.__writing && this.__pullAgain){ this.__pullAgain = false; this.__pull(); }
+    };
     window.SUData.sync(prev, next).then(()=>{
-      this.__synced = structuredClone(next);
-      this.__writing = false;
+      // Only the newest finished save may set the baseline; an older one
+      // landing late would otherwise wind it back.
+      if(this.__inflight === 1) this.__synced = structuredClone(next);
       // Our own write moves the watermark too. Recording where it landed stops
       // the next poll reading it as somebody else's change — and, unlike
       // clearing the mark, cannot swallow a change that arrives before the
       // following tick.
       this.__seenTs = this.watermark(next);
+      settle();
       if(this.state.syncError) this.setState({syncError:null});
-    }).catch(err=>{
-      this.__writing = false;
+    }, err=>{
+      settle();
       const denied = err && (err.code==='42501' || /row-level security|permission/i.test(err.message||''));
       this.setState({syncError: denied
         ? 'That change was not allowed for your account.'
@@ -5761,6 +5785,8 @@ class Component extends DCLogic {
     // Previewing as a team member is look-only: the write would run under the
     // admin's own account, which is not what the preview is showing.
     if(this.state.previewAs){ this.setState({flash:'Preview is read-only. Exit the preview to make changes.'}); return; }
+    // Any refresh already downloading is now older than what is on screen.
+    this.__gen = (this.__gen||0) + 1;
     this.setState(s=>{ const data=fn(structuredClone(s.data))||s.data; this.stampBiz(s.data,data); return {data}; }, ()=>this.save()); }
   // New rows for an organization with several companies are filed under one.
   // Something made from another row (work from its request, a log line about
