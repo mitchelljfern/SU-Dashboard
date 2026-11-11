@@ -211,6 +211,11 @@
     .su-rdbody{padding:4px 20px 22px 46px}
     .su-rdkpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     @media (max-width:860px){ .su-rdkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    .su-rvkpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}
+    .su-rvstats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    @media (max-width:640px){ .su-rvstats{grid-template-columns:repeat(2,minmax(0,1fr))} .su-rvkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    .su-alcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+    @media (max-width:520px){ .su-alcards{grid-template-columns:repeat(2,minmax(0,1fr))} }
     @media (max-width:560px){ .su-rdbody{padding:2px 14px 18px} }
     /* Shows (Slipstream): Trello-style board, cards, past list and the show form. */
     .sh-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start}
@@ -1462,7 +1467,7 @@
               </sc-for>
             </div>
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Activity</h3>
+            <div style="display:flex;align-items:center;gap:10px"><h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1">Activity</h3><button onClick="{{ openActivityLog }}" style="background:transparent;border:none;color:var(--navy);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--font-body)">Full log</button></div>
             <div style="display:flex;flex-direction:column">
               <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
                 <div style="padding:9px 0;border-bottom:1px solid var(--border-hairline);display:flex;align-items:flex-start;gap:9px">
@@ -1676,7 +1681,7 @@
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Service</label><input value="{{ ecService }}" onChange="{{ onEcService }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Status</label>
                       <select value="{{ ecStatus }}" onChange="{{ onEcStatus }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px;background:var(--surface-card)">
-                        <option value="active">Active</option><option value="stalled">Stalled · no active work</option><option value="inactive">Not active</option>
+                        <option value="active">Active</option><option value="stalled">Stale · no active work</option><option value="inactive">Not Active</option>
                       </select></div>
                     <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Plan</label><input value="{{ ecPlan }}" onChange="{{ onEcPlan }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div>
                     <sc-if value="{{ canBilling }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Monthly price</label><input value="{{ ecPrice }}" onChange="{{ onEcPrice }}" type="number" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px"></div></sc-if>
@@ -2653,6 +2658,106 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secActivity }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px;font-size:13px;color:var(--text-muted);line-height:1.5">{{ alIntro }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ alRanges }}" as="rg" hint-placeholder-count="4"><button onClick="{{ rg.select }}" style="{{ rg.style }}">{{ rg.label }}</button></sc-for>
+              <button onClick="{{ alRefresh }}" title="Refresh" style="border:1px solid var(--border-card);background:var(--surface-card);color:var(--navy);padding:7px 11px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body)">↻</button>
+            </div>
+          </div>
+
+          <sc-if value="{{ alNeedsYou }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(216,86,78,.08);border:1px solid rgba(216,86,78,.35);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5;color:var(--text-body)">
+              <span style="flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a8352d;padding-top:2px">Needs a look</span>
+              <span>{{ alNeedsYouText }}</span>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--text-muted)">Agents · tap one to filter</div>
+            <div class="su-alcards">
+              <sc-for list="{{ alTaskCards }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.select }}" style="{{ c.style }}" title="{{ c.full }}">
+                  <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="{{ c.dot }}"></span><span style="font-size:14px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span></div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-body)">{{ c.status }}</div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ c.line1 }}</div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ c.line2 }}</div>
+                  <sc-if value="{{ c.bad }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;font-weight:600;color:#a8352d">{{ c.badText }}</div></sc-if>
+                </button>
+              </sc-for>
+            </div>
+            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--text-muted);margin-top:6px">Team</div>
+            <div class="su-alcards">
+              <sc-for list="{{ alPersonCards }}" as="c" hint-placeholder-count="2">
+                <button onClick="{{ c.select }}" style="{{ c.style }}">
+                  <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="{{ c.dot }}"></span><span style="font-size:14px;font-weight:700;color:var(--navy)">{{ c.name }}</span></div>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ c.line1 }}</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-body)">{{ c.line2 }}</div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ alTypes }}" as="ty" hint-placeholder-count="6"><button onClick="{{ ty.select }}" style="{{ ty.style }}">{{ ty.label }} <span style="opacity:.6;font-weight:500">{{ ty.n }}</span></button></sc-for>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <select value="{{ dAlWho }}" onChange="{{ onAlWho }}" aria-label="Who" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px;font-size:13px;background:var(--surface-card);color:var(--text-body);max-width:260px">
+                <sc-for list="{{ alWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+              <select value="{{ dAlClient }}" onChange="{{ onAlClient }}" aria-label="Client" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px;font-size:13px;background:var(--surface-card);color:var(--text-body);max-width:220px">
+                <sc-for list="{{ alClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+              </select>
+              <input value="{{ dAlQ }}" onChange="{{ onAlQ }}" placeholder="Search the log" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body)">
+              <button onClick="{{ toggleAlQuiet }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-body);padding:7px 12px;border-radius:12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body)">{{ alQuietLabel }}</button>
+              <sc-if value="{{ alHasFilter }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearAlFilters }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;text-decoration:underline;font-family:var(--font-body)">Clear filters</button></sc-if>
+            </div>
+          </div>
+
+          <sc-for list="{{ alGroups }}" as="g" hint-placeholder-count="2">
+            <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden">
+              <div style="display:flex;align-items:baseline;gap:10px;padding:10px 14px;background:var(--gray-100)">
+                <span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--navy)">{{ g.label }}</span>
+                <span style="font-size:12px;color:var(--text-muted)">{{ g.sub }}</span>
+              </div>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+                <div onClick="{{ it.toggle }}" style="{{ it.rowStyle }}">
+                  <span style="{{ it.avatarStyle }}">{{ it.avatar }}</span>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                      <span style="{{ it.whoStyle }}">{{ it.who }}</span>
+                      <span>{{ it.time }}</span>
+                      <span style="{{ it.areaStyle }}">{{ it.area }}</span>
+                      <sc-if value="{{ it.hasStatus }}" hint-placeholder-val="{{ false }}"><span style="{{ it.statusStyle }}">{{ it.statusText }}</span></sc-if>
+                      <sc-if value="{{ it.flagged }}" hint-placeholder-val="{{ false }}"><span style="{{ it.flagStyle }}">Note</span></sc-if>
+                      <sc-if value="{{ it.hasMinutes }}" hint-placeholder-val="{{ false }}"><span>{{ it.minutes }}</span></sc-if>
+                      <sc-if value="{{ it.hasHrs }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;color:#178a4e">{{ it.hrs }}</span></sc-if>
+                      <sc-if value="{{ it.hasClient }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:5px"><span style="{{ it.clientDot }}"></span>{{ it.client }}</span></sc-if>
+                    </div>
+                    <div style="{{ it.textStyle }}">{{ it.text }}</div>
+                    <sc-if value="{{ it.errHint }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:600;color:#a8352d">{{ it.errHintText }}</div></sc-if>
+                    <sc-if value="{{ it.hasErrs }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:4px;border-left:3px solid #D8564E;padding:4px 0 4px 10px">
+                        <sc-for list="{{ it.errs }}" as="e" hint-placeholder-count="1"><div style="font-size:12.5px;line-height:1.5;color:var(--text-body)">{{ e.t }}</div></sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </section>
+          </sc-for>
+          <sc-if value="{{ alEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">{{ alEmptyText }}</div>
+          </sc-if>
+          <sc-if value="{{ alCanMore }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ alLoadMore }}" style="align-self:center;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--navy);padding:9px 18px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body)">{{ alMoreLabel }}</button>
+          </sc-if>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ secReports }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
           <div style="display:flex;flex-direction:column;gap:4px">
@@ -2663,160 +2768,173 @@
               <button role="tab" onClick="{{ sc.select }}" style="{{ sc.style }}" style-hover="border-color:var(--navy)"><span style="font-size:13.5px;font-weight:600">{{ sc.label }} <span style="opacity:.6;font-weight:500">{{ sc.n }}</span></span><span style="{{ sc.subStyle }}">{{ sc.sub }}</span></button>
             </sc-for>
           </div>
-          <sc-for list="{{ rdItems }}" as="r" hint-placeholder-count="2">
-            <article style="{{ r.cardStyle }}">
-              <div onClick="{{ r.toggle }}" role="button" aria-expanded="{{ r.open }}" style="display:flex;align-items:flex-start;gap:14px;padding:18px 20px;cursor:pointer" style-hover="background:rgba(15,22,51,.025)">
-                <span style="{{ r.chevronStyle }}">▶</span>
-                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
-                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">
-                    <span>{{ r.period }}</span><span style="opacity:.5">·</span><span>{{ r.meta }}</span>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                    <h3 style="font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.25;color:var(--navy);margin:0">{{ r.title }}</h3>
-                    <sc-if value="{{ r.hasTone }}" hint-placeholder-val="{{ true }}">
-                      <span style="{{ r.toneStyle }}"><span style="{{ r.toneDot }}"></span>{{ r.toneLabel }}</span>
-                    </sc-if>
-                  </div>
-                  <sc-if value="{{ r.hasHeadline }}" hint-placeholder-val="{{ true }}">
-                    <div style="font-size:14.5px;line-height:1.55;color:var(--text-body);max-width:760px">{{ r.headline }}</div>
-                  </sc-if>
-                  <sc-if value="{{ r.closed }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-                      <sc-for list="{{ r.kpiChips }}" as="c" hint-placeholder-count="4">
-                        <span style="display:inline-flex;align-items:baseline;gap:6px;background:var(--gray-100);border-radius:10px;padding:5px 10px;font-size:12px;color:var(--text-muted)">{{ c.label }}<b style="font-family:var(--font-display);font-size:13.5px;color:var(--navy)">{{ c.value }}</b></span>
-                      </sc-for>
-                    </div>
-                  </sc-if>
+          <sc-if value="{{ rvMultiChan }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ rvChans }}" as="ch" hint-placeholder-count="2"><button onClick="{{ ch.select }}" style="{{ ch.style }}">{{ ch.label }} <span style="opacity:.6;font-weight:500">{{ ch.n }}</span></button></sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ rvHas }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:8px;min-width:0">
+              <button onClick="{{ rvNewer }}" aria-label="Newer report" style="flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--border-card);background:var(--surface-card);color:var(--navy);cursor:pointer;font-size:14px">‹</button>
+              <div class="su-rvdates" style="flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;padding:2px;-webkit-overflow-scrolling:touch">
+                <sc-for list="{{ rvDates }}" as="dt" hint-placeholder-count="6"><button onClick="{{ dt.select }}" style="{{ dt.style }}"><span style="{{ dt.dot }}"></span>{{ dt.label }}</button></sc-for>
+              </div>
+              <button onClick="{{ rvOlder }}" aria-label="Older report" style="flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--border-card);background:var(--surface-card);color:var(--navy);cursor:pointer;font-size:14px">›</button>
+            </div>
+
+            <article style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;box-shadow:0 10px 28px rgba(15,22,51,.08), 0 2px 6px rgba(15,22,51,.04);overflow:hidden">
+              <div style="padding:20px 22px 0;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">
+                  <span>{{ rvI.period }}</span><span style="opacity:.5">·</span><span>{{ rvI.meta }}</span><span style="opacity:.5">·</span><span>{{ rvPos }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <h3 style="font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.2;color:var(--navy);margin:0">{{ rvI.title }}</h3>
+                  <sc-if value="{{ rvI.hasTone }}" hint-placeholder-val="{{ true }}"><span style="{{ rvI.toneStyle }}"><span style="{{ rvI.toneDot }}"></span>{{ rvI.toneLabel }}</span></sc-if>
+                </div>
+                <sc-if value="{{ rvI.hasHeadline }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:15px;line-height:1.6;color:var(--text-body);max-width:820px">{{ rvI.headline }}</div>
+                </sc-if>
+                <div role="tablist" style="display:flex;overflow-x:auto;border-bottom:1px solid var(--border-card);margin-top:8px">
+                  <sc-for list="{{ rvTabs }}" as="tb" hint-placeholder-count="5"><button role="tab" onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="opacity:.55;font-weight:600">{{ tb.n }}</span></button></sc-for>
                 </div>
               </div>
 
-              <sc-if value="{{ r.open }}" hint-placeholder-val="{{ true }}">
-                <div class="su-rdbody" style="display:flex;flex-direction:column;gap:22px">
-
-                  <sc-if value="{{ r.hasKpis }}" hint-placeholder-val="{{ true }}">
-                    <div style="display:flex;flex-direction:column;gap:8px">
-                      <div class="su-rdkpi">
-                        <sc-for list="{{ r.kpis }}" as="k" hint-placeholder-count="4">
-                          <div onClick="{{ k.toggleTip }}" style="{{ k.tileStyle }}">
-                            <div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ k.label }}</div>
+              <div style="padding:20px 22px 22px;display:flex;flex-direction:column;gap:20px">
+                <sc-if value="{{ rvTabOverview }}" hint-placeholder-val="{{ true }}">
+                  <sc-if value="{{ rvHasKpis }}" hint-placeholder-val="{{ true }}">
+                    <div class="su-rvkpi">
+                      <sc-for list="{{ rvKpis }}" as="k" hint-placeholder-count="4">
+                        <div style="{{ k.tileStyle }}">
+                          <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)"><span style="{{ k.markStyle }}"></span>{{ k.label }}</div>
+                          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px">
                             <div style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1.1;color:var(--navy)">{{ k.value }}</div>
-                            <sc-if value="{{ k.hasDelta }}" hint-placeholder-val="{{ true }}">
-                              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><span style="{{ k.markStyle }}"></span>{{ k.delta }}</div>
-                            </sc-if>
-                            <sc-if value="{{ k.hasMeaning }}" hint-placeholder-val="{{ true }}">
-                              <div style="font-size:11.5px;font-weight:600;color:var(--text-body);opacity:.75;text-decoration:underline dotted;text-underline-offset:3px;margin-top:4px">{{ k.tipLabel }}</div>
-                            </sc-if>
-                            <sc-if value="{{ k.tipOpen }}" hint-placeholder-val="{{ false }}">
-                              <div style="font-size:12.5px;line-height:1.55;color:var(--text-body);border-top:1px solid var(--border-card);padding-top:8px;margin-top:2px">{{ k.meaning }}</div>
-                            </sc-if>
+                            <sc-if value="{{ k.hasSpark }}" hint-placeholder-val="{{ false }}"><img sc-camel-src="{{ k.spark }}" alt="" onClick="{{ k.openTrend }}" title="See the trend" style="width:84px;height:24px;cursor:pointer;flex:0 0 auto"></sc-if>
                           </div>
-                        </sc-for>
-                      </div>
-                    </div>
-                  </sc-if>
-
-                  <sc-if value="{{ r.hasLists }}" hint-placeholder-val="{{ true }}">
-                    <div class="su-grid2" style="{{ r.listsStyle }}">
-                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>{{ r.workingLabel }}</div>
-                        <sc-for list="{{ r.working }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
-                        </sc-for>
-                      </div>
-                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
-                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>{{ r.notWorkingLabel }}</div>
-                        <sc-for list="{{ r.notWorking }}" as="w" hint-placeholder-count="2">
-                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
-                        </sc-for>
-                      </div>
-                    </div>
-                  </sc-if>
-
-                  <sc-if value="{{ r.hasActions }}" hint-placeholder-val="{{ true }}">
-                    <div style="{{ r.actStyle }}">
-                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">{{ r.actionsLabel }}</div>
-                      <sc-for list="{{ r.actions }}" as="a" hint-placeholder-count="3">
-                        <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
-                          <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:12px">{{ a.n }}</span>
-                          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
-                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                              <span style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.4">{{ a.title }}</span>
-                              <span style="{{ a.whoStyle }}">{{ a.whoLabel }}</span>
-                              <sc-if value="{{ a.needsOk }}" hint-placeholder-val="{{ false }}">
-                                <span style="background:rgba(214,143,46,.16);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap">Needs your OK</span>
-                              </sc-if>
-                            </div>
-                            <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}">
-                              <div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div>
-                            </sc-if>
-                            <sc-if value="{{ a.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ a.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--blue);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--blue)">{{ lk.label }} ↗</a></sc-for></div></sc-if>
-                          </div>
+                          <sc-if value="{{ k.hasChg }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:600;color:var(--text-body)">{{ k.chg }}</div></sc-if>
+                          <sc-if value="{{ k.hasDelta }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:var(--text-muted)">{{ k.delta }}</div></sc-if>
+                          <sc-if value="{{ k.hasMeaning }}" hint-placeholder-val="{{ true }}"><button onClick="{{ k.toggleTip }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:11.5px;font-weight:600;color:var(--text-body);opacity:.75;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer;font-family:var(--font-body)">{{ k.tipLabel }}</button></sc-if>
+                          <sc-if value="{{ k.tipOpen }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;line-height:1.55;color:var(--text-body);border-top:1px solid var(--border-card);padding-top:8px">{{ k.meaning }}</div></sc-if>
                         </div>
                       </sc-for>
                     </div>
                   </sc-if>
-
-                  <sc-if value="{{ r.hasTeamNote }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body);order:3">
-                      <span style="flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);padding-top:2px">Team note</span>
-                      <span>{{ r.teamNote }}</span>
+                  <sc-if value="{{ rvI.hasLists }}" hint-placeholder-val="{{ true }}">
+                    <div class="su-grid2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(31,178,100,.07);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#1FB264"></span>{{ rvI.workingLabel }}</div>
+                        <sc-for list="{{ rvI.working }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#1FB264;font-weight:700">+</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:600;color:var(--navy);border:1px solid var(--border-hairline);border-radius:10px;padding:3px 9px;text-decoration:none">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:10px;background:rgba(214,143,46,.08);border-radius:12px;padding:16px 18px">
+                        <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)"><span style="width:8px;height:8px;border-radius:50%;background:#D68F2E"></span>{{ rvI.notWorkingLabel }}</div>
+                        <sc-for list="{{ rvI.notWorking }}" as="w" hint-placeholder-count="2">
+                          <div style="font-size:13.5px;line-height:1.55;color:var(--text-body);padding-left:16px;position:relative"><span style="position:absolute;left:0;top:0;color:#D68F2E;font-weight:700">–</span>{{ w.t }}<sc-if value="{{ w.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><sc-for list="{{ w.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:600;color:var(--navy);border:1px solid var(--border-hairline);border-radius:10px;padding:3px 9px;text-decoration:none">{{ lk.label }} ↗</a></sc-for></div></sc-if></div>
+                        </sc-for>
+                      </div>
                     </div>
                   </sc-if>
-
-                  <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--border-card);padding-top:14px;order:3">
-                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                      <sc-if value="{{ r.hasTables }}" hint-placeholder-val="{{ true }}">
-                        <button onClick="{{ r.toggleMore }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--navy);padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="background:var(--gray-100)">{{ r.moreLabel }}</button>
-                      </sc-if>
-                      <span style="font-size:12px;color:var(--text-muted)">{{ r.byLine }}</span>
+                  <sc-if value="{{ rvI.hasActions }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <div style="font-family:var(--font-display);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">Top next steps</div>
+                      <sc-for list="{{ rvTopActions }}" as="a" hint-placeholder-count="3">
+                        <div style="display:flex;gap:10px;align-items:center;border:1px solid var(--border-card);border-radius:12px;padding:10px 12px">
+                          <span style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11.5px">{{ a.n }}</span>
+                          <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--navy)">{{ a.title }}</span>
+                          <span style="{{ a.whoStyle }}">{{ a.whoLabel }}</span>
+                        </div>
+                      </sc-for>
+                      <sc-if value="{{ rvMoreActions }}" hint-placeholder-val="{{ false }}"><button onClick="{{ rvGoPlan }}" style="align-self:flex-start;background:none;border:none;padding:0;color:var(--navy);font-size:12.5px;font-weight:600;text-decoration:underline;cursor:pointer;font-family:var(--font-body)">{{ rvMoreActionsLabel }}</button></sc-if>
                     </div>
-                    <sc-if value="{{ r.more }}" hint-placeholder-val="{{ false }}">
-                      <div style="display:flex;flex-direction:column;gap:18px">
-                        <sc-for list="{{ r.tables }}" as="tb" hint-placeholder-count="1">
-                          <div style="display:flex;flex-direction:column;gap:6px">
-                            <div style="font-size:13px;font-weight:700;color:var(--navy)">{{ tb.title }}</div>
-                            <sc-if value="{{ tb.hasNote }}" hint-placeholder-val="{{ false }}">
-                              <div style="font-size:12px;color:var(--text-muted);line-height:1.5">{{ tb.note }}</div>
-                            </sc-if>
-                            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:6px">
-                              <div style="{{ tb.head.style }}">
-                                <sc-for list="{{ tb.head.cells }}" as="hc" hint-placeholder-count="4"><div style="{{ hc.style }}">{{ hc.v }}</div></sc-for>
-                              </div>
-                              <sc-for list="{{ tb.rows }}" as="row" hint-placeholder-count="3">
-                                <div style="{{ row.style }}">
-                                  <sc-for list="{{ row.cells }}" as="cc" hint-placeholder-count="4"><div style="{{ cc.style }}">{{ cc.v }}</div></sc-for>
-                                </div>
-                              </sc-for>
-                            </div>
-                          </div>
-                        </sc-for>
-                        <sc-if value="{{ r.hasSource }}" hint-placeholder-val="{{ true }}">
-                          <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5">Source: {{ r.source }}</div>
-                        </sc-if>
-                      </div>
-                    </sc-if>
-                    <sc-if value="{{ r.showTeamBar }}" hint-placeholder-val="{{ false }}">
-                      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:9px 12px">
-                        <span style="{{ r.visStyle }}"><span style="{{ r.visDot }}"></span>{{ r.visLabel }}</span>
-                        <span style="flex:1"></span>
-                        <sc-if value="{{ r.canPublish }}" hint-placeholder-val="{{ false }}">
-                          <button onClick="{{ r.togglePublish }}" style="background:var(--cta-bg);color:var(--cta-fg,#fff);border:none;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">{{ r.publishLabel }}</button>
-                        </sc-if>
-                        <sc-if value="{{ r.archiveAsk }}" hint-placeholder-val="{{ false }}">
-                          <span style="font-size:12.5px;color:var(--text-body)">Archive this report?</span>
-                          <button onClick="{{ r.doArchive }}" style="background:var(--danger-wash,#fff5f4);color:var(--danger-fg,#a8352d);border:1px solid var(--danger-line,#D8564E);padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">Archive</button>
-                          <button onClick="{{ r.cancelArchive }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;font-family:var(--font-body)">Keep</button>
-                        </sc-if>
-                        <sc-if value="{{ r.noArchiveAsk }}" hint-placeholder-val="{{ true }}">
-                          <button onClick="{{ r.askArchive }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-muted);padding:6px 12px;font-size:12.5px;cursor:pointer;border-radius:12px;font-family:var(--font-body)" style-hover="color:var(--navy)">Archive</button>
-                        </sc-if>
-                      </div>
-                    </sc-if>
+                  </sc-if>
+                </sc-if>
+
+                <sc-if value="{{ rvTabNumbers }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-for list="{{ rvTableTabs }}" as="tt" hint-placeholder-count="2"><button onClick="{{ tt.select }}" style="{{ tt.style }}">{{ tt.label }}</button></sc-for>
                   </div>
-                </div>
-              </sc-if>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:2px">
+                      <div style="font-size:15px;font-weight:700;color:var(--navy)">{{ rvTTitle }}</div>
+                      <sc-if value="{{ rvTHasNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--text-muted)">{{ rvTNote }}</div></sc-if>
+                    </div>
+                    <input value="{{ rvTq }}" onChange="{{ onRvTq }}" placeholder="Filter rows" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px;width:200px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body)">
+                  </div>
+                  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+                    <div style="{{ rvGridHead }}"><sc-for list="{{ rvHead }}" as="hc" hint-placeholder-count="5"><div onClick="{{ hc.sort }}" style="{{ hc.style }}">{{ hc.v }}</div></sc-for></div>
+                    <sc-for list="{{ rvBody }}" as="row" hint-placeholder-count="4"><div style="{{ row.style }}"><sc-for list="{{ row.cells }}" as="cc" hint-placeholder-count="5"><div style="{{ cc.style }}">{{ cc.v }}</div></sc-for></div></sc-for>
+                  </div>
+                  <div style="font-size:11.5px;color:var(--text-muted)">{{ rvSortHint }}</div>
+                </sc-if>
+
+                <sc-if value="{{ rvTabPlan }}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{ rvI.actions }}" as="a" hint-placeholder-count="3">
+                    <div style="display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
+                      <span style="flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--surface-card);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">{{ a.n }}</span>
+                      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                          <span style="font-size:14px;font-weight:600;color:var(--navy);line-height:1.4">{{ a.title }}</span>
+                          <span style="{{ a.whoStyle }}">{{ a.whoLabel }}</span>
+                          <sc-if value="{{ a.needsOk }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.16);color:var(--text-body);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap">Needs your OK</span></sc-if>
+                        </div>
+                        <sc-if value="{{ a.hasDetail }}" hint-placeholder-val="{{ true }}"><div style="font-size:13px;line-height:1.55;color:var(--text-muted)">{{ a.detail }}</div></sc-if>
+                        <sc-if value="{{ a.hasLinks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px"><sc-for list="{{ a.links }}" as="lk" hint-placeholder-count="1"><a href="{{ lk.url }}" target="_blank" rel="noopener" style="font-size:12px;font-weight:600;color:var(--navy);border:1px solid var(--border-hairline);border-radius:10px;padding:3px 9px;text-decoration:none">{{ lk.label }} ↗</a></sc-for></div></sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </sc-if>
+
+                <sc-if value="{{ rvTabTrend }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-for list="{{ rvTrendKs }}" as="tk" hint-placeholder-count="4"><button onClick="{{ tk.select }}" style="{{ tk.style }}">{{ tk.label }}</button></sc-for>
+                  </div>
+                  <sc-if value="{{ rvTrendHas }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:15px;font-weight:700;color:var(--navy)">{{ rvTrendTitle }}</div>
+                    <div class="su-rvstats">
+                      <sc-for list="{{ rvTrendStats }}" as="st" hint-placeholder-count="5"><div style="border:1px solid var(--border-card);border-radius:12px;padding:10px 12px"><div style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ st.l }}</div><div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy)">{{ st.v }}</div></div></sc-for>
+                    </div>
+                    <img sc-camel-src="{{ rvTrendImg }}" alt="{{ rvTrendTitle }}" style="width:100%;height:auto;display:block">
+                    <div style="display:flex;flex-direction:column">
+                      <sc-for list="{{ rvTrendRows }}" as="tr" hint-placeholder-count="5"><div onClick="{{ tr.select }}" style="{{ tr.style }}"><span>{{ tr.x }}</span><span style="font-variant-numeric:tabular-nums">{{ tr.y }}</span></div></sc-for>
+                    </div>
+                  </sc-if>
+                </sc-if>
+
+                <sc-if value="{{ rvTabNotes }}" hint-placeholder-val="{{ false }}">
+                  <sc-if value="{{ rvI.hasTeamNote }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--border-hairline);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-body)"><span style="flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);padding-top:2px">Team note</span><span>{{ rvI.teamNote }}</span></div>
+                  </sc-if>
+                  <sc-if value="{{ rvI.hasSource }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:var(--text-muted);line-height:1.55">Source: {{ rvI.source }}</div></sc-if>
+                  <div style="font-size:12px;color:var(--text-muted)">{{ rvI.byLine }}</div>
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:9px 12px">
+                    <span style="{{ rvI.visStyle }}"><span style="{{ rvI.visDot }}"></span>{{ rvI.visLabel }}</span>
+                    <span style="flex:1"></span>
+                    <sc-if value="{{ rvI.canPublish }}" hint-placeholder-val="{{ false }}"><button onClick="{{ rvI.togglePublish }}" style="background:var(--cta-bg);color:var(--cta-fg,#fff);border:none;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">{{ rvI.publishLabel }}</button></sc-if>
+                    <sc-if value="{{ rvI.archiveAsk }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12.5px;color:var(--text-body)">Archive this report?</span>
+                      <button onClick="{{ rvI.doArchive }}" style="background:var(--danger-wash,#fff5f4);color:var(--danger-fg,#a8352d);border:1px solid var(--danger-line,#D8564E);padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:12px;font-family:var(--font-body)">Archive</button>
+                      <button onClick="{{ rvI.cancelArchive }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;font-family:var(--font-body)">Keep</button>
+                    </sc-if>
+                    <sc-if value="{{ rvI.noArchiveAsk }}" hint-placeholder-val="{{ true }}"><button onClick="{{ rvI.askArchive }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-muted);padding:6px 12px;font-size:12.5px;cursor:pointer;border-radius:12px;font-family:var(--font-body)">Archive</button></sc-if>
+                  </div>
+                </sc-if>
+              </div>
             </article>
-          </sc-for>
+
+            <sc-if value="{{ rvHasHist }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden">
+                <div style="padding:10px 14px;background:var(--gray-100);font-family:var(--font-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--text-muted)">Earlier reports</div>
+                <sc-for list="{{ rvHist }}" as="h" hint-placeholder-count="4">
+                  <div onClick="{{ h.select }}" style="display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-top:1px solid var(--border-card);cursor:pointer" style-hover="background:rgba(15,22,51,.03)">
+                    <span style="{{ h.dot }}"></span>
+                    <span style="flex:0 0 52px;font-size:12.5px;font-weight:700;color:var(--navy)">{{ h.date }}</span>
+                    <span style="flex:1;min-width:0;font-size:13px;color:var(--text-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.headline }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ rvHistMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ rvHistMoreFn }}" style="border:none;border-top:1px solid var(--border-card);background:transparent;padding:10px;color:var(--navy);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Show more</button></sc-if>
+              </div>
+            </sc-if>
+          </sc-if>
           <sc-if value="{{ rdEmpty }}" hint-placeholder-val="{{ false }}">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">{{ rdEmptyText }}</div>
           </sc-if>
@@ -6561,6 +6679,230 @@ class Component extends DCLogic {
         padding:'12px 14px',maxHeight:260,overflow:'auto'}
     };
   }
+  // ===== Team > Activity Log =====
+  // One place for everything that happened: every agent run, every change an
+  // agent or a person signed, Marko's hours and what he worked on, reports as
+  // they land, and anything that went wrong. The log is paged from the server
+  // (load() only keeps the newest 1,000 rows) and the cards at the top come
+  // from activity_summary() (migration 042). Hours only, never pay.
+  activityVals({isTeam, sectionNow, D, cname, clientDot, openSection}){
+    const S=this.state, d=S.d||{};
+    const on = isTeam && sectionNow==='activity';
+    if(!on) return {secActivity:false};
+    const PT='America/Los_Angeles', now=Date.now(), H=36e5, DAY=24*H;
+    const RANGES=[['today','Today'],['7d','7 days'],['30d','30 days'],['all','All time']];
+    const range = RANGES.some(r=>r[0]===S.alRange)? S.alRange : '7d';
+    const ptParts = t=>{ const o={}; new Intl.DateTimeFormat('en-US',{timeZone:PT,year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',weekday:'short',hourCycle:'h23'})
+      .formatToParts(new Date(t)).forEach(p=>{ o[p.type]=p.value; }); return {y:+o.year,mo:+o.month,d:+o.day,h:+o.hour%24,mi:+o.minute,wd:o.weekday}; };
+    const ptWall = (y,mo,dd,h,mi)=>{ const g=Date.UTC(y,mo-1,dd,h,mi); const p=ptParts(g); return g+(g-Date.UTC(p.y,p.mo-1,p.d,p.h,p.mi)); };
+    const today=ptParts(now), todayStart=ptWall(today.y,today.mo,today.d,0,0);
+    const since = range==='today'? todayStart : range==='7d'? now-7*DAY : range==='30d'? now-30*DAY : 0;
+    const dayKey = t=>{ const p=ptParts(t); return p.y+'-'+String(p.mo).padStart(2,'0')+'-'+String(p.d).padStart(2,'0'); };
+    const clock = t=>new Intl.DateTimeFormat('en-US',{timeZone:PT,hour:'numeric',minute:'2-digit'}).format(new Date(t));
+    const dayLabel = k=>{ if(k===dayKey(now)) return 'Today'; if(k===dayKey(now-DAY)) return 'Yesterday';
+      const [y,mo,dd]=k.split('-').map(Number); return new Intl.DateTimeFormat('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}).format(new Date(Date.UTC(y,mo-1,dd,12))); };
+    const rel = t=> t? this.fmt(t) : 'never';
+
+    // Who's who. Agents are profiles that only sign automated work.
+    const people = (D.people||[]).concat(D.team||[]);
+    const prof = id=>people.find(p=>p.id===id)||null;
+    const nameOf = id=>{ const p=prof(id); return p? String(p.name||p.email||'').trim() : ''; };
+    const agentProf = id=>{ const p=prof(id); return !!(p&&p.isAgent); };
+    const team = (D.team||[]).filter(t=>t.active!==false);
+    const humans = team.filter(t=>!t.isAgent), agents = team.filter(t=>t.isAgent);
+    const agentId = n=>{ const a=agents.find(x=>x.name===n); return a? a.id : ''; };
+
+    // Every scheduled task that writes to the dashboard, with its schedule in
+    // Pacific time, so a run that never happened shows up as missed.
+    // days: 0 Sun .. 6 Sat. A task's run is proven by its run row (kind 'run',
+    // agent = task name, claude/agent-run-log.md) or by the older signals noted.
+    const AL_TASKS=[
+      {name:'Overnight Outreach Build', short:'Leads', profile:'Leads Agent', days:[1,2,3,4,5], h:2, m:10},
+      {name:'Paid Ads Morning Check', short:'Paid ads', profile:'Social Agent', days:[0,1,2,3,4,5,6], h:3, m:30, reports:'ads'},
+      {name:'Daily Blogs', short:'Blogs', profile:'Blog Agent', days:[1,2,3,4,5], h:5, m:30},
+      {name:'Daily Socials', short:'Social', profile:'Social Agent'},
+      {name:'Marko Morning Report', short:'Marko report', days:[1,2,3,4,5], h:6, m:41, reports:'team'},
+      {name:'Weekly Newsletter', short:'Newsletter', profile:'Blog Agent', days:[1], h:6, m:56},
+      {name:'Dashboard Finances & Invoicing Update', short:'Finances', days:[0,1,2,3,4,5,6], h:7, m:20},
+      {name:'LinkedIn Friday', short:'LinkedIn', days:[5], h:7, m:0}
+    ];
+    const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const lastFire = tk=>{ if(!tk.days) return 0;
+      for(let back=0; back<9; back++){ const p=ptParts(now-back*DAY);
+        const wd=WD.indexOf(p.wd); if(tk.days.indexOf(wd)<0) continue;
+        const t=ptWall(p.y,p.mo,p.d,tk.h,tk.m); if(t<=now-90*60e3) return t; }
+      return 0; };
+
+    // Load: the summary once per range, the feed once per range + filter.
+    const who = S.alWho||'', client = S.alClient||'';
+    const key = [range,who,client].join('|');
+    const fetchFeed = (more)=>{
+      const st=this.state, rows=more? (st.alRows||[]) : [];
+      const before = more && rows.length? rows[rows.length-1].ts : undefined;
+      this.setState({alLoading:true, alErr:null, alKey:key});
+      const o={since:since||undefined, before, clientId:client||undefined, limit:300};
+      if(who.indexOf('p:')===0) o.by=who.slice(2);
+      if(who.indexOf('a:')===0) o.agent=who.slice(2);
+      window.SUData.fetchLog(o).then(list=>this.setState(s2=>({alLoading:false, alRows:(more? (s2.alRows||[]) : []).concat(list), alHasMore:list.length>=300})))
+        .catch(err=>this.setState({alLoading:false, alErr:(err&&err.message)||'Could not load the activity log.'}));
+    };
+    if(S.alKey!==key && !S.alLoading) setTimeout(()=>{ if(this.state.alKey!==key) fetchFeed(false); },0);
+    const sumKey = range+':'+Math.floor(now/(5*60e3));
+    if(S.alSumKey!==sumKey && !S.alSumLoading) setTimeout(()=>{
+      if(this.state.alSumKey===sumKey||this.state.alSumLoading) return;
+      this.setState({alSumLoading:true});
+      window.SUData.activitySummary(since).then(rows=>this.setState({alSum:rows, alSumKey:sumKey, alSumLoading:false}))
+        .catch(()=>this.setState({alSumKey:sumKey, alSumLoading:false}));
+    },0);
+    const sum = S.alSum||[];
+    const sumBy = id=>sum.filter(r=>r.by_id===id);
+    const sumAgent = n=>sum.filter(r=>r.agent===n);
+    const maxOf = (rows,k)=>rows.reduce((a,r)=>Math.max(a,Number(r[k])||0),0);
+    const addOf = (rows,k)=>rows.reduce((a,r)=>a+(Number(r[k])||0),0);
+
+    // Reports and hours come straight from the loaded data.
+    const reports = (D.report_docs||[]).map(r=>({r, t: r.createdAt? Date.parse(r.createdAt) : Number(r.ts||0)})).filter(x=>x.t);
+    const hours = (D.time||[]).map(e=>{ const [y,mo,dd]=String(e.entryDate||'').split('-').map(Number);
+      return {e, t: y? ptWall(y,mo,dd,12,0) : 0}; }).filter(x=>x.t);
+    const inRange = t=> !since || t>=since;
+
+    // ----- status cards -----
+    const TONE={ok:['#1FB264','Ran fine'],warn:['#D68F2E','Finished with notes'],error:['#D8564E','Failed'],missed:['#D8564E','Missed a run'],none:['var(--gray-400)','No run logged yet'],idle:['var(--gray-400)','Idle']};
+    const cardStyle = sel=>'text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;padding:14px 16px;border-radius:12px;cursor:pointer;font-family:var(--font-body);background:var(--surface-card);border:1px solid '+(sel?'var(--navy)':'var(--border-card)')+';box-shadow:'+(sel?'0 0 0 1px var(--navy)':'0 1px 2px rgba(15,22,51,.05)');
+    const pick = v=>()=>this.setState({alWho: who===v? '' : v});
+    const taskCards = AL_TASKS.map(tk=>{
+      const own = sumAgent(tk.name);
+      const pid = tk.profile? agentId(tk.profile) : '';
+      // Older proof of a run until every task writes run rows.
+      let lastRun = maxOf(own,'last_run_ts'), status = '';
+      const ownLast = own.filter(r=>Number(r.last_run_ts)===lastRun)[0];
+      if(ownLast) status = ownLast.last_run_status||'ok';
+      if(tk.name==='Overnight Outreach Build'){ const lr=sumBy(pid).filter(r=>!r.agent); const t=maxOf(lr,'last_run_ts'); if(t>lastRun){ lastRun=t; status=(lr[0]&&lr[0].last_run_status)||'ok'; } }
+      if(tk.reports){ const t=reports.filter(x=>x.r.channel===tk.reports && x.r.kind==='daily').reduce((a,x)=>Math.max(a,x.t),0); if(t>lastRun){ lastRun=t; status='ok'; } }
+      const fire = lastFire(tk);
+      let state = lastRun? status : 'none';
+      if(fire && lastRun && lastRun < fire-10*60e3) state='missed';
+      const [dot,label]=TONE[state]||TONE.ok;
+      const runs = addOf(own,'runs') + (tk.name==='Overnight Outreach Build'? addOf(sumBy(pid).filter(r=>!r.agent),'runs') : 0);
+      const errs = addOf(own,'errors'), warns=addOf(own,'warns');
+      const mins = own.map(r=>Number(r.avg_minutes)).filter(n=>n>0);
+      const v='a:'+tk.name;
+      return {name:tk.short, full:tk.name, isTask:true, sel:who===v, select:pick(v), style:cardStyle(who===v),
+        dot:'width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:'+dot, status:label,
+        line1: lastRun? 'Last run '+rel(lastRun) : (tk.days? 'Waiting for its first run log' : 'Schedule not tracked'),
+        line2: [runs? runs+' run'+(runs===1?'':'s') : '', mins.length? Math.round(mins.reduce((a,b)=>a+b,0)/mins.length)+' min avg' : '', errs? errs+' failed' : '', warns? warns+' with notes' : ''].filter(Boolean).join(' · ') || ' ',
+        bad: state==='error'||state==='missed', badText: state==='missed'? 'Expected '+clock(fire)+' '+dayLabel(dayKey(fire)).toLowerCase() : ''};
+    });
+    const personCards = humans.map(p=>{
+      const rows=sumBy(p.id), n=addOf(rows,'n'), last=maxOf(rows,'last_ts');
+      const hrs = hours.filter(x=>x.e.profileId===p.id && inRange(x.t)).reduce((a,x)=>a+(Number(x.e.hours)||0),0);
+      const v='p:'+p.id;
+      return {name:p.name||p.email, full:'', isTask:false, sel:who===v, select:pick(v), style:cardStyle(who===v),
+        dot:'width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--navy)', status:'Team member',
+        line1: last? 'Last active '+rel(last) : 'No activity yet',
+        line2: [hrs? (Math.round(hrs*10)/10)+' hrs logged' : '', n? n+' change'+(n===1?'':'s') : ''].filter(Boolean).join(' · ') || 'Nothing in this period',
+        bad:false, badText:''};
+    });
+    const needsYou = taskCards.filter(c=>c.bad);
+
+    // ----- the feed -----
+    const AREA={run:'Run',leads:'Leads',content:'Content',client:'Client work',hours:'Hours',report:'Report',other:'General'};
+    const noteRx=/\b(bounced|failed|failure|error|couldn.t|could not|held|refused|skipped|missing|stalled|timed out)\b/i;
+    const rows = (S.alKey===key? (S.alRows||[]) : []);
+    const fromLog = rows.map(l=>{
+      const isRun = l.kind==='run' || /^(Overnight outreach|Outreach batch)/.test(l.text||'');
+      const errs = Array.isArray(l.errors)? l.errors.filter(Boolean).map(String) : [];
+      const status = isRun? (l.status||(errs.length?'error':'ok')) : (l.status||'');
+      const area = isRun? 'run' : l.leadId? 'leads' : l.contentId? 'content' : l.clientId? 'client' : 'other';
+      const whoName = l.agent || nameOf(l.by) || 'Someone';
+      const flagged = status==='warn'||status==='error'||errs.length>0||noteRx.test(l.text||'');
+      return {id:l.id, t:l.ts, whoName, isAgent: !!l.agent || agentProf(l.by), text:String(l.text||''), area, clientId:l.clientId||'',
+        status, errs, minutes:Number(l.minutes)||0, flagged, quiet:!!l.quiet};
+    });
+    const humanWho = who.indexOf('p:')===0? who.slice(2) : '';
+    const fromHours = (who && !humanWho)? [] : hours.filter(x=>inRange(x.t) && (!humanWho || x.e.profileId===humanWho) && (!client || x.e.clientId===client))
+      .map(x=>({id:'te:'+x.e.id, t:x.t, whoName:nameOf(x.e.profileId)||'Team', isAgent:false, area:'hours', clientId:x.e.clientId||'',
+        text:String(x.e.description||'').replace(/\s*·\s*[A-Za-z]+ \(Jibble\)\s*(·\s*)?/,' · ').replace(/^\s*·\s*|\s*·\s*$/g,'') || 'Time logged',
+        hrs:Number(x.e.hours)||0, status:'', errs:[], flagged:false, quiet:false}));
+    const fromReports = (who.indexOf('a:')===0 || humanWho)? [] : reports.filter(x=>inRange(x.t) && (!client || x.r.clientId===client))
+      .map(x=>({id:'rd:'+x.r.id, t:x.t, whoName:x.r.byName||'Agent', isAgent:true, area:'report', clientId:x.r.clientId||'',
+        text:'Report: '+(x.r.title||'Report')+(x.r.headline? '. '+x.r.headline : ''), status:'', errs:[], flagged:x.r.verdict==='bad', quiet:false}));
+    // Rows older than the oldest loaded log row would sort into a gap the
+    // log hasn't paged to yet, so they wait for "Load older".
+    const floor = (S.alHasMore && rows.length)? rows[rows.length-1].ts : 0;
+    let all = fromLog.concat(fromHours, fromReports).filter(x=>x.t>=floor);
+    const type = S.alType||'all';
+    const TYPES=[['all','Everything'],['flagged','Errors & notes'],['run','Agent runs'],['hours','Hours'],['client','Client work'],['leads','Leads'],['content','Content'],['report','Reports']];
+    const typeCount = k=> k==='all'? all.length : k==='flagged'? all.filter(x=>x.flagged).length : all.filter(x=>x.area===k).length;
+    const hideQuiet = !!S.alHideQuiet;
+    const q = String(d.alQ||'').trim().toLowerCase();
+    let shown = all.filter(x=> type==='all' || (type==='flagged'? x.flagged : x.area===type))
+      .filter(x=>!hideQuiet || !x.quiet || x.flagged)
+      .filter(x=>!q || (x.text+' '+x.whoName+' '+cname(x.clientId)).toLowerCase().indexOf(q)>-1)
+      .sort((a,b)=>b.t-a.t);
+    const LIMIT = S.alShow||150;
+    const more = shown.length>LIMIT; shown = shown.slice(0,LIMIT);
+    const pillBase='display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:10px;white-space:nowrap;';
+    const STATUS_PILL={ok:['rgba(31,178,100,.13)','Ran fine'],warn:['rgba(214,143,46,.16)','Notes'],error:['rgba(216,86,78,.15)','Failed']};
+    const openMap = S.alOpen||{};
+    const groups=[]; let cur=null;
+    shown.forEach(x=>{ const k=dayKey(x.t);
+      if(!cur||cur.k!==k){ cur={k, label:dayLabel(k), items:[], hrs:0, n:0}; groups.push(cur); }
+      if(x.area==='hours') cur.hrs+=x.hrs||0;
+      cur.n++;
+      const open=!!openMap[x.id], sp=STATUS_PILL[x.status];
+      const hasErr = x.errs.length>0;
+      cur.items.push({
+        time: x.area==='hours'? 'Day' : clock(x.t),
+        who:x.whoName, whoStyle:'font-weight:700;color:'+(x.isAgent?'#6b4bd1':'var(--navy)'),
+        avatar:(x.whoName||'?').trim().charAt(0).toUpperCase(),
+        avatarStyle:'flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;background:'+(x.isAgent?'#6b4bd1':(x.area==='hours'?'#1FB264':'var(--navy)')),
+        isAgent:x.isAgent,
+        text:x.text, textStyle:'font-size:13.5px;line-height:1.5;color:var(--text-body);'+(x.quiet&&!x.flagged?'opacity:.8;':'')+(open?'':'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;'),
+        toggle:()=>this.setState(s2=>({alOpen:{...(s2.alOpen||{}),[x.id]:!open}})),
+        area:AREA[x.area], areaStyle:pillBase+'background:var(--gray-100);color:var(--text-muted)',
+        hasClient:!!x.clientId, client:cname(x.clientId), clientDot:Object.assign({},clientDot(x.clientId),{width:7,height:7,minWidth:7}),
+        hasHrs:x.area==='hours', hrs:(Math.round((x.hrs||0)*100)/100)+' hrs',
+        hasStatus:!!sp, statusText:sp?sp[1]:'', statusStyle:pillBase+'background:'+(sp?sp[0]:'transparent')+';color:var(--text-body)',
+        hasMinutes:x.minutes>0, minutes:x.minutes+' min',
+        flagged:x.flagged && !sp, flagStyle:pillBase+'background:rgba(214,143,46,.16);color:var(--text-body)',
+        hasErrs:hasErr && open, errs:x.errs.map(e=>({t:e})), errHint: hasErr && !open,
+        errHintText: x.errs.length+' issue'+(x.errs.length===1?'':'s')+', tap to see',
+        rowStyle:'display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border-top:1px solid var(--border-card);cursor:pointer;'+(x.status==='error'?'background:rgba(216,86,78,.05);':x.flagged?'background:rgba(214,143,46,.04);':'')
+      });
+    });
+    const dayGroups = groups.map(g=>({label:g.label, sub:[g.n+' item'+(g.n===1?'':'s'), g.hrs? (Math.round(g.hrs*10)/10)+' hrs logged' : ''].filter(Boolean).join(' · '), items:g.items}));
+
+    // ----- filters -----
+    const chip = (on)=>'border:1px solid '+(on?'var(--navy)':'var(--border-card)')+';background:'+(on?'var(--navy)':'var(--surface-card)')+';color:'+(on?'#fff':'var(--navy)')+';padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body);white-space:nowrap';
+    const whoOpts=[{v:'',l:'Everyone'}]
+      .concat(humans.map(p=>({v:'p:'+p.id,l:p.name||p.email})))
+      .concat(agents.map(a=>({v:'p:'+a.id,l:a.name+' (all of its work)'})))
+      .concat(AL_TASKS.map(t=>({v:'a:'+t.name,l:t.name+' (runs)'})));
+    const clientOpts=[{v:'',l:'All clients'}].concat((D.clients||[]).map(c=>({v:c.id,l:c.name})));
+    const loadedNote = (S.alLoading && !rows.length)? 'Loading the log…'
+      : (S.alErr? S.alErr : (shown.length? '' : 'Nothing here for these filters.'));
+    return {
+      secActivity:true,
+      alIntro:'Everything the agents and the team did, newest first: agent runs, every signed change, hours and what was worked on, reports, and anything that failed. Pay is never shown here.',
+      alRanges:RANGES.map(([k,l])=>({label:l, style:chip(k===range), select:()=>this.setState({alRange:k, alShow:150})})),
+      alTypes:TYPES.map(([k,l])=>{ const n=typeCount(k); return {label:l, n:String(n), style:chip(k===type)+(k==='flagged'&&n&&k!==type?';border-color:#D68F2E':''), select:()=>this.setState({alType:k, alShow:150})}; }),
+      alTaskCards:taskCards, alPersonCards:personCards,
+      alNeedsYou:needsYou.length>0, alNeedsYouText: needsYou.map(c=>c.full+': '+(c.badText||c.status.toLowerCase())).join(' · '),
+      dAlWho:who, onAlWho:e=>this.setState({alWho:e.target.value, alShow:150}), alWhoOpts:whoOpts,
+      dAlClient:client, onAlClient:e=>this.setState({alClient:e.target.value, alShow:150}), alClientOpts:clientOpts,
+      dAlQ:d.alQ||'', onAlQ:this.draft('alQ'),
+      alQuietLabel: hideQuiet? 'Show routine steps' : 'Hide routine steps',
+      toggleAlQuiet:()=>this.setState({alHideQuiet:!hideQuiet}),
+      alHasFilter: !!(who||client||q||type!=='all'),
+      clearAlFilters:()=>this.setState(s2=>({alWho:'', alClient:'', alType:'all', d:{...s2.d, alQ:''}})),
+      alGroups:dayGroups, alEmpty:!!loadedNote, alEmptyText:loadedNote,
+      alCanMore: more || (!!S.alHasMore && S.alKey===key),
+      alMoreLabel: S.alLoading? 'Loading…' : 'Load older',
+      alLoadMore:()=>{ if(more) this.setState({alShow:LIMIT+150}); else if(!this.state.alLoading) fetchFeed(true); },
+      alRefresh:()=>this.setState({alKey:null, alSumKey:null})
+    };
+  }
   showsVals({isTeam, client, sectionNow}){
     const S=this.state, d=S.d||{};
     const on = sectionNow==='shows' && (isTeam || (client && client.id==='vs'));
@@ -7566,7 +7908,7 @@ class Component extends DCLogic {
       ['messages','Messages'],
       ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['chatbot','AI Chatbots'],['reports','Reports'],['shows','Shows'],['invoicing','Invoicing']]],
       ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
-      ['g-team','Team',[['team','People'],['payments','Team Pay']]]
+      ['g-team','Team',[['activity','Activity Log'],['team','People'],['payments','Team Pay']]]
     ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
     const teamGroupOf = sid => TEAM_TREE.find(([,,kids])=>kids&&kids.some(([k])=>k===sid)) || null;
     // The client portal mirrors it: Work is the queue and approvals, Growth is
@@ -7739,7 +8081,7 @@ class Component extends DCLogic {
       });
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],activity:['Team','Activity Log'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing'],shows:[client.name,'Shows']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     headings.chatbot = isTeam ? ['Clients','AI Chatbots'] : [client.name,'AI Chatbot'];
@@ -7991,10 +8333,10 @@ class Component extends DCLogic {
     // clients (team)
     // The Clients page splits by status. Every client sits in exactly one of
     // active, stalled or inactive; "All" shows the lot. Opens on Active.
-    const CL_STATUS={active:['Active','green'],stalled:['Stalled','amber'],inactive:['Not active','gray']};
+    const CL_STATUS={active:['Active','green'],stalled:['Stale','amber'],inactive:['Not Active','gray']};
     const clStatusOf=c=> CL_STATUS[c.status]? c.status : 'active';
     const clTab=S.clientTab||'active';
-    const clientTabs=[['active','Active'],['stalled','Stalled'],['inactive','Not active'],['all','All']].map(([k,l])=>{
+    const clientTabs=[['active','Active'],['stalled','Stale'],['inactive','Not Active'],['all','All']].map(([k,l])=>{
       const n=k==='all'? D.clients.length : D.clients.filter(c=>clStatusOf(c)===k).length; const on=clTab===k;
       return {label:l, n, select:()=>this.setState({clientTab:k}),
         style:{display:'inline-flex',alignItems:'center',gap:8,background:on?'var(--pill-bg)':'var(--surface-card)',color:on?'var(--pill-fg)':'var(--text-body)',
@@ -8042,7 +8384,7 @@ class Component extends DCLogic {
         openWork:liveWork.filter(w=>w.clientId===c.id&&(w.status==='progress'||w.status==='review')).length,
         pendingReqs:liveReqs.filter(r=>r.clientId===c.id&&r.status==='new').length,
         pulse:avg?avg.toFixed(1):'-', pulseColor:avg>=4?'var(--green)':avg>0?'#D68F2E':'var(--text-muted)',
-        activeTitle:act?act.title:(st==='active'?'Nothing in progress':st==='stalled'?'Stalled · no active work':'Not an active client'),
+        activeTitle:act?act.title:(st==='active'?'Nothing in progress':st==='stalled'?'Stale · no active work':'Not an active client'),
         nowStyle:{color:act?'var(--navy)':'var(--text-muted)',fontWeight:act?600:400},
         // Add-on badges. Today just the AI Chatbot, which unlocks that tab in
         // the client's portal.
@@ -8273,6 +8615,136 @@ class Component extends DCLogic {
           +';background:'+(on?'var(--navy)':'var(--surface-card)')+';color:'+(on?'#fff':'var(--navy)')+';padding:9px 14px;border-radius:12px;cursor:pointer;font-family:var(--font-body);min-width:0',
         subStyle:'font-size:11px;font-weight:500;opacity:'+(on?'.75':'.65')}; });
     const rdScopeIsClient = rdScope!=='|';
+    // ===== report reader (team) =====
+    // Stacking every daily report as a long feed made the ads reports hard to
+    // use: 40 near-identical cards, each opening into a wall. The team view is
+    // a reader now: pick a channel, step through dates, and read one report at
+    // a time in tabs (Overview, Numbers, Plan, Trend, Notes). Trends and
+    // day-over-day changes come from the earlier reports of the same channel,
+    // so agents don't have to write anything new for them.
+    const rvNum = v=>{ const m=String(v==null?'':v).replace(/,/g,'').match(/-?\d+(\.\d+)?/); return m? parseFloat(m[0]) : null; };
+    const rvChanOf = r=> (r.channel||'other')+':'+(r.kind||'daily');
+    const rvChans = Array.from(new Set(rdList.map(rvChanOf)));
+    const rvChanName = k=>{ const [c,kd]=k.split(':'); return (RD_CHAN[c]||'Report')+(kd&&kd!=='daily'? ' · '+(RD_KIND[kd]||kd) : ''); };
+    const rvChan = rvChans.indexOf(S.rvChan)>-1? S.rvChan : (rvChans[0]||'');
+    const rvSeries = rdList.filter(r=>rvChanOf(r)===rvChan);           // newest first
+    const rvIdx = Math.max(0, rvSeries.findIndex(r=>r.id===S.rvSel));
+    const rvR = rvSeries[rvIdx]||null;
+    const rvItem = rvR? rdItems.find(x=>x.id===rvR.id) : null;
+    const rvSel = (id,extra)=>()=>this.setState(Object.assign({rvSel:id, rvArchiveAsk:false}, extra||{}));
+    // Line charts are drawn as SVG images: the template can't bind SVG
+    // attributes, but it can bind an <img> src.
+    const rvSvg = (svg)=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    const rvSpark = (vals, good)=>{ const v=vals.filter(x=>x!=null); if(v.length<2) return '';
+      const W=120,Hh=34,p=3, mn=Math.min(...v), mx=Math.max(...v), sp=(mx-mn)||1;
+      const pts=vals.map((x,i)=>x==null? null : [p+i*(W-2*p)/(vals.length-1), Hh-p-(x-mn)*(Hh-2*p)/sp]).filter(Boolean);
+      const col= good===false? '#D8564E' : '#2F6FE4';
+      const last=pts[pts.length-1];
+      return rvSvg('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+Hh+'" viewBox="0 0 '+W+' '+Hh+'"><polyline fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')+'"/><circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="3" fill="'+col+'"/></svg>'); };
+    const rvChart = (pts, label)=>{ // pts oldest first: [{x:label,y:number,cur:bool}]
+      const v=pts.filter(q=>q.y!=null); if(v.length<2) return '';
+      const W=760,Hh=240,L=56,R=30,T=18,B=34, ys=v.map(q=>q.y), mn=Math.min(...ys,0>Math.min(...ys)?Math.min(...ys):Math.min(...ys)), mx=Math.max(...ys);
+      const lo = mn>0 && (mx-mn)/mx<0.6 ? mn*0.9 : Math.min(0,mn), hi = mx===lo? lo+1 : mx*1.08;
+      const X=i=>L+i*(W-L-R)/Math.max(1,pts.length-1), Y=y=>T+(hi-y)*(Hh-T-B)/(hi-lo);
+      const fmt=n=>Math.abs(n)>=100? Math.round(n).toLocaleString('en-US') : (Math.round(n*100)/100).toString();
+      let g=''; for(let k=0;k<=4;k++){ const y=lo+(hi-lo)*k/4, yy=Y(y);
+        g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="#E4E7EF" stroke-width="1"/><text x="'+(L-8)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end" font-size="11" fill="#6B7280" font-family="Inter,Arial,sans-serif">'+fmt(y)+'</text>'; }
+      const step=Math.ceil(pts.length/8);
+      pts.forEach((q,i)=>{ if(i%step===0||i===pts.length-1) g+='<text x="'+X(i).toFixed(1)+'" y="'+(Hh-10)+'" text-anchor="middle" font-size="11" fill="#6B7280" font-family="Inter,Arial,sans-serif">'+String(q.x).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</text>'; });
+      const line=pts.map((q,i)=>q.y==null? null : X(i).toFixed(1)+','+Y(q.y).toFixed(1)).filter(Boolean);
+      const area='M'+line[0]+' L'+line.join(' L')+' L'+X(pts.length-1).toFixed(1)+','+Y(lo).toFixed(1)+' L'+line[0].split(',')[0]+','+Y(lo).toFixed(1)+' Z';
+      let dots=''; pts.forEach((q,i)=>{ if(q.y==null) return; dots+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(q.y).toFixed(1)+'" r="'+(q.cur?5:3)+'" fill="'+(q.cur?'#0F1633':'#2F6FE4')+'" stroke="#fff" stroke-width="1.5"/>'; });
+      return rvSvg('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+Hh+'" viewBox="0 0 '+W+' '+Hh+'">'+g+'<path d="'+area+'" fill="#2F6FE4" fill-opacity="0.08"/><polyline fill="none" stroke="#2F6FE4" stroke-width="2.5" stroke-linejoin="round" points="'+line.join(' ')+'"/>'+dots+'</svg>'); };
+    const rvShort = r=>{ const e=(r.period&&r.period.end)||''; const t=e? Date.parse(e+'T12:00:00') : (r.createdAt? Date.parse(r.createdAt) : Number(r.ts));
+      return isNaN(t)? (r.period&&r.period.label)||'' : new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
+    const rvKpiSeries = label=>rvSeries.slice().reverse().map(r=>{ const k=(r.kpis||[]).find(k=>k.label===label); return {x:rvShort(r), y:k? rvNum(k.value) : null, cur:r===rvR, id:r.id}; });
+    const rvPrev = rvSeries[rvIdx+1]||null;
+    const rvTabs0=[['overview','Overview'],['numbers','Numbers'],['plan','Plan'],['trend','Trend'],['notes','Notes']];
+    const rvTab = rvTabs0.some(t=>t[0]===S.rvTab)? S.rvTab : 'overview';
+    const rvKpisRaw = rvR? (rvR.kpis||[]) : [];
+    const rvKpis = rvKpisRaw.map((k,j)=>{
+      const prevK = rvPrev && (rvPrev.kpis||[]).find(x=>x.label===k.label);
+      const a=rvNum(k.value), b=prevK? rvNum(prevK.value) : null;
+      const diff = (a!=null&&b!=null)? a-b : null;
+      const series = rvKpiSeries(k.label).slice(-14).map(q=>q.y);
+      const mark = k.good===true? '#1FB264' : (k.good===false? '#D8564E' : 'var(--gray-400)');
+      const tipKey=rvR.id+':'+j, tip=!!(S.rdTip||{})[tipKey];
+      return {label:k.label||'', value:k.value||'', delta:k.delta||'', hasDelta:!!k.delta,
+        chg: diff==null||diff===0? (diff===0?'Same as '+rvShort(rvPrev):'') : (diff>0?'▲ ':'▼ ')+(Math.round(Math.abs(diff)*100)/100).toLocaleString('en-US')+' vs '+rvShort(rvPrev),
+        hasChg: diff!=null,
+        spark: rvSpark(series, k.good), hasSpark: series.filter(x=>x!=null).length>=2,
+        markStyle:'width:7px;height:7px;border-radius:50%;flex:0 0 auto;background:'+mark,
+        meaning:k.meaning||'', hasMeaning:!!k.meaning, tipOpen:!!k.meaning&&tip, tipLabel: tip? 'Hide' : 'What this means',
+        toggleTip:()=>{ if(k.meaning) rdFlip('rdTip',tipKey,tip); },
+        openTrend:()=>this.setState({rvTab:'trend', rvTrendK:k.label}),
+        tileStyle:'border:1px solid var(--border-card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;background:var(--surface-card)'};
+    });
+    // Numbers: one table at a time, sortable, searchable.
+    const rvTables = rvR? (rvR.tables||[]) : [];
+    const rvTi = Math.min(Math.max(0, S.rvTable||0), Math.max(0,rvTables.length-1));
+    const rvT = rvTables[rvTi]||null;
+    const rvSort = S.rvSort||{c:-1,dir:1};
+    const rvTq = String(d.rvTq||'').trim().toLowerCase();
+    let rvRows = rvT? (rvT.rows||[]).map(r=>r.slice()) : [];
+    const totalRx=/^(total|totals|all|sum)\b/i;
+    const rvTotal = rvRows.filter(r=>totalRx.test(String(r[0]||''))||totalRx.test(String(r[1]||'')));
+    rvRows = rvRows.filter(r=>rvTotal.indexOf(r)<0);
+    if(rvTq) rvRows = rvRows.filter(r=>r.join(' ').toLowerCase().indexOf(rvTq)>-1);
+    if(rvT && rvSort.c>-1){ const c=rvSort.c; rvRows.sort((a,b)=>{ const x=rvNum(a[c]), y=rvNum(b[c]);
+      if(x!=null&&y!=null) return (x-y)*rvSort.dir; return String(a[c]||'').localeCompare(String(b[c]||''))*rvSort.dir; }); }
+    const rvCols = rvT? (rvT.columns||[]) : [];
+    const rvGrid = 'display:grid;grid-template-columns:'+rvCols.map((c,i)=>i===0&&/^#$/.test(String(c))? '36px' : (i<=1? 'minmax(150px,2fr)' : 'minmax(72px,1fr)')).join(' ')+';gap:0 14px;align-items:center;min-width:'+(120+rvCols.length*86)+'px';
+    const rvCell=(v,i,head)=>({v:String(v==null?'':v), style:'padding:'+(head?'8px 0':'10px 0')+';font-size:'+(head?'11px':'13px')+';'+(i<=1&&!(i===0&&/^#$/.test(String(rvCols[0])))?'text-align:left;':'text-align:right;font-variant-numeric:tabular-nums;')+(head?'font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);cursor:pointer;user-select:none;':'color:var(--text-body);')});
+    const rvHead = rvCols.map((c,i)=>{ const on=rvSort.c===i; const cell=rvCell(c+(on?(rvSort.dir>0?' ▲':' ▼'):''),i,true);
+      cell.sort=()=>this.setState({rvSort: on? {c:i,dir:-rvSort.dir} : {c:i,dir:(i<=1?1:-1)}}); return cell; });
+    const rvBody = rvRows.map((r,ri)=>({style:rvGrid+';border-top:1px solid var(--border-card);'+(ri===0&&rvSort.c>1?'background:rgba(47,111,228,.05);':''), cells:r.map((v,i)=>rvCell(v,i,false))}))
+      .concat(rvTotal.map(r=>({style:rvGrid+';border-top:2px solid var(--border-hairline);font-weight:700', cells:r.map((v,i)=>Object.assign(rvCell(v,i,false),{style:rvCell(v,i,false).style+'font-weight:700;color:var(--navy);'}))})));
+    // Trend: any KPI that appears in this channel's reports.
+    const rvKLabels = Array.from(new Set(rvSeries.flatMap(r=>(r.kpis||[]).map(k=>k.label)).filter(Boolean)));
+    const rvTK = rvKLabels.indexOf(S.rvTrendK)>-1? S.rvTrendK : (rvKpisRaw[0]&&rvKpisRaw[0].label)||rvKLabels[0]||'';
+    const rvTPts = rvTK? rvKpiSeries(rvTK).slice(-45) : [];
+    const rvTVals = rvTPts.map(q=>q.y).filter(x=>x!=null);
+    const rvTSample = rvTK? String(((rvSeries.find(r=>(r.kpis||[]).some(k=>k.label===rvTK))||{}).kpis||[]).find(k=>k.label===rvTK).value||'') : '';
+    const rvU = n=>{ const r=Math.round(n*100)/100; const t=Math.abs(r)>=1000? r.toLocaleString('en-US') : String(r);
+      return (/^\s*\$/.test(rvTSample)? '$'+(Math.abs(r)<100&&/\.\d\d/.test(rvTSample)? r.toFixed(2) : t) : t)+(/%\s*$/.test(rvTSample)? '%' : ''); };
+    const rvTStat = rvTVals.length? [
+      {l:'Latest', v:rvU(rvTVals[rvTVals.length-1])}, {l:'Average', v:rvU(rvTVals.reduce((a,b)=>a+b,0)/rvTVals.length)},
+      {l:'Highest', v:rvU(Math.max(...rvTVals))}, {l:'Lowest', v:rvU(Math.min(...rvTVals))}, {l:'Reports', v:String(rvTVals.length)}] : [];
+    const rvChip = on=>'border:1px solid '+(on?'var(--navy)':'var(--border-card)')+';background:'+(on?'var(--navy)':'var(--surface-card)')+';color:'+(on?'#fff':'var(--navy)')+';padding:7px 12px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body);white-space:nowrap';
+    const rvTone = r=>RD_TONE[r.verdict]||null;
+    const rvDates = rvSeries.slice(0,30).map(r=>{ const on=r===rvR, t=rvTone(r);
+      return {label:rvShort(r), select:rvSel(r.id), dot:'width:7px;height:7px;border-radius:50%;background:'+(t?t.dot:'var(--gray-400)'),
+        style:'display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;'+rvChip(on)}; });
+    const rvHistN = S.rvHistN||8;
+    const rvHist = rvSeries.filter(r=>r!==rvR).slice(0,rvHistN).map(r=>{ const t=rvTone(r);
+      return {date:rvShort(r), title:r.title||'Report', headline:r.headline||'', select:rvSel(r.id,{rvTab:'overview'}),
+        dot:'width:8px;height:8px;border-radius:50%;flex:0 0 auto;margin-top:6px;background:'+(t?t.dot:'var(--gray-400)')}; });
+    const rvCount = {numbers:rvTables.length, plan:(rvR&&rvR.actions||[]).length};
+    const reader = {
+      rvHas: !!rvR, rvNone: !rvR,
+      rvChans: rvChans.length>1? rvChans.map(k=>({label:rvChanName(k), n:String(rdList.filter(r=>rvChanOf(r)===k).length), style:rvChip(k===rvChan), select:()=>this.setState({rvChan:k, rvSel:null, rvTable:0, rvSort:null})})) : [],
+      rvMultiChan: rvChans.length>1,
+      rvDates, rvPrevOk: rvIdx<rvSeries.length-1, rvNextOk: rvIdx>0,
+      rvOlder: ()=>{ const r=rvSeries[rvIdx+1]; if(r) this.setState({rvSel:r.id}); },
+      rvNewer: ()=>{ const r=rvSeries[rvIdx-1]; if(r) this.setState({rvSel:r.id}); },
+      rvPos: rvSeries.length? (rvIdx===0? 'Latest' : (rvIdx+1)+' of '+rvSeries.length) : '',
+      rvTabs: rvTabs0.filter(([k])=> k==='overview'||k==='notes'|| (k==='numbers'&&rvTables.length) || (k==='plan'&&rvCount.plan) || (k==='trend'&&rvKLabels.length&&rvSeries.length>1))
+        .map(([k,l])=>({label:l, n: rvCount[k]? String(rvCount[k]) : '', on:k===rvTab, select:()=>this.setState({rvTab:k}),
+          style:'background:transparent;border:none;border-bottom:2px solid '+(k===rvTab?'var(--navy)':'transparent')+';color:'+(k===rvTab?'var(--navy)':'var(--text-muted)')+';padding:10px 2px;margin-right:18px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);white-space:nowrap'})),
+      rvTabOverview: rvTab==='overview', rvTabNumbers: rvTab==='numbers', rvTabPlan: rvTab==='plan', rvTabTrend: rvTab==='trend', rvTabNotes: rvTab==='notes',
+      rvI: rvItem||{}, rvKpis, rvHasKpis: rvKpis.length>0,
+      rvTopActions: rvItem? rvItem.actions.slice(0,3) : [], rvMoreActions: rvItem? rvItem.actions.length>3 : false,
+      rvMoreActionsLabel: rvItem? 'See all '+rvItem.actions.length+' steps' : '', rvGoPlan:()=>this.setState({rvTab:'plan'}),
+      rvTableTabs: rvTables.length>1? rvTables.map((t,i)=>({label:t.title||('Table '+(i+1)), style:rvChip(i===rvTi), select:()=>this.setState({rvTable:i, rvSort:null, d:{...d, rvTq:''}})})) : [],
+      rvTTitle: rvT? (rvT.title||'') : '', rvTNote: rvT? (rvT.note||'') : '', rvTHasNote: !!(rvT&&rvT.note),
+      rvHead, rvBody, rvGridHead: rvGrid+';border-bottom:1px solid var(--border-hairline)', rvTq: d.rvTq||'', onRvTq:this.draft('rvTq'),
+      rvSortHint: 'Tap a column to sort',
+      rvTrendKs: rvKLabels.map(l=>({label:l, style:rvChip(l===rvTK), select:()=>this.setState({rvTrendK:l})})),
+      rvTrendImg: rvChart(rvTPts, rvTK), rvTrendHas: rvTVals.length>=2, rvTrendTitle: rvTK+' across '+rvTVals.length+' reports',
+      rvTrendStats: rvTStat,
+      rvTrendRows: rvTPts.slice().reverse().filter(q=>q.y!=null).slice(0,14).map(q=>({x:q.x, y:rvU(q.y), select:rvSel(q.id,{rvTab:'overview'}), style:'display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border-card);font-size:13px;cursor:pointer;'+(q.cur?'font-weight:700;color:var(--navy)':'color:var(--text-body)')})),
+      rvHist, rvHasHist: rvHist.length>0, rvHistMore: rvSeries.length-1>rvHistN, rvHistMoreFn:()=>this.setState({rvHistN:rvHistN+10})
+    };
     // ===== invoicing =====
     // An invoice used to be one line in a list: a number, an amount, a link.
     // What it actually covered lived in somebody's email. It is a card now,
@@ -10955,11 +11427,14 @@ class Component extends DCLogic {
         const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'var(--surface-card)':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
         return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
     const shv = this.showsVals({isTeam, client, sectionNow});
+    const alv = this.activityVals({isTeam, sectionNow, D, cname, clientDot, openSection});
     const cbv = this.chatbotVals({isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
       saveCsv, copyFallback, downloadFile, startUploads, takeFiles, clientColor});
     return {
       ...leadVals,
       ...shv,
+      ...alv,
+      openActivityLog:openSection('activity'),
       ...cbv,
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:curBiz? curBiz.name : client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
@@ -11515,6 +11990,7 @@ class Component extends DCLogic {
       dRepNote:(d.rpNote===undefined? (repFor.note||'') : d.rpNote), onRepNote:this.draft('rpNote'),
       saveReport, repClientName:cname(repCid),
       rdItems, rdScopes, rdEmpty: rdItems.length===0, rdScopeIsClient,
+      ...reader,
       dTdClient:tdC, onTdClient:e=>this.setState({tdClient:e.target.value,todoEdit:null,todoDel:null}),
       dTdWho:tdW, onTdWho:e=>this.setState({tdWho:e.target.value,todoEdit:null,todoDel:null}),
       tdDone, noTdDone:tdDoneAll.length===0,
@@ -11586,7 +12062,7 @@ class Component extends DCLogic {
           status:'queued',hours:Math.max(0,Number(d.workHours)||0),ts:Date.now()}); return x; });
         this.setState(s=>({d:{...s.d,work:'',workHours:''}})); },
       clientCards, clientTabs, noClientCards:clientCards.length===0,
-      noClientCardsText:({active:'No active clients.',stalled:'No stalled clients.',inactive:'No inactive clients.'}[S.clientTab||'active']||'No clients yet.'), newRequests, noNewRequests:newRequests.length===0,
+      noClientCardsText:({active:'No active clients.',stalled:'No stale clients.',inactive:'No inactive clients.'}[S.clientTab||'active']||'No clients yet.'), newRequests, noNewRequests:newRequests.length===0,
       teamCurrentReqs, noTeamCurrentReqs:teamCurrentReqs.length===0,
       teamDoneReqs, noTeamDoneReqs:teamDoneReqs.length===0,
       msgTabs:D.clients.flatMap(c=>{ const active=S.msgClient===c.id && (!isMultiOrg(c) || !teamMsgBiz);

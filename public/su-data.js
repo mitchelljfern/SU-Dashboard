@@ -419,6 +419,30 @@
     return Math.max(pick(m), pick(l));
   }
 
+  // ---------- activity log ----------
+  // Team > Activity Log pages through public.log on the server rather than
+  // relying on load(), which stops at the newest 1,000 rows (the Leads Agent
+  // alone writes hundreds a day). Read-only, so it works in preview too.
+  async function fetchLog(opts) {
+    const o = opts || {};
+    let q = client().from('log').select('*').order('ts', { ascending: false }).limit(o.limit || 300);
+    if (o.since) q = q.gte('ts', o.since);
+    if (o.before) q = q.lt('ts', o.before);
+    if (o.by) q = q.eq('data->>by', o.by);
+    if (o.agent) q = q.eq('data->>agent', o.agent);
+    if (o.clientId) q = q.eq('client_id', o.clientId);
+    if (o.loud) q = q.or('data->>quiet.is.null,data->>quiet.neq.true');
+    const { data, error } = await q;
+    if (error) throw error;
+    return data.map(fromRow);
+  }
+  // Per-author totals and every agent's latest run (migration 042).
+  async function activitySummary(sinceMs) {
+    const { data, error } = await client().rpc('activity_summary', { since_ms: Math.floor(sinceMs || 0) });
+    if (error) throw error;
+    return data || [];
+  }
+
   // ---------- attachments ----------
   // Files live in a private bucket, one folder per tenant, and the item only
   // ever stores the object path. URLs are signed on demand and expire, so a
@@ -743,6 +767,7 @@
 
   window.SUData = {
     signIn, signOut, currentSession, loadProfile, load, latestTs,
+    fetchLog, activitySummary,
     ...g,
     get readOnly() { return readOnly; },
     set readOnly(v) { readOnly = !!v; },
