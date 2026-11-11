@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start Your Trial • Social Upgrades</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--green:#1FB264;--green-d:#158a4d;--teal:#189D99;--blue:#2E3FD6;--navy:#0F1633;--cloud:#F2F4F9;--muted:#5f6675;--line:#dfe3ec;--amber-bg:#FFF7E6;--amber-line:#F2D49B;--amber-ink:#8a5a12}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cloud);color:var(--navy);font:16px/1.55 Poppins,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+.top{background:var(--navy);padding:16px}
+.top .in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top img{height:40px;width:auto;display:block}
+.top .tag{font:600 12px Poppins,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.hero{background:linear-gradient(180deg,var(--navy) 0,var(--navy) 70%,var(--cloud) 70%);padding:22px 16px 0}
+.hero .in{max-width:760px;margin:0 auto;color:#fff}
+.kick{display:inline-flex;align-items:center;gap:8px;font:600 13px Poppins,sans-serif;color:#7fe0aa;margin-bottom:8px}
+.kick i{width:8px;height:8px;border-radius:99px;background:var(--green);box-shadow:0 0 0 4px rgba(31,178,100,.25)}
+h1{font:800 34px/1.1 Outfit,sans-serif;margin:0 0 10px;letter-spacing:-.01em}
+.sub{color:rgba(255,255,255,.82);margin:0 0 22px;max-width:600px}
+.clock{background:#fff;border:1px solid var(--amber-line);border-radius:16px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start;color:var(--navy);box-shadow:0 10px 30px rgba(15,22,51,.12)}
+.clock .ic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--amber-bg);display:grid;place-items:center}
+.clock b{display:block;font:700 17px/1.3 Outfit,sans-serif;margin-bottom:3px}
+.clock p{margin:0;font-size:14.5px;color:#3d4458}
+.clock .eta{display:inline-block;margin-top:8px;font-weight:600;font-size:14px;color:var(--amber-ink);background:var(--amber-bg);border-radius:8px;padding:4px 10px}
+main{max-width:760px;margin:0 auto;padding:22px 16px 60px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 22px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--muted)}
+.step b{display:block;font:600 13.5px Poppins,sans-serif;color:var(--navy)}
+.step span{font:700 11px Outfit,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+@media(max-width:600px){.steps{grid-template-columns:1fr}h1{font-size:28px}}
+form{display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.card h2{font:700 18px Outfit,sans-serif;margin:0 0 2px}
+.card .ch{color:var(--muted);font-size:13.5px;margin:0 0 6px}
+label{display:block;font-weight:600;font-size:14px;margin:16px 0 6px}
+.req{color:var(--green-d)}
+.hint{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:1px}
+input,textarea,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;font:15px Poppins,sans-serif;color:var(--navy);background:#fff}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--green);border-color:transparent}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:600px){.row{grid-template-columns:1fr}}
+.styles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:6px}
+.sty{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:#fff;font-size:13px;color:var(--muted);transition:border-color .15s,background .15s}
+.sty b{display:block;font:700 15px Outfit,sans-serif;color:var(--navy)}
+.sty input{position:absolute;opacity:0;pointer-events:none}
+.sty.on{border-color:var(--green);background:rgba(31,178,100,.06)}
+.sty.on::after{content:"";position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:99px;background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5 10 17 19 7'/%3E%3C/svg%3E") center/10px no-repeat}
+.send{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(242,244,249,0),var(--cloud) 30%);padding:18px 0 6px;margin-top:4px}
+button.go{width:100%;padding:16px;border:0;border-radius:14px;background:var(--green);color:#fff;font:700 19px Outfit,sans-serif;cursor:pointer;box-shadow:0 8px 20px rgba(31,178,100,.28)}
+button.go:hover{background:var(--green-d)}
+button.go:disabled{opacity:.6;cursor:default}
+.sendnote{text-align:center;font-size:13px;color:var(--muted);margin-top:8px}
+.saved{color:var(--green-d)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px}
+.err{color:#b42f26;font-size:14px;margin-top:10px;display:none;text-align:center}
+.panel{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;text-align:center}
+.panel h2{font:800 28px/1.15 Outfit,sans-serif;margin:10px 0 8px}
+.panel p{color:#3d4458;margin:8px auto;max-width:520px}
+.panel .due{display:inline-block;margin:10px 0 4px;font:700 18px Outfit,sans-serif;background:rgba(31,178,100,.1);color:var(--green-d);border-radius:12px;padding:10px 16px}
+.panel .ok{width:56px;height:56px;border-radius:99px;background:var(--green);display:grid;place-items:center;margin:0 auto}
+.btn2{display:inline-block;margin-top:14px;background:transparent;border:1px solid #c9cfdc;color:var(--navy);border-radius:12px;padding:11px 18px;font:500 14px Poppins,sans-serif;cursor:pointer}
+.foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:22px}
+</style>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1852633499506635');fbq('track','PageView');
+</script>
+</head><body>
+<header class="top"><div class="in"><img src="/start/logo.png" alt="Social Upgrades" width="137" height="44"><span class="tag">7-day free trial</span></div></header>
+
+<section class="hero" id="hero"><div class="in">
+  <div class="kick"><i></i><span id="kick">Your free trial is on</span></div>
+  <h1 id="h1">One quick step and we start building.</h1>
+  <p class="sub" id="sub">Tell us about your business below. It takes about 3 minutes.</p>
+  <div class="clock" id="clock">
+    <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a2691a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></div>
+    <div><b id="clockHead">Your 24-hour clock starts when you hit Send.</b>
+      <p id="clockBody">Not when you signed up. The sooner you send this, the sooner your draft is ready.</p>
+      <span class="eta" id="eta"></span></div>
+  </div>
+</div></section>
+
+<main>
+  <div class="steps" id="steps">
+    <div class="step"><span>Step 1 · Now</span><b>Send your details</b>The form below.</div>
+    <div class="step"><span id="s2k">Step 2 · Within 24 hours</span><b id="s2b">We build your draft</b>Sent to your inbox as a private link.</div>
+    <div class="step"><span>Step 3 · Your trial</span><b>Review and go live</b>Ask for changes. Cancel before day 7 and you pay nothing.</div>
+  </div>
+
+  <form id="f" novalidate></form>
+
+  <div class="panel" id="done">
+    <div class="ok"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"/></svg></div>
+    <h2>Got it. We're building.</h2>
+    <p id="doneLine">Your draft will be in your inbox by</p>
+    <div class="due" id="doneDue"></div>
+    <p>We sent a confirmation to your email. Mitchell or Marko may text or call if we have a quick question.</p>
+    <button class="btn2" type="button" id="edit">Add or change something</button>
+    <p style="font-size:13px;color:var(--muted);margin-top:18px">Updating your answers keeps the same due time.</p>
+  </div>
+
+  <div class="panel" id="nosid">
+    <h2>We couldn't find your sign-up</h2>
+    <p>Please open this page from the link in your Social Upgrades email, or email <a href="mailto:mitchell@socialupgrades.com">mitchell@socialupgrades.com</a> and we'll get you set up right away.</p>
+  </div>
+
+  <p class="foot">Social Upgrades · Costa Mesa, CA · Month to month, pause or cancel anytime.<br>Questions? <a href="mailto:mitchell@socialupgrades.com">mitchell@socialupgrades.com</a></p>
+</main>
+
+<script>
+(function(){
+var API='https://tiefkbutqnrttpdcsmiy.supabase.co/functions/v1/trial-intake';
+var q=new URLSearchParams(location.search);
+var sid=q.get('session_id')||'';
+var plan=q.get('plan')||'', source=q.get('source')||'';
+var $=function(id){return document.getElementById(id);};
+var store={get:function(k){try{return localStorage.getItem(k);}catch(e){return null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+var VALUE={'websites-starter':299,'chat-starter':99,'artist-solo':99,'artist-pro':299,'artist-team':499};
+
+if(!/^cs_(live|test)_[A-Za-z0-9]{20,}$/.test(sid)){
+  ['hero','steps','f'].forEach(function(id){$(id).style.display='none';});
+  $('nosid').style.display='block'; return;
+}
+
+function variantOf(p,s){ if(s==='musicians')return'musician'; if(s==='creators')return'creator'; if(/^chat/.test(p))return'chat'; return'business'; }
+var V=variantOf(plan,source);
+var oneBD=function(){return V==='musician'||V==='creator';};
+
+// ---- what each kind of trial asks for. [key,label,hint,type,required,placeholder]
+var NAME='business';
+var SECTIONS={
+ business:[
+  ['About your business','The basics we put on the page.',[
+    [NAME,'Business name','','text',1],
+    ['@row',[['contactName','Your name','','text',1],['phone','Best phone for questions','','tel',1]]],
+    ['currentSite','Current website','If you have one. We pull text and photos from it.','text',0,'yourbusiness.com'],
+    ['industry','What does your business do?','','text',1,'e.g. HVAC repair and installs, BJJ gym, taco shop'],
+    ['services','Main services or offerings','List the ones that make you the most money first.','area',1],
+    ['@row',[['area','Service area or location','','text',0,'e.g. Orange County, Costa Mesa'],['hours','Hours','','text',0,'e.g. Mon to Sat, 7am to 6pm']]]
+  ]],
+  ['Your new homepage','How it should look and what it should do.',[
+    ['goal','What should the site get people to do?','','text',1,'Call, request a quote, book a class, order online...'],
+    ['style','Style and colors','Optional.','text',0,'e.g. clean and modern, navy and orange like our trucks'],
+    ['examples','Two or three websites you like','Optional. Any industry.','area',0],
+    ['assets','Link to your logo and photos','Google Drive, Dropbox, Instagram, or "use my current site".','text',0],
+    ['notes','Anything else we should know?','','area',0]
+  ]]
+ ],
+ chat:[
+  ['About your business','The chat answers from what you tell us here.',[
+    [NAME,'Business name','','text',1],
+    ['@row',[['contactName','Your name','','text',1],['phone','Best phone for questions','','tel',1]]],
+    ['currentSite','Website the chat goes on','','text',1,'yourbusiness.com'],
+    ['industry','What does your business do?','','text',1],
+    ['services','Services and prices','Ranges are fine. The chat only quotes what you list.','area',1],
+    ['@row',[['area','Service area or location','','text',0],['hours','Hours','','text',0]]]
+  ]],
+  ['What the chat should do','',[
+    ['faqs','Top 5 to 10 questions customers ask, with your answers','Rough is fine. We clean it up.','area',1],
+    ['goal','What should the chat get people to do?','','text',1,'Book a call, request a quote, book a class...'],
+    ['bookingLink','Booking or quote link','Optional.','text',0],
+    ['leadsTo','Where should we send new leads?','Email, text, or both.','text',1,'e.g. text 949-555-0100 and email me'],
+    ['notes','Anything else we should know?','','area',0]
+  ]]
+ ],
+ musician:[
+  ['About you','What fans and bookers see first.',[
+    [NAME,'Artist or band name','','text',1],
+    ['@row',[['contactName','Your name','','text',1],['role','You are the...','','select',0,['Artist or band member','Manager','Agent','Label','Other']]]],
+    ['@row',[['phone','Best phone for questions','','tel',1],['city','Home city','','text',0,'e.g. Long Beach, CA']]],
+    ['genre','Genre and sound in a few words','','text',0,'e.g. surf rock, sad indie, house DJ'],
+    ['bio','Short bio','2 or 3 sentences is plenty. We can polish it.','area',0],
+    ['currentSite','Current website or link in bio','If you have one.','text',0]
+  ]],
+  ['Your music and shows','We link and embed all of it.',[
+    ['musicLinks','Where to listen','Spotify, Apple Music, Bandcamp, SoundCloud, YouTube.','area',1],
+    ['socials','Socials','Instagram, TikTok, YouTube, X.','area',1],
+    ['shows','Upcoming shows','Paste dates, or your Bandsintown or Songkick link.','area',0],
+    ['@row',[['merch','Merch store link','Optional.','text',0],['fanClub','Email list tool','Optional. Mailchimp, Laylo, etc.','text',0]]],
+    ['booking','Booking and press contact email','Where inquiries from the site should go.','text',1]
+  ]],
+  ['Your look','',[
+    ['style','Pick your style','','style',0,[['headliner','Headliner','Bold, poster-style'],['liner-notes','Liner Notes','Warm, album-art feel'],['pop-era','Pop Era','Bright and playful'],['afterhours','Afterhours','Dark, club and DJ'],['you-pick','Not sure','You pick for us']]],
+    ['assets','Link to press photos and logo','Google Drive, Dropbox, or Instagram.','text',0],
+    ['examples','Artist sites you like','Optional.','area',0],
+    ['roster','Other artists on your roster','Team plan only. Names and links.','area',0,null,'artist-team'],
+    ['notes','Anything else we should know?','','area',0]
+  ]]
+ ],
+ creator:[
+  ['About you','What fans and brands see first.',[
+    [NAME,'Creator name or handle','','text',1],
+    ['@row',[['contactName','Your name','','text',1],['role','You are the...','','select',0,['Creator','Manager','Agency','Other']]]],
+    ['@row',[['phone','Best phone for questions','','tel',1],['niche','Your content in a few words','','text',0,'e.g. FPS streamer, budget travel, fitness']]],
+    ['bio','Short bio','2 or 3 sentences is plenty. We can polish it.','area',0],
+    ['currentSite','Current website or link in bio','If you have one.','text',0]
+  ]],
+  ['Your channels and brand deals','We pull your best stuff onto the page.',[
+    ['platforms','Your main channels','Twitch, YouTube, TikTok, Instagram. Links please.','area',1],
+    ['stats','Audience size','Followers or subs per platform. Rough is fine.','text',0],
+    ['bestContent','3 to 6 videos or posts to feature','Links.','area',0],
+    ['partners','Brands you\'ve worked with','Optional.','area',0],
+    ['@row',[['booking','Where should brand inquiries go?','Email.','text',1],['mediaKit','Media kit or rates link','Optional.','text',0]]]
+  ]],
+  ['Your look','',[
+    ['style','Pick your style','','style',0,[['stream','Live Stream','Twitch-first'],['noir','Studio Noir','Dark and cinematic'],['editorial','Editorial','Clean, magazine feel'],['pop','Pop Bento','Bright, grid of tiles'],['you-pick','Not sure','You pick for us']]],
+    ['assets','Link to photos and logo','Google Drive, Dropbox, or Instagram.','text',0],
+    ['examples','Creator sites you like','Optional.','area',0],
+    ['roster','Other creators you manage','Team plan only. Names and links.','area',0,null,'artist-team'],
+    ['notes','Anything else we should know?','','area',0]
+  ]]
+ ]
+};
+
+var COPY={
+ business:{thing:'your business',draft:'homepage draft',s2b:'We build your homepage'},
+ chat:{thing:'your business',draft:'AI chat preview',s2b:'We build your AI chat'},
+ musician:{thing:'your music',draft:'site draft',s2b:'We build your artist site'},
+ creator:{thing:'your content',draft:'site draft',s2b:'We build your creator site'}
+};
+
+var form=$('f'), pickedStyle='';
+var DRAFT_KEY='su_trial_draft_'+sid;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function field(f){
+  var k=f[0],lab=f[1],hint=f[2],type=f[3],req=f[4],extra=f[5],onlyPlan=f[6];
+  if(onlyPlan && plan!==onlyPlan) return '';
+  var h='<label for="'+k+'">'+esc(lab)+(req?' <span class="req">*</span>':'')+(hint?'<span class="hint">'+esc(hint)+'</span>':'')+'</label>';
+  if(type==='area') return h+'<textarea id="'+k+'" name="'+k+'"'+(extra?' placeholder="'+esc(extra)+'"':'')+(req?' data-req="1"':'')+'></textarea>';
+  if(type==='select') return h+'<select id="'+k+'" name="'+k+'"><option value="">Choose one</option>'+extra.map(function(o){return'<option>'+esc(o)+'</option>';}).join('')+'</select>';
+  if(type==='style') return '<label>'+esc(lab)+'<span class="hint">The one you chose on the page is already selected. Change it anytime.</span></label><div class="styles" id="styles">'+
+    extra.map(function(o){return'<label class="sty" data-v="'+o[0]+'"><input type="radio" name="style" value="'+esc(o[1])+'"><b>'+esc(o[1])+'</b>'+esc(o[2])+'</label>';}).join('')+'</div>';
+  var ac=k==='contactName'?' autocomplete="name"':k==='phone'?' autocomplete="tel"':k===NAME?' autocomplete="organization"':'';
+  return h+'<input id="'+k+'" name="'+k+'" type="'+(type==='tel'?'tel':'text')+'"'+ac+(extra?' placeholder="'+esc(extra)+'"':'')+(req?' data-req="1"':'')+'>';
+}
+function render(){
+  var html='';
+  SECTIONS[V].forEach(function(sec){
+    html+='<div class="card"><h2>'+esc(sec[0])+'</h2>'+(sec[1]?'<p class="ch">'+esc(sec[1])+'</p>':'');
+    sec[2].forEach(function(f){
+      if(f[0]==='@row') html+='<div class="row">'+f[1].map(function(x){return'<div>'+field(x)+'</div>';}).join('')+'</div>';
+      else html+=field(f);
+    });
+    html+='</div>';
+  });
+  html+='<input class="hp" name="website_url_hp" tabindex="-1" autocomplete="off" aria-hidden="true">';
+  html+='<div class="send"><button class="go" id="go" type="submit">Send my details and start the clock</button>'+
+    '<div class="err" id="err"></div><div class="sendnote" id="sendnote">Your answers save on this device as you type.</div></div>';
+  form.innerHTML=html;
+  var st=$('styles');
+  if(st){
+    st.addEventListener('change',function(){paintStyles();save();});
+  }
+}
+function paintStyles(){
+  var st=$('styles'); if(!st) return;
+  [].forEach.call(st.querySelectorAll('.sty'),function(el){el.classList.toggle('on',el.querySelector('input').checked);});
+}
+function setStyleByKey(key){
+  var st=$('styles'); if(!st||!key) return;
+  var el=st.querySelector('.sty[data-v="'+key+'"]'); if(el){el.querySelector('input').checked=true; paintStyles();}
+}
+function data(){ var o={}; new FormData(form).forEach(function(v,k){o[k]=v;}); return o; }
+var saveT;
+function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ store.set(DRAFT_KEY,JSON.stringify(data())); var n=$('sendnote'); if(n){n.innerHTML='<span class="saved">Saved on this device.</span> Nothing is sent until you hit the button.';} },300); }
+function restore(o){
+  if(!o) return;
+  Object.keys(o).forEach(function(k){
+    if(k==='style'){ var st=$('styles'); if(st){ [].forEach.call(st.querySelectorAll('input'),function(i){i.checked=(i.value===o[k]);}); paintStyles(); } return; }
+    var el=form.elements[k]; if(el && 'value' in el && !el.value) el.value=o[k];
+  });
+}
+
+function localDue(iso){
+  var d=new Date(iso);
+  return d.toLocaleString(undefined,{weekday:'long',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function projectedDue(){
+  var now=new Date(), h=3600e3;
+  if(!oneBD()) return new Date(now.getTime()+24*h);
+  var wd=new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',weekday:'short'}).format(now);
+  return new Date(now.getTime()+(wd==='Fri'?72:wd==='Sat'?48:24)*h);
+}
+function paintCopy(first){
+  var c=COPY[V], p=oneBD()?'1 business day':'24 hours';
+  $('kick').textContent='Your free trial is on'+(first?', '+first:'');
+  $('sub').textContent='Tell us about '+c.thing+' below. It takes about 3 minutes, and it\'s the only thing we need to start.';
+  $('clockHead').textContent='Your '+(oneBD()?'1 business day':'24-hour')+' clock starts when you hit Send.';
+  $('clockBody').textContent='Not when you signed up. Send it now and we start now. Send it tomorrow and your '+c.draft+' comes a day later.';
+  $('s2k').textContent='Step 2 · Within '+p;
+  $('s2b').textContent=c.s2b;
+  var tick=function(){ $('eta').textContent='Send it now and it\'s yours by '+localDue(projectedDue()); };
+  tick(); setInterval(tick,60000);
+}
+function showDone(dueAt){
+  $('hero').style.display='none'; $('steps').style.display='none'; form.style.display='none';
+  $('doneLine').textContent='Your '+COPY[V].draft+' will be in your inbox by';
+  $('doneDue').textContent=dueAt?localDue(dueAt):(oneBD()?'within 1 business day':'within 24 hours');
+  $('done').style.display='block'; window.scrollTo(0,0);
+}
+function showForm(){
+  $('done').style.display='none'; $('hero').style.display='block'; $('steps').style.display='grid'; form.style.display='flex';
+  $('go').textContent='Save my changes';
+  $('clockHead').textContent='Your clock is already running.'; $('clockBody').textContent='Updating your answers keeps the same due time.'; $('eta').style.display='none';
+}
+
+// ---- Meta: one StartTrial per checkout (eventID dedupes across reloads and devices)
+function trackStart(){
+  var k='su_st_'+sid; if(store.get(k)) return;
+  try{ fbq('track','StartTrial',{value:VALUE[plan]||0,currency:'USD',predicted_ltv:(VALUE[plan]||0)*6,content_name:plan+(source?(' · '+source):'')},{eventID:'st_'+sid}); store.set(k,'1'); }catch(e){}
+}
+
+render();
+paintCopy('');
+var draft=null; try{draft=JSON.parse(store.get(DRAFT_KEY)||'null');}catch(e){}
+restore(draft);
+form.addEventListener('input',save);
+
+fetch(API+'?session_id='+encodeURIComponent(sid)).then(function(r){return r.json();}).then(function(j){
+  if(!j||!j.ok||!j.found) return;
+  // The server knows the plan for sure; trust it over the URL.
+  var sv=j.variant||variantOf(j.planKey||plan,j.source||source);
+  if(j.planKey) plan=j.planKey; if(j.source) source=j.source;
+  if(sv!==V){ V=sv; var keep=data(); render(); restore(keep); restore(draft); }
+  paintCopy(j.firstName||'');
+  if(j.form) restore(j.form);
+  if(j.pickedStyle && !(draft&&draft.style) && !(j.form&&j.form.style)) setStyleByKey(j.pickedStyle);
+  if(j.formDone){ window.__due=j.dueAt; showDone(j.dueAt); }
+}).catch(function(){});
+trackStart();
+
+$('edit').addEventListener('click',showForm);
+
+form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var err=$('err'), b=$('go'); err.style.display='none';
+  var body=data(); body.session_id=sid; body.plan=plan; body.source=source;
+  var missing=[].filter.call(form.querySelectorAll('[data-req]'),function(el){return !String(el.value).trim();});
+  if(missing.length){
+    missing.forEach(function(el){el.style.borderColor='#d8564e';});
+    err.textContent='Please fill in the fields marked with *. They\'re what we need to build your '+COPY[V].draft+'.';
+    err.style.display='block'; missing[0].focus(); return;
+  }
+  b.disabled=true; b.textContent='Sending...';
+  fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})
+   .then(function(r){return r.json();})
+   .then(function(j){
+     if(!j||!j.ok) throw new Error((j&&j.error)||'error');
+     if(j.first){ try{ fbq('track','Lead',{content_name:'trial details form',value:VALUE[plan]||0,currency:'USD'},{eventID:'lead_'+sid}); }catch(_){} }
+     b.disabled=false; showDone(j.dueAt);
+   })
+   .catch(function(){
+     b.disabled=false; b.textContent='Send my details and start the clock';
+     err.textContent='Something went wrong sending that. Your answers are saved here, so just try again. Still stuck? Email mitchell@socialupgrades.com.';
+     err.style.display='block';
+   });
+});
+form.addEventListener('focusin',function(e){ if(e.target.style) e.target.style.borderColor=''; });
+})();
+</script>
+</body></html>
