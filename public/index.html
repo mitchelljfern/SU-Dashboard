@@ -2738,6 +2738,7 @@
                       <sc-if value="{{ it.hasClient }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:5px"><span style="{{ it.clientDot }}"></span>{{ it.client }}</span></sc-if>
                     </div>
                     <div style="{{ it.textStyle }}">{{ it.text }}</div>
+                    <sc-if value="{{ it.isBatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.batchStyle }}">{{ it.batchLabel }}</span></sc-if>
                     <sc-if value="{{ it.errHint }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;font-weight:600;color:#a8352d">{{ it.errHintText }}</div></sc-if>
                     <sc-if value="{{ it.hasErrs }}" hint-placeholder-val="{{ false }}">
                       <div style="display:flex;flex-direction:column;gap:4px;border-left:3px solid #D8564E;padding:4px 0 4px 10px">
@@ -2746,6 +2747,16 @@
                     </sc-if>
                   </div>
                 </div>
+                <sc-if value="{{ it.hasChildren }}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{ it.children }}" as="ch" hint-placeholder-count="3">
+                    <div onClick="{{ ch.toggle }}" style="{{ ch.rowStyle }}">
+                      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted)"><span>{{ ch.time }}</span><sc-if value="{{ ch.hasClient }}" hint-placeholder-val="{{ false }}"><span>{{ ch.client }}</span></sc-if></div>
+                        <div style="{{ ch.textStyle }}">{{ ch.text }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </sc-if>
               </sc-for>
             </section>
           </sc-for>
@@ -6841,18 +6852,45 @@ class Component extends DCLogic {
       .filter(x=>!q || (x.text+' '+x.whoName+' '+cname(x.clientId)).toLowerCase().indexOf(q)>-1)
       .sort((a,b)=>b.t-a.t);
     const LIMIT = S.alShow||150;
-    const more = shown.length>LIMIT; shown = shown.slice(0,LIMIT);
+    // Batch repeats: when the same author does the same kind of thing several
+    // times in a row (the Leads Agent researching ten leads, drafting nine
+    // emails), the run collapses into one summary row that opens to show
+    // every step. Runs, hours, flagged rows and anything with errors stay on
+    // their own so nothing worth seeing gets folded away.
+    const BATCH_MIN=3, BATCH_GAP=90*60e3;
+    const verbOf = x=>{ let t=x.text.trim();
+      if(x.whoName && t.toLowerCase().indexOf(x.whoName.toLowerCase()+' ')===0) t=t.slice(x.whoName.length+1);
+      const w=(t.match(/^[A-Za-z']+/)||[''])[0].toLowerCase(); if(!w) return '';
+      const to=(w==='moved'||w==='marked')? ((t.match(/\b(?:to|as)\s+([A-Z][A-Za-z ]{1,20}?)(?:[:.,(]|$)/)||t.match(/\b(sent|bounced|replied|won)\b/i)||[])[1]||'') : '';
+      const sub=(w==='commented'||w==='drafted')? ((t.match(/^drafted (the day \d+ follow-up|campaign [A-Z])/i)||[])[1]||'') : '';
+      return {w, to:to.trim(), sub}; };
+    const subjOf = x=>{ let t=x.text.trim();
+      if(x.whoName && t.toLowerCase().indexOf(x.whoName.toLowerCase()+' ')===0) t=t.slice(x.whoName.length+1);
+      t=t.replace(/^[A-Za-z']+\s+/,'').replace(/^(?:the day \d+ follow-up for|campaign [A-Z] for|on)\s+/i,'');
+      t=t.replace(/^"([^"]+)".*$/,'$1');
+      return t.split(/[:(]| to | as | from /)[0].trim().slice(0,48); };
+    const NOUN={leads:['lead','leads'],content:['card','cards'],client:['item','items'],other:['entry','entries']};
+    const entries=[]; const open=new Map();
+    shown.forEach(x=>{
+      const v = (x.area==='run'||x.area==='hours'||x.area==='report'||x.flagged||x.errs.length)? null : verbOf(x);
+      const key = v? [x.whoName,x.area,v.w,v.to.toLowerCase(),v.sub.toLowerCase(),x.clientId].join('|') : '';
+      const b = key? open.get(key) : null;
+      if(b && b.last-x.t<=BATCH_GAP && dayKey(b.last)===dayKey(x.t)){ b.items.push(x); b.last=x.t; return; }
+      const e={t:x.t, items:[x], key, verb:v, last:x.t};
+      entries.push(e); if(key) open.set(key,e);
+    });
+    let rowsOut=[]; entries.forEach(e=>{ if(e.items.length>=BATCH_MIN) rowsOut.push(e); else e.items.forEach(x=>rowsOut.push({t:x.t, items:[x]})); });
+    rowsOut.sort((a,b)=>b.t-a.t);
+    const more = rowsOut.length>LIMIT; rowsOut = rowsOut.slice(0,LIMIT);
     const pillBase='display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:10px;white-space:nowrap;';
     const STATUS_PILL={ok:['rgba(31,178,100,.13)','Ran fine'],warn:['rgba(214,143,46,.16)','Notes'],error:['rgba(216,86,78,.15)','Failed']};
     const openMap = S.alOpen||{};
     const groups=[]; let cur=null;
-    shown.forEach(x=>{ const k=dayKey(x.t);
-      if(!cur||cur.k!==k){ cur={k, label:dayLabel(k), items:[], hrs:0, n:0}; groups.push(cur); }
-      if(x.area==='hours') cur.hrs+=x.hrs||0;
-      cur.n++;
+    const mkItem = (x, child)=>{
       const open=!!openMap[x.id], sp=STATUS_PILL[x.status];
       const hasErr = x.errs.length>0;
-      cur.items.push({
+      return {
+        isBatch:false, isSingle:true, children:[],
         time: x.area==='hours'? 'Day' : clock(x.t),
         who:x.whoName, whoStyle:'font-weight:700;color:'+(x.isAgent?'#6b4bd1':'var(--navy)'),
         avatar:(x.whoName||'?').trim().charAt(0).toUpperCase(),
@@ -6868,8 +6906,31 @@ class Component extends DCLogic {
         flagged:x.flagged && !sp, flagStyle:pillBase+'background:rgba(214,143,46,.16);color:var(--text-body)',
         hasErrs:hasErr && open, errs:x.errs.map(e=>({t:e})), errHint: hasErr && !open,
         errHintText: x.errs.length+' issue'+(x.errs.length===1?'':'s')+', tap to see',
-        rowStyle:'display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border-top:1px solid var(--border-card);cursor:pointer;'+(x.status==='error'?'background:rgba(216,86,78,.05);':x.flagged?'background:rgba(214,143,46,.04);':'')
-      });
+        rowStyle:'display:flex;gap:12px;align-items:flex-start;cursor:pointer;'+(child? 'padding:8px 14px 8px 52px;border-top:1px dashed var(--border-card);' : 'padding:11px 14px;border-top:1px solid var(--border-card);')+(x.status==='error'?'background:rgba(216,86,78,.05);':x.flagged?'background:rgba(214,143,46,.04);':'')
+      };
+    };
+    rowsOut.forEach(e=>{ const k=dayKey(e.t);
+      if(!cur||cur.k!==k){ cur={k, label:dayLabel(k), items:[], hrs:0, n:0}; groups.push(cur); }
+      e.items.forEach(x=>{ if(x.area==='hours') cur.hrs+=x.hrs||0; cur.n++; });
+      if(e.items.length===1){ cur.items.push(mkItem(e.items[0],false)); return; }
+      const x0=e.items[0], n=e.items.length, bid='b:'+x0.id, bopen=!!openMap[bid];
+      const noun=(NOUN[x0.area]||NOUN.other)[1];
+      const vb=e.verb, W=vb.w.charAt(0).toUpperCase()+vb.w.slice(1);
+      const head = vb.sub? W+' '+vb.sub.replace(/^the /,'')+' for '+n+' '+noun : W+' '+n+' '+noun+(vb.to? ' to '+vb.to : '');
+      const subs=Array.from(new Set(e.items.map(subjOf).filter(Boolean)));
+      const preview=subs.slice(0,3).join(', ')+(subs.length>3? ' and '+(subs.length-3)+' more' : '');
+      const first=e.items[e.items.length-1].t, last=x0.t;
+      const base=mkItem(x0,false);
+      cur.items.push(Object.assign(base,{
+        isBatch:true, isSingle:false,
+        time: first===last? clock(last) : clock(first)+' to '+clock(last),
+        text: head+(preview? ': '+preview : ''),
+        textStyle:'font-size:13.5px;line-height:1.5;color:var(--text-body);font-weight:600;'+(bopen?'':'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;'),
+        batchLabel: (bopen? 'Hide ' : 'Show all ')+n, batchStyle:'align-self:flex-start;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:var(--navy);background:var(--gray-100);border-radius:10px;padding:2px 9px',
+        toggle:()=>this.setState(s2=>({alOpen:{...(s2.alOpen||{}),[bid]:!bopen}})),
+        children: bopen? e.items.map(x=>mkItem(x,true)) : [], hasChildren:bopen,
+        hasStatus:false, flagged:false, hasMinutes:false, hasErrs:false, errHint:false
+      }));
     });
     const dayGroups = groups.map(g=>({label:g.label, sub:[g.n+' item'+(g.n===1?'':'s'), g.hrs? (Math.round(g.hrs*10)/10)+' hrs logged' : ''].filter(Boolean).join(' · '), items:g.items}));
 
