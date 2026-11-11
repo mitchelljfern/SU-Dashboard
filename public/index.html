@@ -5245,6 +5245,72 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ secTrials }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:13.5px;color:var(--text-muted);line-height:1.55;max-width:760px">Every 7-day free trial checkout lands here. The draft clock starts when they send the details form: 24 hours for website and chat trials, 1 business day for musicians and creators. You both get an email when a trial starts, when the form comes in, and 3 hours before a draft is due.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <sc-for list="{{ trialTiles }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.select }}" style="{{ t.style }}"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
+            </sc-for>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:2px">
+            <sc-if value="{{ trialEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px;color:var(--text-muted);padding:16px 12px">{{ trialEmptyText }}</div>
+            </sc-if>
+            <sc-for list="{{ trialRows }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--border-hairline)">
+                <div onClick="{{ r.toggle }}" style="{{ r.rowStyle }}" style-hover="background:var(--gray-100)">
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <span style="font-size:14.5px;font-weight:700;color:var(--navy)">{{ r.name }}</span>
+                    <span style="font-size:12.5px;color:var(--text-muted)">{{ r.sub }}</span>
+                  </div>
+                  <span style="{{ r.pillStyle }}">{{ r.pill }}</span>
+                </div>
+                <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:6px 16px 18px;display:flex;flex-direction:column;gap:14px">
+                    <div style="font-size:13px;color:var(--navy)"><b>{{ r.deliv }}</b> · {{ r.contact }}</div>
+                    <sc-if value="{{ r.hasWaitingNote }}" hint-placeholder-val="{{ false }}">
+                      <div style="background:rgba(214,143,46,.10);border:1px solid rgba(214,143,46,.35);border-radius:10px;padding:10px 12px;font-size:13px;color:#7a4f12">{{ r.waitingNote }}</div>
+                    </sc-if>
+                    <sc-if value="{{ r.hasStyleNote }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:12.5px;color:var(--text-muted)">{{ r.styleNote }}</div>
+                    </sc-if>
+                    <sc-if value="{{ r.hasAnswers }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:8px 16px;font-size:13px;line-height:1.5">
+                        <sc-for list="{{ r.answers }}" as="a" hint-placeholder-count="6">
+                          <span style="color:var(--text-muted);font-weight:600">{{ a.k }}</span><span style="color:var(--navy);white-space:pre-wrap;overflow-wrap:anywhere">{{ a.v }}</span>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                      <sc-if value="{{ r.hasAnswers }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ r.copyBrief }}" style="background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Copy brief</button>
+                      </sc-if>
+                      <a href="{{ r.mailto }}" style="border:1px solid var(--ink-40);color:var(--navy);border-radius:10px;padding:8px 13px;font-size:13px;text-decoration:none">Email</a>
+                      <sc-if value="{{ r.hasTel }}" hint-placeholder-val="{{ true }}"><a href="{{ r.tel }}" style="border:1px solid var(--ink-40);color:var(--navy);border-radius:10px;padding:8px 13px;font-size:13px;text-decoration:none">Call</a></sc-if>
+                      <sc-if value="{{ r.hasFormLink }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.copyForm }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);border-radius:10px;padding:8px 13px;font-size:13px;cursor:pointer;font-family:var(--font-body)">Copy their form link</button></sc-if>
+                      <sc-if value="{{ r.hasStripe }}" hint-placeholder-val="{{ true }}"><a href="{{ r.stripeUrl }}" target="_blank" rel="noopener noreferrer" style="border:1px solid var(--ink-40);color:var(--navy);border-radius:10px;padding:8px 13px;font-size:13px;text-decoration:none">Stripe</a></sc-if>
+                    </div>
+                    <sc-if value="{{ r.canDeliver }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border-hairline);padding-top:12px">
+                        <input value="{{ r.preview }}" onChange="{{ r.onPreview }}" placeholder="Preview link you sent them (optional)" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:10px;padding:9px 11px;font-size:13px;font-family:var(--font-body)">
+                        <button onClick="{{ r.markDone }}" style="background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body)">Mark draft delivered</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ r.isDone }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--border-hairline);padding-top:12px;font-size:13px">
+                        <sc-if value="{{ r.hasPreviewLink }}" hint-placeholder-val="{{ false }}"><a href="{{ r.previewLink }}" target="_blank" rel="noopener noreferrer">Open the preview they got</a></sc-if>
+                        <button onClick="{{ r.reopen }}" style="background:transparent;border:none;color:var(--text-muted);text-decoration:underline;cursor:pointer;font-size:12.5px;font-family:var(--font-body)">Undo delivered</button>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
       <sc-if value="{{ secChatbot }}" hint-placeholder-val="{{ false }}">
 
         <sc-if value="{{ cbLocked }}" hint-placeholder-val="{{ false }}">
@@ -6212,6 +6278,98 @@ class Component extends DCLogic {
     }
     if(cell!==''||row.length){ row.push(cell); rows.push(row); }
     return rows.map(r=>r.map(c=>String(c).trim())).filter(r=>r.some(c=>c!==''));
+  }
+  // Free trials: every Stripe trial checkout lands in leads with source
+  // 'trial' (written by the trial-webhook and trial-intake functions). The
+  // clock is the point of this page: once the details form is in, the draft is
+  // due 24 hours later (1 business day for musicians and creators), and the
+  // team marks it delivered here.
+  trialsVals(ctx){
+    const {isTeam, sectionNow, D, copyText} = ctx;
+    const S=this.state;
+    if(!isTeam || sectionNow!=='trials') return {secTrials:false};
+    const LABELS={business:'Name',contactName:'Contact name',role:'Role',phone:'Best phone',currentSite:'Current website',
+      industry:'What the business does',services:'Main services / offerings',area:'Service area / location',hours:'Hours',goal:'Main goal',
+      faqs:'Top customer questions',bookingLink:'Booking link',leadsTo:'Where chat leads go',genre:'Genre / sound',niche:'Content niche',
+      city:'Home city',bio:'Short bio',musicLinks:'Music links',platforms:'Main channels',stats:'Audience size',bestContent:'Content to feature',
+      socials:'Socials',shows:'Upcoming shows',merch:'Merch store',fanClub:'Email list tool',partners:'Brand partners',booking:'Booking / inquiry email',
+      mediaKit:'Media kit / rates',roster:'Other artists on the roster',style:'Style',examples:'Sites they like',assets:'Logo / photos link',notes:'Anything else'};
+    const DELIV={business:'Homepage draft',chat:'AI chat preview',musician:'Artist site draft',creator:'Creator site draft'};
+    const varOf=t=>t.variant||(t.nicheKey==='musicians'?'musician':t.nicheKey==='creators'?'creator':/^chat/.test(t.planKey||'')?'chat':'business');
+    const fmtDue=iso=>new Date(iso).toLocaleString('en-US',{timeZone:'America/Los_Angeles',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})+' PT';
+    const left=iso=>{ const ms=Date.parse(iso)-Date.now(); const tm=Math.round(Math.abs(ms)/60e3), h=Math.floor(tm/60), m=tm%60;
+      const t=h>=1? h+'h '+(m? m+'m':'') : m+'m'; return ms<0? t.trim()+' overdue' : t.trim()+' left'; };
+    const stateOf=t=>{
+      if(t.stage==='trial-delivered'||t.deliveredAt) return 'done';
+      if(t.stage==='trial-cancelled') return 'cancelled';
+      if(!t.formDone) return 'waiting';
+      return 'building'; };
+    const all=(D.leads||[]).filter(l=>l.source==='trial' && l.stage!=='test')
+      .sort((a,b)=>(Date.parse(b.trialStartedAt||0)||b.ts||0)-(Date.parse(a.trialStartedAt||0)||a.ts||0));
+    const tf=S.trialFilter||'open';
+    const counts={waiting:0,building:0,done:0,cancelled:0};
+    all.forEach(t=>{ counts[stateOf(t)]++; });
+    const shown=all.filter(t=>{ const st=stateOf(t); return tf==='all'? true : tf==='open'? (st==='waiting'||st==='building') : st===tf; })
+      .sort((a,b)=>{ const sa=stateOf(a), sb2=stateOf(b);
+        if(sa==='building'&&sb2==='building') return Date.parse(a.dueAt)-Date.parse(b.dueAt);
+        const o={building:0,waiting:1,done:2,cancelled:3}; return o[sa]-o[sb2]; });
+    const tiles=[['open','Open',counts.waiting+counts.building],['building','Building',counts.building],['waiting','Waiting on form',counts.waiting],
+      ['done','Delivered',counts.done],['all','All',all.length]].map(([k,lab,n])=>{ const on=tf===k;
+      return {label:lab,n,select:()=>this.setState({trialFilter:k,trialOpen:null}),
+        style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),borderRadius:12,
+          padding:'10px 16px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:3,cursor:'pointer',minWidth:110,fontFamily:'var(--font-body)'},
+        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':'var(--navy)'},
+        labStyle:{fontSize:10.5,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',color:on?'#fff':'var(--navy)'}}; });
+
+    const brief=t=>{ const f=t.form||{}, v=varOf(t);
+      const lines=['# Free trial: '+(t.name||t.email||''),'',
+        '- **Market:** '+(t.niche||''),'- **Plan:** '+(t.plan||''),'- **Build:** '+DELIV[v],
+        t.dueAt? '- **Due:** '+fmtDue(t.dueAt) : '','- **Email:** '+(t.email||''),'- **Phone:** '+(t.phone||f.phone||''),
+        t.pickedStyle? '- **Style picked at checkout:** '+t.pickedStyle : '',''];
+      Object.keys(LABELS).forEach(k=>{ if(f[k] && String(f[k]).trim()) lines.push('## '+LABELS[k],'',String(f[k]).trim(),''); });
+      return lines.filter((x,i,a)=>!(x===''&&a[i-1]==='')).join('\n'); };
+
+    const rows=shown.map(t=>{
+      const st=stateOf(t), v=varOf(t), open=S.trialOpen===t.id;
+      let pill, tone;
+      if(st==='done'){ pill='Delivered'; tone='green'; }
+      else if(st==='cancelled'){ pill='Cancelled'; tone='gray'; }
+      else if(st==='waiting'){ pill='Waiting on form'; tone='amber'; }
+      else { const ms=Date.parse(t.dueAt)-Date.now(); pill=t.dueAt? left(t.dueAt) : 'Building'; tone= ms<0?'red': ms<3*3600e3?'orange':'blue'; }
+      const f=t.form||{};
+      const answers=Object.keys(LABELS).filter(k=>f[k]&&String(f[k]).trim()).map(k=>({k:LABELS[k],v:String(f[k])}));
+      const markDone=()=>this.set(x=>{ const l=(x.leads||[]).find(y=>y.id===t.id); if(!l) return x;
+        l.stage='trial-delivered'; l.deliveredAt=new Date().toISOString();
+        const url=String((S.trialPreview||{})[t.id]||'').trim(); if(url) l.previewUrl=url;
+        this.logEv(x,'', 'Trial '+DELIV[v].toLowerCase()+' delivered: '+(l.name||l.email), {leadId:l.id});
+        return x; });
+      const reopen=()=>this.set(x=>{ const l=(x.leads||[]).find(y=>y.id===t.id); if(!l) return x;
+        l.stage=l.formDone?'trial-form':'trial-started'; delete l.deliveredAt; return x; });
+      const sub=[t.niche, t.plan, st==='waiting'? 'Signed up '+this.fmt(Date.parse(t.trialStartedAt)||t.ts)+(t.reminderSentAt?' · reminder sent':'')
+        : st==='building'? 'Due '+(t.dueAt?fmtDue(t.dueAt):'') : st==='done'? 'Delivered '+this.fmt(Date.parse(t.deliveredAt)) : ''].filter(Boolean).join(' · ');
+      return {
+        name:t.name||t.email||'Unnamed', sub, pill, pillStyle:this.badge(tone), deliv:DELIV[v],
+        open, toggle:()=>this.setState({trialOpen:open?null:t.id}),
+        rowStyle:{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,padding:'13px 16px',cursor:'pointer',
+          background:open?'rgba(31,178,100,.06)':'transparent',borderRadius:10,flexWrap:'wrap'},
+        contact:[t.owner||f.contactName, t.email, t.phone||f.phone].filter(Boolean).join(' · '),
+        hasAnswers:answers.length>0, noAnswers:!answers.length, answers,
+        waitingNote: st==='waiting'? 'They haven\'t sent the form yet.'+(t.reminderSentAt?' The 1-hour reminder went out '+this.fmt(Date.parse(t.reminderSentAt))+'.':' A reminder goes out 1 hour after signup.')+' A call or text usually gets it done fastest.' : '',
+        hasWaitingNote: st==='waiting',
+        styleNote: t.pickedStyle? 'Style picked at checkout: '+t.pickedStyle : '', hasStyleNote:!!t.pickedStyle,
+        copyBrief:()=>copyText(brief(t),'Trial brief'),
+        copyForm:()=>copyText(String(t.formUrl||''),'Form link'), hasFormLink:!!t.formUrl,
+        mailto:'mailto:'+(t.email||'')+'?subject='+encodeURIComponent('Your Social Upgrades draft'),
+        tel:'tel:'+String(t.phone||f.phone||'').replace(/[^0-9+]/g,''), hasTel:!!(t.phone||f.phone),
+        stripeUrl: t.stripeCustomer? 'https://dashboard.stripe.com/customers/'+t.stripeCustomer : '', hasStripe:!!t.stripeCustomer,
+        canDeliver: st==='building'||st==='waiting', isDone: st==='done',
+        preview: (S.trialPreview||{})[t.id]||t.previewUrl||'',
+        onPreview:e=>{ const val=e.target.value; this.setState(s=>({trialPreview:Object.assign({},s.trialPreview||{},{[t.id]:val})})); },
+        previewLink:t.previewUrl||'', hasPreviewLink:!!t.previewUrl,
+        markDone, reopen };
+    });
+    return {secTrials:true, trialTiles:tiles, trialRows:rows, trialEmpty:!rows.length,
+      trialEmptyText: all.length? 'Nothing in this view.' : 'No free trials yet. They show up here the moment someone checks out.'};
   }
   chatbotVals(ctx){
     const {isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
@@ -7968,7 +8126,7 @@ class Component extends DCLogic {
       ['g-work','Work',[['board','Workboard'],['todos','To-Dos'],['time','Hours'],['workreports','Reports']]],
       ['messages','Messages'],
       ['g-clients','Clients',[['clients','All Clients'],['brand','Brand Kits'],['chatbot','AI Chatbots'],['reports','Reports'],['shows','Shows'],['invoicing','Invoicing']]],
-      ['g-growth','Growth',[['leads','Leads'],['content','Content Map']]],
+      ['g-growth','Growth',[['leads','Leads'],['trials','Free Trials'],['content','Content Map']]],
       ['g-team','Team',[['activity','Activity Log'],['team','People'],['payments','Team Pay']]]
     ].map(([id,label,kids])=> kids ? [id,label,kids.filter(([k])=>k!=='invoicing'||canBilling)] : [id,label]);
     const teamGroupOf = sid => TEAM_TREE.find(([,,kids])=>kids&&kids.some(([k])=>k===sid)) || null;
@@ -8101,6 +8259,8 @@ class Component extends DCLogic {
       // A reply is the one moment in the pipeline that needs a person, so that
       // is what the Leads tab counts.
       if(isTeam && id==='leads'){ const n=(D.leads||[]).filter(l=>l.stage==='replied').length; if(n) return n; }
+      // A trial whose details are in is a draft on the clock.
+      if(isTeam && id==='trials'){ const n=(D.leads||[]).filter(l=>l.source==='trial'&&l.formDone&&l.stage!=='trial-delivered'&&l.stage!=='trial-cancelled'&&l.stage!=='test'&&!l.deliveredAt).length; if(n) return n; }
       // An idea with a date inside the week needs a yes or a no before it can
       // be scheduled, so that is what the Content Map counts.
       if(isTeam && id==='content'){
@@ -8142,7 +8302,7 @@ class Component extends DCLogic {
       });
     });
     const headings = isTeam
-      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],activity:['Team','Activity Log'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
+      ? {overview:['Internal Dashboard','Overview'],board:['Internal Dashboard','Workboard'],clients:['Internal Dashboard','All Clients'],leads:['Internal Dashboard','Leads'],trials:['Growth','Free Trials'],activity:['Team','Activity Log'],content:['Internal Dashboard','Content Map'],requests:['Internal Dashboard','Requests'],todos:['Internal Dashboard','To-Dos'],messages:['Internal Dashboard','Messages'],time:['Internal Dashboard','Hours'],workreports:['Internal Dashboard','Reports'],reports:['Internal Dashboard','Reports'],shows:['Internal Dashboard','Shows · Slipstream'],invoicing:['Internal Dashboard','Invoicing'],payments:['Internal Dashboard','Team Pay'],team:['Internal Dashboard','People']}
       : {home:[client.name,'Dashboard'],updates:[client.name,'Latest Updates'],requests:[client.name,'Requests'],todos:[client.name,client.name+' To-Dos'],strategy:[client.name,'Content Map · '+chan.label],messages:[client.name,'Messages'],schedule:[client.name,'Meet with Social Upgrades'],files:[client.name,'Files & Content'],team:[client.name,'Team'],reports:[client.name,'Reports'],billing:[client.name,'Billing'],shows:[client.name,'Shows']};
     headings.brand = isTeam ? ['Clients','Brand Kits'] : ['Logos · Colors · Rules','Brand Kit'];
     headings.chatbot = isTeam ? ['Clients','AI Chatbots'] : [client.name,'AI Chatbot'];
@@ -11068,7 +11228,7 @@ class Component extends DCLogic {
       return new Date(p[0],p[1]-1,p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'}); };
     const leadAddDays=(iso,n)=>{ const p=String(iso).split('-').map(Number);
       return new Date(p[0],p[1]-1,p[2]+n).toLocaleDateString('en-CA'); };
-    const leadsAll=D.leads||[];
+    const leadsAll=(D.leads||[]).filter(l=>l.source!=='trial');
     const leadDue=l=>!!l.nextTouch && l.nextTouch<=leadToday && ['sent','replied','meeting'].indexOf(l.stage)>-1;
     const leadNotesFor=id=>(D.lead_notes||[]).filter(n=>n.leadId===id);
     const leadMailsFor=id=>(D.lead_emails||[]).filter(e=>e.leadId===id).sort((a,b)=>(b.ts||0)-(a.ts||0));
@@ -11491,12 +11651,14 @@ class Component extends DCLogic {
     const alv = this.activityVals({isTeam, sectionNow, D, cname, clientDot, openSection});
     const cbv = this.chatbotVals({isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
       saveCsv, copyFallback, downloadFile, startUploads, takeFiles, clientColor});
+    const trv = this.trialsVals({isTeam, sectionNow, D, copyText});
     return {
       ...leadVals,
       ...shv,
       ...alv,
       openActivityLog:openSection('activity'),
       ...cbv,
+      ...trv,
       isTeam, isClient:!isTeam, clients:D.clients, viewClient:S.viewClient, portalName:curBiz? curBiz.name : client.name,
       // Umbrella accounts (e.g. Double Ops + Bravo Boxing) list every business
       // they cover, so one login serves the whole group.
