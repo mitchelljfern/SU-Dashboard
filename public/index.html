@@ -146,10 +146,35 @@
     input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:-1px}
     ::placeholder{color:var(--gray-400)}
     .su-bottom{display:none}
+    /* Leads: the selects sit inline on a desktop. On a phone the two tile
+       groups become one swipeable row of chips each, and the selects fold
+       behind a Filters button so the list is not a screen away. */
+    .su-ldfilters{display:contents}
+    .su-ldtoggle,.su-ldlabel{display:none !important}
+    @media (max-width:860px){
+      .su-ldlabel{display:block !important}
+      .su-ldrow{flex-wrap:nowrap !important;overflow-x:auto;margin:0 -18px;padding:2px 18px 4px;scrollbar-width:none;scroll-snap-type:x proximity}
+      .su-ldrow::-webkit-scrollbar{display:none}
+      .su-ldrow>button{flex:0 0 auto !important;min-width:0 !important;flex-direction:row !important;align-items:baseline !important;gap:7px !important;padding:9px 14px !important;border-radius:999px !important;scroll-snap-align:start;white-space:nowrap}
+      .su-ldrow>button>span:first-child{font-size:16px !important}
+      .su-ldrow>button>span:nth-child(3){display:none !important}
+      .su-ldbar{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px !important}
+      .su-ldbar>.su-ldq{grid-column:1 / -1;min-width:0 !important;padding:12px 14px !important}
+      .su-ldbar>button{width:100%;box-sizing:border-box;padding:11px 10px !important;text-align:center}
+      .su-ldtoggle{display:block !important;grid-column:1 / -1}
+      .su-ldfilters{display:var(--ldf,none);grid-column:1 / -1;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;background:var(--gray-100);border-radius:14px;padding:10px}
+      .su-ldfilters>select{width:100%;min-width:0;box-sizing:border-box}
+    }
     .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
     .su-ovtiles>*{min-width:0;box-sizing:border-box}
     .su-ovsplit{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
-    @media (max-width:1100px){ .su-ovsplit{grid-template-columns:minmax(0,1fr)} }
+    .su-ovtri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+    .su-ovherogrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:26px;align-items:center}
+    @media (max-width:1200px){ .su-ovtri{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .su-ovtri>:first-child{grid-column:1 / -1} }
+    @media (max-width:1100px){ .su-ovsplit,.su-ovherogrid{grid-template-columns:minmax(0,1fr)} }
+    @media (max-width:860px){ .su-ovtri{grid-template-columns:minmax(0,1fr)} .su-ovtri>:first-child{grid-column:auto} .su-ovhero{padding:22px 18px !important;border-radius:22px !important} }
+    @media (max-width:560px){ .su-ovchip,.su-ovsub{display:none !important} }
+    .su-ovseg{scrollbar-width:none}.su-ovseg::-webkit-scrollbar{display:none}
     @media (max-width:860px){ .su-ovtiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} }
     /* The menu is a panel that floats over the page rather than a column
        welded to its edge: inset on every side, rounded, with a shadow. */
@@ -377,14 +402,14 @@
       <button onClick="{{ b.select }}" style="{{ b.style }}">
         <span style="{{ b.icon }}"></span>
         <span style="display:inline-flex;align-items:center;gap:5px">{{ b.label }}
-          <sc-if value="{{ b.badge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ b.badge }}</span></sc-if>
+          <sc-if value="{{ b.badge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:3px;left:calc(50% + 6px);background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:700;padding:0 5px;min-width:6px;line-height:16px;text-align:center;box-shadow:0 0 0 2px var(--chrome)">{{ b.badge }}</span></sc-if>
         </span>
       </button>
     </sc-for>
     <button onClick="{{ toggleMore }}" style="{{ moreStyle }}">
       <span style="{{ icoMore }}"></span>
       <span style="display:inline-flex;align-items:center;gap:5px">More
-        <sc-if value="{{ moreBadge }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:600;padding:0 6px;line-height:16px;display:inline-block">{{ moreBadge }}</span></sc-if>
+        <sc-if value="{{ moreBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:3px;left:calc(50% + 6px);background:var(--green);color:#fff;border-radius:12px;font-size:10px;font-weight:700;padding:0 5px;min-width:6px;line-height:16px;text-align:center;box-shadow:0 0 0 2px var(--chrome)">{{ moreBadge }}</span></sc-if>
       </span>
     </button>
   </div>
@@ -1323,198 +1348,293 @@
       </sc-if>
 
       <sc-if value="{{ secOverview }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:4px">
-          <div style="font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--navy);line-height:1.25">{{ ovHello }}</div>
-          <div style="font-size:14px;color:var(--text-muted)">{{ ovSummary }}</div>
-        </div>
-        <div style="position:relative;z-index:20">
-          <div style="{{ ovSearchBox }}">
-            <span style="{{ ovIcoSearch }}"></span>
-            <input value="{{ ovQ }}" onChange="{{ onOvQ }}" onKeyDown="{{ onOvQKey }}" placeholder="Search clients, work, requests, to-dos, leads and pages" aria-label="Search the dashboard" autocomplete="off" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:15px;color:var(--text-body);padding:0">
-            <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ovClearQ }}" aria-label="Clear search" style="background:var(--gray-100);border:none;border-radius:10px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer" style-hover="color:var(--navy)">Clear</button></sc-if>
-          </div>
-          <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}">
-            <div style="position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--surface-card);border:1px solid var(--border-card);border-radius:20px;box-shadow:0 1px 2px rgba(15,22,51,.04);box-shadow:0 22px 44px rgba(15,22,51,.18);padding:8px;display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow-y:auto">
-              <sc-for list="{{ ovResults }}" as="r" hint-placeholder-count="4">
-                <button onClick="{{ r.open }}" style="{{ r.style }}" style-hover="background:var(--gray-100)">
-                  <span style="{{ r.iconWrap }}"><span style="{{ r.icon }}"></span></span>
-                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
-                    <span style="font-size:14px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
-                    <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.sub }}</span>
-                  </span>
-                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);background:var(--gray-100);border-radius:8px;padding:3px 8px;flex:none">{{ r.kind }}</span>
-                </button>
-              </sc-for>
-              <sc-if value="{{ ovNoResults }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 12px;font-size:13.5px;color:var(--text-muted)">{{ ovNoResultsText }}</div></sc-if>
-              <sc-if value="{{ ovResultsHint }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 12px 6px;font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border-hairline);margin-top:4px">Press Enter to open the first result</div></sc-if>
+        <div class="su-ovhero" style="{{ ovHero }}">
+          <div class="su-ovherogrid">
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+              <div>
+                <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">{{ ovDate }}</div>
+                <div style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.15;color:#fff;margin-top:6px">{{ ovHello }}</div>
+                <div style="font-size:14.5px;color:rgba(255,255,255,.72);margin-top:6px">{{ ovSummary }}</div>
+              </div>
+              <div style="position:relative;z-index:20">
+                <div style="{{ ovSearchBox }}">
+                  <span style="{{ ovIcoSearch }}"></span>
+                  <input value="{{ ovQ }}" onChange="{{ onOvQ }}" onKeyDown="{{ onOvQKey }}" placeholder="Search clients, work, requests, to-dos, leads and pages" aria-label="Search the dashboard" autocomplete="off" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:15px;color:#0F1633;padding:0">
+                  <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ovClearQ }}" aria-label="Clear search" style="background:#EEF0F6;border:none;border-radius:10px;padding:5px 10px;font-size:12px;font-weight:600;color:#5b6283;cursor:pointer">Clear</button></sc-if>
+                </div>
+                <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--surface-card);border:1px solid var(--border-card);border-radius:18px;box-shadow:0 26px 50px rgba(15,22,51,.30);padding:8px;display:flex;flex-direction:column;gap:2px;max-height:56vh;overflow-y:auto">
+                    <sc-for list="{{ ovResults }}" as="r" hint-placeholder-count="4">
+                      <button onClick="{{ r.open }}" style="{{ r.style }}" style-hover="background:var(--gray-100)">
+                        <span style="{{ r.iconWrap }}"><span style="{{ r.icon }}"></span></span>
+                        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                          <span style="font-size:14px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
+                          <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.sub }}</span>
+                        </span>
+                        <span style="font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);background:var(--gray-100);border-radius:8px;padding:3px 8px;flex:none">{{ r.kind }}</span>
+                      </button>
+                    </sc-for>
+                    <sc-if value="{{ ovNoResults }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 12px;font-size:13.5px;color:var(--text-muted)">{{ ovNoResultsText }}</div></sc-if>
+                    <sc-if value="{{ ovResultsHint }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 12px 6px;font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border-hairline);margin-top:4px">Press Enter to open the first result</div></sc-if>
+                  </div>
+                </sc-if>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ ovLinks }}" as="l" hint-placeholder-count="6">
+                  <button onClick="{{ l.open }}" style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:600;color:#fff;cursor:pointer" style-hover="background:rgba(255,255,255,.2)"><span style="{{ l.icon }}"></span>{{ l.label }}</button>
+                </sc-for>
+              </div>
             </div>
-          </sc-if>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <sc-for list="{{ ovLinks }}" as="l" hint-placeholder-count="6">
-            <button onClick="{{ l.open }}" style="display:inline-flex;align-items:center;gap:7px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)"><span style="{{ l.icon }}"></span>{{ l.label }}</button>
-          </sc-for>
+            <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)">Work pipeline</div>
+                <button onClick="{{ goBoard }}" style="background:none;border:none;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;padding:0;opacity:.85" style-hover="opacity:1">Workboard →</button>
+              </div>
+              <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-display);font-weight:800;font-size:40px;line-height:1;color:#fff">{{ ovPipeTotal }}</span><span style="font-size:13px;color:rgba(255,255,255,.65)">{{ ovPipeLabel }}</span></div>
+              <div style="display:flex;gap:3px;height:12px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.1)">
+                <sc-for list="{{ ovPipe }}" as="sg" hint-placeholder-count="4"><button onClick="{{ sg.select }}" title="{{ sg.tip }}" aria-label="{{ sg.tip }}" style="{{ sg.seg }}"></button></sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px">
+                <sc-for list="{{ ovPipe }}" as="sg" hint-placeholder-count="4">
+                  <button onClick="{{ sg.select }}" style="display:flex;align-items:center;gap:8px;background:none;border:none;padding:2px 0;cursor:pointer;text-align:left;color:#fff;min-width:0" style-hover="opacity:.8">
+                    <span style="{{ sg.sw }}"></span>
+                    <span style="font-size:12.5px;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1">{{ sg.label }}</span>
+                    <span style="font-size:13px;font-weight:700">{{ sg.n }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="su-ovtiles">
           <sc-for list="{{ ovTiles }}" as="t" hint-placeholder-count="8">
-            <button onClick="{{ t.open }}" title="{{ t.tip }}" style="{{ t.style }}" style-hover="transform:translateY(-2px);box-shadow:0 12px 26px rgba(15,22,51,.14)">
+            <button onClick="{{ t.open }}" title="{{ t.tip }}" style="{{ t.style }}" style-hover="transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,22,51,.16)">
               <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%">
-                <span style="font-size:12px;font-weight:600;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.label }}</span>
-                <span style="{{ t.icon }}"></span>
+                <span style="{{ t.chip }}"><span style="{{ t.icon }}"></span></span>
+                <span style="{{ t.arrow }}"></span>
               </span>
-              <span style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1">{{ t.value }}</span>
-              <span style="font-size:11.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{ t.hint }}</span>
+              <span style="font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1;margin-top:4px">{{ t.value }}</span>
+              <span style="display:flex;flex-direction:column;gap:1px;max-width:100%">
+                <span style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.label }}</span>
+                <span style="font-size:11.5px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.hint }}</span>
+              </span>
             </button>
           </sc-for>
         </div>
         <sc-if value="{{ ovFiltered }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--text-muted)">
-            <span>Showing work for <strong style="color:var(--navy)">{{ ovClientName }}</strong> only</span>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--navy);background:rgba(46,63,214,.08);border:1px solid rgba(46,63,214,.2);border-radius:14px;padding:10px 14px">
+            <span>Showing work for <strong>{{ ovClientName }}</strong> only</span>
             <button onClick="{{ clearOvFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Show all clients</button>
           </div>
         </sc-if>
         <div class="su-ovsplit">
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:20px;box-shadow:0 1px 2px rgba(15,22,51,.04);padding:20px 22px;display:flex;flex-direction:column;gap:12px;min-width:0">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">{{ ovListTitle }}</h3>
-              <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0">Open Workboard →</button>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipWork }}"><span style="{{ ovIcWork }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Work in motion</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">Pick a stage. Open any row, or move it forward right here.</div></div>
+                </div>
+                <button onClick="{{ goBoard }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">Open Workboard →</button>
+              </div>
+            <div class="su-ovseg" style="display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;align-self:flex-start;max-width:100%;overflow-x:auto;box-sizing:border-box">
+              <sc-for list="{{ ovTabs }}" as="tb" hint-placeholder-count="4"><button onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="{{ tb.count }}">{{ tb.n }}</span></button></sc-for>
             </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              <sc-for list="{{ ovTabs }}" as="tb" hint-placeholder-count="4"><button onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="opacity:.6">{{ tb.n }}</span></button></sc-for>
-            </div>
-            <div style="display:flex;flex-direction:column">
+            <div style="display:flex;flex-direction:column;gap:6px">
               <sc-for list="{{ ovRows }}" as="w" hint-placeholder-count="4">
-                <div onClick="{{ w.open }}" style="display:flex;align-items:center;gap:12px;padding:11px 8px;border-top:1px solid var(--border-hairline);cursor:pointer;border-radius:10px" style-hover="background:var(--gray-100)">
-                  <span style="{{ w.dot }}"></span>
+                <div onClick="{{ w.open }}" style="display:flex;align-items:center;gap:13px;padding:11px 12px;border:1px solid var(--border-hairline);border-radius:14px;cursor:pointer;transition:border-color .12s ease,box-shadow .12s ease" style-hover="border-color:var(--navy);box-shadow:0 4px 14px rgba(15,22,51,.08)">
+                  <span style="{{ w.avatar }}">{{ w.initials }}</span>
                   <div style="flex:1;min-width:0">
                     <div class="su-cardtitle" style="font-size:14px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.title }}</div>
                     <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ w.meta }}</div>
                   </div>
-                  <sc-if value="{{ w.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.act }}" style="flex:none;background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer" style-hover="opacity:.88">{{ w.actLabel }}</button></sc-if>
+                  <sc-for list="{{ w.chips }}" as="ch" hint-placeholder-count="1"><span class="su-ovchip" style="{{ ch.style }}">{{ ch.label }}</span></sc-for>
+                  <sc-if value="{{ w.hasAct }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.act }}" style="flex:none;background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer" style-hover="opacity:.88">{{ w.actLabel }}</button></sc-if>
                 </div>
               </sc-for>
-              <sc-if value="{{ ovRowsEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 8px;border-top:1px solid var(--border-hairline);font-size:13.5px;color:var(--text-muted)">{{ ovRowsEmptyText }}</div></sc-if>
-              <sc-if value="{{ ovRowsMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:10px 8px 0">{{ ovRowsMore }}</button></sc-if>
+              <sc-if value="{{ ovRowsEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 12px;border:1px dashed var(--gray-200);border-radius:14px;font-size:13.5px;color:var(--text-muted);text-align:center">{{ ovRowsEmptyText }}</div></sc-if>
+              <sc-if value="{{ ovRowsMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ goBoard }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;padding:6px 4px 0">{{ ovRowsMore }}</button></sc-if>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:20px;box-shadow:0 1px 2px rgba(15,22,51,.04);padding:20px 22px;display:flex;flex-direction:column;gap:3px">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Needs attention</h3>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipAttn }}"><span style="{{ ovIcAttn }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Needs attention</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">Late, urgent, or waiting on a reply.</div></div>
+                </div>
                 <span style="{{ ovAttnBadge }}">{{ ovAttnCount }}</span>
               </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
               <sc-for list="{{ ovAttn }}" as="a" hint-placeholder-count="3">
-                <div onClick="{{ a.open }}" style="display:flex;align-items:flex-start;gap:10px;padding:7px 8px;border-radius:10px;cursor:pointer" style-hover="background:var(--gray-100)">
-                  <span style="{{ a.bar }}"></span>
+                <div onClick="{{ a.open }}" style="display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:14px;cursor:pointer" style-hover="background:var(--gray-100)">
+                  <span style="{{ a.chip }}"><span style="{{ a.icon }}"></span></span>
                   <div style="flex:1;min-width:0">
                     <div style="font-size:13.5px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.title }}</div>
-                    <div style="font-size:12px;color:var(--text-muted)">{{ a.why }}</div>
+                    <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.why }}</div>
                   </div>
+                  <span style="{{ ovChev }}"></span>
                 </div>
               </sc-for>
-              <sc-if value="{{ ovAttnNone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--text-muted);padding:4px 8px">Nothing is late or stuck. Nice work.</div></sc-if>
+              <sc-if value="{{ ovAttnNone }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 12px;border:1px dashed var(--gray-200);border-radius:14px;font-size:13.5px;color:var(--text-muted);text-align:center">Nothing is late or stuck. Nice work.</div></sc-if>
+              <sc-if value="{{ ovAttnMore }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--text-muted);padding:4px 10px 0">{{ ovAttnMore }}</div></sc-if>
             </div>
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:20px;box-shadow:0 1px 2px rgba(15,22,51,.04);padding:20px 22px;display:flex;flex-direction:column;gap:10px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Open work by client</h3>
+          </div>
+        </div>
+        <div class="su-ovtri">
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipLoad }}"><span style="{{ ovIcLoad }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Open work by client</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">Tap a client to focus the page on them.</div></div>
+                </div>
+                
+              </div>
+            <div style="display:flex;flex-direction:column;gap:2px">
               <sc-for list="{{ ovLoad }}" as="c" hint-placeholder-count="4">
                 <button onClick="{{ c.select }}" title="{{ c.tip }}" style="{{ c.style }}" style-hover="background:var(--gray-100)">
                   <span style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%">
                     <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="{{ c.dot }}"></span><span style="font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span></span>
                     <span style="font-size:12.5px;font-weight:700;color:var(--navy)">{{ c.n }}</span>
                   </span>
-                  <span style="display:block;width:100%;height:6px;border-radius:4px;background:var(--gray-100);overflow:hidden"><span style="{{ c.bar }}"></span></span>
+                  <span style="display:flex;gap:2px;width:100%;height:8px;border-radius:5px;overflow:hidden;background:var(--gray-100)"><sc-for list="{{ c.segs }}" as="g" hint-placeholder-count="2"><span style="{{ g.style }}"></span></sc-for></span>
                 </button>
               </sc-for>
-              <sc-if value="{{ ovLoadNone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--text-muted);padding:4px 8px">No open work right now.</div></sc-if>
+              <sc-if value="{{ ovLoadNone }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 12px;border:1px dashed var(--gray-200);border-radius:14px;font-size:13.5px;color:var(--text-muted);text-align:center">No open work right now.</div></sc-if>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:4px">
+              <sc-for list="{{ ovPipe }}" as="sg" hint-placeholder-count="4"><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted)"><span style="{{ sg.sw }}"></span>{{ sg.short }}</span></sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipAct }}"><span style="{{ ovIcAct }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Team activity</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">{{ ovChartSub }}</div></div>
+                </div>
+                <button onClick="{{ openActivityLog }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">Full log →</button>
+              </div>
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-display);font-weight:800;font-size:32px;line-height:1;color:var(--navy)">{{ ovChartTotal }}</span><span style="font-size:12.5px;color:var(--text-muted)">actions in the last 7 days</span></div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:auto">
+              <sc-for list="{{ ovChart }}" as="b" hint-placeholder-count="7">
+                <div title="{{ b.tip }}" style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px">
+                  <span style="font-size:11px;font-weight:700;color:var(--navy)">{{ b.n }}</span>
+                  <span style="{{ b.bar }}"></span>
+                  <span style="{{ b.lab }}">{{ b.day }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipMsg }}"><span style="{{ ovIcMsg }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Messages</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">Newest first, unread on top.</div></div>
+                </div>
+                <button onClick="{{ ovGoMessages }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">All messages →</button>
+              </div>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <sc-for list="{{ ovMsgs }}" as="lm" hint-placeholder-count="3">
+                <button onClick="{{ lm.open }}" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;border-radius:14px;padding:9px 10px;cursor:pointer" style-hover="background:var(--gray-100)">
+                  <span style="{{ lm.avatar }}">{{ lm.initials }}</span>
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                    <span style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font-size:13.5px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ lm.name }}</span><span style="font-size:11px;color:var(--text-muted);flex:none">{{ lm.when }}</span></span>
+                    <span style="{{ lm.textStyle }}">{{ lm.line }}</span>
+                  </span>
+                  <sc-if value="{{ lm.unread }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:700;padding:1px 8px;flex:none">{{ lm.unread }}</span></sc-if>
+                </button>
+              </sc-for>
+              <sc-if value="{{ ovMsgsNone }}" hint-placeholder-val="{{ false }}"><div style="padding:26px 12px;border:1px dashed var(--gray-200);border-radius:14px;font-size:13.5px;color:var(--text-muted);text-align:center">No messages yet.</div></sc-if>
             </div>
           </div>
         </div>
-        <div class="su-grid2" style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start">
-          <div style="display:flex;flex-direction:column;gap:20px">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:20px">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-                <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">My to-dos</h3>
-                <span style="background:var(--blue);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 9px">{{ myTodoCount }}</span>
-              </div>
-              <sc-if value="{{ noMyTodos }}" hint-placeholder-val="{{ false }}">
-                <div style="font-size:13.5px;color:var(--text-muted)">Nothing assigned to you right now.</div>
-              </sc-if>
-              <sc-for list="{{ myTodos }}" as="m" hint-placeholder-count="3">
-                <div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
-                  <button onClick="{{ m.toggle }}" style="{{ m.boxStyle }}"></button>
-                  <div style="flex:1;font-size:14px;color:var(--text-body)">{{ m.title }}</div>
-                  <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ m.client }}</div>
+        <div class="su-ovsplit">
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipTodo }}"><span style="{{ ovIcTodo }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">To-dos</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">Check one off, or add the next one below.</div></div>
                 </div>
-              </sc-for>
+                <button onClick="{{ ovGoTodos }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">All to-dos →</button>
+              </div>
+            <div style="display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;align-self:flex-start">
+              <sc-for list="{{ ovTodoTabs }}" as="tb" hint-placeholder-count="2"><button onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="{{ tb.count }}">{{ tb.n }}</span></button></sc-for>
             </div>
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:20px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Team to-dos</h3>
-              <div style="display:flex;flex-direction:column">
-                <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
-                  <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
-                    <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
-                    <div style="flex:1;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
-                    <sc-if value="{{ t.hasAssignee }}" hint-placeholder-val="{{ true }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--blue);white-space:nowrap">{{ t.assignee }}</div></sc-if>
-                    <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ t.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div></div>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <sc-if value="{{ ovTodoMine }}" hint-placeholder-val="{{ true }}">
+                <sc-for list="{{ myTodos }}" as="m" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px" style-hover="background:var(--gray-100)">
+                    <button onClick="{{ m.toggle }}" aria-label="Mark done" style="{{ m.boxStyle }}"></button>
+                    <div style="flex:1;min-width:0;font-size:14px;color:var(--text-body)">{{ m.title }}</div>
+                    <span style="font-size:11px;font-weight:600;color:var(--text-muted);background:var(--gray-100);border-radius:8px;padding:3px 8px;white-space:nowrap">{{ m.client }}</span>
                   </div>
                 </sc-for>
-              </div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="Add a to-do" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <option value="">Internal</option>
-                  <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
-                </select>
-                <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <option value="team">For team</option>
-                  <option value="client">For client</option>
-                </select>
-                <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
-                </select>
-                <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
-              </div>
+                <sc-if value="{{ noMyTodos }}" hint-placeholder-val="{{ false }}"><div style="padding:22px 12px;border:1px dashed var(--gray-200);border-radius:14px;font-size:13.5px;color:var(--text-muted);text-align:center">Nothing assigned to you right now.</div></sc-if>
+              </sc-if>
+              <sc-if value="{{ ovTodoTeam }}" hint-placeholder-val="{{ false }}">
+                <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px" style-hover="background:var(--gray-100)">
+                    <button onClick="{{ t.toggle }}" aria-label="Mark done" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                    <div style="flex:1;min-width:0;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                    <sc-if value="{{ t.hasAssignee }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--blue);background:rgba(46,63,214,.09);border-radius:8px;padding:3px 8px;white-space:nowrap">{{ t.assignee }}</span></sc-if>
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap"><span style="{{ t.dot }}"></span>{{ t.clientName }}</span>
+                  </div>
+                </sc-for>
+              </sc-if>
             </div>
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:20px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0">Post a client update</h3>
-              <div style="display:flex;gap:8px">
-                <select value="{{ dUpdClient }}" onChange="{{ onUpdClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
-                </select>
-                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-body);cursor:pointer"><input type="checkbox" checked="{{ dUpdApproval }}" onChange="{{ onUpdApproval }}">Needs client approval</label>
-              </div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                <input value="{{ dUpdText }}" onChange="{{ onUpdText }}" placeholder="What did we ship or work on?" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-                <button onClick="{{ postUpdate }}" style="background:var(--grad-brand);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.1)">Post</button>
-              </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;background:var(--gray-100);border-radius:16px;padding:10px">
+              <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="Add a to-do" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+              <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+                <option value="">Internal</option>
+                <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+              </select>
+              <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+                <option value="team">For team</option>
+                <option value="client">For client</option>
+              </select>
+              <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+                <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
+              </select>
+              <button onClick="{{ addTodo }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:12px;padding:9px 20px;font-weight:600;font-size:13px;cursor:pointer" style-hover="opacity:.88">Add</button>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:20px">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:6px;border-radius:20px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0 0 4px">Messages</h3>
-              <sc-for list="{{ lastMsgs }}" as="lm" hint-placeholder-count="2">
-                <button onClick="{{ lm.open }}" style="text-align:left;background:none;border:none;border-bottom:1px solid var(--border-hairline);padding:9px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;width:100%" style-hover="background:var(--gray-100)">
-                  <div style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--text-muted)">
-                    <span style="{{ lm.dot }}"></span>{{ lm.name }} · {{ lm.who }} · {{ lm.when }}
-                  </div>
-                  <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{ lm.text }}</div>
-                </button>
-              </sc-for>
+          <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+            <div style="{{ ovUpdCard }}">
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="{{ ovChipUpd }}"><span style="{{ ovIcUpd }}"></span></span>
+                <div><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:#fff;margin:0">Post a client update</h3><div style="font-size:12.5px;color:rgba(255,255,255,.65)">Tell a client what shipped. It lands in their portal.</div></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <select value="{{ dUpdClient }}" onChange="{{ onUpdClient }}" style="border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px;font-size:13px;background:#fff;color:#0F1633">
+                  <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                </select>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.85);cursor:pointer"><input type="checkbox" checked="{{ dUpdApproval }}" onChange="{{ onUpdApproval }}">Needs client approval</label>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input value="{{ dUpdText }}" onChange="{{ onUpdText }}" placeholder="What did we ship or work on?" style="flex:1;min-width:160px;border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 12px;font-size:13px;background:#fff;color:#0F1633">
+                <button onClick="{{ postUpdate }}" style="background:var(--grad-brand);color:#fff;border:none;border-radius:12px;padding:10px 22px;font-weight:700;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.12)">Post</button>
+              </div>
             </div>
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:12px;border-radius:20px">
-            <div style="display:flex;align-items:center;gap:10px"><h3 style="font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--navy);margin:0;flex:1">Activity</h3><button onClick="{{ openActivityLog }}" style="background:transparent;border:none;color:var(--navy);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--font-body)">Full log</button></div>
-            <div style="display:flex;flex-direction:column">
-              <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
-                <div style="padding:9px 0;border-bottom:1px solid var(--border-hairline);display:flex;align-items:flex-start;gap:9px">
-                  <span style="{{ ev.dot }};margin-top:5px"></span>
-                  <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-                    <div style="font-size:13px;color:var(--text-body)">{{ ev.text }}</div>
-                    <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px">{{ ev.when }}<sc-if value="{{ ev.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if></div>
-                  </div>
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <span style="{{ ovChipFeed }}"><span style="{{ ovIcFeed }}"></span></span>
+                  <div style="min-width:0"><h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">Latest activity</h3><div class="su-ovsub" style="font-size:12.5px;color:var(--text-muted)">What the team and agents just did.</div></div>
                 </div>
-              </sc-for>
+                <button onClick="{{ openActivityLog }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">Full log →</button>
+              </div>
+              <div style="display:flex;flex-direction:column;position:relative;padding-left:4px">
+                <span style="position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--gray-100);border-radius:1px"></span>
+                <sc-for list="{{ activity }}" as="ev" hint-placeholder-count="6">
+                  <div style="padding:7px 0;display:flex;align-items:flex-start;gap:12px;position:relative">
+                    <span style="display:flex;flex:none;margin-top:5px;position:relative;z-index:1"><span style="{{ ev.dot }}"></span></span>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                      <div style="font-size:13px;color:var(--text-body);line-height:1.4">{{ ev.text }}</div>
+                      <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px">{{ ev.when }}<sc-if value="{{ ev.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if></div>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ ovFeedNone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--text-muted);padding:8px 0 8px 22px">No activity yet.</div></sc-if>
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </sc-if>
@@ -2114,19 +2234,22 @@
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
           <div style="display:flex;flex-direction:column;gap:6px">
             <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">How we reach them</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="su-ldrow" style="display:flex;gap:8px;flex-wrap:wrap">
               <sc-for list="{{ leadRouteTiles }}" as="t" hint-placeholder-count="5">
                 <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--green)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span><span style="{{ t.subStyle }}">{{ t.sub }}</span></button>
               </sc-for>
             </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="su-ldlabel" style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-10px">Stage</div>
+          <div class="su-ldrow" style="display:flex;gap:8px;flex-wrap:wrap">
             <sc-for list="{{ leadTiles }}" as="t" hint-placeholder-count="9">
               <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
             </sc-for>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input value="{{ dLeadQ }}" onChange="{{ onLeadQ }}" placeholder="Search company, owner, email or notes" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+          <div class="su-ldbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input class="su-ldq" value="{{ dLeadQ }}" onChange="{{ onLeadQ }}" placeholder="Search company, owner, email or notes" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
+            <button class="su-ldtoggle" onClick="{{ toggleLeadFilt }}" style="{{ leadFiltBtn }}">{{ leadFiltLabel }}</button>
+            <div class="su-ldfilters" style="{{ leadFiltWrap }}">
             <select value="{{ dLeadCounty }}" onChange="{{ onLeadCounty }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
               <sc-for list="{{ leadCountyOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
             </select>
@@ -2142,6 +2265,7 @@
             <select value="{{ dLeadWho }}" onChange="{{ onLeadWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
               <sc-for list="{{ leadWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
             </select>
+            </div>
             <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ clearLeadFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear filters</button>
             </sc-if>
@@ -10468,7 +10592,7 @@ class Component extends DCLogic {
     const brandFiles=myFiles.filter(f=>f.brand).map(f=>{ const r=fileRow(f);
       return Object.assign(r,{open: r.canPreview? r.open : go('files')}); });
     // mobile nav
-    const mobStyle=active=>({flex:1,minWidth:0,display:'flex',flexDirection:'column',alignItems:'center',gap:3,background:active?'#fff':'transparent',border:'none',borderRadius:18,color:active?'var(--chrome)':'rgba(255,255,255,.7)',fontSize:11,fontWeight:active?700:500,padding:'8px 2px 7px',cursor:'pointer',fontFamily:'var(--font-body)'});
+    const mobStyle=active=>({position:'relative',flex:1,minWidth:0,display:'flex',flexDirection:'column',alignItems:'center',gap:3,background:active?'#fff':'transparent',border:'none',borderRadius:18,color:active?'var(--chrome)':'rgba(255,255,255,.7)',fontSize:11,fontWeight:active?700:500,padding:'8px 2px 7px',cursor:'pointer',fontFamily:'var(--font-body)'});
     // The bottom bar is chosen rather than "the first four", so Messages has a
     // place on it and its unread count is visible without opening anything.
     // A client loses Updates from the bar (it is a read-only feed); the team
@@ -11436,65 +11560,127 @@ class Component extends DCLogic {
     const ovAttn = attn.slice(0,7).map(a=>Object.assign({},a,{bar:{width:4,alignSelf:'stretch',minHeight:26,borderRadius:3,background:toneCol[a.tone],flex:'none'}}));
     // The four stages of client work. Picking one shows its list underneath.
     const ovTab = ['req','queue','prog','appr'].indexOf(S.ovTab)>=0 ? S.ovTab : (teamReqCards.length? 'req' : 'prog');
+    const STAGE_COL = {req:'#E0A12B',queue:'#2E3FD6',prog:'#1FB264',appr:'#189D99'};
+    const tint = (hex,a)=>{ const n=parseInt(hex.slice(1),16); return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'; };
+    const initialsOf = name=>{ const p=String(name||'').replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);
+      return ((p[0]||'?').charAt(0)+(p.length>1?p[1].charAt(0):'')).toUpperCase(); };
+    const avatarOf = (cid,size)=>({width:size||36,height:size||36,flex:'none',borderRadius:12,background:cid?clientColor(cid):'var(--navy)',color:'#fff',
+      display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,letterSpacing:'.02em'});
+    const chipSt = (bg,fg)=>({flex:'none',background:bg,color:fg,borderRadius:8,padding:'3px 8px',fontSize:11,fontWeight:700,whiteSpace:'nowrap'});
+    const RED=['rgba(216,86,78,.14)','#a8352d'], AMB=['rgba(214,143,46,.16)','#a2691a'], GRY=['rgba(15,22,51,.07)','var(--text-muted)'];
+    const ovToday0 = new Date(); ovToday0.setHours(0,0,0,0);
+    const dueChip = needBy=>{ if(!needBy) return null; const dd=Math.round((new Date(needBy+'T00:00:00')-ovToday0)/OV_DAY);
+      return dd<0 ? {label:'Overdue',style:chipSt(...RED)} : dd===0 ? {label:'Due today',style:chipSt(...AMB)} : dd===1 ? {label:'Due tomorrow',style:chipSt(...AMB)} : {label:'Due '+niceDate(needBy).replace(/, \d{4}$/,''),style:chipSt(...GRY)}; };
+    const urgChip = u=> u==='Urgent' ? {label:'Urgent',style:chipSt(...RED)} : u==='High' ? {label:'High',style:chipSt(...AMB)} : null;
+    const rowOf = (rec,meta,extra)=>Object.assign({title:rec.title||'Untitled',meta,open:null,hasAct:false,
+      initials:initialsOf(orgLabel(rec)),avatar:avatarOf(rec.clientId),chips:[urgChip(rec.urgency),dueChip(rec.needBy)].filter(Boolean)},extra);
     const ovStages = {
-      req:  {label:'New requests', list:teamReqCards.map(r=>({title:r.title,dot:r.dot,open:r.open,meta:[r.clientName,r.cat,r.when].filter(Boolean).join(' · '),hasAct:false})), empty:'No new requests. The queue is clear.'},
-      queue:{label:'Queued',       list:teamQueueCards.map(q=>({title:q.title,dot:q.dot,open:q.open,meta:q.metaLine,hasAct:true,act:q.start,actLabel:'Start'})), empty:'Nothing queued.'},
-      prog: {label:'In progress',  list:teamProgCards.map(w=>({title:w.title,dot:w.dot,open:w.open,meta:[w.clientName,w.commentsLabel].filter(Boolean).join(' · '),hasAct:true,act:w.submit,actLabel:'Send for approval'})), empty:'Nothing in progress. Start something from Queued.'},
-      appr: {label:'Waiting on clients', list:teamApprCards.map(u=>({title:u.title,dot:u.dot,open:u.open,meta:[u.clientName,u.kind,u.when].filter(Boolean).join(' · '),hasAct:false})), empty:'Nothing waiting on clients.'}
+      req:  {label:'New requests', short:'New', list:teamReqOrder.map((r,i)=>rowOf(r,[orgLabel(r),r.category||'General',this.fmt(r.ts)].join(' · '),{open:teamReqCards[i].open})), empty:'No new requests. The queue is clear.'},
+      queue:{label:'Queued', short:'Queued', list:teamQueue.map((w,i)=>rowOf(w,[orgLabel(w),Number(w.hours)?Number(w.hours)+'h est.':'No estimate'].join(' · '),{open:teamQueueCards[i].open,hasAct:true,act:teamQueueCards[i].start,actLabel:'Start'})), empty:'Nothing queued.'},
+      prog: {label:'In progress', short:'In progress', list:teamProg.map((w,i)=>rowOf(w,[orgLabel(w),teamProgCards[i].commentsLabel].filter(Boolean).join(' · '),{open:teamProgCards[i].open,hasAct:true,act:teamProgCards[i].submit,actLabel:'Send for approval'})), empty:'Nothing in progress. Start something from Queued.'},
+      appr: {label:'Waiting on clients', short:'Waiting', list:teamApprCards.map(u=>rowOf({title:u.title,clientId:u.clientId},[u.clientName,u.kind,u.when].filter(Boolean).join(' · '),{open:u.open})), empty:'Nothing waiting on clients.'}
     };
     const ovPick = k=>()=>this.setState({ovTab:k});
-    const ovTabs = Object.keys(ovStages).map(k=>({label:ovStages[k].label,n:ovStages[k].list.length,select:ovPick(k),
-      style:{background:ovTab===k?'var(--pill-bg)':'var(--gray-100)',color:ovTab===k?'var(--pill-fg)':'var(--navy)',border:'none',borderRadius:999,padding:'6px 13px',fontSize:12.5,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'}}));
+    const segBtn = on=>({background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',border:'none',borderRadius:10,padding:'7px 13px',fontSize:12.5,fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none',whiteSpace:'nowrap'});
+    const segCount = (on,col)=>({display:'inline-block',marginLeft:4,minWidth:18,textAlign:'center',background:on?(col||'var(--navy)'):'rgba(15,22,51,.08)',color:on?'#fff':'var(--text-muted)',borderRadius:8,fontSize:11,fontWeight:700,padding:'1px 6px'});
+    const ovTabs = Object.keys(ovStages).map(k=>({label:ovStages[k].label,n:ovStages[k].list.length,select:ovPick(k),style:segBtn(ovTab===k),count:segCount(ovTab===k,STAGE_COL[k])}));
     const ovList = ovStages[ovTab].list;
-    const ovTile = (label,value,hint,iconName,open,on,tip)=>({label,value,hint,tip:tip||'',open,icon:Object.assign(ico(iconName,17),{opacity:.75}),
-      style:{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:8,textAlign:'left',padding:'16px 18px',borderRadius:20,cursor:'pointer',fontFamily:'var(--font-body)',
+    const pipeTotal = Object.keys(ovStages).reduce((n,k)=>n+ovStages[k].list.length,0);
+    const ovPipe = Object.keys(ovStages).map(k=>{ const n=ovStages[k].list.length;
+      return {label:ovStages[k].label,short:ovStages[k].short,n,select:ovPick(k),tip:ovStages[k].label+': '+n,
+        sw:{width:10,height:10,borderRadius:3,background:STAGE_COL[k],flex:'none',display:'inline-block'},
+        seg:{flex:(n||0)+' 1 0',minWidth:n?10:0,display:n?'block':'none',height:'100%',background:STAGE_COL[k],border:'none',padding:0,cursor:'pointer',opacity:ovTab===k?1:.8}}; });
+    const iconChip = (col,name,size)=>[{width:size||38,height:size||38,flex:'none',borderRadius:12,background:tint(col,.13),color:col,display:'flex',alignItems:'center',justifyContent:'center'},ico(name,Math.round((size||38)*.47))];
+    const ovTile = (label,value,hint,iconName,col,open,on,tip)=>({label,value,hint,tip:tip||'',open,icon:ico(iconName,18),
+      chip:{width:38,height:38,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',background:on?'rgba(255,255,255,.14)':tint(col,.13),color:on?'#fff':col},
+      arrow:Object.assign(ico(on?'down':'right',15),{opacity:.4}),
+      style:{position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:8,textAlign:'left',padding:'16px 18px 18px',borderRadius:22,cursor:'pointer',fontFamily:'var(--font-body)',
         transition:'transform .14s ease, box-shadow .14s ease',
         background:on?'var(--chrome)':'var(--surface-card)',color:on?'#fff':'var(--navy)',border:on?'1px solid var(--chrome)':'1px solid var(--border-card)',
-        boxShadow:on?'0 12px 26px rgba(15,22,51,.22)':'0 1px 2px rgba(15,22,51,.04)'}});
+        borderBottom:'3px solid '+(Number(value)>0?col:(on?'var(--chrome)':'var(--border-card)')),
+        boxShadow:on?'0 14px 30px rgba(15,22,51,.26)':'0 1px 2px rgba(15,22,51,.04)'}});
     const repliedN = (D.leads||[]).filter(l=>l.stage==='replied').length;
     const trialsN = Number(badgeFor('trials'))||0;
     const myTodoN = D.todos.filter(t=>t.who==='team'&&!t.done&&t.assigneeId===me.id).length;
     const hasPage = k=>nav.some(([n])=>n===k);
     const ovTiles = [
-      ovTile('New requests',teamReqCards.length,'Review and approve','inbox',ovPick('req'),ovTab==='req','Show new requests below'),
-      ovTile('Queued',teamQueueCards.length,'Ready to start','board',ovPick('queue'),ovTab==='queue','Show queued work below'),
-      ovTile('In progress',teamProgCards.length,'Being worked on now','zap',ovPick('prog'),ovTab==='prog','Show work in progress below'),
-      ovTile('Waiting on clients',teamApprCards.length,'Sent for approval','clock',ovPick('appr'),ovTab==='appr','Show what clients need to approve'),
-      ovTile('My to-dos',myTodoN,'Assigned to you','check',openSection('todos'),false,'Open To-Dos'),
-      ovTile('Unread messages',unreadTotal||0,'From clients','msg',openSection('messages'),false,'Open Messages'),
-      hasPage('leads') ? ovTile('Lead replies',repliedN,'Need an answer','target',openSection('leads'),false,'Open Leads') : null,
-      hasPage('trials') ? ovTile('Trial drafts due',trialsN,'On the clock','cal',openSection('trials'),false,'Open Free Trials') : null
+      ovTile('New requests',ovStages.req.list.length,'Review and approve','inbox',STAGE_COL.req,ovPick('req'),ovTab==='req','Show new requests below'),
+      ovTile('Queued',ovStages.queue.list.length,'Ready to start','board',STAGE_COL.queue,ovPick('queue'),ovTab==='queue','Show queued work below'),
+      ovTile('In progress',ovStages.prog.list.length,'Being worked on now','zap',STAGE_COL.prog,ovPick('prog'),ovTab==='prog','Show work in progress below'),
+      ovTile('Waiting on clients',ovStages.appr.list.length,'Sent for approval','clock',STAGE_COL.appr,ovPick('appr'),ovTab==='appr','Show what clients need to approve'),
+      ovTile('My to-dos',myTodoN,'Assigned to you','check','#2E3FD6',openSection('todos'),false,'Open To-Dos'),
+      ovTile('Unread messages',unreadTotal||0,'From clients','msg','#1FB264',openSection('messages'),false,'Open Messages'),
+      hasPage('leads') ? ovTile('Lead replies',repliedN,'Need an answer','target','#D8564E',openSection('leads'),false,'Open Leads') : null,
+      hasPage('trials') ? ovTile('Trial drafts due',trialsN,'On the clock','cal','#E0A12B',openSection('trials'),false,'Open Free Trials') : null
     ].filter(Boolean);
-    // Open work per client. Tapping a client narrows the page to them.
-    const loadRaw = D.clients.map(c=>({c,n:liveReqs.filter(r=>r.status==='new'&&r.clientId===c.id).length
-      + liveWork.filter(w=>w.clientId===c.id&&(w.status==='queued'||w.status==='progress'||w.status==='review')).length}))
-      .filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,8);
+    // Open work per client, split by stage. Tapping a client narrows the page.
+    const loadRaw = D.clients.map(c=>{ const by={req:liveReqs.filter(r=>r.status==='new'&&r.clientId===c.id).length,
+        queue:liveWork.filter(w=>w.clientId===c.id&&w.status==='queued').length,
+        prog:liveWork.filter(w=>w.clientId===c.id&&w.status==='progress').length,
+        appr:liveWork.filter(w=>w.clientId===c.id&&w.status==='review').length};
+      return {c,by,n:by.req+by.queue+by.prog+by.appr}; }).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,7);
     const loadMax = loadRaw.reduce((m,x)=>Math.max(m,x.n),1);
-    const ovLoad = loadRaw.map(({c,n})=>({name:c.name,n,dot:clientDot(c.id),tip:ovClient===c.id?'Show all clients':'Show only '+c.name,
+    const ovLoad = loadRaw.map(({c,by,n})=>({name:c.name,n,dot:clientDot(c.id),tip:ovClient===c.id?'Show all clients':'Show only '+c.name,
       select:()=>this.setState({ovClient:ovClient===c.id?'all':c.id}),
-      bar:{display:'block',height:'100%',width:Math.max(6,Math.round(n/loadMax*100))+'%',borderRadius:4,background:'var(--blue)'},
-      style:{display:'flex',flexDirection:'column',gap:7,width:'100%',textAlign:'left',background:ovClient===c.id?'var(--gray-100)':'transparent',border:'none',borderRadius:12,padding:'8px',cursor:'pointer',fontFamily:'var(--font-body)'}}));
+      segs:Object.keys(by).filter(k=>by[k]>0).map(k=>({style:{display:'block',height:'100%',width:(by[k]/loadMax*100)+'%',background:STAGE_COL[k]}})),
+      style:{display:'flex',flexDirection:'column',gap:7,width:'100%',textAlign:'left',background:ovClient===c.id?'var(--gray-100)':'transparent',border:'none',borderRadius:12,padding:'9px 10px',cursor:'pointer',fontFamily:'var(--font-body)'}}));
+    // Seven days of logged actions, from whatever history is loaded.
+    const logAll = (D.log||[]).filter(l=>l.ts);
+    const oldestLog = logAll.reduce((m,l)=>Math.min(m,l.ts),nowTs);
+    const chartDays = []; for(let i=6;i>=0;i--){ const st=ovToday0.getTime()-i*OV_DAY; chartDays.push({st,n:logAll.filter(l=>l.ts>=st&&l.ts<st+OV_DAY).length}); }
+    const chartMax = chartDays.reduce((m,x)=>Math.max(m,x.n),1);
+    const ovChart = chartDays.map((x,i)=>{ const dt=new Date(x.st), isToday=i===6;
+      return {n:x.n,day:isToday?'Today':dt.toLocaleDateString('en-US',{weekday:'short'}),tip:dt.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+': '+plural(x.n,'action'),
+        bar:{display:'block',width:'100%',maxWidth:44,height:Math.max(4,Math.round(x.n/chartMax*76)),borderRadius:8,background:isToday?'var(--blue)':tint('#2E3FD6',.22)},
+        lab:{fontSize:11,fontWeight:isToday?700:500,color:isToday?'var(--navy)':'var(--text-muted)',whiteSpace:'nowrap'}}; });
+    const ovMsgsRaw = D.clients.map(c=>{ const ms=D.messages.filter(m=>m.clientId===c.id); if(!ms.length) return null;
+      const m=ms.reduce((a,b2)=>(b2.ts||0)>(a.ts||0)?b2:a); const un=unreadFor(c.id);
+      return {ts:m.ts||0,name:c.name,initials:initialsOf(c.name),avatar:avatarOf(c.id,36),when:this.fmt(m.ts),line:msgSigner(m)+': '+(m.text||''),unread:un>0?un:false,
+        textStyle:{fontSize:12.5,color:un>0?'var(--navy)':'var(--text-muted)',fontWeight:un>0?600:400,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+        open:()=>{ markRead(c.id); this.setState({section:'messages',msgClient:c.id,notifOpen:false}); }}; }).filter(Boolean)
+      .sort((a,b2)=>(Number(!!b2.unread)-Number(!!a.unread))||b2.ts-a.ts).slice(0,5);
+    const ovTodoTab = S.ovTodoTab==='team' ? 'team' : 'mine';
+    const teamOpenN = D.todos.filter(t=>t.who==='team'&&!t.done).length;
+    const ATTN_ICON = {red:'clock',amber:'zap',blue:'bell',green:'target'};
+    const ovAttn2 = attn.slice(0,6).map(a=>{ const col={red:'#D8564E',amber:'#E0A12B',blue:'#2E3FD6',green:'#1FB264'}[a.tone]; const [chip,icon]=iconChip(col,a.ico||ATTN_ICON[a.tone],34);
+      return Object.assign({},a,{chip,icon}); });
     const ovLinkIds = [['board','Workboard'],['todos','To-Dos'],['time','Hours'],['clients','Clients'],['leads','Leads'],['trials','Free Trials'],['content','Content Map'],['activity','Activity Log']];
-    const openTotal = teamReqCards.length+teamQueueCards.length+teamProgCards.length;
-    const ovVals = {
+    const hChip = (key,col,name)=>{ const [c,i]=iconChip(col,name,38); return {['ovChip'+key]:c,['ovIc'+key]:i}; };
+    const ovVals = Object.assign({},
+      hChip('Work','#2E3FD6','board'), hChip('Attn','#D8564E','bell'), hChip('Load','#189D99','building'), hChip('Act','#2E3FD6','chart'),
+      hChip('Msg','#1FB264','msg'), hChip('Todo','#2E3FD6','check'), hChip('Feed','#E0A12B','pulse'), {
+      ovChipUpd:{width:38,height:38,flex:'none',borderRadius:12,background:'rgba(255,255,255,.14)',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center'}, ovIcUpd:ico('bell',18),
+      ovHero:{position:'relative',borderRadius:26,padding:'30px 32px',color:'#fff',
+        background:'radial-gradient(900px 380px at 100% 0%, rgba(46,63,214,.55), transparent 60%), radial-gradient(600px 300px at 0% 100%, rgba(31,178,100,.28), transparent 60%), var(--chrome)',
+        boxShadow:'0 22px 44px rgba(15,22,51,.22)'},
+      ovUpdCard:{borderRadius:22,padding:'22px 24px',display:'flex',flexDirection:'column',gap:14,color:'#fff',
+        background:'radial-gradient(500px 240px at 100% 0%, rgba(46,63,214,.5), transparent 60%), var(--chrome)',boxShadow:'0 14px 30px rgba(15,22,51,.18)'},
+      ovDate:new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),
       ovHello:(hr<12?'Good morning':hr<18?'Good afternoon':'Good evening')+(firstName?', '+firstName:''),
-      ovSummary: attn.length ? plural(attn.length,'thing')+' need'+(attn.length===1?'s':'')+' attention. '+plural(openTotal,'open item')+' across the team.'
-                             : 'Nothing is late. '+plural(openTotal,'open item')+' across the team.',
+      ovSummary: attn.length ? plural(attn.length,'thing')+' need'+(attn.length===1?'s':'')+' attention today.' : 'Nothing is late. You are clear to build.',
+      ovPipeTotal:pipeTotal, ovPipeLabel:'open item'+(pipeTotal===1?'':'s')+' across '+plural(loadRaw.length,'client'), ovPipe,
       ovQ, onOvQ:this.draft('ovQ'), ovHasQ, ovClearQ, ovResults,
       onOvQKey:e=>{ if(e.key==='Enter' && ovResults.length){ e.preventDefault(); ovResults[0].open(); } else if(e.key==='Escape'){ ovClearQ(); } },
       ovNoResults: ovHasQ && ovResults.length===0, ovNoResultsText:'No matches for "'+ovQ.trim()+'". Try a client name or a word from the title.',
       ovResultsHint: ovResults.length>0,
-      ovIcoSearch:Object.assign(ico('search',19),{color:'var(--text-muted)'}),
-      ovSearchBox:{display:'flex',alignItems:'center',gap:12,background:'var(--surface-card)',border:'1px solid '+(ovHasQ?'var(--navy)':'var(--border-card)'),borderRadius:18,padding:'14px 18px',boxShadow:'0 6px 18px rgba(15,22,51,.06)'},
-      ovLinks: ovLinkIds.filter(([k])=>hasPage(k)).map(([k,label])=>({label,open:openSection(k),icon:Object.assign(icoFor(k,14),{color:'var(--text-muted)'})})),
-      ovTiles, ovTabs, ovRows:ovList.slice(0,8), ovRowsEmpty:ovList.length===0, ovRowsEmptyText:ovStages[ovTab].empty,
-      ovRowsMore: ovList.length>8 ? '+'+(ovList.length-8)+' more on the Workboard →' : false,
-      ovListTitle: ovStages[ovTab].label,
-      ovAttn, ovAttnCount:attn.length, ovAttnNone:attn.length===0,
-      ovAttnBadge:{background:attn.length?'var(--danger-line)':'var(--green)',color:'#fff',borderRadius:12,fontSize:11,fontWeight:700,padding:'1px 9px'},
+      ovIcoSearch:Object.assign(ico('search',19),{color:'#7a819e'}),
+      ovSearchBox:{display:'flex',alignItems:'center',gap:12,background:'#fff',border:'2px solid '+(ovHasQ?'var(--blue)':'transparent'),borderRadius:16,padding:'13px 16px',boxShadow:'0 10px 24px rgba(0,0,0,.18)'},
+      ovLinks: ovLinkIds.filter(([k])=>hasPage(k)).map(([k,label])=>({label,open:openSection(k),icon:Object.assign(icoFor(k,14),{opacity:.8})})),
+      ovTiles, ovTabs, ovRows:ovList.slice(0,7), ovRowsEmpty:ovList.length===0, ovRowsEmptyText:ovStages[ovTab].empty,
+      ovRowsMore: ovList.length>7 ? '+'+(ovList.length-7)+' more on the Workboard →' : false,
+      ovAttn:ovAttn2, ovAttnCount:attn.length, ovAttnNone:attn.length===0, ovAttnMore: attn.length>6 ? '+'+(attn.length-6)+' more' : false,
+      ovChev:Object.assign(ico('right',14),{color:'var(--text-muted)',opacity:.6}),
+      ovAttnBadge:{background:attn.length?'var(--danger-line)':'var(--green)',color:'#fff',borderRadius:12,fontSize:12,fontWeight:700,padding:'2px 10px',flex:'none'},
       ovLoad, ovLoadNone:ovLoad.length===0,
+      ovChart, ovChartTotal:chartDays.reduce((n,x)=>n+x.n,0),
+      ovChartSub: oldestLog>chartDays[0].st && logAll.length ? 'History here starts '+new Date(oldestLog).toLocaleDateString('en-US',{month:'short',day:'numeric'})+'.' : 'Everything logged by people and agents.',
+      ovMsgs:ovMsgsRaw, ovMsgsNone:ovMsgsRaw.length===0, ovGoMessages:openSection('messages'), ovGoTodos:openSection('todos'),
+      ovTodoMine:ovTodoTab==='mine', ovTodoTeam:ovTodoTab==='team',
+      ovTodoTabs:[['mine','Mine',myTodoN],['team','Team',teamOpenN]].map(([k,label,n])=>({label,n,select:()=>this.setState({ovTodoTab:k}),style:segBtn(ovTodoTab===k),count:segCount(ovTodoTab===k)})),
+      ovFeedNone: !(D.log||[]).some(l=>!l.quiet),
       ovClientName:(D.clients.find(c=>c.id===ovClient)||{}).name||'this client'
-    };
+    });
+
     const leadBoard=lf.stage==='active';
     const leadCard=l=>{
       const nN=leadNotesFor(l.id).length, nM=leadMailsFor(l.id).length, due=leadDue(l);
@@ -11775,6 +11961,10 @@ class Component extends DCLogic {
       leadFiltered, openAddLead,
       leadLogOpen:!!S.leadLogOpen,
       leadLogBtn:S.leadLogOpen?'Hide activity':'Activity',
+      toggleLeadFilt:()=>this.setState(s2=>({leadFiltOpen:!s2.leadFiltOpen})),
+      leadFiltWrap:{'--ldf':S.leadFiltOpen?'grid':'none'},
+      leadFiltLabel:(S.leadFiltOpen?'Hide filters':'Filters and sort')+(leadFiltered?' · on':''),
+      leadFiltBtn:{background:S.leadFiltOpen||leadFiltered?'var(--navy)':'var(--surface-card)',color:S.leadFiltOpen||leadFiltered?'#fff':'var(--navy)',border:'1px solid '+(S.leadFiltOpen||leadFiltered?'var(--navy)':'var(--gray-200)'),borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'},
       toggleLeadLog:()=>this.setState(s2=>({leadLogOpen:!s2.leadLogOpen,leadLogN:40})),
       leadLogList:leadLogF.slice(0,leadLogN).map(leadLogRow),
       noLeadLog:leadLogF.length===0,
