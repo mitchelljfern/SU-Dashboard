@@ -170,6 +170,16 @@
     .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .su-ovtiles>*{min-width:0;box-sizing:border-box}
     .su-ovsplit{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+    .su-tdherogrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,1fr);gap:26px;align-items:center}
+    .su-tdopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .su-tdopts option{color:#0F1633}
+    .su-tdck{transition:transform .12s ease,border-color .12s ease,background .12s ease,box-shadow .12s ease}
+    .su-tdck:hover{border-color:var(--green) !important;box-shadow:0 0 0 4px rgba(31,178,100,.16)}
+    .su-tdck:active{transform:scale(.86)}
+    .su-tdrow .su-tdact{opacity:.45;transition:opacity .12s ease}
+    .su-tdrow:hover .su-tdact{opacity:1}
+    @media (max-width:1100px){ .su-tdherogrid{grid-template-columns:minmax(0,1fr)} }
+    @media (max-width:560px){ .su-tdopts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .su-tdopts>:last-child{grid-column:1 / -1} }
     .su-ovtri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
     .su-ovherogrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:26px;align-items:center}
     @media (max-width:1200px){ .su-ovtri{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .su-ovtri>:first-child{grid-column:1 / -1} }
@@ -1075,6 +1085,19 @@
                 <sc-if value="{{ hasLoSubject }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-muted);user-select:text">Subject line: <strong style="color:var(--text-body)">{{ loSubject }}</strong></div></sc-if>
               </div>
             </sc-if>
+            <sc-if value="{{ loForm }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid var(--border-card);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+                  <div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Message to paste into their form</div>
+                  <button onClick="{{ loFormCopy }}" style="{{ loFormCopyStyle }}">{{ loFormCopyLabel }}</button>
+                </div>
+                <div style="font-size:13.5px;color:var(--text-body);line-height:1.55;white-space:pre-wrap;user-select:text;background:var(--gray-100);border-radius:12px;padding:12px 14px;max-height:230px;overflow-y:auto">{{ loFormMsg }}</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                  <span style="font-size:12px;color:var(--text-muted)">Form fields:</span>
+                  <sc-for list="{{ loFormChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.copy }}" title="{{ c.value }}" style="{{ c.style }}">{{ c.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
             <div class="su-ldm3" style="background:var(--gray-100);border-radius:16px;padding:12px">
               <label style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);min-width:0">Stage
                 <select value="{{ loStage }}" onChange="{{ onLoStage }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13.5px;font-weight:600;color:var(--navy);background:var(--surface-card);font-family:var(--font-body)"><sc-for list="{{ loStageOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -1562,6 +1585,12 @@
                 </div>
                 <button onClick="{{ ovGoTodos }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">All to-dos →</button>
               </div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(31,178,100,.08);border:1px solid rgba(31,178,100,.18);border-radius:14px;padding:10px 14px">
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px"><span style="font-weight:700;color:var(--navy)">{{ ovTodoLine }}</span><span style="color:var(--text-muted);white-space:nowrap">{{ ovTodoPct }}</span></div>
+                <div style="height:7px;border-radius:4px;background:rgba(31,178,100,.16);overflow:hidden"><span style="{{ ovTodoBar }}"></span></div>
+              </div>
+            </div>
             <div style="display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;align-self:flex-start">
               <sc-for list="{{ ovTodoTabs }}" as="tb" hint-placeholder-count="2"><button onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="{{ tb.count }}">{{ tb.n }}</span></button></sc-for>
             </div>
@@ -1569,7 +1598,7 @@
               <sc-if value="{{ ovTodoMine }}" hint-placeholder-val="{{ true }}">
                 <sc-for list="{{ myTodos }}" as="m" hint-placeholder-count="3">
                   <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px" style-hover="background:var(--gray-100)">
-                    <button onClick="{{ m.toggle }}" aria-label="Mark done" style="{{ m.boxStyle }}"></button>
+                    <button class="su-tdck" onClick="{{ m.toggle }}" aria-label="Mark done" title="Mark as done" style="{{ m.boxStyle }}"></button>
                     <div style="flex:1;min-width:0;font-size:14px;color:var(--text-body)">{{ m.title }}</div>
                     <span style="font-size:11px;font-weight:600;color:var(--text-muted);background:var(--gray-100);border-radius:8px;padding:3px 8px;white-space:nowrap">{{ m.client }}</span>
                   </div>
@@ -1579,7 +1608,7 @@
               <sc-if value="{{ ovTodoTeam }}" hint-placeholder-val="{{ false }}">
                 <sc-for list="{{ teamTodos }}" as="t" hint-placeholder-count="4">
                   <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px" style-hover="background:var(--gray-100)">
-                    <button onClick="{{ t.toggle }}" aria-label="Mark done" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                    <button class="su-tdck" onClick="{{ t.toggle }}" aria-label="Mark done" title="Mark as done" style="{{ t.boxStyle }}">{{ t.mark }}</button>
                     <div style="flex:1;min-width:0;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
                     <sc-if value="{{ t.hasAssignee }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;font-weight:600;color:var(--blue);background:rgba(46,63,214,.09);border-radius:8px;padding:3px 8px;white-space:nowrap">{{ t.assignee }}</span></sc-if>
                     <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap"><span style="{{ t.dot }}"></span>{{ t.clientName }}</span>
@@ -3145,130 +3174,141 @@
       </sc-if>
 
       <sc-if value="{{ secTodos }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:18px">
-
-          <div class="su-grid4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
-            <sc-for list="{{ tdStats }}" as="s" hint-placeholder-count="4">
-              <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:16px 18px;border-radius:12px;display:flex;flex-direction:column;gap:5px">
-                <div style="font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--navy);line-height:1">{{ s.value }}</div>
-                <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ s.label }}</div>
-              </div>
-            </sc-for>
-          </div>
-
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Add a to-do</h3>
-              <div style="font-size:12px;color:var(--text-muted)">A client to-do appears on that client's To-Dos tab and on their dashboard, and they tick it off themselves. A team one stays internal.</div>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <input value="{{ dTodo }}" onChange="{{ onTodo }}" placeholder="What needs doing" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-              <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <option value="">Internal</option>
-                <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
-              </select>
-              <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <option value="team">For team</option>
-                <option value="client">For client</option>
-              </select>
-              <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
-              </select>
-              <button onClick="{{ addTodo }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add</button>
-            </div>
-          </div>
-
-          <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:18px;border-radius:12px">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1;min-width:120px">Open</h3>
-              <select value="{{ dTdClient }}" onChange="{{ onTdClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <sc-for list="{{ tdClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
-              </select>
-              <select value="{{ dTdWho }}" onChange="{{ onTdWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                <option value="all">Everyone</option>
-                <option value="client">For clients</option>
-                <option value="team">For team</option>
-              </select>
-            </div>
-
-            <sc-if value="{{ noTdGroups }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13.5px;color:var(--text-muted)">Nothing matches that filter.</div>
-            </sc-if>
-
-            <sc-for list="{{ tdGroups }}" as="g" hint-placeholder-count="2">
-              <div style="display:flex;flex-direction:column">
-                <div style="display:flex;align-items:center;gap:9px;padding-bottom:9px;border-bottom:1px solid var(--border-hairline)">
-                  <span style="{{ g.dot }}"></span>
-                  <div style="font-family:var(--font-display);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy)">{{ g.name }}</div>
-                  <div style="font-size:11px;color:var(--text-muted)">{{ g.countLabel }}</div>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="su-ovhero" style="{{ tdHero }}">
+            <div class="su-tdherogrid">
+              <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+                <div>
+                  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">{{ tdKicker }}</div>
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.15;color:#fff;margin-top:6px">{{ tdHeadline }}</div>
+                  <div style="font-size:14.5px;color:rgba(255,255,255,.72);margin-top:6px">{{ tdSubline }}</div>
                 </div>
-                <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="3">
-                  <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border-hairline);flex-wrap:wrap">
-                    <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:6px 6px 6px 16px;box-shadow:0 10px 24px rgba(0,0,0,.18)">
+                    <span style="{{ tdIcoPlus }}"></span>
+                    <input value="{{ dTodo }}" onChange="{{ onTodo }}" onKeyDown="{{ onTodoKey }}" placeholder="What needs doing? Press Enter to add" aria-label="New to-do" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:15px;color:#0F1633;padding:8px 0">
+                    <button id="su-td-add" onClick="{{ addTodo }}" style="background:var(--grad-brand);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.12)">Add</button>
+                  </div>
+                  <div class="su-tdopts">
+                    <select value="{{ dTodoClient }}" onChange="{{ onTodoClient }}" aria-label="Client" style="border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px 10px;font-size:13px;background:rgba(255,255,255,.1);color:#fff;min-width:0">
+                      <option value="">Internal</option>
+                      <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+                    </select>
+                    <select value="{{ dTodoWho }}" onChange="{{ onTodoWho }}" aria-label="Who it is for" style="border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px 10px;font-size:13px;background:rgba(255,255,255,.1);color:#fff;min-width:0">
+                      <option value="team">For the team</option>
+                      <option value="client">For the client</option>
+                    </select>
+                    <select value="{{ dTodoAssignee }}" onChange="{{ onTodoAssignee }}" aria-label="Assigned to" style="border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px 10px;font-size:13px;background:rgba(255,255,255,.1);color:#fff;min-width:0">
+                      <sc-for list="{{ assigneeOptions }}" as="a" hint-placeholder-count="2"><option value="{{ a.id }}">{{ a.name }}</option></sc-for>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:18px;min-width:0">
+                <div style="{{ tdRing }}"><div style="width:84px;height:84px;border-radius:50%;background:#131b3d;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-family:var(--font-display);font-weight:800;font-size:24px;color:#fff;line-height:1">{{ tdPct }}</span><span style="font-size:10px;color:rgba(255,255,255,.6);margin-top:2px">this week</span></div></div>
+                <div style="display:flex;flex-direction:column;gap:10px;min-width:0;flex:1">
+                  <sc-for list="{{ tdScore }}" as="k" hint-placeholder-count="3">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:12.5px;color:rgba(255,255,255,.7);white-space:nowrap">{{ k.label }}</span><span style="font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff;line-height:1">{{ k.value }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="su-ovsplit">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0">{{ tdListTitle }}</h3>
+                <select value="{{ dTdClient }}" onChange="{{ onTdClient }}" aria-label="Filter by client" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 10px;font-size:13px;background:var(--surface-card);max-width:200px">
+                  <sc-for list="{{ tdClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+                </select>
+              </div>
+              <div class="su-ovseg" role="tablist" style="display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;align-self:flex-start;max-width:100%;overflow-x:auto;box-sizing:border-box">
+                <sc-for list="{{ tdTabs }}" as="tb" hint-placeholder-count="4"><button role="tab" onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="{{ tb.count }}">{{ tb.n }}</span></button></sc-for>
+              </div>
+              <sc-if value="{{ noTdGroups }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:34px 16px;border:1px dashed var(--gray-200);border-radius:16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px">
+                  <span style="{{ tdClearChip }}"><span style="{{ tdClearIco }}"></span></span>
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy)">{{ tdEmptyTitle }}</div>
+                  <div style="font-size:13px;color:var(--text-muted)">{{ tdEmptyText }}</div>
+                </div>
+              </sc-if>
+              <sc-for list="{{ tdGroups }}" as="g" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;align-items:center;gap:9px;padding:8px 12px 4px">
+                    <span style="{{ g.dot }}"></span>
+                    <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy)">{{ g.name }}</div>
+                    <div style="font-size:11.5px;color:var(--text-muted)">{{ g.countLabel }}</div>
+                  </div>
+                  <sc-for list="{{ g.items }}" as="t" hint-placeholder-count="3">
+                  <div class="su-tdrow" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;flex-wrap:wrap" style-hover="background:var(--gray-100)">
+                    <button class="su-tdck" onClick="{{ t.toggle }}" aria-label="{{ t.ckLabel }}" title="{{ t.ckLabel }}" style="{{ t.ck }}">{{ t.mark }}</button>
                     <sc-if value="{{ t.reading }}" hint-placeholder-val="{{ true }}">
-                      <div style="flex:1;min-width:150px;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+                      <div style="flex:1;min-width:150px;font-size:14.5px;font-weight:500;color:{{ t.titleColor }};text-decoration:{{ t.deco }};overflow-wrap:anywhere">{{ t.title }}</div>
+                      <sc-if value="{{ t.hasAge }}" hint-placeholder-val="{{ false }}"><span style="{{ t.ageStyle }}">{{ t.ageLabel }}</span></sc-if>
+                      <sc-if value="{{ t.showWho }}" hint-placeholder-val="{{ true }}"><span style="{{ t.whoChip }}">{{ t.whoText }}</span></sc-if>
                     </sc-if>
                     <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
-                      <input value="{{ t.dEdit }}" onChange="{{ t.onEdit }}" onKeyDown="{{ t.onEditKey }}" style="flex:1;min-width:150px;border:1px solid var(--blue);border-radius:12px;padding:7px 11px;font-size:13.5px;font-family:var(--font-body)">
-                      <button onClick="{{ t.saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:6px 14px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Save</button>
-                      <button onClick="{{ t.cancelEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Cancel</button>
+                      <input value="{{ t.dEdit }}" onChange="{{ t.onEdit }}" onKeyDown="{{ t.onEditKey }}" style="flex:1;min-width:150px;border:1px solid var(--blue);border-radius:12px;padding:8px 11px;font-size:14px;font-family:var(--font-body)">
+                      <button onClick="{{ t.saveEdit }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:10px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">Save</button>
+                      <button onClick="{{ t.cancelEdit }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy)">Cancel</button>
                     </sc-if>
-                    <span style="{{ t.whoStyle }}">{{ t.whoLabel }}</span>
-                    <sc-if value="{{ t.showAssignee }}" hint-placeholder-val="{{ true }}">
-                      <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--blue);white-space:nowrap">{{ t.assignee }}</div>
-                    </sc-if>
-                    <div style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</div>
                     <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
-                      <button onClick="{{ t.startEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Edit</button>
-                      <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--danger-fg)">Remove</button>
+                      <span class="su-tdact" style="display:inline-flex;gap:2px;flex:none">
+                        <button onClick="{{ t.startEdit }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy);background:var(--gray-100)">Edit</button>
+                        <button onClick="{{ t.askRemove }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--danger-fg);background:var(--danger-wash)">Remove</button>
+                      </span>
                     </sc-if>
                     <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
-                      <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</div>
-                      <button onClick="{{ t.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 13px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">Yes, remove</button>
-                      <button onClick="{{ t.cancelRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Keep</button>
+                      <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</span>
+                      <button onClick="{{ t.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:10px;padding:6px 13px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">Yes, remove</button>
+                      <button onClick="{{ t.cancelRemove }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy)">Keep</button>
+                    </sc-if>
+                  </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:22px 24px;display:flex;flex-direction:column;gap:10px;min-width:0">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <span style="{{ tdWinChip }}"><span style="{{ tdWinIco }}"></span></span>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);margin:0;flex:1;min-width:100px">{{ tdDoneHeading }}</h3>
+                <sc-if value="{{ tdHasMore }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ tdToggleAll }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap">{{ tdMoreLabel }}</button>
+                </sc-if>
+              </div>
+              <sc-if value="{{ noTdDone }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px;color:var(--text-muted);padding:6px 2px">Nothing finished yet. The first one is the hardest.</div>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <sc-for list="{{ tdDone }}" as="t" hint-placeholder-count="4">
+                <div class="su-tdrow" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;flex-wrap:wrap" style-hover="background:var(--gray-100)">
+                    <button class="su-tdck" onClick="{{ t.toggle }}" aria-label="{{ t.ckLabel }}" title="{{ t.ckLabel }}" style="{{ t.ck }}">{{ t.mark }}</button>
+                    <sc-if value="{{ t.reading }}" hint-placeholder-val="{{ true }}">
+                      <div style="flex:1;min-width:150px;font-size:14.5px;font-weight:500;color:{{ t.titleColor }};text-decoration:{{ t.deco }};overflow-wrap:anywhere">{{ t.title }}</div>
+                      <span title="{{ t.clientName }}" style="display:inline-flex;flex:none"><span style="{{ t.dot }}"></span></span>
+                      <span style="font-size:11.5px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</span>
+                    </sc-if>
+                    <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
+                      <input value="{{ t.dEdit }}" onChange="{{ t.onEdit }}" onKeyDown="{{ t.onEditKey }}" style="flex:1;min-width:150px;border:1px solid var(--blue);border-radius:12px;padding:8px 11px;font-size:14px;font-family:var(--font-body)">
+                      <button onClick="{{ t.saveEdit }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:10px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer">Save</button>
+                      <button onClick="{{ t.cancelEdit }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy)">Cancel</button>
+                    </sc-if>
+                    <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
+                      <span class="su-tdact" style="display:inline-flex;gap:2px;flex:none">
+                        <button onClick="{{ t.startEdit }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy);background:var(--gray-100)">Edit</button>
+                        <button onClick="{{ t.askRemove }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--danger-fg);background:var(--danger-wash)">Remove</button>
+                      </span>
+                    </sc-if>
+                    <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</span>
+                      <button onClick="{{ t.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:10px;padding:6px 13px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">Yes, remove</button>
+                      <button onClick="{{ t.cancelRemove }}" style="background:none;border:none;padding:4px 8px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-radius:8px" style-hover="color:var(--navy)">Keep</button>
                     </sc-if>
                   </div>
                 </sc-for>
               </div>
-            </sc-for>
-          </div>
-        </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:14px;border-radius:12px">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0;flex:1;min-width:120px">{{ tdDoneHeading }}</h3>
-            <sc-if value="{{ tdHasMore }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ tdToggleAll }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">{{ tdMoreLabel }}</button>
-            </sc-if>
-          </div>
-          <sc-if value="{{ noTdDone }}" hint-placeholder-val="{{ false }}">
-            <div style="font-size:13.5px;color:var(--text-muted)">Nothing finished yet.</div>
-          </sc-if>
-          <div style="display:flex;flex-direction:column">
-            <sc-for list="{{ tdDone }}" as="t" hint-placeholder-count="4">
-              <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-hairline);flex-wrap:wrap">
-                <button onClick="{{ t.toggle }}" style="{{ t.boxStyle }}">{{ t.mark }}</button>
-                <sc-if value="{{ t.reading }}" hint-placeholder-val="{{ true }}">
-                  <div style="flex:1;min-width:150px;font-size:14px;color:{{ t.titleColor }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
-                </sc-if>
-                <sc-if value="{{ t.editing }}" hint-placeholder-val="{{ false }}">
-                  <input value="{{ t.dEdit }}" onChange="{{ t.onEdit }}" onKeyDown="{{ t.onEditKey }}" style="flex:1;min-width:150px;border:1px solid var(--blue);border-radius:12px;padding:7px 11px;font-size:13.5px;font-family:var(--font-body)">
-                  <button onClick="{{ t.saveEdit }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:6px 14px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#000">Save</button>
-                  <button onClick="{{ t.cancelEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Cancel</button>
-                </sc-if>
-                <span style="{{ t.whoStyle }}">{{ t.whoLabel }}</span>
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ t.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ t.clientName }}</div></div>
-                <div style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ t.when }}</div>
-                <sc-if value="{{ t.idle }}" hint-placeholder-val="{{ true }}">
-                  <button onClick="{{ t.startEdit }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Edit</button>
-                  <button onClick="{{ t.askRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--danger-fg)">Remove</button>
-                </sc-if>
-                <sc-if value="{{ t.confirming }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted);white-space:nowrap">Remove this?</div>
-                  <button onClick="{{ t.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 13px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">Yes, remove</button>
-                  <button onClick="{{ t.cancelRemove }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:5px 11px;font-size:12px;color:var(--text-muted);cursor:pointer;white-space:nowrap" style-hover="color:var(--navy)">Keep</button>
-                </sc-if>
-              </div>
-            </sc-for>
+            </div>
           </div>
         </div>
       </sc-if>
@@ -6037,7 +6077,7 @@ class Component extends DCLogic {
       preview:null, uploading:0, delFile:null, delComment:null, archiveAsk:null, editTitle:null, dragOn:false,
       // Which to-do is being retitled, which is mid-delete, and how the
       // board is filtered. Open-only by default: the list is a worklist.
-      todoEdit:null, todoDel:null, tdClient:'all', tdWho:'all',
+      todoEdit:null, todoDel:null, tdClient:'all', tdWho:'mine',
       // Whether the completed list is showing everything or just the recent few.
       tdAll:false,
       // Which client's monthly report is being written.
@@ -6296,7 +6336,7 @@ class Component extends DCLogic {
     this.setState(s=>({ecDraft:{...(s.ecDraft||{}),[k]:v}})); }; }
   editDraft(k){ return e=>{ const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
     this.setState(s=>({editDraft:{...(s.editDraft||{}),[k]:v}})); }; }
-  box(done){ return {width:18,height:18,minWidth:18,border:done?'none':'1px solid var(--ink-40)',background:done?'var(--check)':'var(--surface-card)',color:'#fff',fontSize:12,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:12}; }
+  box(done){ return {width:22,height:22,minWidth:22,boxSizing:'border-box',border:done?'2px solid var(--check)':'2px solid var(--ink-40)',background:done?'var(--check)':'var(--surface-card)',color:'#fff',fontSize:12,fontWeight:700,lineHeight:'18px',textAlign:'center',cursor:'pointer',padding:0,borderRadius:'50%'}; }
   badge(kind){
     const t=this._theme;
     const map={green:['rgba(31,178,100,.12)','#158a4d'],blue:['rgba(46,63,214,.10)','var(--blue)'],gray:['rgba(15,22,51,.07)','var(--text-muted)'],amber:['rgba(214,143,46,.14)','#a2691a'],orange:['rgba(234,118,38,.16)','#b4561a'],red:['rgba(216,86,78,.14)','#a8352d']};
@@ -10686,14 +10726,15 @@ class Component extends DCLogic {
     // answered "what is outstanding, and who is it on" across the book, and
     // nothing anywhere could correct a typo or take one back once written.
     // This is the whole list, grouped by the client it belongs to.
-    const tdC = S.tdClient||'all', tdW = S.tdWho||'all';
+    const tdC = S.tdClient||'all', tdW = S.tdWho||'mine';
     // Who and which client, only. Finished work has a list of its own below the
     // board, so a status filter here could put the same row in both at once.
     const tdMatch = t => {
       const cid = t.clientId||'';
       if(tdC==='internal'){ if(cid) return false; }
       else if(tdC!=='all' && cid!==tdC) return false;
-      if(tdW!=='all' && (t.who||'team')!==tdW) return false;
+      if(tdW==='mine'){ if(!((t.who||'team')==='team' && t.assigneeId===me.id)) return false; }
+      else if(tdW!=='all' && (t.who||'team')!==tdW) return false;
       return true;
     };
     // Retitling follows the card-title pattern: a draft that starts undefined
@@ -10715,6 +10756,16 @@ class Component extends DCLogic {
       const forClient = (t.who||'team')==='client';
       return {
         title:t.title, mark:t.done?'✓':'', boxStyle:this.box(t.done),
+        ck:Object.assign(this.box(t.done),{width:26,height:26,minWidth:26,fontSize:14,lineHeight:'22px',flex:'none'}),
+        ckLabel:t.done?'Mark as not done':'Mark as done',
+        hasAge:!t.done && (Date.now()-(t.ts||Date.now()))>=3*86400000,
+        ageLabel:Math.floor((Date.now()-(t.ts||Date.now()))/86400000)+' days old',
+        ageStyle:{fontSize:11,fontWeight:700,borderRadius:8,padding:'3px 8px',whiteSpace:'nowrap',background:'rgba(214,143,46,.16)',color:'#a2691a'},
+        showWho: tdW!=='mine',
+        whoText: forClient ? 'Client to do' : (t.assigneeName||'Unassigned'),
+        whoChip:{fontSize:11,fontWeight:700,borderRadius:8,padding:'3px 8px',whiteSpace:'nowrap',
+          background:forClient?'rgba(24,157,153,.14)':(t.assigneeName?'rgba(46,63,214,.09)':'var(--gray-100)'),
+          color:forClient?'#127a77':(t.assigneeName?'var(--blue)':'var(--text-muted)')},
         titleColor:t.done?'var(--text-muted)':'var(--text-body)',
         deco:t.done?'line-through':'none',
         whoLabel: forClient?'For client':'For team',
@@ -10779,6 +10830,50 @@ class Component extends DCLogic {
       {label:'Assigned to me',     value:tdOpen.filter(t=>t.who==='team'&&t.assigneeId===me.id).length},
       {label:'Completed',          value:D.todos.filter(t=>t.done).length}
     ];
+    // The scoreboard: what got done, so the page is about progress and not a pile.
+    const tdDay0 = new Date(); tdDay0.setHours(0,0,0,0);
+    const tdWeek0 = new Date(tdDay0); tdWeek0.setDate(tdDay0.getDate()-((tdDay0.getDay()+6)%7));
+    const tdDoneTs = D.todos.filter(t=>t.done&&t.doneAt).map(t=>Number(t.doneAt));
+    const tdDoneToday = tdDoneTs.filter(x=>x>=tdDay0.getTime()).length;
+    const tdDoneWeek = tdDoneTs.filter(x=>x>=tdWeek0.getTime()).length;
+    const tdStreak = (()=>{ const days=new Set(tdDoneTs.map(x=>{ const d2=new Date(x); d2.setHours(0,0,0,0); return d2.getTime(); }));
+      let n=0, cur=tdDay0.getTime(); if(!days.has(cur)) cur-=86400000;
+      while(days.has(cur)){ n++; cur-=86400000; } return n; })();
+    const tdMine = tdOpen.filter(t=>(t.who||'team')==='team'&&t.assigneeId===me.id);
+    const tdTeamOpen = tdOpen.filter(t=>(t.who||'team')==='team');
+    const tdWeekAll = tdDoneWeek + tdTeamOpen.length;
+    const tdPctN = tdWeekAll ? Math.round(tdDoneWeek/tdWeekAll*100) : 100;
+    const tdFirst = String(me.name||'').trim().split(/\s+/)[0];
+    const tdSeg = on=>({background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',border:'none',borderRadius:10,padding:'7px 13px',fontSize:12.5,fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none',whiteSpace:'nowrap'});
+    const tdCnt = on=>({display:'inline-block',marginLeft:4,minWidth:18,textAlign:'center',background:on?'var(--navy)':'rgba(15,22,51,.08)',color:on?'#fff':'var(--text-muted)',borderRadius:8,fontSize:11,fontWeight:700,padding:'1px 6px'});
+    const tdVals = {
+      tdHero:{position:'relative',borderRadius:26,padding:'30px 32px',color:'#fff',
+        background:'radial-gradient(900px 380px at 100% 0%, rgba(31,178,100,.42), transparent 60%), radial-gradient(600px 300px at 0% 100%, rgba(46,63,214,.45), transparent 60%), var(--chrome)',
+        boxShadow:'0 22px 44px rgba(15,22,51,.22)'},
+      tdKicker: tdStreak>1 ? tdStreak+' day streak' : new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),
+      tdHeadline: tdMine.length===0 ? (tdFirst? 'You are all clear, '+tdFirst : 'You are all clear')
+        : tdDoneToday>0 ? tdDoneToday+' down today. '+tdMine.length+' to go.'
+        : tdMine.length===1 ? 'One thing on your list today' : tdMine.length+' things on your list',
+      tdSubline: tdMine.length===0 ? 'Nothing is assigned to you. Grab one from the team list or add the next thing.'
+        : tdDoneToday>0 ? 'Good momentum. Tick the next one off while you are rolling.'
+        : 'Start with the oldest one. The first check mark makes the rest easier.',
+      tdIcoPlus:Object.assign(ico('check',18),{color:'#7a819e'}),
+      tdRing:{width:104,height:104,flex:'none',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',
+        background:'conic-gradient(#1FB264 '+(tdPctN*3.6)+'deg, rgba(255,255,255,.14) 0deg)'},
+      tdPct: tdPctN+'%',
+      tdScore:[{label:'Done today',value:tdDoneToday},{label:'Done this week',value:tdDoneWeek},{label:'Still open for the team',value:tdTeamOpen.length}],
+      tdTabs:[['mine','Mine',tdMine.length],['team','Team',tdTeamOpen.length],['client','Waiting on clients',tdOpen.filter(t=>(t.who||'team')==='client').length],['all','Everything',tdOpen.length]]
+        .map(([k,label,n])=>({label,n,select:()=>this.setState({tdWho:k,todoEdit:null,todoDel:null}),style:tdSeg(tdW===k),count:tdCnt(tdW===k)})),
+      tdListTitle: tdW==='mine'?'My list':tdW==='team'?'Team list':tdW==='client'?'Waiting on clients':'Everything open',
+      tdEmptyTitle: tdW==='mine' ? 'All clear' : 'Nothing here',
+      tdEmptyText: tdW==='mine' ? 'Nothing is assigned to you right now. Nice work.' : 'Nothing open matches this view.',
+      tdClearChip:{width:48,height:48,borderRadius:16,background:'rgba(31,178,100,.14)',color:'#158a4d',display:'flex',alignItems:'center',justifyContent:'center'}, tdClearIco:ico('check',22),
+      tdWinChip:{width:38,height:38,flex:'none',borderRadius:12,background:'rgba(31,178,100,.14)',color:'#158a4d',display:'flex',alignItems:'center',justifyContent:'center'}, tdWinIco:ico('check',18),
+      onTodoKey:e=>{ if(e.key==='Enter'){ e.preventDefault(); const b=document.getElementById('su-td-add'); if(b) b.click(); } },
+      ovTodoLine: tdDoneToday>0 ? tdDoneToday+' done today, '+tdMine.length+' left for you' : (tdMine.length? tdMine.length+' waiting on you' : 'Nothing waiting on you'),
+      ovTodoBar:{display:'block',height:'100%',width:tdPctN+'%',background:'var(--green)',borderRadius:4},
+      ovTodoPct: tdPctN+'% of this week cleared'
+    };
     const tdClientOpts = [{id:'all',name:'All clients'},{id:'internal',name:'Internal only'}]
       .concat(D.clients.map(c=>({id:c.id,name:c.name})));
 
@@ -11997,6 +12092,15 @@ class Component extends DCLogic {
       const lnk=(k,v,href)=>({k,v:String(v),isLink:!!href,isText:!href,href:href||'',target:/^https?:/.test(href||'')?'_blank':'_self'});
       const contact=[LO.owner?lnk('Owner',LO.owner):null, mail?lnk('Email',mail,'mailto:'+mail):null, phone?lnk('Phone',phone,'tel:'+phone.replace(/[^0-9+]/g,'')):null,
         site?lnk('Website',leadModal.loSiteLabel,site):null, (LO.address||LO.city)?lnk('Location',LO.address||LO.city):null].filter(Boolean);
+      // Copying is the whole job on a form lead, so the button says it worked.
+      const leadCopy=(key,text)=>()=>{
+        const done=()=>{ this.setState({leadCopied:key}); clearTimeout(this.__copyT); this.__copyT=setTimeout(()=>this.setState({leadCopied:null}),1600); };
+        const fallback=()=>{ try{ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }catch(e){} done(); };
+        try{ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,fallback); else fallback(); }catch(e){ fallback(); } };
+      // The form is sent in the owner's name: the first admin on the team.
+      const sender=(D.team||[]).find(t=>t.isAdmin&&!t.isAgent)||{};
+      const msgPhone=(String(LO.formMessage||'').match(/\(\d{3}\) \d{3}-\d{4}/)||[''])[0];
+      const formChips=[['fn','Name',sender.name||''],['fe','Email',sender.email||''],['fp','Phone',msgPhone],['fc','Company','Social Upgrades']].filter(([,,v])=>v);
       const qbar=v=>({display:'block',height:'100%',width:Math.max(0,Math.min(100,(parseFloat(v)||0)*10))+'%',background:'var(--blue)',borderRadius:3});
       Object.assign(leadModal,{
         loHead:{padding:'22px 24px 20px',display:'flex',flexDirection:'column',gap:14,borderRadius:'24px 24px 0 0',background:'radial-gradient(700px 300px at 100% 0%, rgba(46,63,214,.55), transparent 60%), var(--chrome)'},
@@ -12022,6 +12126,11 @@ class Component extends DCLogic {
         loProof:[['Site score',hasScore?(String(LO.siteScore)+' / 10'):''],['Google rating',LO.googleRating],['Reviews',LO.reviewCount]].filter(([,v])=>v).map(([k,v])=>({k,v:String(v)})),
         loTabs:[['notes','Comments',notes.length],['mails','Emails',mails.length],['research','Research',0],['hist','History',hist.length]]
           .map(([k,label,n])=>({label,n:n||'',select:()=>this.setState({leadTab:k}),style:tabBtn(tab===k),count:tabCnt(tab===k,n)})),
+        loForm:!!LO.formMessage && lr==='form', loFormMsg:LO.formMessage||'',
+        loFormCopy:leadCopy('msg',LO.formMessage||''), loFormCopyLabel:S.leadCopied==='msg'?'Copied':'Copy message',
+        loFormCopyStyle:{background:S.leadCopied==='msg'?'var(--green)':'var(--pill-bg)',color:S.leadCopied==='msg'?'#fff':'var(--pill-fg)',border:'none',borderRadius:10,padding:'7px 14px',fontSize:12.5,fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)'},
+        loFormChips:formChips.map(([k,label,value])=>({label:S.leadCopied===k?'Copied':label,value,copy:leadCopy(k,value),
+          style:{background:S.leadCopied===k?'var(--green)':'var(--surface-card)',color:S.leadCopied===k?'#fff':'var(--navy)',border:'1px solid '+(S.leadCopied===k?'var(--green)':'var(--gray-200)'),borderRadius:999,padding:'5px 12px',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'}})),
         loTabNotes:tab==='notes', loTabMails:tab==='mails', loTabHist:tab==='hist', loTabResearch:tab==='research',
         loResearchNone:!LO.notes && !leadModal.hasLoPitch
       });
@@ -12756,7 +12865,7 @@ class Component extends DCLogic {
       notifs:notifSrc.slice(0,10).map(l=>{ const w=isTeam?logWho(l):{name:'',isAgent:false};
         return {text:l.text,when:(w.name?w.name+' · ':'')+this.fmt(l.ts),isAgent:w.isAgent}; }),
       secOverview:isTeam&&secKey('overview'), secBoard:isTeam&&secKey('board'), secClients:isTeam&&secKey('clients'),
-      secTodos:isTeam&&secKey('todos'), tdGroups, noTdGroups:tdGroups.length===0, tdStats, tdClientOpts,
+      ...tdVals, secTodos:isTeam&&secKey('todos'), tdGroups, noTdGroups:tdGroups.length===0, tdStats, tdClientOpts,
       secReports:isTeam&&(secKey('reports')||secKey('workreports')),
       rdIntro: onWorkReports
         ? "Daily reports on what the team did and what needs you, written by the scheduled agents. Team only, never shown to clients."
@@ -12770,7 +12879,7 @@ class Component extends DCLogic {
       dTdClient:tdC, onTdClient:e=>this.setState({tdClient:e.target.value,todoEdit:null,todoDel:null}),
       dTdWho:tdW, onTdWho:e=>this.setState({tdWho:e.target.value,todoEdit:null,todoDel:null}),
       tdDone, noTdDone:tdDoneAll.length===0,
-      tdDoneHeading:'Completed'+(tdDoneAll.length? ' ('+tdDoneAll.length+')' : ''),
+      tdDoneHeading:'Wins'+(tdDoneAll.length? ' ('+tdDoneAll.length+')' : ''),
       tdHasMore: tdDoneAll.length>TD_RECENT,
       tdMoreLabel: tdShowAll? 'Show fewer' : ('View all '+tdDoneAll.length+' →'),
       tdToggleAll:()=>this.setState(s2=>({tdAll:!s2.tdAll,todoEdit:null,todoDel:null})),
