@@ -296,6 +296,85 @@
     .su-rvkpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}
     .su-rvstats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
     @media (max-width:640px){ .su-rvstats{grid-template-columns:repeat(2,minmax(0,1fr))} .su-rvkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    /* ===== Workboards: lists of compact cards, the way Trello lays them out ===== */
+    /* The open card: what it is on the left, where it stands on the right. */
+    .su-dgrid{display:grid;grid-template-columns:var(--dcols,minmax(0,1fr));gap:22px;align-items:start}
+    .su-dmain{display:flex;flex-direction:column;gap:14px;min-width:0}
+    .su-dside{display:flex;flex-direction:column;gap:10px;min-width:0;position:sticky;top:70px}
+    .su-dacts{display:flex;flex-direction:column;gap:8px}
+    .su-dacts:empty{display:none}
+    .su-dacts button{align-self:stretch !important;border-radius:12px !important;flex:1}
+    .su-dbox{background:var(--gray-100);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:7px}
+    .su-dfact{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--text-muted)}
+    .su-dfact>span:last-child{text-align:right;min-width:0;overflow-wrap:anywhere}
+    .su-dimgs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+    .su-dimgs>button{flex:none;height:120px;border:1px solid var(--border-card);border-radius:12px;overflow:hidden;padding:0;cursor:zoom-in;background:var(--gray-100)}
+    .su-dimgs img{height:100%;width:auto;max-width:260px;object-fit:cover;display:block}
+    @media (max-width:820px){ .su-dgrid{grid-template-columns:minmax(0,1fr) !important} .su-dside{position:static} }
+    .su-cdtiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr)) !important}
+    .su-cdtiles>button>span:nth-child(2)>span:first-child{white-space:normal !important;line-height:1.2}
+    .su-cdtiles>button>span:nth-child(2)>span:last-child:not(:first-child){display:none}
+    @media (max-width:860px){ .su-cdtiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important} }
+    .su-cdhero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,1.1fr);gap:20px;align-items:center}
+    .su-cdshow{display:flex;align-items:center;gap:14px;width:100%;margin-top:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 14px;cursor:pointer;font-family:var(--font-body);color:#fff}
+    @media (max-width:860px){ .su-cdhero{grid-template-columns:minmax(0,1fr);gap:14px} .su-cdshow{flex-wrap:wrap} }
+    .su-tboard{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;align-items:start;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;min-width:0}
+    .su-tl{border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0;max-height:calc(100vh - 150px)}
+    .su-tl-head{display:flex;align-items:center;gap:8px;padding:5px 7px 3px}
+    .su-tl-name{flex:1;min-width:0;font-family:var(--font-display);font-weight:700;font-size:12.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .su-tl-n{font-size:11.5px;font-weight:700;color:var(--text-muted);background:rgba(255,255,255,.7);border-radius:999px;padding:1px 8px}
+    .su-tl-cards{display:flex;flex-direction:column;gap:7px;overflow-y:auto;min-height:8px;padding:1px;scrollbar-width:thin}
+    .su-tl-empty{font-size:12.5px;color:var(--text-muted);padding:10px 8px 12px;text-align:center}
+    .su-tl-more{background:rgba(255,255,255,.6);border:none;border-radius:10px;padding:7px 10px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer;font-family:var(--font-body);text-align:center}
+    .su-tl-more:hover{background:#fff}
+    .su-tc{background:var(--surface-card);border-radius:10px;box-shadow:0 1px 1px rgba(15,22,51,.14),0 0 0 1px rgba(15,22,51,.05);cursor:pointer;display:flex;flex-direction:column;overflow:hidden;min-width:0;flex:none;transition:box-shadow .12s ease}
+    .su-tc:hover{box-shadow:0 4px 12px rgba(15,22,51,.16),0 0 0 1.5px var(--navy)}
+    .su-tc-cover{height:92px;background:var(--gray-100);overflow:hidden;flex:none}
+    .su-tc-cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .su-tc-body{padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px;min-width:0}
+    .su-tc-labels{display:flex;gap:4px;flex-wrap:wrap}
+    .su-tc-title{font-size:13.5px;font-weight:500;color:var(--navy);line-height:1.35;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .su-tc-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+    .su-tc-client{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);max-width:100%;min-width:0}
+    .su-tc-client>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .su-tc{position:relative}
+    .su-tc-meta:empty{display:none}
+    .su-tc-ords{position:absolute;top:5px;right:5px;display:none;background:var(--surface-card);border-radius:8px;box-shadow:0 1px 4px rgba(15,22,51,.25);padding:1px}
+    .su-tc:hover .su-tc-ords{display:flex}
+    @media (hover:none){ .su-tc-ords{display:flex;position:static;box-shadow:none;align-self:flex-end;margin:-4px 6px 4px 0} }
+    .su-tc-ord{background:transparent;border:none;border-radius:6px;width:22px;height:22px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none}
+    .su-tc-ord:hover{background:var(--gray-100);color:var(--navy)}
+    .su-tc-acts{display:flex;gap:6px;align-items:stretch}
+    .su-tc-back{flex:none;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:8px;padding:0 9px;font-size:11px;color:var(--text-body);cursor:pointer}
+    .su-tc-back:hover{background:var(--gray-100)}
+    .su-tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+    .su-tbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .su-fold{background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;overflow:hidden}
+    .su-fold-head{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:none;padding:12px 16px;cursor:pointer;font-family:var(--font-body)}
+    .su-fold-head:hover{background:var(--gray-100)}
+    .su-linkbtn{background:none;border:none;color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;font-family:var(--font-body)}
+    .su-linkbtn:hover{color:var(--green)}
+    /* The request composer: one line until you start typing. */
+    .su-rq{background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;gap:10px}
+    .su-rq:focus-within{border-color:var(--navy);box-shadow:0 4px 16px rgba(15,22,51,.08)}
+    .su-rq-top{display:flex;align-items:center;gap:10px}
+    .su-rq-title{flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:15px;font-weight:500;color:var(--navy);font-family:var(--font-body);padding:6px 0}
+    .su-rq-in{border:1px solid var(--gray-200);border-radius:10px;padding:8px 11px;font-size:13px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body);box-sizing:border-box;width:100%;min-width:0}
+    .su-rq-in:focus{outline:none;border-color:var(--navy)}
+    .su-rq-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .su-rq-row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .su-rq-f{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .su-rq-f>span{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .su-rq-attach{flex:none;border:1px solid var(--gray-200);background:var(--surface-card);border-radius:10px;padding:8px 13px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap;font-family:var(--font-body)}
+    .su-rq-chip{display:inline-flex;align-items:center;gap:6px;background:var(--gray-100);border-radius:999px;padding:4px 6px 4px 11px;font-size:12px;color:var(--navy);max-width:100%}
+    .su-rq-chip>button{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0 3px;line-height:1}
+    .su-rq-chip>button:hover{color:var(--danger-fg)}
+    @media (max-width:760px){
+      .su-tboard{grid-auto-columns:min(82vw,300px);scroll-snap-type:x proximity;margin:0 -16px;padding:0 16px 6px}
+      .su-tl{scroll-snap-align:center;max-height:none}
+      .su-tl-cards{overflow:visible}
+      .su-rq-row{grid-template-columns:minmax(0,1fr)}
+    }
     /* Activity log: one bar, one status strip, one row of tabs, then the feed. */
     .su-altop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .su-alq{flex:1;min-width:200px;display:flex;align-items:center;gap:9px;height:40px;padding:0 14px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;color:var(--text-muted);box-sizing:border-box}
@@ -307,6 +386,9 @@
     .su-alline{display:flex;align-items:center;gap:12px;padding:9px 14px;min-width:0}
     .su-allab{flex:none;width:150px;display:flex;flex-direction:column;gap:1px}
     .su-alpills{flex:1;min-width:0;display:flex;gap:6px;flex-wrap:wrap}
+    .su-cmchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:1px}
+    .su-cmchips::-webkit-scrollbar{display:none}
+    .su-cmcover{max-height:170px}
     .su-altabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border-card);margin-top:2px}
     .su-altabs::-webkit-scrollbar{display:none}
     .su-alrow:hover{background:var(--gray-100)}
@@ -623,7 +705,7 @@
             </div>
           </sc-if>
           </div>
-          <div class="su-detailbody" style="padding:20px 26px;display:flex;flex-direction:column;gap:14px">
+          <div class="su-detailbody" style="padding:20px 26px 24px;display:flex;flex-direction:column;gap:14px">
             <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
               <div style="background:#FDECEA;border:1px solid #EBBDB9;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
                 <div style="font-size:13px;color:var(--danger-fg);font-weight:600;line-height:1.5">{{ archiveWarning }}</div>
@@ -633,6 +715,8 @@
                 </div>
               </div>
             </sc-if>
+            <div class="su-dgrid" style="{{ dGrid }}">
+            <div class="su-dmain">
             <sc-if value="{{ titleReading }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;align-items:flex-start;gap:10px;min-width:0">
                 <div style="{{ detailTitleStyle }}">{{ detailTitle }}</div>
@@ -936,6 +1020,11 @@
                 </div>
               </sc-if>
             </sc-if>
+              <sc-if value="{{ dHasImgs }}" hint-placeholder-val="{{ false }}">
+                <div class="su-dimgs">
+                  <sc-for list="{{ dImgs }}" as="im" hint-placeholder-count="2"><button onClick="{{ im.open }}" title="{{ im.name }}" aria-label="{{ im.name }}"><img sc-camel-src="{{ im.thumb }}" alt="" loading="lazy"></button></sc-for>
+                </div>
+              </sc-if>
             <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
                 <span style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Description</span>
@@ -946,40 +1035,6 @@
               </div>
               <textarea value="{{ dDetailDesc }}" onChange="{{ onDetailDesc }}" placeholder="{{ descPlaceholder }}" rows="3" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.6;color:var(--text-body);resize:vertical;font-family:var(--font-body);background:var(--surface-card)"></textarea>
             </div>
-
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <sc-if value="{{ showUrgency }}" hint-placeholder-val="{{ false }}">
-                <span style="{{ detailUrgencyStyle }}">{{ detailUrgency }}</span>
-              </sc-if>
-              <sc-if value="{{ hasDetailNeedBy }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:12.5px;color:var(--text-muted)">Needed by <strong style="color:var(--navy)">{{ detailNeedBy }}</strong></span>
-              </sc-if>
-              <sc-if value="{{ hasDetailProjected }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:12.5px;color:var(--green);font-weight:600">Projected finish {{ detailProjected }}</span>
-              </sc-if>
-              <sc-if value="{{ hasDetailCompleted }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:12.5px;color:var(--green);font-weight:600">Completed {{ detailCompleted }}</span>
-              </sc-if>
-            </div>
-
-            <sc-if value="{{ canSetProjected }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Projected finish</label>
-                <input value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Estimated hours</label>
-                <input value="{{ detailEst }}" onChange="{{ onDetailEst }}" onBlur="{{ saveDetailEst }}" type="number" min="0" step="0.25" placeholder="Not estimated yet" style="width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
-                <span style="font-size:11.5px;color:var(--text-muted)">Internal. Change it whenever the scope does.</span>
-              </div>
-              <sc-if value="{{ showDetailActual }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                  <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Hours it took</label>
-                  <input value="{{ detailActual }}" onChange="{{ onDetailActual }}" onBlur="{{ saveDetailActual }}" type="number" min="0" step="0.25" placeholder="Blank uses the estimate" style="width:170px;border:1px solid var(--gray-200);border-radius:12px;padding:7px 10px;font-size:13px">
-                  <span style="font-size:11.5px;color:var(--text-muted)">Optional. This is what counts when the client approves.</span>
-                </div>
-              </sc-if>
-            </sc-if>
 
             <sc-if value="{{ hasDetailLinks }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;flex-direction:column;gap:6px">
@@ -1038,31 +1093,7 @@
                 <button onClick="{{ addDetailLink }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
               </div>
             </sc-if>
-            <sc-if value="{{ detailApprove }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ detailApproveFn }}" style="align-self:flex-start;background:var(--green);color:#fff;border:none;border-radius:12px;padding:9px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">{{ detailApproveLabel }}</button>
-            </sc-if>
-            <sc-if value="{{ detailReqApprove }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;gap:10px">
-                <button onClick="{{ detailReqApproveFn }}" style="background:var(--green);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
-                <button onClick="{{ detailReqDeclineFn }}" style="background:var(--surface-card);border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:13px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
-              </div>
-            </sc-if>
-          </div>
-          <sc-if value="{{ hasCmHistory }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:0 26px 6px;display:flex;flex-direction:column;gap:4px">
-              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 4px">History</h4>
-              <div style="max-height:170px;overflow-y:auto;display:flex;flex-direction:column">
-                <sc-for list="{{ cmHistory }}" as="h" hint-placeholder-count="3">
-                  <div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border-hairline);font-size:12.5px;min-width:0">
-                    <span style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ h.text }}</span>
-                    <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ h.who }} · {{ h.when }}</span>
-                    <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if>
-                  </div>
-                </sc-for>
-              </div>
-            </div>
-          </sc-if>
-          <div style="padding:6px 26px 22px;display:flex;flex-direction:column;gap:4px">
+          <div style="padding:4px 0 0;border-top:1px solid var(--border-hairline);margin-top:4px;display:flex;flex-direction:column;gap:4px">
             <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 6px">Comments</h4>
             <sc-for list="{{ detailComments }}" as="c" hint-placeholder-count="2">
               <div style="padding:10px 0;border-bottom:1px solid var(--border-hairline);display:flex;flex-direction:column;gap:4px;min-width:0">
@@ -1087,6 +1118,59 @@
               <button onClick="{{ sendComment }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
             </div>
           </div>
+            </div>
+            <sc-if value="{{ dSide }}" hint-placeholder-val="{{ true }}">
+            <aside class="su-dside">
+              <div class="su-dacts">
+            <sc-if value="{{ detailApprove }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ detailApproveFn }}" style="align-self:flex-start;background:var(--green);color:#fff;border:none;border-radius:12px;padding:9px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">{{ detailApproveLabel }}</button>
+            </sc-if>
+            <sc-if value="{{ detailReqApprove }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:10px">
+                <button onClick="{{ detailReqApproveFn }}" style="background:var(--green);color:#fff;border:none;padding:9px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve → queue</button>
+                <button onClick="{{ detailReqDeclineFn }}" style="background:var(--surface-card);border:1px solid var(--gray-200);color:var(--text-body);padding:9px 16px;font-size:13px;cursor:pointer" style-hover="background:var(--gray-100)">Decline</button>
+              </div>
+            </sc-if>
+              </div>
+              <sc-if value="{{ dHasMoves }}" hint-placeholder-val="{{ false }}">
+                <div class="su-dbox">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Stage</span>
+                  <sc-for list="{{ dMoves }}" as="mv" hint-placeholder-count="4"><button onClick="{{ mv.run }}" style="{{ mv.style }}"><span style="{{ mv.dot }}">{{ mv.mark }}</span>{{ mv.label }}</button></sc-for>
+                </div>
+              </sc-if>
+              <div class="su-dbox">
+                <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Details</span>
+                <sc-for list="{{ dFacts }}" as="df" hint-placeholder-count="3"><div class="su-dfact"><span>{{ df.k }}</span><span style="{{ df.style }}">{{ df.v }}</span></div></sc-for>
+              </div>
+              <sc-if value="{{ canSetProjected }}" hint-placeholder-val="{{ false }}">
+                <div class="su-dbox">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Planning · team only</span>
+                  <label class="su-rq-f"><span>Projected finish</span><input class="su-rq-in" value="{{ detailProjectedRaw }}" onChange="{{ onDetailProjected }}" type="date"></label>
+                  <label class="su-rq-f"><span>Estimated hours</span><input class="su-rq-in" value="{{ detailEst }}" onChange="{{ onDetailEst }}" onBlur="{{ saveDetailEst }}" type="number" min="0" step="0.25" placeholder="Not estimated yet"></label>
+                  <sc-if value="{{ showDetailActual }}" hint-placeholder-val="{{ false }}">
+                    <label class="su-rq-f"><span>Hours it took</span><input class="su-rq-in" value="{{ detailActual }}" onChange="{{ onDetailActual }}" onBlur="{{ saveDetailActual }}" type="number" min="0" step="0.25" placeholder="Blank uses the estimate"></label>
+                    <span style="font-size:11px;color:var(--text-muted);line-height:1.4">This is what counts when the client approves.</span>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </aside>
+            </sc-if>
+            </div>
+          </div>
+          <sc-if value="{{ hasCmHistory }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 26px 6px;display:flex;flex-direction:column;gap:4px">
+              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0 0 4px">History</h4>
+              <div style="max-height:170px;overflow-y:auto;display:flex;flex-direction:column">
+                <sc-for list="{{ cmHistory }}" as="h" hint-placeholder-count="3">
+                  <div style="display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border-hairline);font-size:12.5px;min-width:0">
+                    <span style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ h.text }}</span>
+                    <span style="font-size:11px;color:var(--text-muted);white-space:nowrap">{{ h.who }} · {{ h.when }}</span>
+                    <sc-if value="{{ h.isAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -1763,73 +1847,57 @@
       </sc-if>
 
       <sc-if value="{{ secBoard }}" hint-placeholder-val="{{ false }}">
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:18px 22px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-radius:12px">
-          <input value="{{ dWork }}" onChange="{{ onWork }}" placeholder="Add a work item" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-          <select value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
+        <div class="su-tbar">
+          <label class="su-alq"><span style="{{ bdSearchIco }}"></span><input value="{{ dBdQ }}" onChange="{{ onBdQ }}" placeholder="Search cards" aria-label="Search cards"></label>
+          <select value="{{ dBdClient }}" onChange="{{ onBdClient }}" aria-label="Client" style="height:40px;border:1px solid var(--border-card);border-radius:12px;padding:0 10px;font-size:13px;background:var(--surface-card);color:var(--text-body);max-width:220px;font-family:var(--font-body)">
+            <option value="">All clients</option>
             <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
           </select>
-          <input value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs (optional)" style="width:70px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13px">
-          <button onClick="{{ addWork }}" style="background:var(--cta-bg);color:#fff;border:none;padding:9px 18px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Add to queue</button>
+          <button onClick="{{ toggleBdAdd }}" aria-expanded="{{ bdAddOpen }}" style="height:40px;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:0 16px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">+ Add work</button>
         </div>
-        <div class="su-cols" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:start">
-          <div style="{{ boardReqColStyle }}">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px">
-              <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">Requests</div>
-              <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ boardReqCount }}</div>
-            </div>
-            <sc-for list="{{ boardReqs }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1.5px solid var(--navy);box-shadow:0 2px 6px rgba(15,22,51,.14);padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border-radius:12px;transition:all .15s ease" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.20);transform:translateY(-1px)">
-                <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }} · {{ r.cat }}</div></div>
-                <div style="display:flex;gap:6px">
-                  <button onClick="{{ r.approve }}" style="flex:1;background:var(--green);border:none;color:#fff;padding:5px 0;font-size:12px;cursor:pointer;font-family:var(--font-display);font-weight:600" style-hover="filter:brightness(1.08)">Approve ▸</button>
-                  <button onClick="{{ r.decline }}" style="flex:1;background:var(--surface-card);border:1px solid var(--gray-200);padding:5px 0;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">Decline</button>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
-                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
-                </div>
-              </div>
-            </sc-for>
+        <sc-if value="{{ bdAddOpen }}" hint-placeholder-val="{{ false }}">
+          <div class="su-rq" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px">
+            <input class="su-rq-in" value="{{ dWork }}" onChange="{{ onWork }}" placeholder="What needs doing?" style="flex:1;min-width:180px;width:auto">
+            <select class="su-rq-in" value="{{ dWorkClient }}" onChange="{{ onWorkClient }}" style="width:auto;max-width:200px">
+              <sc-for list="{{ clients }}" as="c" hint-placeholder-count="2"><option value="{{ c.id }}">{{ c.name }}</option></sc-for>
+            </select>
+            <input class="su-rq-in" value="{{ dWorkHours }}" onChange="{{ onWorkHours }}" placeholder="Est. hrs" style="width:84px">
+            <button onClick="{{ addWork }}" style="background:var(--green);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;font-family:var(--font-body)" style-hover="filter:brightness(1.08)">Add to queue</button>
           </div>
-          <sc-for list="{{ boardCols }}" as="col" hint-placeholder-count="4">
-            <div style="{{ col.colStyle }}">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px">
-                <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy)">{{ col.label }}</div>
-                <div style="font-size:12px;font-weight:600;color:var(--text-muted)">{{ col.count }}</div>
+        </sc-if>
+        <div class="su-tboard">
+          <sc-for list="{{ teamLists }}" as="tl" hint-placeholder-count="4">
+            <div class="su-tl" style="{{ tl.style }}">
+              <div class="su-tl-head"><span style="{{ tl.dot }}"></span><span class="su-tl-name">{{ tl.label }}</span><span class="su-tl-n">{{ tl.count }}</span></div>
+              <div class="su-tl-cards">
+                <sc-for list="{{ tl.items }}" as="k" hint-placeholder-count="2">
+                  <div onClick="{{ k.open }}" class="su-tc">
+                    <sc-if value="{{ k.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ k.cover }}" alt="" loading="lazy"></div></sc-if>
+                    <div class="su-tc-body">
+                      <sc-if value="{{ k.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ k.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                      <div class="su-tc-title">{{ k.title }}</div>
+                      <div class="su-tc-meta">
+                        <sc-if value="{{ k.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ k.dot }}"></span><span>{{ k.clientName }}</span></span></sc-if>
+                        <sc-for list="{{ k.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                        </div>
+                      <span class="su-tc-ords"><sc-if value="{{ k.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ k.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                      <sc-if value="{{ k.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                        <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ k.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                        <sc-for list="{{ k.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                      </div></sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ tl.empty }}" hint-placeholder-val="{{ false }}"><div class="su-tl-empty">{{ tl.emptyText }}</div></sc-if>
               </div>
-              <sc-for list="{{ col.items }}" as="w" hint-placeholder-count="2">
-                <div onClick="{{ w.openComments }}" style="background:var(--surface-card);border:1.5px solid var(--navy);box-shadow:0 2px 6px rgba(15,22,51,.14);padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-radius:12px;cursor:pointer;transition:all .15s ease" style-hover="box-shadow:0 8px 20px rgba(15,22,51,.20);transform:translateY(-1px)">
-                  <div style="font-size:13px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                    <span style="display:inline-flex;align-items:center;gap:7px"><span style="{{ w.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.clientName }}</span></span>
-                    <span style="font-size:11px;color:var(--text-muted)">{{ w.hoursLabel }}</span>
-                  </div>
-                  <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}">
-                    <span style="{{ w.urgencyStyle }};align-self:flex-start">{{ w.urgency }}</span>
-                  </sc-if>
-                  <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                    <div style="font-size:11px;color:var(--text-muted)">Client needs by {{ w.needBy }}</div>
-                  </sc-if>
-                  <sc-if value="{{ w.awaitingApproval }}" hint-placeholder-val="{{ false }}">
-                    <div style="font-size:11px;color:var(--text-muted);line-height:1.4">Waiting on the client. Approving counts these hours into this month.</div>
-                  </sc-if>
-                  <button onClick="{{ w.openComments }}" style="align-self:flex-start;background:none;border:none;color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">{{ w.commentsLabel }}</button>
-                  <div style="display:flex;gap:6px;flex-wrap:wrap">
-                    <sc-if value="{{ w.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ w.back }}" style="flex:0 0 auto;min-width:36px;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 10px;font-size:12px;cursor:pointer;color:var(--text-body)" style-hover="background:var(--gray-100)">◂</button></sc-if>
-                    <sc-if value="{{ w.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.fwd }}" style="flex:1 1 120px;background:var(--chrome);border:none;border-radius:12px;color:#fff;padding:6px 10px;font-size:12px;font-weight:500;cursor:pointer" style-hover="background:var(--navy-800)">{{ w.fwdLabel }}</button></sc-if>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:2px">
-                    <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                    <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
-                  </div>
-                </div>
-              </sc-for>
+              <sc-if value="{{ tl.hasMore }}" hint-placeholder-val="{{ false }}"><button class="su-tl-more" onClick="{{ tl.go }}">{{ tl.moreLabel }}</button></sc-if>
             </div>
           </sc-for>
         </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Done ({{ doneCount }})</h3>
+        <div class="su-fold">
+          <button class="su-fold-head" onClick="{{ toggleBdDone }}" aria-expanded="{{ bdDoneOpen }}"><span style="font-size:13px;font-weight:700;color:var(--navy)">Done</span><span class="su-tl-n" style="background:var(--gray-100)">{{ doneCount }}</span><span style="flex:1"></span><span style="{{ bdChevDone }}"></span></button>
+          <sc-if value="{{ bdDoneOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 16px 12px;display:flex;flex-direction:column">
           <sc-for list="{{ doneItems }}" as="dn" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-hairline)">
               <span style="width:18px;height:18px;min-width:18px;background:var(--check);color:#fff;font-size:12px;line-height:18px;text-align:center;border-radius:12px">✓</span>
@@ -1839,9 +1907,13 @@
             </div>
           </sc-for>
           <sc-if value="{{ noDone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing completed yet.</div></sc-if>
+            </div>
+          </sc-if>
         </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 4px">Archived ({{ archivedCount }})</h3>
+        <div class="su-fold">
+          <button class="su-fold-head" onClick="{{ toggleBdArch }}" aria-expanded="{{ bdArchOpen }}"><span style="font-size:13px;font-weight:700;color:var(--navy)">Archived</span><span class="su-tl-n" style="background:var(--gray-100)">{{ archivedCount }}</span><span style="flex:1"></span><span style="{{ bdChevArch }}"></span></button>
+          <sc-if value="{{ bdArchOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:0 16px 12px;display:flex;flex-direction:column;gap:4px">
           <div style="font-size:12px;color:var(--text-muted);margin:0 0 6px">Everything archived by either side, newest first. Hidden from the client entirely; restore one and it comes back where it was.</div>
           <sc-for list="{{ archivedAll }}" as="aw" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--border-hairline);cursor:pointer" onClick="{{ aw.open }}" style-hover="background:var(--gray-100)">
@@ -1855,6 +1927,8 @@
           </sc-for>
           <sc-if value="{{ noArchived }}" hint-placeholder-val="{{ true }}">
             <div style="font-size:13px;color:var(--text-muted)">Nothing archived.</div>
+          </sc-if>
+            </div>
           </sc-if>
         </div>
       </sc-if>
@@ -2041,36 +2115,37 @@
 
       <sc-if value="{{ secContent }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-          <div role="tablist" aria-label="Content Map channels" style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ cmSubTabs }}" as="st" hint-placeholder-count="5">
-              <button role="tab" onClick="{{ st.select }}" style="{{ st.style }}" style-hover="border-color:var(--navy)">{{ st.label }}<span style="{{ st.countStyle }}">{{ st.n }}</span></button>
-            </sc-for>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ cmTiles }}" as="t" hint-placeholder-count="7">
-              <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
-            </sc-for>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <div style="display:flex;gap:6px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:14px;padding:4px">
-              <sc-for list="{{ cmScopes }}" as="sp" hint-placeholder-count="3"><button onClick="{{ sp.select }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for>
-            </div>
-            <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" aria-label="One client" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
-            <input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
-            <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" aria-label="Sort" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
-            <sc-if value="{{ cmFiltered }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ clearCmFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear</button>
-            </sc-if>
-            <div style="display:flex;gap:6px">
+          <div class="su-altop">
+            <label class="su-alq"><span style="{{ cmSearchIco }}"></span><input value="{{ dCmQ }}" onChange="{{ onCmQ }}" placeholder="Search titles, captions, hashtags, pillars" aria-label="Search content"></label>
+            <div class="su-alseg" role="group" aria-label="View">
               <button onClick="{{ cmSetBoard }}" style="{{ cmBoardStyle }}">Board</button>
               <button onClick="{{ cmSetCalendar }}" style="{{ cmCalendarStyle }}">Calendar</button>
               <button onClick="{{ cmSetGallery }}" style="{{ cmGalleryStyle }}">Gallery</button>
             </div>
-            <button onClick="{{ toggleCmAdd }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">{{ cmAddBtn }}</button>
+            <button onClick="{{ cmToggleFilt }}" aria-expanded="{{ cmFiltOpen }}" style="{{ cmFiltBtn }}"><span style="{{ cmFiltIco }}"></span>{{ cmFiltLabel }}</button>
+            <button onClick="{{ toggleCmAdd }}" style="height:40px;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:0 16px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#000">{{ cmAddBtn }}</button>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--text-muted)">
-            <span style="flex:1">{{ cmSummary }}</span>
-            <button onClick="{{ toggleCmHow }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">How the agents update this</button>
+          <sc-if value="{{ cmFiltOpen }}" hint-placeholder-val="{{ false }}">
+            <div class="su-alfilt" style="grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto">
+              <div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="{{ cmCap }}">Whose content</span>
+                <div class="su-alseg"><sc-for list="{{ cmScopes }}" as="sp" hint-placeholder-count="3"><button onClick="{{ sp.select }}" style="{{ sp.style }}">{{ sp.label }}</button></sc-for></div></div>
+              <label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="{{ cmCap }}">One client</span>
+                <select value="{{ cmClientValue }}" onChange="{{ onCmClient }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmClientOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+              <label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="{{ cmCap }}">Sort</span>
+                <select value="{{ cmSortValue }}" onChange="{{ onCmSort }}" style="{{ cmSelStyle }}"><sc-for list="{{ cmSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+              <div style="display:flex;gap:14px;align-items:center;align-self:end;height:40px">
+                <sc-if value="{{ cmFiltered }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearCmFilters }}" class="su-linkbtn" style="color:var(--text-muted);text-decoration:underline">Clear all</button></sc-if>
+                <button onClick="{{ toggleCmHow }}" class="su-linkbtn">How the agents update this</button>
+              </div>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+            <div class="su-altabs" role="tablist" aria-label="Content Map channels">
+              <sc-for list="{{ cmSubTabs }}" as="st" hint-placeholder-count="5"><button role="tab" onClick="{{ st.select }}" style="{{ st.style }}">{{ st.label }}<span style="{{ st.countStyle }}">{{ st.n }}</span></button></sc-for>
+            </div>
+            <div class="su-cmchips">
+              <sc-for list="{{ cmTiles }}" as="t" hint-placeholder-count="7"><button onClick="{{ t.select }}" style="{{ t.style }}"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button></sc-for>
+            </div>
           </div>
           <sc-if value="{{ cmHowOpen }}" hint-placeholder-val="{{ false }}">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--text-body);line-height:1.65;display:flex;flex-direction:column;gap:6px">
@@ -2192,10 +2267,6 @@
           </sc-if>
 
           <sc-if value="{{ cmBoardOn }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <span style="font-size:12px;color:var(--text-muted)">Board for</span>
-              <sc-for list="{{ cmBoardChanTabs }}" as="ct" hint-placeholder-count="4"><button onClick="{{ ct.select }}" style="{{ ct.style }}" style-hover="border-color:var(--navy)">{{ ct.label }}</button></sc-for>
-            </div>
             <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;align-items:start">
               <sc-for list="{{ cmBoardCols }}" as="col" hint-placeholder-count="4">
                 <div style="{{ col.colStyle }}">
@@ -2563,29 +2634,24 @@
           </div>
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Current Requests</h3>
-            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+            <div class="su-tgrid">
               <sc-for list="{{ teamCurrentReqs }}" as="tc" hint-placeholder-count="3">
-              <button onClick="{{ tc.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ tc.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ tc.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ tc.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ tc.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ tc.title }}</div>
-                <sc-if value="{{ tc.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ tc.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ tc.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ tc.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ tc.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ tc.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ tc.badgeStyle }}">{{ tc.statusLabel }}</span>
-                  <sc-if value="{{ tc.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ tc.urgencyStyle }}">{{ tc.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ tc.when }}</span>
+                <div onClick="{{ tc.open }}" class="su-tc">
+                  <sc-if value="{{ tc.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ tc.cover }}" alt="" loading="lazy"></div></sc-if>
+                  <div class="su-tc-body">
+                    <sc-if value="{{ tc.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ tc.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                    <div class="su-tc-title">{{ tc.title }}</div>
+                    <div class="su-tc-meta">
+                      <sc-if value="{{ tc.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ tc.dot }}"></span><span>{{ tc.clientName }}</span></span></sc-if>
+                      <sc-for list="{{ tc.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                      </div>
+                    <span class="su-tc-ords"><sc-if value="{{ tc.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ tc.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ tc.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ tc.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                    <sc-if value="{{ tc.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                      <sc-if value="{{ tc.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ tc.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                      <sc-for list="{{ tc.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                    </div></sc-if>
+                  </div>
                 </div>
-              </button>
               </sc-for>
               <sc-if value="{{ noTeamCurrentReqs }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13px;color:var(--text-muted)">Nothing approved and in flight.</div>
@@ -2594,29 +2660,24 @@
           </div>
           <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:22px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
             <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed Requests</h3>
-            <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+            <div class="su-tgrid">
               <sc-for list="{{ teamDoneReqs }}" as="td" hint-placeholder-count="3">
-              <button onClick="{{ td.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ td.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ td.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ td.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ td.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ td.title }}</div>
-                <sc-if value="{{ td.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ td.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ td.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ td.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ td.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ td.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ td.badgeStyle }}">{{ td.statusLabel }}</span>
-                  <sc-if value="{{ td.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ td.urgencyStyle }}">{{ td.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ td.when }}</span>
+                <div onClick="{{ td.open }}" class="su-tc">
+                  <sc-if value="{{ td.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ td.cover }}" alt="" loading="lazy"></div></sc-if>
+                  <div class="su-tc-body">
+                    <sc-if value="{{ td.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ td.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                    <div class="su-tc-title">{{ td.title }}</div>
+                    <div class="su-tc-meta">
+                      <sc-if value="{{ td.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ td.dot }}"></span><span>{{ td.clientName }}</span></span></sc-if>
+                      <sc-for list="{{ td.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                      </div>
+                    <span class="su-tc-ords"><sc-if value="{{ td.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ td.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ td.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ td.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                    <sc-if value="{{ td.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                      <sc-if value="{{ td.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ td.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                      <sc-for list="{{ td.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                    </div></sc-if>
+                  </div>
                 </div>
-              </button>
               </sc-for>
               <sc-if value="{{ noTeamDoneReqs }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
@@ -2814,131 +2875,133 @@
       </sc-if>
 
       <sc-if value="{{ pHome }}" hint-placeholder-val="{{ false }}">
-        <div class="su-grid3" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start">
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Open requests ({{ reqCount }})</h3>
-              <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All →</button>
+        <div class="su-ovhero" style="{{ cdHero }}">
+          <div class="su-cdhero">
+            <div style="min-width:0">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55)">{{ ovDate }}</div>
+              <div style="font-family:var(--font-display);font-weight:800;font-size:24px;line-height:1.15;color:#fff;margin-top:4px">{{ ovHello }}</div>
+              <div style="font-size:13.5px;color:rgba(255,255,255,.75);margin-top:4px">{{ cdSummary }}</div>
             </div>
-            <sc-for list="{{ homeReqCards }}" as="r" hint-placeholder-count="2">
-              <div onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted);margin-left:auto">{{ r.when }}</span>
-                  <sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
+              <div style="position:relative;z-index:20">
+                <div style="{{ ovSearchBox }}">
+                  <span style="{{ ovIcoSearch }}"></span>
+                  <input value="{{ ovQ }}" onChange="{{ onOvQ }}" onKeyDown="{{ onOvQKey }}" placeholder="Search your work, to-dos, files, content, and pages" aria-label="Search the dashboard" autocomplete="off" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:15px;color:#0F1633;padding:0">
+                  <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ovClearQ }}" aria-label="Clear search" style="background:#EEF0F6;border:none;border-radius:10px;padding:5px 10px;font-size:12px;font-weight:600;color:#5b6283;cursor:pointer">Clear</button></sc-if>
                 </div>
+                <sc-if value="{{ ovHasQ }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--surface-card);border:1px solid var(--border-card);border-radius:18px;box-shadow:0 26px 50px rgba(15,22,51,.30);padding:8px;display:flex;flex-direction:column;gap:2px;max-height:56vh;overflow-y:auto">
+                    <sc-for list="{{ ovResults }}" as="r" hint-placeholder-count="4">
+                      <button onClick="{{ r.open }}" style="{{ r.style }}" style-hover="background:var(--gray-100)">
+                        <span style="{{ r.iconWrap }}"><span style="{{ r.icon }}"></span></span>
+                        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                          <span style="font-size:14px;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
+                          <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.sub }}</span>
+                        </span>
+                        <span style="font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);background:var(--gray-100);border-radius:8px;padding:3px 8px;flex:none">{{ r.kind }}</span>
+                      </button>
+                    </sc-for>
+                    <sc-if value="{{ ovNoResults }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 12px;font-size:13.5px;color:var(--text-muted)">{{ ovNoResultsText }}</div></sc-if>
+                    <sc-if value="{{ ovResultsHint }}" hint-placeholder-val="{{ false }}"><div style="padding:8px 12px 6px;font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border-hairline);margin-top:4px">Press Enter to open the first result</div></sc-if>
+                  </div>
+                </sc-if>
               </div>
-            </sc-for>
-            <sc-if value="{{ noReqCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on us to review.</div></sc-if>
           </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In queue ({{ queueCount }})</h3>
+          <sc-if value="{{ cdShowOn }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ cdShow.open }}" class="su-cdshow" style-hover="background:rgba(255,255,255,.14)">
+              <span style="{{ cdShow.poster }}"></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;text-align:left">
+                <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)">{{ cdShow.heading }} · {{ cdShow.count }}</span>
+                <span style="font-family:var(--font-display);font-weight:700;font-size:17px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cdShow.title }}</span>
+                <span style="font-size:12.5px;color:rgba(255,255,255,.75)">{{ cdShow.when }}</span>
+              </span>
+              <span style="flex:none;display:flex;flex-direction:column;gap:6px;align-items:flex-end;min-width:120px">
+                <span style="font-size:13px;font-weight:700;color:#fff">{{ cdShow.rsvp }}</span>
+                <sc-if value="{{ cdShow.hasCap }}" hint-placeholder-val="{{ false }}"><span style="display:block;width:120px;height:6px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden"><span style="{{ cdShow.bar }}"></span></span></sc-if>
+                <span style="font-size:11.5px;color:rgba(255,255,255,.6)">{{ cdShow.more }}</span>
+              </span>
+            </button>
+          </sc-if>
+        </div>
+        <div class="su-ovtiles su-cdtiles">
+          <sc-for list="{{ cdTiles }}" as="t" hint-placeholder-count="8">
+            <button onClick="{{ t.open }}" title="{{ t.tip }}" style="{{ t.style }}" style-hover="transform:translateY(-2px);box-shadow:0 10px 22px rgba(15,22,51,.14)">
+              <span style="{{ t.chip }}"><span style="{{ t.icon }}"></span></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                <span style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.label }}</span>
+                <span style="font-size:11.5px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.hint }}</span>
+              </span>
+              <span style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1;flex:none">{{ t.value }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div class="su-rq">
+          <div class="su-rq-top">
+            <span style="{{ rqPlus }}">+</span>
+            <input class="su-rq-title" value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" onFocus="{{ rqFocus }}" placeholder="Request something new. What should we work on?" aria-label="What should we work on?">
+            
+          </div>
+          <sc-if value="{{ rqOpen }}" hint-placeholder-val="{{ false }}">
+            <textarea class="su-rq-in" value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Details, links, or examples (optional)" rows="2" style="resize:vertical;line-height:1.5"></textarea>
+            <div class="su-rq-row">
+              <label class="su-rq-f"><span>Type</span><select class="su-rq-in" value="{{ dReqCat }}" onChange="{{ onReqCat }}"><sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for></select></label>
+              <label class="su-rq-f"><span>Priority</span><select class="su-rq-in" value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}"><sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for></select></label>
+              <label class="su-rq-f"><span>Needed by (optional)</span><input class="su-rq-in" value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date"></label>
             </div>
-            <sc-for list="{{ homeQueueCards }}" as="q" hint-placeholder-count="2">
-              <div onClick="{{ q.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ q.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ q.co }}</div></sc-if>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ q.title }}</div>
-                <sc-if value="{{ q.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ q.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ q.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ q.needBy }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
-                  <span style="{{ q.badgeStyle }}">{{ q.statusLabel }}</span>
-                  <sc-if value="{{ q.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ q.urgencyStyle }}">{{ q.urgency }}</span></sc-if>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500;margin-left:auto">{{ q.commentsLabel }}</span>
-                  <sc-if value="{{ q.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ q.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ q.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
-                </div>
+            <div class="su-rq-row2">
+              <label class="su-rq-attach" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
+              <div style="flex:1;min-width:200px;display:flex;gap:6px">
+                <input class="su-rq-in" value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Or paste a share link (Drive, Dropbox, Figma)" style="flex:1;min-width:0">
+                <button onClick="{{ addReqLink }}" class="su-rq-attach" style-hover="border-color:var(--navy)">Add link</button>
               </div>
-            </sc-for>
-            <sc-if value="{{ noQueueCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing queued up.</div></sc-if>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">In progress ({{ progCount }})</h3>
             </div>
-            <sc-for list="{{ homeProgCards }}" as="w" hint-placeholder-count="2">
-              <div onClick="{{ w.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:14px 16px;display:flex;flex-direction:column;gap:7px;text-align:left;cursor:pointer;width:100%;box-sizing:border-box;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ w.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ w.co }}</div></sc-if>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ w.title }}</div>
-                <sc-if value="{{ w.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ w.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ w.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ w.needBy }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;width:100%;gap:8px;flex-wrap:wrap">
-                  <span style="{{ w.badgeStyle }}">{{ w.statusLabel }}</span>
-                  <sc-if value="{{ w.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ w.urgencyStyle }}">{{ w.urgency }}</span></sc-if>
-                  <span style="font-size:12px;color:var(--blue);font-weight:500;margin-left:auto">{{ w.commentsLabel }}</span>
-                  <sc-if value="{{ w.canUp }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveUp }}" aria-label="Move up" title="Move up" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↑</button></sc-if>
-                  <sc-if value="{{ w.canDown }}" hint-placeholder-val="{{ true }}"><button onClick="{{ w.moveDown }}" aria-label="Move down" title="Move down" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;width:26px;height:26px;line-height:1;font-size:12px;color:var(--text-muted);cursor:pointer;padding:0;flex:none" style-hover="border-color:var(--navy);color:var(--navy)">↓</button></sc-if>
-                </div>
+            <sc-if value="{{ rqHasChips }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0"><span class="su-rq-chip"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">{{ rf.name }}</span><button onClick="{{ rf.drop }}" title="Remove" aria-label="Remove file">×</button></span></sc-for>
+                <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="0"><span class="su-rq-chip"><a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;color:var(--blue);text-decoration:none">{{ rl.label }}</a><button onClick="{{ rl.remove }}" title="Remove" aria-label="Remove link">×</button></span></sc-for>
               </div>
-            </sc-for>
-            <sc-if value="{{ noProgCards }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing in progress right now.</div></sc-if>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between">
-              <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Awaiting approval ({{ apprCount }})</h3>
-              <button onClick="{{ goUpdates }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All updates →</button>
+            </sc-if>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <button onClick="{{ submitReq }}" style="{{ rqSubmitStyle }}" style-hover="filter:brightness(1.08)">Submit request</button>
+              <button onClick="{{ rqClose }}" class="su-linkbtn" style="color:var(--text-muted)">Cancel</button>
+              <span style="flex:1"></span>
+              <span style="font-size:11.5px;color:var(--text-muted)">One task at a time, the rest waits in your queue. Files up to 50 MB.</span>
             </div>
-            <sc-for list="{{ homeApprovals }}" as="u" hint-placeholder-count="1">
-              <div onClick="{{ u.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);border-left:3px solid var(--green);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px)">
-                <sc-if value="{{ u.hasCo }}" hint-placeholder-val="{{ false }}"><div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ u.co }}</div></sc-if>
-                <div style="font-size:14px;color:var(--navy);line-height:1.5">{{ u.text }}</div>
-                <sc-for list="{{ u.files }}" as="f" hint-placeholder-count="0">
-                  <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
-                    <sc-if value="{{ f.hasThumb }}" hint-placeholder-val="{{ false }}">
-                      <img sc-camel-src="{{ f.thumb }}" alt="" style="width:38px;height:38px;min-width:38px;object-fit:cover;border-radius:8px;background:var(--surface-card)">
-                    </sc-if>
-                    <sc-if value="{{ f.showExt }}" hint-placeholder-val="{{ true }}">
-                      <div style="width:38px;height:38px;min-width:38px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px;border-radius:8px">{{ f.ext }}</div>
-                    </sc-if>
-                    <div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:1px">
-                      <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</div>
-                      <div style="font-size:11.5px;color:var(--text-muted)">{{ f.meta }}</div>
+          </sc-if>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:-6px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your board</h3>
+          <span class="su-tl-n" style="background:var(--surface-card)">{{ myOpenN }}</span>
+          <span style="flex:1"></span>
+          <button onClick="{{ goRequests }}" class="su-linkbtn">Open the full board →</button>
+        </div>
+        <div class="su-tboard">
+          <sc-for list="{{ homeLists }}" as="tl" hint-placeholder-count="4">
+            <div class="su-tl" style="{{ tl.style }}">
+              <div class="su-tl-head"><span style="{{ tl.dot }}"></span><span class="su-tl-name">{{ tl.label }}</span><span class="su-tl-n">{{ tl.count }}</span></div>
+              <div class="su-tl-cards">
+                <sc-for list="{{ tl.items }}" as="k" hint-placeholder-count="2">
+                  <div onClick="{{ k.open }}" class="su-tc">
+                    <sc-if value="{{ k.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ k.cover }}" alt="" loading="lazy"></div></sc-if>
+                    <div class="su-tc-body">
+                      <sc-if value="{{ k.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ k.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                      <div class="su-tc-title">{{ k.title }}</div>
+                      <div class="su-tc-meta">
+                        <sc-if value="{{ k.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ k.dot }}"></span><span>{{ k.clientName }}</span></span></sc-if>
+                        <sc-for list="{{ k.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                        </div>
+                      <span class="su-tc-ords"><sc-if value="{{ k.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ k.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                      <sc-if value="{{ k.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                        <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ k.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                        <sc-for list="{{ k.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                      </div></sc-if>
                     </div>
-                    <sc-if value="{{ f.confirming }}" hint-placeholder-val="{{ false }}">
-                      <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">{{ f.removeWarning }}</span>
-                      <button onClick="{{ f.doRemove }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(1.08)">Delete</button>
-                      <button onClick="{{ f.cancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Cancel</button>
-                    </sc-if>
-                    <sc-if value="{{ f.canPreview }}" hint-placeholder-val="{{ true }}">
-                      <button onClick="{{ f.open }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Preview</button>
-                    </sc-if>
-                    <sc-if value="{{ f.canDownload }}" hint-placeholder-val="{{ true }}">
-                      <button onClick="{{ f.download }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Download</button>
-                    </sc-if>
-                    <sc-if value="{{ f.canRemove }}" hint-placeholder-val="{{ false }}">
-                      <button onClick="{{ f.askRemove }}" title="Delete this file" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
-                    </sc-if>
                   </div>
                 </sc-for>
-                <sc-if value="{{ u.hasHoursNote }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted);line-height:1.45">{{ u.hoursNote }}</div>
-                </sc-if>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                  <button onClick="{{ u.approve }}" style="background:var(--green);color:#fff;border:none;border-radius:12px;padding:8px 20px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer" style-hover="filter:brightness(1.08)">Approve</button>
-                  <button onClick="{{ u.openFb }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;color:var(--text-body);padding:8px 16px;font-size:12px;cursor:pointer" style-hover="background:var(--gray-100)">Leave feedback</button>
-                </div>
+                <sc-if value="{{ tl.empty }}" hint-placeholder-val="{{ false }}"><div class="su-tl-empty">{{ tl.emptyText }}</div></sc-if>
               </div>
-            </sc-for>
-            <sc-if value="{{ noApprovals }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">Nothing waiting on you.</div></sc-if>
-          </div>
+              <sc-if value="{{ tl.hasMore }}" hint-placeholder-val="{{ false }}"><button class="su-tl-more" onClick="{{ tl.go }}">{{ tl.moreLabel }}</button></sc-if>
+            </div>
+          </sc-for>
         </div>
         <div class="su-half" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:6px;border-radius:12px">
@@ -2968,47 +3031,6 @@
             </div>
         </div>
 
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Submit a request</h3>
-            <button onClick="{{ goRequests }}" style="background:none;border:none;color:var(--blue);font-size:13px;font-weight:500;cursor:pointer;padding:0" style-hover="color:var(--green)">All requests →</button>
-          </div>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-            <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
-            </select>
-            <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
-            </select>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by</label>
-              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            </div>
-          </div>
-          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
-          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details or examples" rows="2" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <label style="border:1px solid var(--gray-200);background:var(--surface-card);border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
-            <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
-              <span style="display:inline-flex;align-items:center;gap:6px;background:var(--gray-100);border-radius:12px;padding:5px 10px;font-size:12px;color:var(--navy);max-width:100%">
-                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">{{ rf.name }}</span>
-                <button onClick="{{ rf.drop }}" title="Remove" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0;line-height:1" style-hover="color:var(--danger-fg)">×</button>
-              </span>
-            </sc-for>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link (Drive, Dropbox, anywhere)" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
-            <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
-          </div>
-          <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="1">
-            <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-hairline)">
-              <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
-              <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
-              <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
-            </div>
-          </sc-for>
-          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#000">Submit request</button>
-        </div>
 
         <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:20px 22px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
@@ -4680,121 +4702,95 @@
       </sc-if>
 
       <sc-if value="{{ pRequests }}" hint-placeholder-val="{{ false }}">
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:12px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Request work</h3>
-          <div style="font-size:13px;color:var(--text-muted)">No contracts. One active request at a time. Everything else waits in your queue.</div>
-          <select value="{{ dReqCat }}" onChange="{{ onReqCat }}" style="align-self:flex-start;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-            <sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for>
-          </select>
-          <input value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" placeholder="What should we work on?" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px">
-          <textarea value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Any details, links, or examples" rows="3" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 14px;font-size:14px;resize:vertical"></textarea>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Urgency</label>
-              <select value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px;background:var(--surface-card)">
-                <sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for>
-              </select>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Need completed by (optional)</label>
-              <input value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date" style="border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
-            </div>
+        <div class="su-rq">
+          <div class="su-rq-top">
+            <span style="{{ rqPlus }}">+</span>
+            <input class="su-rq-title" value="{{ dReqTitle }}" onChange="{{ onReqTitle }}" onFocus="{{ rqFocus }}" placeholder="Request something new. What should we work on?" aria-label="What should we work on?">
+            
           </div>
-          <div style="border-top:1px solid var(--border-hairline);padding-top:14px;display:flex;flex-direction:column;gap:8px">
-            <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Files</label>
-            <div style="font-size:12.5px;color:var(--text-muted);line-height:1.5">Attach files directly, or paste a share link from wherever they already live: Google Drive, Dropbox, WeTransfer, Figma, anywhere.</div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-              <label style="border:1px solid var(--gray-200);background:var(--surface-card);border-radius:12px;padding:9px 16px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
-              <span style="font-size:12px;color:var(--text-muted)">Up to 50 MB a file</span>
+          <sc-if value="{{ rqOpen }}" hint-placeholder-val="{{ false }}">
+            <textarea class="su-rq-in" value="{{ dReqDesc }}" onChange="{{ onReqDesc }}" placeholder="Details, links, or examples (optional)" rows="2" style="resize:vertical;line-height:1.5"></textarea>
+            <div class="su-rq-row">
+              <label class="su-rq-f"><span>Type</span><select class="su-rq-in" value="{{ dReqCat }}" onChange="{{ onReqCat }}"><sc-for list="{{ catOptions }}" as="co" hint-placeholder-count="4"><option value="{{ co.name }}">{{ co.name }}</option></sc-for></select></label>
+              <label class="su-rq-f"><span>Priority</span><select class="su-rq-in" value="{{ dReqUrgency }}" onChange="{{ onReqUrgency }}"><sc-for list="{{ urgencyOptions }}" as="uo" hint-placeholder-count="4"><option value="{{ uo.name }}">{{ uo.name }}</option></sc-for></select></label>
+              <label class="su-rq-f"><span>Needed by (optional)</span><input class="su-rq-in" value="{{ dReqNeedBy }}" onChange="{{ onReqNeedBy }}" type="date"></label>
             </div>
-            <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0">
-              <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);padding:8px 12px;border-radius:12px;flex-wrap:wrap">
-                <sc-if value="{{ rf.hasThumb }}" hint-placeholder-val="{{ false }}">
-                  <img sc-camel-src="{{ rf.thumb }}" alt="" style="width:32px;height:32px;min-width:32px;object-fit:cover;border-radius:8px;background:var(--surface-card)">
-                </sc-if>
-                <sc-if value="{{ rf.showExt }}" hint-placeholder-val="{{ true }}">
-                  <div style="width:32px;height:32px;min-width:32px;background:var(--grad-brand);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:9px;border-radius:8px">{{ rf.ext }}</div>
-                </sc-if>
-                <div style="flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:1px">
-                  <div style="font-size:13px;font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rf.name }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ rf.meta }}</div>
-                </div>
-                <button onClick="{{ rf.drop }}" title="Remove from this request" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
+            <div class="su-rq-row2">
+              <label class="su-rq-attach" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" onChange="{{ onReqFile }}" style="display:none">{{ reqFileLabel }}</label>
+              <div style="flex:1;min-width:200px;display:flex;gap:6px">
+                <input class="su-rq-in" value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Or paste a share link (Drive, Dropbox, Figma)" style="flex:1;min-width:0">
+                <button onClick="{{ addReqLink }}" class="su-rq-attach" style-hover="border-color:var(--navy)">Add link</button>
               </div>
-            </sc-for>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <input value="{{ dReqLink }}" onChange="{{ onReqLink }}" placeholder="Paste any share link (https://…)" style="flex:1;min-width:220px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:13px">
-              <button onClick="{{ addReqLink }}" style="background:transparent;border:1px solid var(--ink-40);color:var(--navy);padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:rgba(15,22,51,.06)">Add link</button>
             </div>
-            <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-hairline)">
-                <span style="background:var(--gray-100);color:var(--text-body);border-radius:12px;font-size:11px;font-weight:600;padding:3px 10px">{{ rl.label }}</span>
-                <a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="flex:1;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ rl.url }}</a>
-                <button onClick="{{ rl.remove }}" style="background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;padding:0 4px" style-hover="color:var(--danger-fg)">×</button>
+            <sc-if value="{{ rqHasChips }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{ reqFiles }}" as="rf" hint-placeholder-count="0"><span class="su-rq-chip"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">{{ rf.name }}</span><button onClick="{{ rf.drop }}" title="Remove" aria-label="Remove file">×</button></span></sc-for>
+                <sc-for list="{{ reqLinks }}" as="rl" hint-placeholder-count="0"><span class="su-rq-chip"><a href="{{ rl.url }}" target="_blank" rel="noopener noreferrer" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;color:var(--blue);text-decoration:none">{{ rl.label }}</a><button onClick="{{ rl.remove }}" title="Remove" aria-label="Remove link">×</button></span></sc-for>
               </div>
-            </sc-for>
-          </div>
-          <button onClick="{{ submitReq }}" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:10px" style-hover="background:#000">Submit request <span style="color:#fff;font-size:14px;line-height:1">↗</span></button>
-        </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 8px">
-            <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Current Requests</h3>
-            <button onClick="{{ exportRequests }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
-          </div>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
-            <sc-for list="{{ myRequests }}" as="r" hint-placeholder-count="3">
-              <button onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
-                </div>
-              </button>
-            </sc-for>
-            <sc-if value="{{ noMyRequests }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:13px;color:var(--text-muted)">Nothing open right now.</div>
             </sc-if>
-          </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <button onClick="{{ submitReq }}" style="{{ rqSubmitStyle }}" style-hover="filter:brightness(1.08)">Submit request</button>
+              <button onClick="{{ rqClose }}" class="su-linkbtn" style="color:var(--text-muted)">Cancel</button>
+              <span style="flex:1"></span>
+              <span style="font-size:11.5px;color:var(--text-muted)">One task at a time, the rest waits in your queue. Files up to 50 MB.</span>
+            </div>
+          </sc-if>
         </div>
-        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;display:flex;flex-direction:column;gap:4px;border-radius:12px">
-          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed Requests</h3>
-          <div class="su-cols" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-top:4px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:-6px;flex-wrap:wrap">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0">Your board</h3>
+          <span class="su-tl-n" style="background:var(--surface-card)">{{ myOpenN }}</span>
+          <span style="flex:1"></span>
+          <button onClick="{{ exportRequests }}" title="Download as CSV \u2014 imports into Asana, Trello and Jira" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Export CSV</button>
+        </div>
+        <div class="su-tboard">
+          <sc-for list="{{ workLists }}" as="tl" hint-placeholder-count="4">
+            <div class="su-tl" style="{{ tl.style }}">
+              <div class="su-tl-head"><span style="{{ tl.dot }}"></span><span class="su-tl-name">{{ tl.label }}</span><span class="su-tl-n">{{ tl.count }}</span></div>
+              <div class="su-tl-cards">
+                <sc-for list="{{ tl.items }}" as="k" hint-placeholder-count="2">
+                  <div onClick="{{ k.open }}" class="su-tc">
+                    <sc-if value="{{ k.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ k.cover }}" alt="" loading="lazy"></div></sc-if>
+                    <div class="su-tc-body">
+                      <sc-if value="{{ k.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ k.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                      <div class="su-tc-title">{{ k.title }}</div>
+                      <div class="su-tc-meta">
+                        <sc-if value="{{ k.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ k.dot }}"></span><span>{{ k.clientName }}</span></span></sc-if>
+                        <sc-for list="{{ k.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                        </div>
+                      <span class="su-tc-ords"><sc-if value="{{ k.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ k.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ k.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                      <sc-if value="{{ k.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                        <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ k.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                        <sc-for list="{{ k.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                      </div></sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ tl.empty }}" hint-placeholder-val="{{ false }}"><div class="su-tl-empty">{{ tl.emptyText }}</div></sc-if>
+              </div>
+              <sc-if value="{{ tl.hasMore }}" hint-placeholder-val="{{ false }}"><button class="su-tl-more" onClick="{{ tl.go }}">{{ tl.moreLabel }}</button></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:16px;display:flex;flex-direction:column;gap:4px;border-radius:16px">
+          <h3 style="font-family:var(--font-display);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--navy);margin:0 0 8px">Completed</h3>
+          <div class="su-tgrid">
             <sc-for list="{{ myDoneRequests }}" as="r" hint-placeholder-count="3">
-              <button onClick="{{ r.open }}" style="background:var(--surface-card);border:1px solid var(--border-card);box-shadow:0 2px 8px rgba(15,22,51,.06);padding:16px 18px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;width:100%;transition:all .15s ease;border-radius:12px" style-hover="box-shadow:0 10px 24px rgba(15,22,51,.14);transform:translateY(-2px);border-color:var(--navy)">
-                <sc-if value="{{ r.showClient }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:inline-flex;align-items:center;gap:7px"><span style="{{ r.dot }}"></span><span style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.clientName }}</span></div>
-                </sc-if>
-                <div style="font-size:10px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ r.cat }}</div>
-                <div class="su-cardtitle" style="font-size:14px;font-weight:500;color:var(--navy);line-height:1.4">{{ r.title }}</div>
-                <sc-if value="{{ r.hasProjected }}" hint-placeholder-val="{{ true }}">
-                  <div style="font-size:12px;color:var(--green);font-weight:600">Projected finish {{ r.projected }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasNeedBy }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:12px;color:var(--text-muted)">Needed by {{ r.needBy }}</div>
-                </sc-if>
-                <sc-if value="{{ r.hasFiles }}" hint-placeholder-val="{{ false }}">
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ r.filesLabel }}</div>
-                </sc-if>
-                <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px">
-                  <span style="{{ r.badgeStyle }}">{{ r.statusLabel }}</span>
-                  <sc-if value="{{ r.isUrgent }}" hint-placeholder-val="{{ false }}"><span style="{{ r.urgencyStyle }}">{{ r.urgency }}</span></sc-if>
-                  <span style="font-size:11px;color:var(--text-muted)">{{ r.when }}</span>
+              <div onClick="{{ r.open }}" class="su-tc">
+                <sc-if value="{{ r.hasCover }}" hint-placeholder-val="{{ false }}"><div class="su-tc-cover"><img sc-camel-src="{{ r.cover }}" alt="" loading="lazy"></div></sc-if>
+                <div class="su-tc-body">
+                  <sc-if value="{{ r.hasLabels }}" hint-placeholder-val="{{ false }}"><div class="su-tc-labels"><sc-for list="{{ r.labels }}" as="lb" hint-placeholder-count="1"><span style="{{ lb.style }}">{{ lb.text }}</span></sc-for></div></sc-if>
+                  <div class="su-tc-title">{{ r.title }}</div>
+                  <div class="su-tc-meta">
+                    <sc-if value="{{ r.hasClient }}" hint-placeholder-val="{{ false }}"><span class="su-tc-client"><span style="{{ r.dot }}"></span><span>{{ r.clientName }}</span></span></sc-if>
+                    <sc-for list="{{ r.meta }}" as="mt" hint-placeholder-count="2"><span style="{{ mt.style }}"><span style="{{ mt.icon }}"></span>{{ mt.text }}</span></sc-for>
+                    </div>
+                  <span class="su-tc-ords"><sc-if value="{{ r.canUp }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ r.moveUp }}" aria-label="Move up" title="Move up">↑</button></sc-if><sc-if value="{{ r.canDown }}" hint-placeholder-val="{{ false }}"><button class="su-tc-ord" onClick="{{ r.moveDown }}" aria-label="Move down" title="Move down">↓</button></sc-if></span>
+                  <sc-if value="{{ r.hasActs }}" hint-placeholder-val="{{ false }}"><div class="su-tc-acts">
+                    <sc-if value="{{ r.canBack }}" hint-placeholder-val="{{ false }}"><button class="su-tc-back" onClick="{{ r.back }}" title="Move back a stage" aria-label="Move back a stage">◂</button></sc-if>
+                    <sc-for list="{{ r.acts }}" as="ac" hint-placeholder-count="1"><button onClick="{{ ac.run }}" style="{{ ac.style }}" style-hover="filter:brightness(1.07)">{{ ac.label }}</button></sc-for>
+                  </div></sc-if>
                 </div>
-              </button>
+              </div>
             </sc-for>
             <sc-if value="{{ noMyDoneRequests }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:13px;color:var(--text-muted)">Nothing finished yet.</div>
@@ -8945,7 +8941,66 @@ class Component extends DCLogic {
         moveDown:stopThen(()=>moveCard(coll,ids,id,1))};
     };
 
+    // ===== one card, everywhere there is a board =====
+    // A card is its cover (when it has an image), a row of small labels, the
+    // title, and one line of facts. Built in one place so the team's board,
+    // the client's dashboard and the full work page read as the same thing.
+    const tcToday=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    const tcSoon=new Date(Date.now()+3*864e5).toISOString().slice(0,10);
+    const TC_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const shortDay=iso=>{ const q=String(iso||'').slice(0,10).split('-'); return q.length<3? '' : TC_MON[+q[1]-1]+' '+(+q[2]); };
+    const tcLab=(text,bg,fg)=>({text,style:{fontSize:10,fontWeight:700,letterSpacing:'.04em',textTransform:'uppercase',padding:'2px 7px',borderRadius:5,
+      background:bg||'var(--gray-100)',color:fg||'var(--text-muted)',whiteSpace:'nowrap',maxWidth:'100%',overflow:'hidden',textOverflow:'ellipsis'}});
+    const TC_TONE={red:['rgba(216,86,78,.13)','#a8352d'],amber:['rgba(214,143,46,.16)','#a2691a'],green:['rgba(31,178,100,.13)','#178a4e']};
+    const tcMeta=(icon,text,tone)=>{ const t=TC_TONE[tone];
+      return {text, icon:Object.assign(ico(icon,12),{opacity:t?1:.7}),
+        style:{display:'inline-flex',alignItems:'center',gap:4,fontSize:11.5,fontWeight:t?700:500,whiteSpace:'nowrap',
+          color:t?t[1]:'var(--text-muted)',background:t?t[0]:'transparent',padding:t?'1px 6px':0,borderRadius:5}}; };
+    const tcBtn=(label,run,kind)=>({label,run,style:{flex:kind==='ghost'?'0 0 auto':1,border:kind==='ghost'?'1px solid var(--gray-200)':'none',borderRadius:8,
+      padding:'6px 10px',fontSize:12,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)',
+      background:kind==='green'?'var(--green)':kind==='ghost'?'var(--surface-card)':'var(--chrome)',color:kind==='ghost'?'var(--text-body)':'#fff'}});
+    const tcBlank={hasCover:false,cover:'',labels:[],hasLabels:false,meta:[],hasClient:false,clientName:'',dot:{},acts:[],hasActs:false,
+      canBack:false,back:()=>{},canUp:false,canDown:false,moveUp:()=>{},moveDown:()=>{}};
+    const tcFill=o=>{ const c=Object.assign({},tcBlank,o); c.hasCover=!!c.cover; c.hasLabels=c.labels.length>0; c.hasClient=!!c.clientName;
+      c.hasActs=c.acts.length>0||c.canBack; return c; };
+    const tcard=(it,o)=>{ o=o||{};
+      const files=it.files||[]; const img=files.find(f=>f&&f.path&&fileKind(f)==='image');
+      const nC=(it.comments||[]).length, nF=files.length+(it.links||[]).length, done=it.status==='done';
+      const labels=[];
+      if(it.urgency==='Urgent') labels.push(tcLab('Urgent',TC_TONE.red[0],TC_TONE.red[1]));
+      else if(it.urgency==='High') labels.push(tcLab('High',TC_TONE.amber[0],TC_TONE.amber[1]));
+      (o.labels||[]).forEach(l=>labels.push(l));
+      if(it.category) labels.push(tcLab(it.category,'rgba(46,63,214,.09)','#2E3FD6'));
+      const meta=[];
+      if(it.needBy && !done){ const late=it.needBy<tcToday; meta.push(tcMeta('cal',(late?'Overdue ':'Due ')+shortDay(it.needBy), late?'red':(it.needBy<=tcSoon?'amber':''))); }
+      const proj=o.projected||it.projectedFinish; if(proj && !done) meta.push(tcMeta('target','Est. '+shortDay(proj),'green'));
+      if(o.hours) meta.push(tcMeta('clock',o.hours,''));
+      if(nC) meta.push(tcMeta('msg',String(nC),''));
+      if(nF) meta.push(tcMeta('folder',String(nF),''));
+      (o.meta||[]).forEach(m=>meta.push(m));
+      return tcFill(Object.assign({open:o.open, title:it.title||it.text||'Untitled', cover:img? (this.sigUrl(img.path)||'') : '', labels, meta,
+        clientName:o.client||'', dot:o.dot||{}, acts:o.acts||[], canBack:!!o.canBack, back:o.back||(()=>{})}, o.move||{})); };
+    const tlStyle=accent=>({background:'color-mix(in srgb, '+accent+' 11%, var(--gray-100))'});
+    const tlDot=accent=>({width:9,height:9,flex:'none',borderRadius:'50%',background:accent});
+    const tlist=(label,accent,cards,o)=>{ o=o||{}; const cap=o.cap||0, items=cap? cards.slice(0,cap) : cards;
+      return {label,accent,count:String(cards.length),items,style:tlStyle(accent),dot:tlDot(accent),
+        empty:cards.length===0, emptyText:o.empty||'Nothing here.',
+        hasMore:!!cap&&cards.length>cap, moreLabel:'View all '+cards.length+' →', go:o.go||(()=>{})}; };
+
+    // One way to change a work item's stage, shared by the board's buttons
+    // and the open card. Reaching 'done' is an approval, whoever performs it.
+    const setWorkStatus=(id,to)=>this.set(x=>{ const it=x.work.find(y=>y.id===id); if(!it||it.status===to) return x; it.status=to;
+      if(to==='done'){ markApproved(it); this.logEv(x,it.clientId,'Work item completed: '+it.title);
+        if(it.requestId){ const rq=x.requests.find(y=>y.id===it.requestId); if(rq) rq.status='done'; } }
+      else { it.completedAt=null; it.approved=false; it.approvedAt=null; it.hoursApproved=null; }
+      if(to==='review' && !it.approvalRequestedAt) it.approvalRequestedAt=Date.now();
+      return x; });
     // board
+    // Find a card without scrolling four lists: a search box and a client
+    // picker narrow every list at once.
+    const bdQ=String(d.bdQ||'').trim().toLowerCase(), bdClient=S.bdClient||'';
+    const bdNarrow=!!(bdQ||bdClient);
+    const bdShow=x=>(!bdClient||x.clientId===bdClient)&&(!bdQ||((x.title||'')+' '+orgLabel(x)+' '+(x.category||'')).toLowerCase().indexOf(bdQ)>-1);
     const order=['queued','progress','review','done'];
     // Each column sits on a tint of its own colour (the Content Map does the
     // same), so the stage a card is in reads without finding the header.
@@ -8956,7 +9011,7 @@ class Component extends DCLogic {
     const boardCols=cols.map(([st,label,accent])=>{
       const inCol=ordered(liveWork.filter(w=>w.status===st), natWork);
       const colIds=inCol.map(w=>w.id);
-      const items=inCol.map(w=>{
+      const items=inCol.filter(bdShow).map(w=>{
         const i=order.indexOf(st);
         const move=dir=>()=>this.set(x=>{ const it=x.work.find(y=>y.id===w.id); it.status=order[i+dir];
           // Reaching 'done' is an approval, whoever performs it, so it stamps
@@ -8968,7 +9023,11 @@ class Component extends DCLogic {
           if(it.status==='review' && !it.approvalRequestedAt) it.approvalRequestedAt=Date.now();
           return x; });
         const est=Number(w.hours)||0, act=Number(w.actualHours)||0;
-        return {title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),
+        return Object.assign(tcard(w,{open:openDetail('work',w.id), client:orgLabel(w), dot:clientDot(w.clientId),
+            hours: act? act+'h' : (est? est+'h est.' : ''),
+            canBack:i>0, back:stopThen(move(-1)),
+            acts:[tcBtn(i===0?'Start':i===1?'Send for approval':'Approve', stopThen(move(1)), i===2?'green':'navy')],
+            move: bdNarrow? {} : moveBits('work',colIds,w.id)}),{
           // The card shows what will be counted: the hours taken once they are
           // recorded, the estimate until then.
           hoursLabel: act? act+'h' : (est? est+'h est.' : 'no estimate'),
@@ -8989,17 +9048,17 @@ class Component extends DCLogic {
           projected:w.projectedFinish||'',
           onProjected:e=>{ const v=e.target.value; this.set(x=>{ x.work.find(y=>y.id===w.id).projectedFinish=v; return x; }); },
           needBy:w.needBy||'', hasNeedBy:!!w.needBy,
-          urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent'),
-          ...moveBits('work',colIds,w.id)};
+          urgencyStyle:urgStyle(w.urgency), urgency:w.urgency||'Normal', isUrgent:(w.urgency==='High'||w.urgency==='Urgent')});
       });
-      return {label,accent,count:items.length,items,colStyle:boardColStyle(accent)};
+      return Object.assign(tlist(label,accent,items,{empty:bdNarrow?'No matches.':'Nothing here.'}),{colStyle:boardColStyle(accent)});
     });
     const boardReqOrder=ordered(liveReqs.filter(r=>r.status==='new'), natReq);
     const boardReqIds=boardReqOrder.map(r=>r.id);
-    const boardReqs=boardReqOrder.map(r=>({title:r.title,clientName:orgLabel(r),dot:clientDot(r.clientId),cat:r.category||'General',open:openDetail('request',r.id),
-      ...moveBits('requests',boardReqIds,r.id),
-      approve:stopThen(()=>approveReq(r.id)), decline:stopThen(()=>declineReq(r.id))}));
-    const doneItems=liveWork.filter(w=>w.status==='done').map(w=>({title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
+    const boardReqs=boardReqOrder.filter(bdShow).map(r=>tcard(r,{open:openDetail('request',r.id), client:orgLabel(r), dot:clientDot(r.clientId),
+      acts:[tcBtn('Approve',stopThen(()=>approveReq(r.id)),'green'), tcBtn('Decline',stopThen(()=>declineReq(r.id)),'ghost')],
+      move: bdNarrow? {} : moveBits('requests',boardReqIds,r.id)}));
+    const teamLists=[tlist('Requests','#D68F2E',boardReqs,{empty:bdNarrow?'No matches.':'No new requests.'})].concat(boardCols);
+    const doneItems=liveWork.filter(w=>w.status==='done').filter(bdShow).sort((a,b)=>(b.completedAt||0)-(a.completedAt||0)).map(w=>({title:w.title,clientName:orgLabel(w),dot:clientDot(w.clientId),hoursLabel:(w.hours||0)+'h'}));
     // todos
     // Every checkbox in the app goes through here, so the completion stamp
     // cannot be recorded in one list and forgotten in another. Without it the
@@ -9057,9 +9116,11 @@ class Component extends DCLogic {
     const reqCard = (r, withClient) => {
       const [badgeStyle,statusLabel]=reqBadge(r.status);
       const w=workForReq(r.id);
-      return Object.assign({title:r.title,when:this.fmt(r.ts),badgeStyle,statusLabel,
-        cat:r.category||'General', open:openDetail('request',r.id),
-        clientName:orgLabel(r), dot:clientDot(r.clientId), showClient:!!withClient,
+      return Object.assign(tcard(r,{open:openDetail('request',r.id), client:withClient? orgLabel(r) : '', dot:clientDot(r.clientId),
+          projected:w&&w.projectedFinish, labels:[tcLab(statusLabel)], meta:[tcMeta('clock',this.fmt(r.ts),'')]}),
+        {when:this.fmt(r.ts),badgeStyle,statusLabel,
+        cat:r.category||'General',
+        showClient:!!withClient,
         filesLabel:attachLabel(r), hasFiles:!!attachLabel(r),
         urgency:r.urgency||'Normal',urgencyStyle:urgStyle(r.urgency),
         isUrgent:(r.urgency==='High'||r.urgency==='Urgent')},
@@ -9667,6 +9728,24 @@ class Component extends DCLogic {
         moveBits('requests',homeReqIds,r.id),
         dateBits(r.needBy, w&&w.projectedFinish)); });
 
+    // The client's board, as lists of the same card the team sees. The
+    // dashboard shows the top five of each; the Work page shows them all.
+    const coLab=x=> orgOverview? [tcLab(bizNameOf(x))] : [];
+    const myReqCards=homeReq.map(r=>tcard(r,{open:openDetail('request',r.id), labels:coLab(r),
+      projected:(workForReq(r.id)||{}).projectedFinish, move:moveBits('requests',homeReqIds,r.id)}));
+    const myQueueCards=homeQueue.map(w=>tcard(w,{open:openDetail('work',w.id), labels:coLab(w), move:moveBits('work',homeQueueIds,w.id)}));
+    const myProgCards=homeProg.map(w=>tcard(w,{open:openDetail('work',w.id), labels:coLab(w), move:moveBits('work',homeProgIds,w.id)}));
+    const myApprCards=homeApprovals.map(u=>{ const th=(u.files||[]).find(f=>f.hasThumb);
+      return tcFill({open:u.open, title:u.text, cover:th? th.thumb : '', labels:u.hasCo? [tcLab(u.co)] : [],
+        meta:[u.hasHoursNote? tcMeta('clock',u.hoursNote,'') : null, (u.files||[]).length? tcMeta('folder',String(u.files.length),'') : null].filter(Boolean),
+        acts:[tcBtn('Approve',u.approve,'green'), tcBtn('Feedback',u.openFb,'ghost')]}); });
+    const myLists=cap=>[
+      tlist('Needs your OK','var(--green)',myApprCards,{cap,go:go('requests'),empty:'Nothing waiting on you.'}),
+      tlist('In progress','var(--blue)',myProgCards,{cap,go:go('requests'),empty:'Nothing in progress right now.'}),
+      tlist('In queue','#8A6FE0',myQueueCards,{cap,go:go('requests'),empty:'Nothing queued up.'}),
+      tlist('Requested','#D68F2E',myReqCards,{cap,go:go('requests'),empty:'Nothing waiting on us to review.'})];
+    const homeLists=myLists(5), workLists=myLists(0);
+
     // Finished work, newest first, for the client's Updates tab.
     const completedWork=liveWork.filter(w=>w.clientId===client.id&&w.status==='done')
       .sort((a,b)=>(b.completedAt||0)-(a.completedAt||0))
@@ -9798,10 +9877,10 @@ class Component extends DCLogic {
     const cmTiles=cmTileDefs.map(([k,lab])=>{ const n=cmScope.filter(x=>cmMatchesTile(x,k)).length; const on=cmTileF===k;
       return {label:lab, n, select:()=>this.setState({cmTile:k}),
         style:{background:on?'var(--navy)':'var(--surface-card)',border:'1px solid '+(on?'var(--navy)':'var(--border-card)'),
-          borderRadius:12,padding:'10px 14px',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:4,
-          cursor:'pointer',minWidth:92,fontFamily:'var(--font-body)'},
-        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:22,lineHeight:1,color:on?'#fff':((k==='idea'||k==='changes')&&n?'#a2691a':'var(--navy)')},
-        labStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',color:on?'rgba(255,255,255,.78)':'var(--text-muted)'}}; });
+          borderRadius:999,padding:'5px 12px',display:'inline-flex',flexDirection:'row',alignItems:'baseline',gap:6,flex:'none',
+          cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',opacity:(!n&&!on)?.55:1},
+        numStyle:{fontFamily:'var(--font-display)',fontWeight:800,fontSize:14,lineHeight:1.2,color:on?'#fff':((k==='idea'||k==='changes')&&n?'#a2691a':'var(--navy)')},
+        labStyle:{fontSize:12,fontWeight:600,color:on?'rgba(255,255,255,.85)':'var(--text-muted)'}}; });
     const cmJobsFor=id=>(D.mediaJobs||[]).filter(j=>j.itemId===id);
     const cmCard=x=>{ const med=mediaOf(x), cover=med[0]||null; const [badgeStyle,statusLabel]= isArch(x)? [this.badge('gray'),'Archived'] : stBadge(stOf(x));
       const ch=chanOf(x), meta=CH_META[ch], who=logWho({by:x.by||''});
@@ -10023,7 +10102,7 @@ class Component extends DCLogic {
         emlLabelStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'var(--ls-caps)',textTransform:'uppercase',color:'var(--text-muted)',minWidth:92,flex:'none'},
         cmIsEmail:isEml, cfSubject:txt('subject','subject line'), cfSubjectB:txt('subjectB','second subject line'),
         cfPreheader:txt('preheader','preview text'), cfAudience:txt('audience','audience'),
-        isContentCard:true, cmCanEdit:isTeam, cmReadOnly:!isTeam,
+        isContentCard:true, cmCanEdit:isTeam, cmReadOnly:!isTeam, dSide:false, dHasMoves:false, dGrid:{'--dcols':'minmax(0,1fr)'},
         // The stage and the decision sit in a bar that stays put while the
         // card scrolls, so approving never means closing the card first.
         cmBar:isTeam&&!arch, showDetailBadge:!isTeam,
@@ -10164,7 +10243,7 @@ class Component extends DCLogic {
         : 'Showing '+cmOrdered.length+' of '+cmScope.length+' pieces for '+cmScopeLabel+'.')
         +' Cards are their previews: open one to page through its images, its caption and its history.',
       cmScopes:[['internal','Social Upgrades'],['clients','Clients'],['all','Everything']].map(([v,l])=>({label:l,
-        select:()=>this.setState({cmClient:v}), style:pillStyle(cmClientF===v)})),
+        select:()=>this.setState({cmClient:v}), style:(on=>({border:'none',borderRadius:9,padding:'0 13px',fontSize:12.5,fontWeight:on?700:600,cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}))(cmClientF===v)})),
       // An organization lists its companies under it, so the map narrows to
       // Bravo Boxing without also showing Double Ops and Costa Mesa Jiu Jitsu.
       cmClientOpts:[{v:'',l:'One client…'}].concat(D.clients.slice().sort(clientByName)
@@ -10174,12 +10253,19 @@ class Component extends DCLogic {
       // Same tabs as the client portal: Overview, then one per channel. The
       // count is what that tab holds for the current brand scope.
       cmSubTabs:[{id:'all',label:'Overview'}].concat(CHANNELS.map(c=>({id:c.id,label:c.label}))).map(t=>{
-        const on=cmChanF===t.id;
+        const on=cmChanF===t.id, shown=cmMode==='board'&&cmChanF==='all'&&t.id===cmBoardChan;
         const n=(D.strategy||[]).filter(x=>inScope(x.clientId,x)&&!isArch(x)&&(t.id==='all'||chanOf(x)===t.id)).length;
         return {label:t.label, n:String(n), select:()=>this.setState({cmChan:t.id,cmTile:'all'}),
-          style:Object.assign(pillStyle(on),{display:'inline-flex',alignItems:'center',gap:8,padding:'8px 16px',fontSize:13.5,fontWeight:on?600:500}),
-          countStyle:{fontSize:11,fontWeight:600,lineHeight:1,padding:'3px 7px',borderRadius:999,
-            background:on?'rgba(255,255,255,.18)':'var(--gray-100)',color:on?'inherit':'var(--text-muted)'}}; }),
+          style:{display:'inline-flex',alignItems:'center',gap:7,flex:'none',background:'transparent',border:'none',borderBottom:'2px solid '+(on?'var(--navy)':shown?'var(--gray-400)':'transparent'),marginBottom:-1,
+            padding:'9px 12px',fontSize:13.5,fontWeight:on?700:600,cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',color:(on||shown)?'var(--navy)':'var(--text-muted)'},
+          countStyle:{fontSize:11,fontWeight:700,lineHeight:1,padding:'3px 7px',borderRadius:999,
+            background:on?'var(--navy)':'var(--gray-100)',color:on?'#fff':'var(--text-muted)'}}; }),
+      cmSearchIco:Object.assign(ico('search',16),{color:'var(--text-muted)'}), cmFiltIco:ico('filter',15),
+      cmFiltOpen:!!S.cmFiltOpen, cmToggleFilt:()=>this.setState(s2=>({cmFiltOpen:!s2.cmFiltOpen})),
+      cmFiltLabel: cmClientF==='internal'? 'Social Upgrades' : cmClientF==='clients'? 'Clients' : cmClientF==='all'? 'Everything' : 'One client',
+      cmFiltBtn:{display:'inline-flex',alignItems:'center',gap:8,height:40,padding:'0 14px',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)',flex:'none',
+        border:'1px solid '+(S.cmFiltOpen?'var(--navy)':'var(--border-card)'),background:'var(--surface-card)',color:'var(--navy)'},
+      cmCap:{fontSize:10.5,fontWeight:700,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--text-muted)'},
       cmChanOptsAll:[{v:'all',l:'All channels'}].concat(CHANNELS.map(c=>({v:c.id,l:c.label}))),
       cmChanValueF:cmChanF, onCmChanF:e=>{ const v=e.target.value; this.setState({cmChan:v}); },
       cmSortOpts:[{v:'date',l:'Upcoming first'},{v:'new',l:'Newest added'},{v:'old',l:'Oldest added'}], cmSortValue:cmSort, onCmSort:e=>{ const v=e.target.value; this.setState({cmSort:v}); },
@@ -10188,7 +10274,7 @@ class Component extends DCLogic {
       clearCmFilters:()=>this.setState(s2=>({cmClient:'internal',cmChan:'all',cmTile:'all',d:{...s2.d,cmQ:''}})),
       cmSelStyle:cmSel,
       cmGallery:cmMode==='gallery', cmCalendar:cmMode==='calendar', cmBoardOn:cmMode==='board',
-      cmGalleryStyle:pillStyle(cmMode==='gallery'), cmCalendarStyle:pillStyle(cmMode==='calendar'), cmBoardStyle:pillStyle(cmMode==='board'),
+      cmGalleryStyle:(on=>({border:'none',borderRadius:9,padding:'0 13px',fontSize:12.5,fontWeight:on?700:600,cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}))(cmMode==='gallery'), cmCalendarStyle:(on=>({border:'none',borderRadius:9,padding:'0 13px',fontSize:12.5,fontWeight:on?700:600,cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}))(cmMode==='calendar'), cmBoardStyle:(on=>({border:'none',borderRadius:9,padding:'0 13px',fontSize:12.5,fontWeight:on?700:600,cursor:'pointer',fontFamily:'var(--font-body)',whiteSpace:'nowrap',background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}))(cmMode==='board'),
       cmSetGallery:()=>this.setState({cmMode:'gallery'}), cmSetCalendar:()=>this.setState({cmMode:'calendar'}), cmSetBoard:()=>this.setState({cmMode:'board'}),
       cmBoardCols, cmBoardChanLabel:(CH_META[cmBoardChan]||{}).label||'', cmBoardChanTabs:CHANNELS.map(c=>({label:c.label,select:()=>this.setState({cmChan:c.id}),style:pillStyle(cmBoardChan===c.id)})),
       mcBrands, cmHasStats:mcBrands.length>0,
@@ -10365,8 +10451,28 @@ class Component extends DCLogic {
           });
         };
         dv={detailOpen:true,
-          detailBoxStyle:DETAIL_BOX(false), isContentCard:false, cmNav:false, hasCmHistory:false, cmBar:false, showDetailBadge:true,
-          detailTitleStyle:{flex:1,fontSize:16,fontWeight:500,color:'var(--navy)',lineHeight:1.5,overflowWrap:'anywhere'},
+          detailBoxStyle:DETAIL_BOX(true), isContentCard:false, cmNav:false, hasCmHistory:false, cmBar:false, showDetailBadge:false,
+          detailTitleStyle:{flex:1,fontFamily:'var(--font-display)',fontSize:20,fontWeight:700,color:'var(--navy)',lineHeight:1.3,overflowWrap:'anywhere'},
+          dSide:ty!=='strategy', dGrid:{'--dcols': ty==='strategy'? 'minmax(0,1fr)' : 'minmax(0,1fr) 250px'},
+          dImgs:dFiles.filter(f=>f.hasThumb).map(f=>({thumb:f.thumb,name:f.name,open:f.open})),
+          dHasImgs:dFiles.some(f=>f.hasThumb),
+          dHasMoves:isTeam&&ty==='work',
+          dMoves:[['queued','Queued','#8A6FE0'],['progress','In progress','#2E3FD6'],['review','In review','#189D99'],['done','Done','#1FB264']].map(([k,l,c],i,arr)=>{
+            const cur=arr.findIndex(z=>z[0]===item.status), on=i===cur, past=i<cur;
+            return {label:l, mark:past?'✓':'', run:()=>{ if(!on) setWorkStatus(item.id,k); },
+              dot:{width:16,height:16,flex:'none',borderRadius:'50%',display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700,color:'#fff',
+                background:on?c:(past?'var(--green)':'transparent'),border:(on||past)?'none':'2px solid var(--gray-400)',boxSizing:'border-box'},
+              style:{display:'flex',alignItems:'center',gap:8,width:'100%',textAlign:'left',border:'none',borderRadius:9,padding:'6px 8px',fontSize:12.5,fontWeight:on?700:500,
+                cursor:on?'default':'pointer',fontFamily:'var(--font-body)',background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}}; }),
+          dFacts:(()=>{ const F=[], add=(k,v,st)=>{ if(v) F.push({k,v:String(v),style:Object.assign({fontWeight:600,color:'var(--navy)'},st||{})}); };
+            const proj=ty==='work'? item.projectedFinish : (workForReq(item.id)||{}).projectedFinish;
+            add('Client',orgLabel(item)); add('Status',sl);
+            if(ty!=='update'&&item.urgency&&item.urgency!=='Normal') add('Priority',item.urgency,{color:item.urgency==='Urgent'?'#a8352d':'#a2691a'});
+            if(item.category) add('Type',item.category);
+            add('Needed by',niceDate(item.needBy)); add('Projected finish',niceDate(proj),{color:'#178a4e'});
+            if(ty==='work'&&item.completedAt) add('Completed',new Date(item.completedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),{color:'#178a4e'});
+            if(ty==='work'){ const h=item.approvedAt? (Number(item.hoursApproved)||0)+'h counted' : Number(item.actualHours)? Number(item.actualHours)+'h taken' : Number(item.hours)? Number(item.hours)+'h estimated' : ''; add('Hours',h); }
+            add('Added',this.fmt(item.ts)); return F; })(),
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Content Map':'Update',
           detailTitle: ty==='update'?item.text:item.title,
           // A title typed in a hurry keeps its typo unless somebody can fix
@@ -11939,6 +12045,20 @@ class Component extends DCLogic {
       if(nav.some(([k])=>k==='leads')) (D.leads||[]).forEach(l=>{ if(ovHit(l.name,l.email)) add(l.source==='trial'?'Trial':'Lead','target',l.name||l.email,[l.email,l.stage].filter(Boolean).join(' · '),
         ()=>this.setState(s2=>({section:l.source==='trial'?'trials':'leads',leadOpen:l.id,leadDelNote:null,d:{...s2.d,leadNote:''}}))); });
     }
+    if(!isTeam && ovNeedle.length>=2){
+      // The client's own search: their cards, to-dos, files, content and pages.
+      const add=(kind,iconName,title,sub,fn)=>ovFound.push({kind,title:title||'Untitled',sub:sub||'',open:ovThen(fn),
+        icon:ico(iconName,16),iconWrap:{width:34,height:34,flex:'none',borderRadius:11,background:'var(--gray-100)',color:'var(--navy)',display:'flex',alignItems:'center',justifyContent:'center'},
+        style:{display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',background:'transparent',border:'none',borderRadius:12,padding:'9px 10px',cursor:'pointer',fontFamily:'var(--font-body)'}});
+      const stageName={queued:'In queue',progress:'In progress',review:'Needs your OK',done:'Done'};
+      const mine=x=>x.clientId===client.id;
+      nav.forEach(([id,label])=>{ if(ovHit(label)) add('Page',ICON_FOR[id]||'home',label,'Go to '+label,()=>this.setState({section:id,moreOpen:false})); });
+      liveWork.filter(mine).forEach(w=>{ if(ovHit(w.title,w.category,w.desc)) add('Work','board',w.title,stageName[w.status]||'',openDetail('work',w.id)); });
+      liveReqs.filter(r=>mine(r)&&r.status==='new').forEach(r=>{ if(ovHit(r.title,r.category,r.desc)) add('Request','inbox',r.title,'Requested '+this.fmt(r.ts),openDetail('request',r.id)); });
+      D.todos.filter(t=>mine(t)&&t.who==='client'&&!t.done).forEach(t=>{ if(ovHit(t.title)) add('To-do','check',t.title,'For you',()=>this.setState({section:'todos',moreOpen:false})); });
+      (D.strategy||[]).filter(x=>mine(x)&&!x.archived).forEach(x=>{ if(ovHit(x.title,x.caption,x.hook)) add('Content','cal',x.title,x.scheduledFor? niceDate(x.scheduledFor) : 'No date yet',openDetail('strategy',x.id)); });
+      (D.files||[]).filter(mine).forEach(f=>{ if(ovHit(f.name)) add('File','folder',f.name,'In your files',()=>this.setState({section:'files',moreOpen:false})); });
+    }
     const ovResults = ovFound.slice(0,9);
     const ovHasQ = ovNeedle.length>=2;
     const hr = new Date().getHours();
@@ -12055,7 +12175,67 @@ class Component extends DCLogic {
       return Object.assign({},a,{chip,icon}); });
     const ovLinkIds = [['board','Workboard'],['todos','To-Dos'],['time','Hours'],['clients','Clients'],['leads','Leads'],['trials','Free Trials'],['content','Content Map'],['activity','Activity Log']];
     const hChip = (key,col,name)=>{ const [c,i]=iconChip(col,name,38); return {['ovChip'+key]:c,['ovIc'+key]:i}; };
-    const ovVals = Object.assign({},
+    // ===== Client dashboard =====
+    // The same idea as the team overview, from the client's side: what needs
+    // them, where their work is, and a way to find anything.
+    const cdOn = !isTeam;
+    const cdGo = sec=>()=>this.setState({section:sec,moreOpen:false});
+    const cdHas = k=>nav.some(([n])=>n===k);
+    const cdAppr = cdOn? homeApprovals.length : 0;
+    const cdTodoN = cdOn? D.todos.filter(t=>t.clientId===client.id&&t.who==='client'&&!t.done).length : 0;
+    const cdProg = cdOn? liveWork.filter(w=>w.clientId===client.id&&w.status==='progress').length : 0;
+    const cdQueue = cdOn? liveWork.filter(w=>w.clientId===client.id&&w.status==='queued').length+liveReqs.filter(r=>r.clientId===client.id&&r.status==='new').length : 0;
+    const cdMsgN = cdOn? (Number(badgeFor('messages'))||0) : 0;
+    const cdWeekEnd = new Date(Date.now()+7*864e5).toISOString().slice(0,10), cdToday=new Date().toISOString().slice(0,10);
+    const cdContent = cdOn? (D.strategy||[]).filter(x=>x.clientId===client.id&&!x.archived&&x.scheduledFor&&x.scheduledFor>=cdToday&&x.scheduledFor<=cdWeekEnd).length : 0;
+    let cdTiles = !cdOn? [] : [
+      ovTile('Needs your OK',cdAppr,cdAppr?'Approve or leave feedback':'Nothing waiting on you','check','#1FB264',cdGo('requests')),
+      ovTile('In progress',cdProg,'What we are building now','zap','#2E3FD6',cdGo('requests')),
+      ovTile('Up next',cdQueue,'Queued and requested','board','#8A6FE0',cdGo('requests')),
+      cdHas('todos')? ovTile('To-dos',cdTodoN,cdTodoN?'Things we need from you':'All clear','inbox','#D68F2E',cdGo('todos')) : null,
+      cdHas('messages')? ovTile('Messages',cdMsgN,cdMsgN?'Unread on your board':'You are caught up','msg','#189D99',cdGo('messages')) : null,
+      cdHas('strategy')? ovTile('Content this week',cdContent,'On your Content Map','cal','#6b4bd1',cdGo('strategy')) : null
+    ].filter(Boolean);
+    // Slipstream runs shows, so its dashboard leads with them.
+    const cdShowsOn = cdOn && client.id==='vs';
+    if(cdShowsOn && sectionNow==='home' && !S.shData && !S.shLoading && !S.shErr) setTimeout(()=>this.shLoad(),0);
+    let cdShow = {on:false};
+    if(cdShowsOn && S.shData){
+      const SD=S.shData, nowMs=Date.now();
+      const conf=slug=>(SD.rsvps||[]).filter(x=>x.show_slug===slug&&x.status==='confirmed');
+      const rows=(SD.shows||[]).filter(r=>r.status!=='draft'&&r.status!=='archived').map(r=>{ const a=r.starts_at? +new Date(r.starts_at) : 0, b=r.ends_at? +new Date(r.ends_at) : a+3*36e5;
+        const c=conf(r.slug); return {r,a,b,live:a&&nowMs>=a&&nowMs<=b,up:!a||nowMs<a,
+          n:r.kind==='in-person'? c.reduce((t,x)=>t+(x.seats||1),0) : c.length,
+          wait:(SD.rsvps||[]).filter(x=>x.show_slug===r.slug&&x.status==='waitlisted').length}; });
+      const ups=rows.filter(x=>x.live||x.up).sort((x,y)=>(x.a||9e15)-(y.a||9e15)), past=rows.filter(x=>!x.live&&!x.up);
+      const nx=ups[0]||null;
+      const upRsvp=ups.reduce((t,x)=>t+x.n,0), allRsvp=rows.reduce((t,x)=>t+x.n,0), wait=ups.reduce((t,x)=>t+x.wait,0);
+      const span=ms=>{ ms=Math.max(0,ms); const dd=Math.floor(ms/864e5), hh=Math.floor(ms%864e5/36e5); return dd? dd+'d '+hh+'h' : hh? hh+'h' : Math.max(1,Math.floor(ms/6e4))+'m'; };
+      const whenOf=t=>new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(t));
+      const goShows=cdGo('shows');
+      cdTiles=[
+        ovTile('Upcoming shows',ups.length,nx? 'Next: '+nx.r.title : 'Nothing scheduled','play','#2E3FD6',goShows),
+        ovTile('RSVPs coming up',upRsvp,wait? wait+' on the waitlist' : 'Confirmed for upcoming shows','users','#1FB264',goShows),
+        ovTile('Past shows',past.length,'Closed screenings','clock','#8A6FE0',goShows),
+        ovTile('RSVPs all time',allRsvp,'Across every show','chart','#189D99',goShows)
+      ].concat(cdTiles).slice(0,8);
+      if(nx){ const cap=Number(nx.r.capacity)||0, pct=cap? Math.min(1,nx.n/cap) : 0, img=nx.r.hero_image||nx.r.poster||'';
+        cdShow={on:true, open:goShows, title:nx.r.title, heading:nx.live?'Live now':'Next show',
+          when: nx.a? whenOf(nx.a) : 'No date yet', count: nx.live? (nx.r.ends_at? 'Closes in '+span(nx.b-nowMs) : 'Today') : (nx.a? 'In '+span(nx.a-nowMs) : ''),
+          rsvp: cap? nx.n+' of '+cap+' seats' : nx.n+' RSVP'+(nx.n===1?'':'s'), hasCap:!!cap,
+          bar:{display:'block',height:'100%',width:Math.round(pct*100)+'%',background:'var(--green)',borderRadius:999},
+          poster:{width:112,aspectRatio:'16 / 9',flex:'none',borderRadius:10,background:'rgba(255,255,255,.12) center / cover no-repeat'+(img? ' url("'+img+'")' : '')},
+          more: ups.length>1? '+'+(ups.length-1)+' more coming up' : ''}; }
+    }
+    const cdNeed = cdAppr+cdTodoN;
+    const cdVals = !cdOn? {cdShowOn:false} : {
+      cdTiles, cdShowOn:cdShow.on, cdShow,
+      cdHero:{position:'relative',borderRadius:22,padding:'20px 24px',color:'#fff',
+        background:'radial-gradient(800px 300px at 100% 0%, rgba(46,63,214,.55), transparent 60%), radial-gradient(500px 240px at 0% 100%, rgba(31,178,100,.25), transparent 60%), var(--chrome)',boxShadow:'0 16px 34px rgba(15,22,51,.2)'},
+      cdSummary: cdNeed? [cdAppr? plural(cdAppr,'approval') : '', cdTodoN? plural(cdTodoN,'to-do') : ''].filter(Boolean).join(' and ')+' waiting on you.'
+        : (cdProg? 'Nothing needs you right now. We are working on '+plural(cdProg,'item')+'.' : 'Nothing needs you right now.')
+    };
+    const ovVals = Object.assign({}, cdVals,
       hChip('Work','#2E3FD6','board'), hChip('Attn','#D8564E','bell'), hChip('Load','#189D99','building'), hChip('Act','#2E3FD6','chart'),
       hChip('Msg','#1FB264','msg'), hChip('Todo','#2E3FD6','check'), hChip('Feed','#E0A12B','pulse'), {
       ovChipUpd:{width:38,height:38,flex:'none',borderRadius:12,background:'rgba(255,255,255,.14)',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center'}, ovIcUpd:ico('bell',18),
@@ -12070,7 +12250,7 @@ class Component extends DCLogic {
       ovPipeTotal:pipeTotal, ovPipeLabel:'open item'+(pipeTotal===1?'':'s')+' across '+plural(loadRaw.length,'client'), ovPipe,
       ovQ, onOvQ:this.draft('ovQ'), ovHasQ, ovClearQ, ovResults,
       onOvQKey:e=>{ if(e.key==='Enter' && ovResults.length){ e.preventDefault(); ovResults[0].open(); } else if(e.key==='Escape'){ ovClearQ(); } },
-      ovNoResults: ovHasQ && ovResults.length===0, ovNoResultsText:'No matches for "'+ovQ.trim()+'". Try a client name or a word from the title.',
+      ovNoResults: ovHasQ && ovResults.length===0, ovNoResultsText:'No matches for "'+ovQ.trim()+'". '+(isTeam?'Try a client name or a word from the title.':'Try a word from the title.'),
       ovResultsHint: ovResults.length>0,
       ovIcoSearch:Object.assign(ico('search',19),{color:'#7a819e'}),
       ovSearchBox:{display:'flex',alignItems:'center',gap:12,background:'#fff',border:'2px solid '+(ovHasQ?'var(--blue)':'transparent'),borderRadius:16,padding:'13px 16px',boxShadow:'0 10px 24px rgba(0,0,0,.18)'},
@@ -13252,6 +13432,13 @@ class Component extends DCLogic {
       onFileUnder:e=>{ const v=e.target.value; this.setState(s2=>({bizPick:{...(s2.bizPick||{}),[client.id]:v}})); },
       showOrgOverview:!isTeam&&orgOverview&&secKey('home'), orgStats, orgCos,
       pmHasCos:pmChoices.length>1||(!orgWideMe&&pmChoices.length>0), pmCoChips,
+      homeLists, workLists, myOpenN:String(myApprCards.length+myProgCards.length+myQueueCards.length+myReqCards.length),
+      rqOpen:!!(S.rqOpen||(d.reqTitle||'').trim()||(d.reqDesc||'').trim()||(S.reqFiles||[]).length||(S.reqLinks||[]).length),
+      rqFocus:()=>{ if(!this.state.rqOpen) this.setState({rqOpen:true}); },
+      rqClose:()=>this.setState(s2=>({rqOpen:false,reqLinks:[],reqFiles:[],d:{...s2.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:''}})),
+      rqHasChips:((S.reqFiles||[]).length+(S.reqLinks||[]).length)>0,
+      rqPlus:{width:26,height:26,flex:'none',borderRadius:8,background:'var(--green)',color:'#fff',display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:18,fontWeight:500,lineHeight:1},
+      rqSubmitStyle:{background:'var(--cta-bg)',color:'#fff',border:'none',borderRadius:10,padding:'9px 20px',fontSize:13.5,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)',opacity:(d.reqTitle||'').trim()?1:.5},
       homeApprovals, apprCount:homeApprovals.length, noApprovals:homeApprovals.length===0,
       homeReqCards, reqCount:homeReqCards.length, noReqCards:homeReqCards.length===0,
       homeQueueCards, queueCount:homeQueueCards.length, noQueueCards:homeQueueCards.length===0,
@@ -13296,6 +13483,13 @@ class Component extends DCLogic {
       postUpdate:()=>{ const text=(d.updText||'').trim(); if(!text) return;
         this.set(x=>{ x.updates.unshift({id:this.uid(),clientId:d.updClient,text,ts:Date.now(),needsApproval:!!d.updApproval,approved:false,feedback:[]}); this.logEv(x,d.updClient,'Update posted for '+cname(d.updClient)); return x; });
         this.setState(s=>({d:{...s.d,updText:''}})); },
+      teamLists, bdSearchIco:Object.assign(ico('search',16),{color:'var(--text-muted)'}),
+      dBdQ:d.bdQ||'', onBdQ:this.draft('bdQ'), dBdClient:bdClient, onBdClient:e=>this.setState({bdClient:e.target.value}),
+      bdAddOpen:!!S.bdAdd, toggleBdAdd:()=>this.setState(s2=>({bdAdd:!s2.bdAdd})),
+      bdDoneOpen:!!S.bdDone, toggleBdDone:()=>this.setState(s2=>({bdDone:!s2.bdDone})),
+      bdArchOpen:!!S.bdArch, toggleBdArch:()=>this.setState(s2=>({bdArch:!s2.bdArch})),
+      bdChevDone:Object.assign(ico('down',15),{color:'var(--text-muted)',transform:S.bdDone?'rotate(180deg)':'none'}),
+      bdChevArch:Object.assign(ico('down',15),{color:'var(--text-muted)',transform:S.bdArch?'rotate(180deg)':'none'}),
       boardCols, boardReqColStyle:boardColStyle('#D68F2E'), dWork:d.work||'', onWork:this.draft('work'), dWorkClient:d.workClient, onWorkClient:this.draft('workClient'), dWorkHours:d.workHours||'', onWorkHours:this.draft('workHours'),
       // A blank estimate used to become 2 hours, which is a number nobody
       // chose and which the client is eventually billed against. Blank means
@@ -13353,7 +13547,7 @@ class Component extends DCLogic {
           comments:[],files});
           this.logEv(x,client.id,cname(client.id)+' submitted a request: '+title); return x; });
         this.__reqDraftId=null;
-        this.setState(s=>({reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
+        this.setState(s=>({rqOpen:false,reqLinks:[],reqFiles:[],d:{...s.d,reqTitle:'',reqDesc:'',reqNeedBy:'',reqLink:'',reqUrgency:'Normal'}})); },
       myRequests, noMyRequests:myRequests.length===0,
       myDoneRequests, noMyDoneRequests:myDoneRequests.length===0,
       exportRequests: ()=>saveCsv(
