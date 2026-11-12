@@ -151,6 +151,9 @@
     .su-ldhead{background:var(--gray-100);border-bottom:1px solid var(--border-hairline);padding-top:4px;padding-bottom:4px}
     .su-ldd{display:flex;align-items:center;min-width:0}
     .su-ldm{display:none}
+    .su-ldm3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .su-ldm2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    @media (max-width:640px){ .su-ldm2{grid-template-columns:minmax(0,1fr)} .su-ldm3{grid-template-columns:repeat(2,minmax(0,1fr))} .su-ldm3>:last-child{grid-column:1 / -1} .su-ldmodal{width:100vw !important;max-height:94vh !important;top:auto !important;bottom:0;transform:translateX(-50%) !important;border-radius:24px 24px 0 0 !important} .su-ldmbody{padding:16px 16px 28px !important} }
     .su-ldfgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
     .su-ldtabs{scrollbar-width:none}.su-ldtabs::-webkit-scrollbar{display:none}
     @media (max-width:1200px){ .su-ldfgrid{grid-template-columns:repeat(3,minmax(0,1fr))} }
@@ -992,22 +995,30 @@
 
       <sc-if value="{{ leadOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeLead }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
-        <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,94vw);max-height:88vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
-            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Lead · {{ loId }}</div>
-            <button onClick="{{ closeLead }}" aria-label="Close" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
-          </div>
-          <div style="padding:22px 26px;display:flex;flex-direction:column;gap:20px">
-
-            <div style="display:flex;align-items:flex-start;gap:12px;min-width:0">
-              <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
-                <div style="font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--navy);line-height:1.2;overflow-wrap:anywhere">{{ loName }}</div>
-                <div style="font-size:13px;color:var(--text-muted)">{{ loMeta }}</div>
+        <div class="su-ldmodal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(820px,94vw);max-height:90vh;overflow-y:auto;background:var(--surface-card);z-index:81;display:flex;flex-direction:column;border-radius:24px;box-shadow:0 30px 70px rgba(15,22,51,.35)">
+          <div style="{{ loHead }}">
+            <div style="display:flex;align-items:flex-start;gap:14px;min-width:0">
+              <span style="width:48px;height:48px;flex:none;border-radius:15px;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:16px">{{ loInitials }}</span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:#fff;line-height:1.2;overflow-wrap:anywhere">{{ loName }}</div>
+                <div style="font-size:13px;color:rgba(255,255,255,.7)">{{ loMeta }}</div>
               </div>
               <sc-if value="{{ loReading }}" hint-placeholder-val="{{ true }}">
-                <button onClick="{{ startEditLead }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Edit details</button>
+                <button onClick="{{ startEditLead }}" style="flex:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:7px 13px;font-size:12.5px;font-weight:600;color:#fff;cursor:pointer;white-space:nowrap" style-hover="background:rgba(255,255,255,.2)">Edit</button>
               </sc-if>
+              <button onClick="{{ closeLead }}" aria-label="Close" style="flex:none;width:34px;height:34px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;font-size:15px;color:#fff;cursor:pointer;padding:0;line-height:1" style-hover="background:rgba(255,255,255,.2)">✕</button>
             </div>
+            <sc-if value="{{ loReading }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{ loChips }}" as="c" hint-placeholder-count="4"><span style="{{ c.style }}">{{ c.label }}</span></sc-for>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ loActions }}" as="x" hint-placeholder-count="3"><a href="{{ x.href }}" target="{{ x.target }}" rel="noopener noreferrer" style="{{ x.style }}"><span style="{{ x.icon }}"></span>{{ x.label }}</a></sc-for>
+                <sc-if value="{{ loQuickOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ loQuick }}" style="{{ loQuickStyle }}" style-hover="filter:brightness(1.1)"><span style="{{ loQuickIcon }}"></span>{{ loQuickLabel }}</button></sc-if>
+              </div>
+            </sc-if>
+          </div>
+          <div class="su-ldmbody" style="padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px">
 
             <sc-if value="{{ loFormOn }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;flex-direction:column;gap:16px">
@@ -1057,68 +1068,64 @@
 
             <sc-if value="{{ loReading }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:20px">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Stage</label>
-                <select value="{{ loStage }}" onChange="{{ onLoStage }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <sc-for list="{{ loStageOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-                </select>
+            <sc-if value="{{ hasLoHook }}" hint-placeholder-val="{{ true }}">
+              <div style="background:rgba(46,63,214,.07);border:1px solid rgba(46,63,214,.16);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);color:var(--blue)">The hook: what we found on their site</div>
+                <div style="font-size:14.5px;color:var(--navy);line-height:1.5;font-weight:500;user-select:text">{{ loHook }}</div>
+                <sc-if value="{{ hasLoSubject }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--text-muted);user-select:text">Subject line: <strong style="color:var(--text-body)">{{ loSubject }}</strong></div></sc-if>
               </div>
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Assigned to</label>
-                <select value="{{ loAssignee }}" onChange="{{ onLoAssignee }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-                  <sc-for list="{{ loTeamOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-                </select>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:5px">
-                <label style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Next follow-up</label>
-                <input type="date" value="{{ loNext }}" onChange="{{ onLoNext }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px">
-              </div>
+            </sc-if>
+            <div class="su-ldm3" style="background:var(--gray-100);border-radius:16px;padding:12px">
+              <label style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);min-width:0">Stage
+                <select value="{{ loStage }}" onChange="{{ onLoStage }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13.5px;font-weight:600;color:var(--navy);background:var(--surface-card);font-family:var(--font-body)"><sc-for list="{{ loStageOpts }}" as="o" hint-placeholder-count="9"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);min-width:0">Assigned to
+                <select value="{{ loAssignee }}" onChange="{{ onLoAssignee }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13.5px;font-weight:600;color:var(--navy);background:var(--surface-card);font-family:var(--font-body)"><sc-for list="{{ loTeamOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              </label>
+              <label style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);min-width:0">Next follow-up
+                <input type="date" value="{{ loNext }}" onChange="{{ onLoNext }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:9px 10px;font-size:13.5px;font-weight:600;color:var(--navy);background:var(--surface-card);font-family:var(--font-body)">
+              </label>
             </div>
-
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
-              <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;min-width:0">
-                <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Contact</h4>
-                <sc-for list="{{ loFacts }}" as="f" hint-placeholder-count="5">
-                  <div style="display:flex;gap:10px;font-size:13px;line-height:1.45;min-width:0">
-                    <div style="min-width:104px;color:var(--text-muted)">{{ f.k }}</div>
-                    <div style="flex:1;color:var(--text-body);overflow-wrap:anywhere;user-select:text">{{ f.v }}</div>
+            <div class="su-ldm2">
+              <div style="border:1px solid var(--border-hairline);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:9px;min-width:0">
+                <div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Contact</div>
+                <sc-for list="{{ loContact }}" as="f" hint-placeholder-count="4">
+                  <div style="display:flex;gap:10px;font-size:13.5px;line-height:1.45;min-width:0">
+                    <div style="min-width:74px;color:var(--text-muted)">{{ f.k }}</div>
+                    <sc-if value="{{ f.isLink }}" hint-placeholder-val="{{ false }}"><a href="{{ f.href }}" target="{{ f.target }}" rel="noopener noreferrer" style="flex:1;font-weight:600;overflow-wrap:anywhere">{{ f.v }}</a></sc-if>
+                    <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><div style="flex:1;color:var(--text-body);overflow-wrap:anywhere;user-select:text">{{ f.v }}</div></sc-if>
                   </div>
                 </sc-for>
-                <sc-if value="{{ hasLoSite }}" hint-placeholder-val="{{ true }}">
-                  <a href="{{ loSite }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500;overflow-wrap:anywhere">{{ loSiteLabel }}</a>
-                </sc-if>
+                <sc-if value="{{ loContactNone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No contact details yet. Tap Edit to add them.</div></sc-if>
               </div>
-              <div style="border:1px solid var(--border-hairline);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;min-width:0">
-                <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Outreach</h4>
-                <sc-if value="{{ hasLoPitch }}" hint-placeholder-val="{{ true }}">
-                  <sc-for list="{{ loPitch }}" as="f" hint-placeholder-count="3">
-                    <div style="display:flex;gap:10px;font-size:13px;line-height:1.45;min-width:0">
-                      <div style="min-width:80px;color:var(--text-muted)">{{ f.k }}</div>
-                      <div style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ f.v }}</div>
-                    </div>
-                  </sc-for>
-                </sc-if>
-                <sc-if value="{{ hasLoDraft }}" hint-placeholder-val="{{ false }}">
-                  <a href="{{ loDraft }}" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;background:var(--cta-bg);color:#fff;border-radius:12px;padding:8px 16px;font-family:var(--font-display);font-weight:600;font-size:12.5px;text-decoration:none" style-hover="background:#000">Open the draft in Gmail</a>
-                </sc-if>
-                <sc-if value="{{ hasLoHook }}" hint-placeholder-val="{{ true }}">
-                  <div style="display:flex;flex-direction:column;gap:4px">
-                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">What we found on their site</div>
-                    <div style="font-size:13px;color:var(--text-body);line-height:1.5">{{ loHook }}</div>
+              <div style="border:1px solid var(--border-hairline);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:9px;min-width:0">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Lead quality</div><div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--navy);line-height:1">{{ loQ }}<span style="font-size:12px;font-weight:600;color:var(--text-muted)"> / 10</span></div></div>
+                <sc-for list="{{ loQParts }}" as="q" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:10px;font-size:12.5px">
+                    <div style="width:118px;flex:none;color:var(--text-muted)">{{ q.k }}</div>
+                    <div style="flex:1;height:6px;border-radius:3px;background:var(--gray-100);overflow:hidden"><span style="{{ q.bar }}"></span></div>
+                    <div style="width:26px;text-align:right;font-weight:700;color:var(--navy)">{{ q.v }}</div>
                   </div>
-                </sc-if>
-                <sc-if value="{{ hasLoNotes }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;flex-direction:column;gap:4px">
-                    <div style="font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Research notes</div>
-                    <div style="font-size:13px;color:var(--text-body);line-height:1.5;white-space:pre-wrap">{{ loNotes }}</div>
-                  </div>
-                </sc-if>
+                </sc-for>
+                <sc-for list="{{ loProof }}" as="f" hint-placeholder-count="2">
+                  <div style="display:flex;gap:10px;font-size:12.5px;line-height:1.45"><div style="width:118px;flex:none;color:var(--text-muted)">{{ f.k }}</div><div style="flex:1;color:var(--text-body);overflow-wrap:anywhere">{{ f.v }}</div></div>
+                </sc-for>
               </div>
             </div>
-
+            <div role="tablist" style="display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;align-self:flex-start;max-width:100%;overflow-x:auto;box-sizing:border-box">
+              <sc-for list="{{ loTabs }}" as="tb" hint-placeholder-count="4"><button role="tab" onClick="{{ tb.select }}" style="{{ tb.style }}">{{ tb.label }} <span style="{{ tb.count }}">{{ tb.n }}</span></button></sc-for>
+            </div>
+            <sc-if value="{{ loTabResearch }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ loPitch }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;gap:10px;font-size:13px;line-height:1.45;min-width:0"><div style="min-width:104px;color:var(--text-muted)">{{ f.k }}</div><div style="flex:1;color:var(--text-body);overflow-wrap:anywhere;user-select:text">{{ f.v }}</div></div>
+                </sc-for>
+                <sc-if value="{{ hasLoNotes }}" hint-placeholder-val="{{ false }}"><div style="font-size:13.5px;color:var(--text-body);line-height:1.55;white-space:pre-wrap;user-select:text">{{ loNotes }}</div></sc-if>
+                <sc-if value="{{ loResearchNone }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted)">No research notes on this lead yet.</div></sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ loTabMails }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:10px">
-              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Email history</h4>
               <sc-if value="{{ noLoMails }}" hint-placeholder-val="{{ true }}">
                 <div style="font-size:13px;color:var(--text-muted)">Nothing sent or received yet. Emails show up here after the next overnight sync.</div>
               </sc-if>
@@ -1136,8 +1143,9 @@
               </sc-for>
             </div>
 
+            </sc-if>
+            <sc-if value="{{ loTabNotes }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-direction:column;gap:10px">
-              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">Team comments</h4>
               <sc-if value="{{ noLoNotes }}" hint-placeholder-val="{{ true }}">
                 <div style="font-size:13px;color:var(--text-muted)">No comments yet. Ask a question or leave context for whoever picks this up next.</div>
               </sc-if>
@@ -1164,12 +1172,13 @@
               </sc-for>
               <div style="display:flex;gap:8px;margin-top:4px;align-items:flex-end;flex-wrap:wrap">
                 <textarea value="{{ dLeadNote }}" onChange="{{ onLeadNote }}" onKeyDown="{{ onLeadNoteKey }}" placeholder="Add a comment for the team. Cmd or Ctrl + Enter to send" rows="2" style="flex:1;min-width:180px;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;font-family:var(--font-body);line-height:1.5"></textarea>
-                <button onClick="{{ sendLeadNote }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">Send</button>
+                <button onClick="{{ sendLeadNote }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:12px;padding:11px 22px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="opacity:.88">Send</button>
               </div>
             </div>
 
+            </sc-if>
+            <sc-if value="{{ loTabHist }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:6px">
-              <h4 style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--navy);margin:0">History</h4>
               <sc-if value="{{ noLoHist }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:13px;color:var(--text-muted)">No changes logged yet. Every change from here on shows who made it, including the Leads Agent.</div>
               </sc-if>
@@ -1198,6 +1207,7 @@
                 </div>
               </sc-if>
             </div>
+            </sc-if>
             </div>
             </sc-if>
 
@@ -11871,7 +11881,7 @@ class Component extends DCLogic {
     let leadModal={leadOpen:false};
     const LO=S.leadOpen ? leadsAll.find(l=>l.id===S.leadOpen) : null;
     if(S.leadOpen==='__new__' && LF){
-      leadModal={leadOpen:true, loId:'New', loName:'Add a lead',
+      leadModal={leadOpen:true, loHead:{padding:'22px 24px 20px',display:'flex',flexDirection:'column',gap:14,borderRadius:'24px 24px 0 0',background:'radial-gradient(700px 300px at 100% 0%, rgba(46,63,214,.55), transparent 60%), var(--chrome)'}, loInitials:'+', loId:'New', loName:'Add a lead',
         loMeta:'Fill in what you know. The overnight run researches anything left blank.',
         loReading:false, loFormOn:true, loStageOpts:leadStageOpts, loTeamOpts:leadTeamOpts,
         ...leadFormVals, closeLead:closeLeadModal};
@@ -11964,6 +11974,57 @@ class Component extends DCLogic {
         sendLeadNote:sendNote,
         closeLead:closeLeadModal
       };
+      // The popup leads with what a person needs to act: who it is, how to
+      // reach them, what to say, and one button for the obvious next move.
+      const lr=leadRoute(LO), lq=leadQ(LO), ldue=leadDue(LO), qp=LO.qualityParts||{};
+      const hChip=(bg,fg)=>({background:bg,color:fg,borderRadius:8,padding:'3px 9px',fontSize:11,fontWeight:700,letterSpacing:'.03em',whiteSpace:'nowrap'});
+      const W=['rgba(255,255,255,.14)','#fff'];
+      const act=(label,href,iconName,primary)=>({label,href,target:/^https?:/.test(href)?'_blank':'_self',icon:ico(iconName,15),
+        style:{display:'inline-flex',alignItems:'center',gap:7,textDecoration:'none',borderRadius:12,padding:'9px 14px',fontSize:13,fontWeight:700,whiteSpace:'nowrap',
+          background:primary?'#fff':'rgba(255,255,255,.1)',color:primary?'var(--chrome)':'#fff',border:'1px solid '+(primary?'#fff':'rgba(255,255,255,.22)')}});
+      const phone=String(LO.phone||'').trim(), mail=String(LO.email||'').trim(), site=String(LO.website||'').trim();
+      const draft = LO.stage==='drafted' && LO.draftUrl;
+      const acts=[];
+      if(draft) acts.push(act('Open draft in Gmail',LO.draftUrl,'msg',true));
+      if(site) acts.push(act(lr==='form'?'Open site to send the form':'Open website',site,'home',!draft&&(lr==='form'||lr==='none'||!lr)));
+      if(phone) acts.push(act('Call '+phone,'tel:'+phone.replace(/[^0-9+]/g,''),'phone',!draft&&lr==='call'));
+      if(mail) acts.push(act('Email',('mailto:'+mail+(LO.subject?'?subject='+encodeURIComponent(LO.subject):'')),'msg',!draft&&lr==='email'));
+      const NEXT_STAGE={new:'researched',researched:'sent',drafted:'sent',sent:'replied',replied:'meeting',meeting:'won'};
+      const nx=NEXT_STAGE[LO.stage];
+      const tab = ['notes','mails','hist','research'].indexOf(S.leadTab)>=0 ? S.leadTab : 'notes';
+      const tabBtn=on=>({background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',border:'none',borderRadius:10,padding:'7px 13px',fontSize:12.5,fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none',whiteSpace:'nowrap'});
+      const tabCnt=(on,n)=>({display:n?'inline-block':'none',marginLeft:4,background:on?'var(--navy)':'rgba(15,22,51,.08)',color:on?'#fff':'var(--text-muted)',borderRadius:8,fontSize:11,fontWeight:700,padding:'1px 6px'});
+      const lnk=(k,v,href)=>({k,v:String(v),isLink:!!href,isText:!href,href:href||'',target:/^https?:/.test(href||'')?'_blank':'_self'});
+      const contact=[LO.owner?lnk('Owner',LO.owner):null, mail?lnk('Email',mail,'mailto:'+mail):null, phone?lnk('Phone',phone,'tel:'+phone.replace(/[^0-9+]/g,'')):null,
+        site?lnk('Website',leadModal.loSiteLabel,site):null, (LO.address||LO.city)?lnk('Location',LO.address||LO.city):null].filter(Boolean);
+      const qbar=v=>({display:'block',height:'100%',width:Math.max(0,Math.min(100,(parseFloat(v)||0)*10))+'%',background:'var(--blue)',borderRadius:3});
+      Object.assign(leadModal,{
+        loHead:{padding:'22px 24px 20px',display:'flex',flexDirection:'column',gap:14,borderRadius:'24px 24px 0 0',background:'radial-gradient(700px 300px at 100% 0%, rgba(46,63,214,.55), transparent 60%), var(--chrome)'},
+        loInitials:leadInitials(LO.name||'?')||'?',
+        loChips:[
+          {label:LEAD_LABEL[LO.stage]||LO.stage||'New',style:hChip('#fff','var(--chrome)')},
+          lr?{label:(LEAD_ROUTE_LABEL[lr]||'')+(lr==='form'&&LO.formCaptcha?' · captcha':''),style:hChip(...W)}:null,
+          lq!=null&&LO.stage!=='skip'?{label:'Quality '+lq.toFixed(1),style:hChip(...W)}:null,
+          lq>=LEAD_MOCKUP&&LO.stage!=='skip'?{label:'Mockup candidate',style:hChip('#1FB264','#fff')}:null,
+          LO.campaign?{label:'Campaign '+LO.campaign,style:hChip(...W)}:null,
+          ldue?{label:'Follow-up due',style:hChip('#E0A12B','#0F1633')}:null,
+          LO.emailRisk&&LO.emailRisk!=='low'?{label:'Email risk: '+LO.emailRisk,style:hChip('rgba(216,86,78,.9)','#fff')}:null
+        ].filter(Boolean),
+        loActions:acts,
+        loQuickOn:!!nx, loQuickLabel:nx?('Mark as '+(LEAD_LABEL[nx]||nx).toLowerCase()):'', loQuickIcon:ico('check',15),
+        loQuick:()=>{ if(nx) leadModal.onLoStage({target:{value:nx}}); },
+        loQuickStyle:{display:'inline-flex',alignItems:'center',gap:7,borderRadius:12,padding:'9px 14px',fontSize:13,fontWeight:700,whiteSpace:'nowrap',background:'var(--green)',color:'#fff',border:'1px solid var(--green)',cursor:'pointer',fontFamily:'var(--font-body)'},
+        hasLoSubject:!!LO.subject, loSubject:LO.subject||'',
+        loContact:contact, loContactNone:contact.length===0,
+        loQ:lq!=null?lq.toFixed(1):'n/a',
+        loQParts:[['Site gap',qp.site],['Proof they can pay',qp.proof],['Reachability',qp.reach],['Offer fit',qp.fit],['Local',qp.local]]
+          .filter(([,v])=>v!=null&&lq!=null).map(([k,v])=>({k,v:String(v),bar:qbar(v)})),
+        loProof:[['Site score',hasScore?(String(LO.siteScore)+' / 10'):''],['Google rating',LO.googleRating],['Reviews',LO.reviewCount]].filter(([,v])=>v).map(([k,v])=>({k,v:String(v)})),
+        loTabs:[['notes','Comments',notes.length],['mails','Emails',mails.length],['research','Research',0],['hist','History',hist.length]]
+          .map(([k,label,n])=>({label,n:n||'',select:()=>this.setState({leadTab:k}),style:tabBtn(tab===k),count:tabCnt(tab===k,n)})),
+        loTabNotes:tab==='notes', loTabMails:tab==='mails', loTabHist:tab==='hist', loTabResearch:tab==='research',
+        loResearchNone:!LO.notes && !leadModal.hasLoPitch
+      });
     }
 
     // ===== Leads: list view =====
