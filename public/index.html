@@ -296,6 +296,31 @@
     .su-rvkpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px}
     .su-rvstats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
     @media (max-width:640px){ .su-rvstats{grid-template-columns:repeat(2,minmax(0,1fr))} .su-rvkpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    /* Activity log: one bar, one status strip, one row of tabs, then the feed. */
+    .su-altop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .su-alq{flex:1;min-width:200px;display:flex;align-items:center;gap:9px;height:40px;padding:0 14px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;color:var(--text-muted);box-sizing:border-box}
+    .su-alq:focus-within{border-color:var(--navy)}
+    .su-alq input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:13.5px;color:var(--text-body);font-family:var(--font-body)}
+    .su-alseg{display:flex;gap:2px;background:var(--gray-100);border-radius:12px;padding:3px;height:40px;box-sizing:border-box}
+    .su-alfilt{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto auto;gap:12px 16px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;padding:14px 16px}
+    .su-alstrip{background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;overflow:hidden}
+    .su-alline{display:flex;align-items:center;gap:12px;padding:9px 14px;min-width:0}
+    .su-allab{flex:none;width:150px;display:flex;flex-direction:column;gap:1px}
+    .su-alpills{flex:1;min-width:0;display:flex;gap:6px;flex-wrap:wrap}
+    .su-altabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border-card);margin-top:2px}
+    .su-altabs::-webkit-scrollbar{display:none}
+    .su-alrow:hover{background:var(--gray-100)}
+    @media (max-width:760px){
+      .su-alq{flex:1 1 100%}
+      .su-alseg{flex:1 1 0;min-width:0}
+      .su-alseg>button{flex:1;padding-left:2px !important;padding-right:2px !important;font-size:11.5px !important}
+      .su-alfilt{grid-template-columns:minmax(0,1fr)}
+      .su-alline{flex-direction:column;align-items:stretch;gap:7px}
+      .su-allab{width:auto;flex-direction:row;align-items:baseline;gap:8px}
+      .su-alpills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
+      .su-alpills::-webkit-scrollbar{display:none}
+      .su-alpills>button{flex:none}
+    }
     .su-alcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
     @media (max-width:520px){ .su-alcards{grid-template-columns:repeat(2,minmax(0,1fr))} }
     @media (max-width:560px){ .su-rdbody{padding:2px 14px 18px} }
@@ -3023,83 +3048,71 @@
       </sc-if>
 
       <sc-if value="{{ secActivity }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-          <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
-            <div style="flex:1;min-width:240px;font-size:13px;color:var(--text-muted);line-height:1.5">{{ alIntro }}</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div class="su-altop">
+            <label class="su-alq"><span style="{{ alSearchIco }}"></span><input value="{{ dAlQ }}" onChange="{{ onAlQ }}" placeholder="Search the log" aria-label="Search the log"></label>
+            <div class="su-alseg" role="group" aria-label="Period">
               <sc-for list="{{ alRanges }}" as="rg" hint-placeholder-count="4"><button onClick="{{ rg.select }}" style="{{ rg.style }}">{{ rg.label }}</button></sc-for>
-              <button onClick="{{ alRefresh }}" title="Refresh" style="border:1px solid var(--border-card);background:var(--surface-card);color:var(--navy);padding:7px 11px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body)">↻</button>
             </div>
+            <button onClick="{{ alToggleFilt }}" aria-expanded="{{ alFiltOpen }}" style="{{ alFiltBtn }}"><span style="{{ alFiltIco }}"></span>Filters<sc-if value="{{ alFiltHasN }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:999px;font-size:10.5px;font-weight:700;padding:1px 7px">{{ alFiltN }}</span></sc-if></button>
+            <button onClick="{{ alRefresh }}" title="Refresh" aria-label="Refresh" style="border:1px solid var(--border-card);background:var(--surface-card);color:var(--navy);width:40px;height:40px;border-radius:12px;font-size:15px;cursor:pointer;flex:none">↻</button>
           </div>
 
-          <sc-if value="{{ alNeedsYou }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(216,86,78,.08);border:1px solid rgba(216,86,78,.35);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5;color:var(--text-body)">
-              <span style="flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a8352d;padding-top:2px">Needs a look</span>
-              <span>{{ alNeedsYouText }}</span>
+          <sc-if value="{{ alFiltOpen }}" hint-placeholder-val="{{ false }}">
+            <div class="su-alfilt">
+              <label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="{{ alCap }}">Who</span>
+                <select value="{{ dAlWho }}" onChange="{{ onAlWho }}" style="{{ alSel }}">
+                  <sc-for list="{{ alWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select></label>
+              <label style="display:flex;flex-direction:column;gap:4px;min-width:0"><span style="{{ alCap }}">Client</span>
+                <select value="{{ dAlClient }}" onChange="{{ onAlClient }}" style="{{ alSel }}">
+                  <sc-for list="{{ alClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
+                </select></label>
+              <button onClick="{{ toggleAlQuiet }}" role="switch" aria-checked="{{ alQuietOn }}" style="display:flex;align-items:center;gap:10px;background:transparent;border:none;padding:0;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--navy);align-self:end;height:40px">
+                <span style="{{ alSwitch }}"><span style="{{ alKnob }}"></span></span>Hide routine steps</button>
+              <sc-if value="{{ alHasFilter }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearAlFilters }}" style="align-self:end;height:40px;background:transparent;border:none;color:var(--text-muted);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:var(--font-body);justify-self:start">Clear all</button></sc-if>
             </div>
           </sc-if>
 
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--text-muted)">Agents · tap one to filter</div>
-            <div class="su-alcards">
-              <sc-for list="{{ alTaskCards }}" as="c" hint-placeholder-count="6">
-                <button onClick="{{ c.select }}" style="{{ c.style }}" title="{{ c.full }}">
-                  <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="{{ c.dot }}"></span><span style="font-size:14px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span></div>
-                  <div style="font-size:12px;font-weight:600;color:var(--text-body)">{{ c.status }}</div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ c.line1 }}</div>
-                  <div style="font-size:11.5px;color:var(--text-muted)">{{ c.line2 }}</div>
-                  <sc-if value="{{ c.bad }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;font-weight:600;color:#a8352d">{{ c.badText }}</div></sc-if>
-                </button>
-              </sc-for>
+          <div class="su-alstrip">
+            <div class="su-alline">
+              <div class="su-allab"><span style="{{ alCap }}">Agents</span><span style="{{ alAgentSumStyle }}">{{ alAgentSum }}</span></div>
+              <div class="su-alpills">
+                <sc-for list="{{ alTaskCards }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.select }}" style="{{ c.pill }}" title="{{ c.tip }}"><span style="{{ c.dot }}"></span><span style="font-weight:700">{{ c.name }}</span><span style="{{ c.subStyle }}">{{ c.sub }}</span></button></sc-for>
+              </div>
             </div>
-            <div style="font-family:var(--font-display);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:var(--ls-caps);color:var(--text-muted);margin-top:6px">Team</div>
-            <div class="su-alcards">
-              <sc-for list="{{ alPersonCards }}" as="c" hint-placeholder-count="2">
-                <button onClick="{{ c.select }}" style="{{ c.style }}">
-                  <div style="display:flex;align-items:center;gap:8px;min-width:0"><span style="{{ c.dot }}"></span><span style="font-size:14px;font-weight:700;color:var(--navy)">{{ c.name }}</span></div>
-                  <div style="font-size:12px;color:var(--text-muted)">{{ c.line1 }}</div>
-                  <div style="font-size:12px;font-weight:600;color:var(--text-body)">{{ c.line2 }}</div>
-                </button>
-              </sc-for>
+            <div class="su-alline" style="border-top:1px solid var(--border-hairline)">
+              <div class="su-allab"><span style="{{ alCap }}">Team</span></div>
+              <div class="su-alpills">
+                <sc-for list="{{ alPersonCards }}" as="c" hint-placeholder-count="2"><button onClick="{{ c.select }}" style="{{ c.pill }}" title="{{ c.tip }}"><span style="{{ c.av }}">{{ c.initial }}</span><span style="font-weight:700">{{ c.name }}</span><span style="{{ c.subStyle }}">{{ c.sub }}</span></button></sc-for>
+              </div>
             </div>
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:10px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:12px 14px">
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              <sc-for list="{{ alTypes }}" as="ty" hint-placeholder-count="6"><button onClick="{{ ty.select }}" style="{{ ty.style }}">{{ ty.label }} <span style="opacity:.6;font-weight:500">{{ ty.n }}</span></button></sc-for>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-              <select value="{{ dAlWho }}" onChange="{{ onAlWho }}" aria-label="Who" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px;font-size:13px;background:var(--surface-card);color:var(--text-body);max-width:260px">
-                <sc-for list="{{ alWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-              </select>
-              <select value="{{ dAlClient }}" onChange="{{ onAlClient }}" aria-label="Client" style="border:1px solid var(--gray-200);border-radius:12px;padding:8px;font-size:13px;background:var(--surface-card);color:var(--text-body);max-width:220px">
-                <sc-for list="{{ alClientOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-              </select>
-              <input value="{{ dAlQ }}" onChange="{{ onAlQ }}" placeholder="Search the log" style="flex:1;min-width:160px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 12px;font-size:13px;background:var(--surface-card);color:var(--text-body);font-family:var(--font-body)">
-              <button onClick="{{ toggleAlQuiet }}" style="background:transparent;border:1px solid var(--border-hairline);color:var(--text-body);padding:7px 12px;border-radius:12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body)">{{ alQuietLabel }}</button>
-              <sc-if value="{{ alHasFilter }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearAlFilters }}" style="background:transparent;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer;text-decoration:underline;font-family:var(--font-body)">Clear filters</button></sc-if>
-            </div>
+          <div class="su-altabs" role="tablist" aria-label="Kind of activity">
+            <sc-for list="{{ alTypes }}" as="ty" hint-placeholder-count="6"><button role="tab" onClick="{{ ty.select }}" style="{{ ty.style }}">{{ ty.label }}<span style="{{ ty.nStyle }}">{{ ty.n }}</span></button></sc-for>
           </div>
 
           <sc-for list="{{ alGroups }}" as="g" hint-placeholder-count="2">
-            <section style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;overflow:hidden">
-              <div style="display:flex;align-items:baseline;gap:10px;padding:10px 14px;background:var(--gray-100)">
-                <span style="font-family:var(--font-display);font-weight:700;font-size:13px;color:var(--navy)">{{ g.label }}</span>
+            <section style="display:flex;flex-direction:column;gap:6px;min-width:0">
+              <div style="display:flex;align-items:baseline;gap:10px;padding:6px 4px 0">
+                <span style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--navy)">{{ g.label }}</span>
                 <span style="font-size:12px;color:var(--text-muted)">{{ g.sub }}</span>
               </div>
+              <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:16px;overflow:hidden">
               <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
-                <div onClick="{{ it.toggle }}" style="{{ it.rowStyle }}">
+                <div onClick="{{ it.toggle }}" class="su-alrow" style="{{ it.rowStyle }}">
                   <span style="{{ it.avatarStyle }}">{{ it.avatar }}</span>
-                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
                     <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
                       <span style="{{ it.whoStyle }}">{{ it.who }}</span>
-                      <span>{{ it.time }}</span>
                       <span style="{{ it.areaStyle }}">{{ it.area }}</span>
                       <sc-if value="{{ it.hasStatus }}" hint-placeholder-val="{{ false }}"><span style="{{ it.statusStyle }}">{{ it.statusText }}</span></sc-if>
                       <sc-if value="{{ it.flagged }}" hint-placeholder-val="{{ false }}"><span style="{{ it.flagStyle }}">Note</span></sc-if>
                       <sc-if value="{{ it.hasMinutes }}" hint-placeholder-val="{{ false }}"><span>{{ it.minutes }}</span></sc-if>
                       <sc-if value="{{ it.hasHrs }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;color:#178a4e">{{ it.hrs }}</span></sc-if>
                       <sc-if value="{{ it.hasClient }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:5px"><span style="{{ it.clientDot }}"></span>{{ it.client }}</span></sc-if>
+                      <span style="margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap">{{ it.time }}</span>
                     </div>
                     <div style="{{ it.textStyle }}">{{ it.text }}</div>
                     <sc-if value="{{ it.isBatch }}" hint-placeholder-val="{{ false }}"><span style="{{ it.batchStyle }}">{{ it.batchLabel }}</span></sc-if>
@@ -3122,10 +3135,11 @@
                   </sc-for>
                 </sc-if>
               </sc-for>
+              </div>
             </section>
           </sc-for>
           <sc-if value="{{ alEmpty }}" hint-placeholder-val="{{ false }}">
-            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:24px;border-radius:12px;font-size:13.5px;color:var(--text-muted)">{{ alEmptyText }}</div>
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);padding:28px 24px;border-radius:16px;font-size:13.5px;color:var(--text-muted);text-align:center">{{ alEmptyText }}</div>
           </sc-if>
           <sc-if value="{{ alCanMore }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ alLoadMore }}" style="align-self:center;background:var(--surface-card);border:1px solid var(--border-hairline);color:var(--navy);padding:9px 18px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body)">{{ alMoreLabel }}</button>
@@ -7237,7 +7251,7 @@ class Component extends DCLogic {
   // they land, and anything that went wrong. The log is paged from the server
   // (load() only keeps the newest 1,000 rows) and the cards at the top come
   // from activity_summary() (migration 042). Hours only, never pay.
-  activityVals({isTeam, sectionNow, D, cname, clientDot, openSection}){
+  activityVals({isTeam, sectionNow, D, cname, clientDot, openSection, ico}){
     const S=this.state, d=S.d||{};
     const on = isTeam && sectionNow==='activity';
     if(!on) return {secActivity:false};
@@ -7321,7 +7335,11 @@ class Component extends DCLogic {
     // ----- status cards -----
     const TONE={ok:['#1FB264','Ran fine'],warn:['#D68F2E','Finished with notes'],error:['#D8564E','Failed'],missed:['#D8564E','Missed a run'],none:['var(--gray-400)','No run logged yet'],idle:['var(--gray-400)','Idle']};
     const cardStyle = sel=>'text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;padding:14px 16px;border-radius:12px;cursor:pointer;font-family:var(--font-body);background:var(--surface-card);border:1px solid '+(sel?'var(--navy)':'var(--border-card)')+';box-shadow:'+(sel?'0 0 0 1px var(--navy)':'0 1px 2px rgba(15,22,51,.05)');
-    const pick = v=>()=>this.setState({alWho: who===v? '' : v});
+    const pick = v=>()=>this.setState({alWho: who===v? '' : v, alShow:150});
+    const pillOf = (sel,bad,dim)=>'display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:6px 11px;border-radius:999px;cursor:pointer;font-family:var(--font-body);font-size:12.5px;white-space:nowrap;border:1px solid '
+      +(sel?'var(--navy)':bad?'rgba(216,86,78,.45)':'var(--border-card)')+';background:'+(sel?'var(--navy)':bad?'rgba(216,86,78,.08)':'var(--surface-card)')+';color:'+(sel?'#fff':'var(--navy)')+';opacity:'+(dim&&!sel?'.6':'1');
+    const subOf = (sel,bad)=>'font-weight:'+(bad?'700':'500')+';color:'+(sel?'rgba(255,255,255,.75)':bad?'#a8352d':'var(--text-muted)');
+    const short = t=>String(t||'').replace(/^Last (run|active) /,'');
     const taskCards = AL_TASKS.map(tk=>{
       const own = sumAgent(tk.name);
       const pid = tk.profile? agentId(tk.profile) : '';
@@ -7339,7 +7357,11 @@ class Component extends DCLogic {
       const errs = addOf(own,'errors'), warns=addOf(own,'warns');
       const mins = own.map(r=>Number(r.avg_minutes)).filter(n=>n>0);
       const v='a:'+tk.name;
-      return {name:tk.short, full:tk.name, isTask:true, sel:who===v, select:pick(v), style:cardStyle(who===v),
+      const isBad = state==='error'||state==='missed';
+      return {name:tk.short, full:tk.name, isTask:true, sel:who===v, select:pick(v), style:cardStyle(who===v), state,
+        pill:pillOf(who===v,isBad,state==='none'), subStyle:subOf(who===v,isBad),
+        sub: state==='missed'? 'missed '+clock(fire) : state==='error'? 'failed '+rel(lastRun) : state==='warn'? 'notes · '+rel(lastRun) : lastRun? rel(lastRun) : 'no runs yet',
+        tip: [tk.name, label, lastRun? 'Last run '+rel(lastRun) : '', runs? runs+' run'+(runs===1?'':'s')+' in this period' : '', mins.length? Math.round(mins.reduce((a,b)=>a+b,0)/mins.length)+' min average' : '', errs? errs+' failed' : '', warns? warns+' with notes' : '', 'Click to filter'].filter(Boolean).join('\n'),
         dot:'width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:'+dot, status:label,
         line1: lastRun? 'Last run '+rel(lastRun) : (tk.days? 'Waiting for its first run log' : 'Schedule not tracked'),
         line2: [runs? runs+' run'+(runs===1?'':'s') : '', mins.length? Math.round(mins.reduce((a,b)=>a+b,0)/mins.length)+' min avg' : '', errs? errs+' failed' : '', warns? warns+' with notes' : ''].filter(Boolean).join(' · ') || ' ',
@@ -7349,16 +7371,27 @@ class Component extends DCLogic {
       const rows=sumBy(p.id), n=addOf(rows,'n'), last=maxOf(rows,'last_ts');
       const hrs = hours.filter(x=>x.e.profileId===p.id && inRange(x.t)).reduce((a,x)=>a+(Number(x.e.hours)||0),0);
       const v='p:'+p.id;
-      return {name:p.name||p.email, full:'', isTask:false, sel:who===v, select:pick(v), style:cardStyle(who===v),
+      return {name:String(p.name||p.email||'').split(' ')[0], full:'', isTask:false, sel:who===v, select:pick(v), style:cardStyle(who===v),
+        pill:pillOf(who===v,false,false), subStyle:subOf(who===v,false),
+        initial:String(p.name||p.email||'?').trim().charAt(0).toUpperCase(),
+        av:'flex:none;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:'+(who===v?'#fff':'var(--navy)')+';color:'+(who===v?'var(--navy)':'#fff'),
+        sub: [hrs? (Math.round(hrs*10)/10)+' hrs' : '', n? n+' change'+(n===1?'':'s') : '', last? short(rel(last)) : 'quiet'].filter(Boolean).join(' · '),
+        tip: [p.name||p.email, last? 'Last active '+rel(last) : 'No activity yet', 'Click to filter'].join('\n'),
         dot:'width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--navy)', status:'Team member',
         line1: last? 'Last active '+rel(last) : 'No activity yet',
         line2: [hrs? (Math.round(hrs*10)/10)+' hrs logged' : '', n? n+' change'+(n===1?'':'s') : ''].filter(Boolean).join(' · ') || 'Nothing in this period',
         bad:false, badText:''};
     });
     const needsYou = taskCards.filter(c=>c.bad);
+    // Trouble first, quiet ones last, so the strip reads left to right.
+    const RANK={missed:0,error:0,warn:1,ok:2,idle:3,none:4};
+    taskCards.sort((x,y)=>(RANK[x.state]==null?2:RANK[x.state])-(RANK[y.state]==null?2:RANK[y.state]));
+    const nBad=needsYou.length, nFine=taskCards.filter(c=>c.state==='ok'||c.state==='warn').length;
+    const agentSum = nBad? nBad+' need'+(nBad===1?'s':'')+' a look' : nFine+' of '+taskCards.length+' ran fine';
 
     // ----- the feed -----
     const AREA={run:'Run',leads:'Leads',content:'Content',client:'Client work',hours:'Hours',report:'Report',other:'General'};
+    const AREA_COL={run:['rgba(107,75,209,.12)','#5a3cc0'],leads:['rgba(46,63,214,.10)','#2E3FD6'],content:['rgba(20,150,160,.12)','#0f7f88'],client:['rgba(15,22,51,.08)','var(--navy)'],hours:['rgba(31,178,100,.13)','#178a4e'],report:['rgba(214,143,46,.16)','#a2691a'],other:['var(--gray-100)','var(--text-muted)']};
     const noteRx=/\b(bounced|failed|failure|error|couldn.t|could not|held|refused|skipped|missing|stalled|timed out)\b/i;
     const rows = (S.alKey===key? (S.alRows||[]) : []);
     const fromLog = rows.map(l=>{
@@ -7435,11 +7468,11 @@ class Component extends DCLogic {
         time: x.area==='hours'? 'Day' : clock(x.t),
         who:x.whoName, whoStyle:'font-weight:700;color:'+(x.isAgent?'#6b4bd1':'var(--navy)'),
         avatar:(x.whoName||'?').trim().charAt(0).toUpperCase(),
-        avatarStyle:'flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;background:'+(x.isAgent?'#6b4bd1':(x.area==='hours'?'#1FB264':'var(--navy)')),
+        avatarStyle:'flex:0 0 auto;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;background:'+(x.isAgent?'#6b4bd1':(x.area==='hours'?'#1FB264':'var(--navy)')),
         isAgent:x.isAgent,
         text:x.text, textStyle:'font-size:13.5px;line-height:1.5;color:var(--text-body);'+(x.quiet&&!x.flagged?'opacity:.8;':'')+(open?'':'display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;'),
         toggle:()=>this.setState(s2=>({alOpen:{...(s2.alOpen||{}),[x.id]:!open}})),
-        area:AREA[x.area], areaStyle:pillBase+'background:var(--gray-100);color:var(--text-muted)',
+        area:AREA[x.area], areaStyle:pillBase+'background:'+(AREA_COL[x.area]||AREA_COL.other)[0]+';color:'+(AREA_COL[x.area]||AREA_COL.other)[1],
         hasClient:!!x.clientId, client:cname(x.clientId), clientDot:Object.assign({},clientDot(x.clientId),{width:7,height:7,minWidth:7}),
         hasHrs:x.area==='hours', hrs:(Math.round((x.hrs||0)*100)/100)+' hrs',
         hasStatus:!!sp, statusText:sp?sp[1]:'', statusStyle:pillBase+'background:'+(sp?sp[0]:'transparent')+';color:var(--text-body)',
@@ -7447,7 +7480,7 @@ class Component extends DCLogic {
         flagged:x.flagged && !sp, flagStyle:pillBase+'background:rgba(214,143,46,.16);color:var(--text-body)',
         hasErrs:hasErr && open, errs:x.errs.map(e=>({t:e})), errHint: hasErr && !open,
         errHintText: x.errs.length+' issue'+(x.errs.length===1?'':'s')+', tap to see',
-        rowStyle:'display:flex;gap:12px;align-items:flex-start;cursor:pointer;'+(child? 'padding:8px 14px 8px 52px;border-top:1px dashed var(--border-card);' : 'padding:11px 14px;border-top:1px solid var(--border-card);')+(x.status==='error'?'background:rgba(216,86,78,.05);':x.flagged?'background:rgba(214,143,46,.04);':'')
+        rowStyle:'display:flex;gap:12px;align-items:flex-start;cursor:pointer;'+(child? 'padding:8px 16px 8px 58px;border-top:1px dashed var(--border-card);' : 'padding:12px 16px;border-top:1px solid var(--border-hairline);')+(x.status==='error'?'background:rgba(216,86,78,.05);':x.flagged?'background:rgba(214,143,46,.04);':'')
       };
     };
     rowsOut.forEach(e=>{ const k=dayKey(e.t);
@@ -7487,8 +7520,22 @@ class Component extends DCLogic {
     return {
       secActivity:true,
       alIntro:'Everything the agents and the team did, newest first: agent runs, every signed change, hours and what was worked on, reports, and anything that failed. Pay is never shown here.',
-      alRanges:RANGES.map(([k,l])=>({label:l, style:chip(k===range), select:()=>this.setState({alRange:k, alShow:150})})),
-      alTypes:TYPES.map(([k,l])=>{ const n=typeCount(k); return {label:l, n:String(n), style:chip(k===type)+(k==='flagged'&&n&&k!==type?';border-color:#D68F2E':''), select:()=>this.setState({alType:k, alShow:150})}; }),
+      alRanges:RANGES.map(([k,l])=>({label:l, select:()=>this.setState({alRange:k, alShow:150}),
+        style:'border:none;border-radius:9px;padding:0 13px;font-size:12.5px;font-weight:'+(k===range?'700':'600')+';cursor:pointer;font-family:var(--font-body);white-space:nowrap;background:'+(k===range?'var(--surface-card)':'transparent')+';color:'+(k===range?'var(--navy)':'var(--text-muted)')+';box-shadow:'+(k===range?'0 1px 3px rgba(15,22,51,.14)':'none')})),
+      alSearchIco:ico('search',16), alFiltIco:ico('filter',15),
+      alFiltOpen:!!S.alFiltOpen, alToggleFilt:()=>this.setState(s2=>({alFiltOpen:!s2.alFiltOpen})),
+      alFiltN:String((who?1:0)+(client?1:0)+(hideQuiet?1:0)), alFiltHasN:!!(who||client||hideQuiet),
+      alFiltBtn:'display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);flex:none;border:1px solid '+(S.alFiltOpen?'var(--navy)':'var(--border-card)')+';background:var(--surface-card);color:var(--navy)',
+      alCap:'font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)',
+      alSel:'height:40px;border:1px solid var(--gray-200);border-radius:12px;padding:0 10px;font-size:13px;background:var(--surface-card);color:var(--text-body);width:100%;box-sizing:border-box;font-family:var(--font-body)',
+      alQuietOn:hideQuiet,
+      alSwitch:'flex:none;width:36px;height:20px;border-radius:999px;position:relative;transition:background .15s;background:'+(hideQuiet?'var(--green)':'var(--gray-300, #cfd3de)'),
+      alKnob:'position:absolute;top:2px;left:'+(hideQuiet?'18px':'2px')+';width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)',
+      alAgentSum:agentSum, alAgentSumStyle:'font-size:12.5px;font-weight:700;color:'+(nBad?'#a8352d':'#178a4e'),
+      alTypes:TYPES.map(([k,l])=>({k,l,n:typeCount(k)})).filter(t=>t.n>0||t.k===type||t.k==='all').map(({k,l,n})=>{ const on=k===type, warn=k==='flagged'&&n>0;
+        return {label:l, n:String(n), select:()=>this.setState({alType:k, alShow:150}),
+          style:'display:inline-flex;align-items:center;gap:7px;flex:none;background:transparent;border:none;border-bottom:2px solid '+(on?'var(--navy)':'transparent')+';margin-bottom:-1px;padding:9px 12px;font-size:13px;font-weight:'+(on?'700':'600')+';cursor:pointer;font-family:var(--font-body);white-space:nowrap;color:'+(on?'var(--navy)':'var(--text-muted)'),
+          nStyle:'font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:'+(warn?'rgba(214,143,46,.2)':on?'var(--navy)':'var(--gray-100)')+';color:'+(warn?'#a2691a':on?'#fff':'var(--text-muted)')}; }),
       alTaskCards:taskCards, alPersonCards:personCards,
       alNeedsYou:needsYou.length>0, alNeedsYouText: needsYou.map(c=>c.full+': '+(c.badText||c.status.toLowerCase())).join(' · '),
       dAlWho:who, onAlWho:e=>this.setState({alWho:e.target.value, alShow:150}), alWhoOpts:whoOpts,
@@ -7496,8 +7543,8 @@ class Component extends DCLogic {
       dAlQ:d.alQ||'', onAlQ:this.draft('alQ'),
       alQuietLabel: hideQuiet? 'Show routine steps' : 'Hide routine steps',
       toggleAlQuiet:()=>this.setState({alHideQuiet:!hideQuiet}),
-      alHasFilter: !!(who||client||q||type!=='all'),
-      clearAlFilters:()=>this.setState(s2=>({alWho:'', alClient:'', alType:'all', d:{...s2.d, alQ:''}})),
+      alHasFilter: !!(who||client||q||type!=='all'||hideQuiet),
+      clearAlFilters:()=>this.setState(s2=>({alWho:'', alClient:'', alType:'all', alHideQuiet:false, d:{...s2.d, alQ:''}})),
       alGroups:dayGroups, alEmpty:!!loadedNote, alEmptyText:loadedNote,
       alCanMore: more || (!!S.alHasMore && S.alKey===key),
       alMoreLabel: S.alLoading? 'Loading…' : 'Load older',
@@ -12620,7 +12667,7 @@ class Component extends DCLogic {
         const dot= t.id==='all'? {display:'none'} : Object.assign(coDot(coIdx(t.id)),{marginTop:0,width:8,height:8,minWidth:8,background:on?'var(--surface-card)':CO_PALETTE[coIdx(t.id)%CO_PALETTE.length]});
         return {label:t.label,on,dot,style:pillOn(on),select:()=>this.setState({biz:t.id,detail:null,moreOpen:false})}; })) : [];
     const shv = this.showsVals({isTeam, client, sectionNow});
-    const alv = this.activityVals({isTeam, sectionNow, D, cname, clientDot, openSection});
+    const alv = this.activityVals({isTeam, sectionNow, D, cname, clientDot, openSection, ico});
     const cbv = this.chatbotVals({isTeam, client, sectionNow, D0, portalBizs, curBiz, bizList, me,
       saveCsv, copyFallback, downloadFile, startUploads, takeFiles, clientColor});
     const trv = this.trialsVals({isTeam, sectionNow, D, copyText});
