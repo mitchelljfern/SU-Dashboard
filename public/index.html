@@ -225,6 +225,25 @@
     .su-cmcard:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(15,22,51,.16)}
     .su-cmcard:hover .su-cmcover img{transform:scale(1.03)}
     .su-cmcover img,.su-cmcover video{transition:transform .3s ease}
+    /* The open content card: preview on the left, words on the right, and
+       the decision always in reach at the top. */
+    .su-cmbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 22px 12px}
+    .su-cmsteps{display:flex;gap:4px;background:var(--gray-100);border-radius:14px;padding:4px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+    .su-cmsteps::-webkit-scrollbar{display:none}
+    .su-cmacts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .su-cmopen{display:grid;grid-template-columns:var(--cmcols,minmax(0,1fr));gap:22px;align-items:start}
+    .su-cmopen-media{position:sticky;top:132px;min-width:0;display:flex;flex-direction:column;gap:12px}
+    @media (max-width:900px){ .su-cmopen{grid-template-columns:minmax(0,1fr) !important} .su-cmopen-media{position:static} }
+    @media (max-width:640px){
+      .su-detail{width:100vw !important;max-height:94vh !important;max-height:94dvh !important;top:auto !important;bottom:0;transform:translateX(-50%) !important;border-radius:22px 22px 0 0 !important}
+      .su-detailhead{padding:12px 14px !important;flex-wrap:wrap}
+      .su-detailbody{padding:16px 14px !important}
+      .su-cmbar{padding:8px 14px 12px}
+      .su-cmbarsp{display:none}
+      .su-cmacts{width:100%}
+      .su-cmacts>button{flex:1}
+      .su-cmacts>.su-cmadv{flex:1 1 100%;order:-1;justify-content:center;padding:12px 20px !important}
+    }
     .su-cmgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:16px}
     @media (max-width:560px){ .su-cmgal{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} }
     .su-cmthumb{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block;background:var(--gray-100)}
@@ -550,8 +569,9 @@
 
       <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
         <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;background:rgba(15,22,51,.55);z-index:80"></div>
-        <div style="{{ detailBoxStyle }}">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid var(--border-hairline)">
+        <div class="su-detail" style="{{ detailBoxStyle }}">
+          <div style="position:sticky;top:0;z-index:6;background:var(--surface-card);border-bottom:1px solid var(--border-hairline)">
+          <div class="su-detailhead" style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:14px 22px">
             <div style="font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">{{ detailKind }}</div>
             <span style="flex:1"></span>
             <sc-if value="{{ cmNav }}" hint-placeholder-val="{{ false }}">
@@ -564,7 +584,21 @@
             <button onClick="{{ copyCard }}" title="Copy as Markdown for Asana, Trello, Jira…" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;margin-right:10px;white-space:nowrap" style-hover="border-color:var(--navy)">Copy</button>
             <button onClick="{{ closeDetail }}" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer;padding:0;line-height:1">✕</button>
           </div>
-          <div style="padding:20px 26px;display:flex;flex-direction:column;gap:12px">
+          <sc-if value="{{ cmBar }}" hint-placeholder-val="{{ false }}">
+            <div class="su-cmbar">
+              <div class="su-cmsteps" role="group" aria-label="Stage">
+                <sc-for list="{{ cmSteps }}" as="st" hint-placeholder-count="4"><button onClick="{{ st.select }}" title="{{ st.tip }}" style="{{ st.style }}"><span style="{{ st.dot }}">{{ st.mark }}</span>{{ st.label }}</button></sc-for>
+              </div>
+              <span class="su-cmbarsp" style="flex:1"></span>
+              <div class="su-cmacts">
+                <button onClick="{{ cmOpenChanges }}" style="{{ cmChangesStyle }}" style-hover="background:rgba(214,143,46,.2)">{{ cmChangesBtn }}</button>
+                <button onClick="{{ cmOpenArchive }}" style="{{ cmArchiveStyle }}" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us</button>
+                <sc-if value="{{ cmCanAdv }}" hint-placeholder-val="{{ true }}"><button class="su-cmadv" onClick="{{ cmAdv }}" style="{{ cmAdvStyle }}" style-hover="filter:brightness(1.08)"><span style="{{ cmAdvIcon }}"></span>{{ cmAdvLabel }}</button></sc-if>
+              </div>
+            </div>
+          </sc-if>
+          </div>
+          <div class="su-detailbody" style="padding:20px 26px;display:flex;flex-direction:column;gap:14px">
             <sc-if value="{{ archiveAsking }}" hint-placeholder-val="{{ false }}">
               <div style="background:#FDECEA;border:1px solid #EBBDB9;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
                 <div style="font-size:13px;color:var(--danger-fg);font-weight:600;line-height:1.5">{{ archiveWarning }}</div>
@@ -576,7 +610,7 @@
             </sc-if>
             <sc-if value="{{ titleReading }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;align-items:flex-start;gap:10px;min-width:0">
-                <div style="flex:1;font-size:16px;font-weight:500;color:var(--navy);line-height:1.5;overflow-wrap:anywhere">{{ detailTitle }}</div>
+                <div style="{{ detailTitleStyle }}">{{ detailTitle }}</div>
                 <sc-if value="{{ canEditTitle }}" hint-placeholder-val="{{ false }}">
                   <button onClick="{{ startEditTitle }}" title="Edit the title" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Edit</button>
                 </sc-if>
@@ -591,10 +625,12 @@
                 </div>
               </div>
             </sc-if>
+            <sc-if value="{{ showDetailBadge }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;align-items:center;gap:12px">
               <span style="{{ detailBadgeStyle }}">{{ detailStatus }}</span>
               <span style="font-size:12px;color:var(--text-muted)">{{ detailMeta }}</span>
             </div>
+            </sc-if>
             <sc-if value="{{ detailCoShow }}" hint-placeholder-val="{{ false }}">
               <label style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:var(--ls-caps);text-transform:uppercase;color:var(--text-muted)">Company
                 <select value="{{ detailCoValue }}" onChange="{{ onDetailCo }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:6px 10px;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;background:var(--surface-card);color:var(--navy)">
@@ -604,13 +640,6 @@
             </sc-if>
 
             <sc-if value="{{ isContentCard }}" hint-placeholder-val="{{ false }}">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
-                <span style="{{ cmBrandDot }}"></span><span style="font-weight:600;color:var(--navy)">{{ cmBrand }}</span>
-                <span>·</span><span style="{{ cmChanDot }}"></span><span>{{ cmChanLabel }}</span>
-                <sc-if value="{{ cmHasBy }}" hint-placeholder-val="{{ false }}"><span>·</span><span>{{ cmByLine }}</span><sc-if value="{{ cmByAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if></sc-if>
-                <sc-if value="{{ cmHasAdded }}" hint-placeholder-val="{{ true }}"><span>·</span><span>Added {{ cmAdded }}</span></sc-if>
-              </div>
-
               <sc-if value="{{ cmIsArchived }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:var(--gray-100);border:1px solid var(--gray-200);border-radius:12px;padding:12px 14px">
                   <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px">
@@ -622,12 +651,6 @@
                 </div>
               </sc-if>
 
-              <sc-if value="{{ cmFbIdle }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-                  <button onClick="{{ cmOpenChanges }}" style="background:rgba(214,143,46,.12);border:1px solid rgba(214,143,46,.45);border-radius:12px;padding:7px 14px;font-size:12.5px;font-weight:600;color:#a2691a;cursor:pointer" style-hover="background:rgba(214,143,46,.2)">✎ {{ cmChangesBtn }}</button>
-                  <sc-if value="{{ cmNotArchived }}" hint-placeholder-val="{{ true }}"><button onClick="{{ cmOpenArchive }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:6px 13px;font-size:12.5px;color:var(--navy);cursor:pointer;white-space:nowrap;color:var(--text-muted)" style-hover="border-color:var(--danger-fg);color:var(--danger-fg)">Not for us · archive</button></sc-if>
-                </div>
-              </sc-if>
               <sc-if value="{{ cmFbChanges }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:8px;background:rgba(214,143,46,.07);border:1px solid rgba(214,143,46,.35);border-radius:12px;padding:12px 14px">
                   <span style="font-size:10.5px;font-weight:700;letter-spacing:var(--ls-caps);text-transform:uppercase;color:#a2691a">Request changes</span>
@@ -671,11 +694,14 @@
                 </div>
               </sc-if>
 
+              <div class="su-cmopen" style="{{ cmOpenGrid }}">
+                <sc-if value="{{ cmHasStage }}" hint-placeholder-val="{{ true }}">
+                <div class="su-cmopen-media">
               <sc-if value="{{ hasMedia }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:8px">
                   <div style="{{ mediaStage }}">
-                    <sc-if value="{{ mediaIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ mediaUrl }}" alt="{{ mediaAlt }}" style="max-width:100%;max-height:56vh;object-fit:contain;display:block"></sc-if>
-                    <sc-if value="{{ mediaIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ mediaUrl }}" controls="{{ true }}" style="max-width:100%;max-height:56vh;display:block"></video></sc-if>
+                    <sc-if value="{{ mediaIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ mediaUrl }}" alt="{{ mediaAlt }}" style="max-width:100%;max-height:64vh;object-fit:contain;display:block"></sc-if>
+                    <sc-if value="{{ mediaIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ mediaUrl }}" controls="{{ true }}" style="max-width:100%;max-height:64vh;display:block"></video></sc-if>
                     <sc-if value="{{ mediaMany }}" hint-placeholder-val="{{ false }}">
                       <button onClick="{{ mediaPrev }}" aria-label="Previous image" title="Previous (←)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:999px;border:none;background:rgba(255,255,255,.92);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);padding:0 0 3px">‹</button>
                       <button onClick="{{ mediaNext }}" aria-label="Next image" title="Next (→)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:999px;border:none;background:rgba(255,255,255,.92);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);padding:0 0 3px">›</button>
@@ -752,31 +778,60 @@
                 </div>
               </sc-if>
 
-              <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border:1px dashed var(--gray-200);border-radius:12px;padding:10px 12px">
-                  <label style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 14px;font-size:12.5px;color:var(--text-body);cursor:pointer;background:var(--surface-card);white-space:nowrap" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" accept="image/*,video/*" onChange="{{ onCmUpload }}" style="display:none">{{ cmUploadLabel }}</label>
-                  <input value="{{ dCmUrl }}" onChange="{{ onCmUrl }}" placeholder="or paste an image / video link (Canva export, Drive, Dropbox, any direct link)" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 11px;font-size:12.5px">
-                  <button onClick="{{ cmFetchUrl }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:8px 14px;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:rgba(15,22,51,.06)">Fetch preview</button>
                 </div>
-                <sc-if value="{{ hasCmJobs }}" hint-placeholder-val="{{ false }}">
-                  <sc-for list="{{ cmJobs }}" as="j" hint-placeholder-count="1">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:8px 12px;font-size:12.5px">
-                      <span style="color:var(--text-body)">{{ j.label }}</span>
-                      <sc-if value="{{ j.hasError }}" hint-placeholder-val="{{ false }}"><span style="color:var(--danger-fg)">{{ j.error }}</span></sc-if>
-                      <span style="flex:1"></span>
-                      <sc-if value="{{ j.failed }}" hint-placeholder-val="{{ false }}">
-                        <button onClick="{{ j.retry }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:4px 12px;font-size:12px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Retry</button>
-                        <button onClick="{{ j.dismiss }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
-                      </sc-if>
-                    </div>
-                  </sc-for>
                 </sc-if>
+                <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-muted)">
+                <span style="{{ cmBrandDot }}"></span><span style="font-weight:600;color:var(--navy)">{{ cmBrand }}</span>
+                <span>·</span><span style="{{ cmChanDot }}"></span><span>{{ cmChanLabel }}</span>
+                <sc-if value="{{ cmHasBy }}" hint-placeholder-val="{{ false }}"><span>·</span><span>{{ cmByLine }}</span><sc-if value="{{ cmByAgent }}" hint-placeholder-val="{{ false }}"><span style="{{ agentPill }}">Agent</span></sc-if></sc-if>
+                <sc-if value="{{ cmHasAdded }}" hint-placeholder-val="{{ true }}"><span>·</span><span>Added {{ cmAdded }}</span></sc-if>
+              </div>
 
+                  <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                      <sc-for list="{{ cmPills }}" as="sm" hint-placeholder-count="3"><button onClick="{{ cmToggleMore }}" title="Edit schedule and details" style="{{ sm.style }}"><span style="{{ sm.icon }}"></span>{{ sm.label }}</button></sc-for>
+                    </div>
+                    <sc-if value="{{ cmNoStage }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--gray-200);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--text-muted)">No preview on this card yet. Add an image or video under Schedule and details.</div></sc-if>
+                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hook</label>
+                  <input value="{{ cfHook.value }}" onChange="{{ cfHook.onChange }}" onBlur="{{ cfHook.onBlur }}" placeholder="The first line. What stops the scroll." style="{{ cmFieldStyle }}"></div>
+                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Caption / body</label>
+                  <textarea value="{{ cfCaption.value }}" onChange="{{ cfCaption.onChange }}" onBlur="{{ cfCaption.onBlur }}" rows="5" placeholder="The post as it will go out. For a blog, the outline or the draft." style="{{ cmAreaStyle }}"></textarea></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Call to action</label>
+                    <input value="{{ cfCta.value }}" onChange="{{ cfCta.onChange }}" onBlur="{{ cfCta.onBlur }}" placeholder="Book a call, read the guide…" style="{{ cmFieldStyle }}"></div>
+                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hashtags</label>
+                    <input value="{{ cfTags.value }}" onChange="{{ cfTags.onChange }}" onBlur="{{ cfTags.onBlur }}" placeholder="#socialmedia #smallbusiness" style="{{ cmFieldStyle }}"></div>
+                </div>
+                    <sc-if value="{{ canCopyCaption }}" hint-placeholder-val="{{ true }}"><button onClick="{{ copyCaption }}" title="Copies hook, caption, call to action and hashtags" style="align-self:flex-start;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Copy caption</button></sc-if>
+                  </sc-if>
+              <sc-if value="{{ cmReadOnly }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ hasCmFacts }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:14px;flex-wrap:wrap">
+                    <sc-for list="{{ cmFacts }}" as="cf" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:1px"><span style="{{ cmLabelStyle }}">{{ cf.label }}</span><span style="font-size:13px;color:var(--navy);font-weight:500">{{ cf.value }}</span></div></sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasCmHook }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;font-weight:600;color:var(--navy);line-height:1.4">{{ cmHook }}</div></sc-if>
+                <sc-if value="{{ hasCmCaption }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--text-body);line-height:1.6;white-space:pre-wrap">{{ cmCaption }}</div></sc-if>
+                <sc-if value="{{ hasCmCta }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--navy);font-weight:500">{{ cmCta }}</div></sc-if>
+                <sc-if value="{{ hasCmTags }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--blue);line-height:1.5">{{ cmTags }}</div></sc-if>
+                <sc-if value="{{ hasCmPublished }}" hint-placeholder-val="{{ false }}"><a href="{{ cmPublished }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">See it live →</a></sc-if>
+              </sc-if>
+
+                </div>
+              </div>
+              <sc-if value="{{ cmCanEdit }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid var(--border-card);border-radius:16px;overflow:hidden">
+                  <button onClick="{{ cmToggleMore }}" aria-expanded="{{ cmMoreOpen }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--gray-100);border:none;padding:12px 16px;cursor:pointer;font-family:var(--font-body)" style-hover="background:var(--gray-200)">
+                    <span style="font-size:13px;font-weight:700;color:var(--navy)">Schedule and details</span>
+                    <span style="flex:1;min-width:0;font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cmMoreHint }}</span>
+                    <span style="{{ cmMoreChev }}"></span>
+                  </button>
+                  <sc-if value="{{ cmMoreOpen }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
                   <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Channel</label>
                     <select value="{{ cmChanValue }}" onChange="{{ onCmChan }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmChanOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
-                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Status</label>
-                    <select value="{{ cmStatusValue }}" onChange="{{ onCmStatus }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmStatusOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
                   <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Format</label>
                     <select value="{{ cmFormatValue }}" onChange="{{ onCmFormat }}" style="{{ cmFieldStyle }}"><sc-for list="{{ cmFormatOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
                   <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Date</label>
@@ -808,36 +863,34 @@
                       <input value="{{ cfAudience.value }}" onChange="{{ cfAudience.onChange }}" onBlur="{{ cfAudience.onBlur }}" placeholder="List or segment" style="{{ cmFieldStyle }}"></div>
                   </div>
                 </sc-if>
-                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hook</label>
-                  <input value="{{ cfHook.value }}" onChange="{{ cfHook.onChange }}" onBlur="{{ cfHook.onBlur }}" placeholder="The first line. What stops the scroll." style="{{ cmFieldStyle }}"></div>
-                <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Caption / body</label>
-                  <textarea value="{{ cfCaption.value }}" onChange="{{ cfCaption.onChange }}" onBlur="{{ cfCaption.onBlur }}" rows="5" placeholder="The post as it will go out. For a blog, the outline or the draft." style="{{ cmFieldStyle }};line-height:1.55;resize:vertical"></textarea></div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Call to action</label>
-                    <input value="{{ cfCta.value }}" onChange="{{ cfCta.onChange }}" onBlur="{{ cfCta.onBlur }}" placeholder="Book a call, read the guide…" style="{{ cmFieldStyle }}"></div>
-                  <div style="display:flex;flex-direction:column;gap:4px"><label style="{{ cmLabelStyle }}">Hashtags</label>
-                    <input value="{{ cfTags.value }}" onChange="{{ cfTags.onChange }}" onBlur="{{ cfTags.onBlur }}" placeholder="#socialmedia #smallbusiness" style="{{ cmFieldStyle }}"></div>
-                </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
                   <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px"><label style="{{ cmLabelStyle }}">Published link</label>
                     <input value="{{ cfPublished.value }}" onChange="{{ cfPublished.onChange }}" onBlur="{{ cfPublished.onBlur }}" placeholder="https://… once it is live" style="{{ cmFieldStyle }}"></div>
-                  <sc-if value="{{ canCopyCaption }}" hint-placeholder-val="{{ true }}"><button onClick="{{ copyCaption }}" title="Copies hook, caption, call to action and hashtags" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">Copy caption + hashtags</button></sc-if>
+                </div>
+                                    <div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)">Preview image or video</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border:1px dashed var(--gray-200);border-radius:12px;padding:10px 12px">
+                  <label style="border:1px solid var(--gray-200);border-radius:12px;padding:7px 14px;font-size:12.5px;color:var(--text-body);cursor:pointer;background:var(--surface-card);white-space:nowrap" style-hover="border-color:var(--navy)"><input type="file" multiple="{{ true }}" accept="image/*,video/*" onChange="{{ onCmUpload }}" style="display:none">{{ cmUploadLabel }}</label>
+                  <input value="{{ dCmUrl }}" onChange="{{ onCmUrl }}" placeholder="or paste an image / video link (Canva export, Drive, Dropbox, any direct link)" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:8px 11px;font-size:12.5px">
+                  <button onClick="{{ cmFetchUrl }}" style="background:transparent;border:1px solid var(--ink-40);border-radius:12px;color:var(--navy);padding:8px 14px;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:rgba(15,22,51,.06)">Fetch preview</button>
+                </div>
+                <sc-if value="{{ hasCmJobs }}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{ cmJobs }}" as="j" hint-placeholder-count="1">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:8px 12px;font-size:12.5px">
+                      <span style="color:var(--text-body)">{{ j.label }}</span>
+                      <sc-if value="{{ j.hasError }}" hint-placeholder-val="{{ false }}"><span style="color:var(--danger-fg)">{{ j.error }}</span></sc-if>
+                      <span style="flex:1"></span>
+                      <sc-if value="{{ j.failed }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ j.retry }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:4px 12px;font-size:12px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Retry</button>
+                        <button onClick="{{ j.dismiss }}" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:1" style-hover="color:var(--danger-fg)">×</button>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </sc-if>
+
+                    </div>
+                  </sc-if>
                 </div>
               </sc-if>
-
-              <sc-if value="{{ cmReadOnly }}" hint-placeholder-val="{{ false }}">
-                <sc-if value="{{ hasCmFacts }}" hint-placeholder-val="{{ false }}">
-                  <div style="display:flex;gap:14px;flex-wrap:wrap">
-                    <sc-for list="{{ cmFacts }}" as="cf" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:1px"><span style="{{ cmLabelStyle }}">{{ cf.label }}</span><span style="font-size:13px;color:var(--navy);font-weight:500">{{ cf.value }}</span></div></sc-for>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ hasCmHook }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;font-weight:600;color:var(--navy);line-height:1.4">{{ cmHook }}</div></sc-if>
-                <sc-if value="{{ hasCmCaption }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:var(--text-body);line-height:1.6;white-space:pre-wrap">{{ cmCaption }}</div></sc-if>
-                <sc-if value="{{ hasCmCta }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--navy);font-weight:500">{{ cmCta }}</div></sc-if>
-                <sc-if value="{{ hasCmTags }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:var(--blue);line-height:1.5">{{ cmTags }}</div></sc-if>
-                <sc-if value="{{ hasCmPublished }}" hint-placeholder-val="{{ false }}"><a href="{{ cmPublished }}" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:500">See it live →</a></sc-if>
-              </sc-if>
-
               <sc-if value="{{ hasMc }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gray-100);border-radius:12px;padding:10px 14px;font-size:12.5px">
                   <span style="font-weight:700;color:var(--navy)">Metricool</span>
@@ -2060,7 +2113,7 @@
                       <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:var(--blue);font-weight:500">{{ k.commentsLabel }}</span></sc-if>
                       <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.10);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:12px">Agent</span></sc-if>
                     </div>
-                    
+                    <sc-if value="{{ k.canAdv }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.adv }}" style="{{ k.advStyle }}" style-hover="filter:brightness(1.08)">{{ k.advLabel }}</button></sc-if>
                   </div>
                 </div>
               </sc-for>
@@ -2128,52 +2181,53 @@
                   </div>
                   <sc-if value="{{ col.noItems }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--text-muted);padding:10px 4px;text-align:center">Nothing here yet.</div></sc-if>
                   <sc-for list="{{ col.items }}" as="k" hint-placeholder-count="2">
-                    <div onClick="{{ k.open }}" class="su-cmcard" style="background:var(--surface-card);border-radius:10px;padding:9px 10px;display:flex;flex-direction:column;gap:7px;cursor:pointer;min-width:0;box-shadow:0 1px 2px rgba(15,22,51,.10),0 1px 0 rgba(15,22,51,.04)">
-                      <div style="display:flex;gap:10px;align-items:flex-start;min-width:0">
-                        <div style="position:relative;width:52px;height:52px;flex:none;border-radius:8px;overflow:hidden;background:var(--gray-100)">
-                          <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
-                          <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;right:3px;bottom:3px;width:16px;height:16px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:8px;padding-left:1px">▶</span></sc-if>
-                          <sc-if value="{{ k.hasEmlThumb }}" hint-placeholder-val="{{ false }}"><iframe sc-camel-src-doc="{{ k.emlDoc }}" sandbox="" tabindex="-1" aria-hidden="true" title="Email preview" loading="lazy" scrolling="no" style="position:absolute;top:0;left:0;width:640px;height:640px;border:none;transform:scale(.08125);transform-origin:top left;pointer-events:none;background:#fff"></iframe></sc-if>
-                          <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.thumbPlate }}">{{ k.plateInitial }}</div></sc-if>
-                          <sc-if value="{{ k.hasMore }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:3px;bottom:3px;background:rgba(15,22,51,.78);color:#fff;font-size:9px;font-weight:700;padding:0 5px;border-radius:999px;line-height:15px">{{ k.mediaN }}</span></sc-if>
-                        </div>
-                        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
-                          <div class="su-cardtitle su-clamp2" style="font-size:13.5px;font-weight:600;color:var(--navy);line-height:1.3">{{ k.title }}</div>
-                          <div style="display:flex;align-items:center;gap:6px;min-width:0;font-size:11px">
-                            <span style="{{ k.dot }}"></span>
-                            <span style="color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ k.brand }}</span>
-                            <span style="flex:1"></span>
-                            <span style="{{ k.whenSmall }}">{{ k.whenShort }}</span>
-                          </div>
+                    <div onClick="{{ k.open }}" class="su-cmcard" style="background:var(--surface-card);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;min-width:0;box-shadow:0 1px 2px rgba(15,22,51,.10),0 1px 0 rgba(15,22,51,.04)">
+                      <div class="su-cmcover" style="{{ k.coverBox }}">
+                        <sc-if value="{{ k.coverIsImage }}" hint-placeholder-val="{{ true }}"><img sc-camel-src="{{ k.coverUrl }}" alt="{{ k.coverAlt }}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+                        <sc-if value="{{ k.coverIsVideo }}" hint-placeholder-val="{{ false }}"><video sc-camel-src="{{ k.coverUrl }}" muted="{{ true }}" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></video><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;padding-left:3px">▶</span></sc-if>
+                        <sc-if value="{{ k.hasEmlThumb }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;overflow:hidden;background:var(--gray-100)"><iframe sc-camel-src-doc="{{ k.emlDoc }}" sandbox="" tabindex="-1" aria-hidden="true" title="Email preview" loading="lazy" scrolling="no" style="position:absolute;top:0;left:50%;width:640px;height:1500px;border:none;transform:translateX(-50%) scale(.44);transform-origin:top center;pointer-events:none;background:#fff"></iframe></div></sc-if>
+                        <sc-if value="{{ k.noCover }}" hint-placeholder-val="{{ false }}"><div style="{{ k.plateSmall }}"><div class="su-clamp2" style="font-family:var(--font-display);font-weight:700;font-size:13.5px;line-height:1.3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.3)">{{ k.plateText }}</div></div></sc-if>
+                        <div style="position:absolute;left:8px;top:8px;right:8px;display:flex;gap:5px;flex-wrap:wrap;align-items:flex-start">
+                          <sc-if value="{{ k.hasFmtPill }}" hint-placeholder-val="{{ true }}"><span style="{{ k.fmtPillStyle }}">{{ k.fmtPillLabel }}</span></sc-if>
+                          <sc-if value="{{ k.isTop }}" hint-placeholder-val="{{ false }}"><span title="{{ k.topTitle }}" style="background:#F5C445;color:#3B2A00;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 2px rgba(15,22,51,.18)">{{ k.topLabel }}</span></sc-if>
+                          <span style="flex:1"></span>
+                          <sc-if value="{{ k.hasMore }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(15,22,51,.75);color:#fff;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap">{{ k.mediaCount }}</span></sc-if>
                         </div>
                       </div>
-                      <sc-if value="{{ k.hasChips }}" hint-placeholder-val="{{ false }}">
-                        <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-                          <sc-if value="{{ k.hasFmtPill }}" hint-placeholder-val="{{ true }}"><span style="{{ k.fmtPillSmall }}">{{ k.fmtPillLabel }}</span></sc-if>
-                          <sc-if value="{{ k.isTop }}" hint-placeholder-val="{{ false }}"><span title="{{ k.topTitle }}" style="background:#F5C445;color:#3B2A00;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:999px;white-space:nowrap">{{ k.topLabel }}</span></sc-if>
-                          <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ false }}"><span style="background:var(--gray-100);color:var(--text-body);font-size:10px;font-weight:500;padding:1px 7px;border-radius:999px">{{ k.nets }}</span></sc-if>
-                          <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">✎ Changes</span></sc-if>
-                          <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(31,178,100,.12);color:#158a4d;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Revised</span></sc-if>
-                          <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Preview coming</span></sc-if>
-                          <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.08);color:var(--blue);font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">💬 {{ k.commentsN }}</span></sc-if>
-                          <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.08);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:999px">Agent</span></sc-if>
+                      <div style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px;min-width:0">
+                        <div class="su-cardtitle su-clamp2" style="font-size:13.5px;font-weight:600;color:var(--navy);line-height:1.3">{{ k.title }}</div>
+                        <div style="display:flex;align-items:center;gap:6px;min-width:0;font-size:11px">
+                          <span style="{{ k.dot }}"></span>
+                          <span style="color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">{{ k.brand }}</span>
+                          <span style="flex:1"></span>
+                          <span style="{{ k.whenSmall }}">{{ k.whenShort }}</span>
                         </div>
-                      </sc-if>
-                      <sc-if value="{{ k.asking }}" hint-placeholder-val="{{ false }}">
-                        <div style="display:flex;gap:6px;align-items:center">
-                          <span style="font-size:11.5px;color:var(--danger-fg);font-weight:600;flex:1">Delete this card?</span>
-                          <button onClick="{{ k.doRemove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:8px;padding:3px 10px;font-size:11.5px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
-                          <button onClick="{{ k.cancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:8px;padding:3px 10px;font-size:11.5px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Keep</button>
-                        </div>
-                      </sc-if>
-                      <sc-if value="{{ k.notAsking }}" hint-placeholder-val="{{ true }}">
-                        <div style="display:flex;gap:5px;align-items:center">
-                          <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.back }}" title="{{ k.backTitle }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:8px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text-body);line-height:18px" style-hover="background:var(--gray-100)">◂</button></sc-if>
-                          <sc-if value="{{ k.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ k.fwd }}" style="flex:1;background:var(--gray-100);border:none;border-radius:8px;color:var(--navy);padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;line-height:18px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="background:var(--gray-200)">Move to {{ k.fwdLabel }} ▸</button></sc-if>
-                          <sc-if value="{{ k.isLast }}" hint-placeholder-val="{{ false }}"><span style="flex:1"></span></sc-if>
-                          <button onClick="{{ k.askRemove }}" title="Delete this card" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:0 3px;line-height:18px" style-hover="color:var(--danger-fg)">×</button>
-                        </div>
-                      </sc-if>
+                        <sc-if value="{{ k.hasFlags }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+                            <sc-if value="{{ k.hasNets }}" hint-placeholder-val="{{ false }}"><span style="background:var(--gray-100);color:var(--text-body);font-size:10px;font-weight:500;padding:1px 7px;border-radius:999px">{{ k.nets }}</span></sc-if>
+                            <sc-if value="{{ k.hasChange }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Changes requested</span></sc-if>
+                            <sc-if value="{{ k.wasRevised }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(31,178,100,.12);color:#158a4d;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Revised</span></sc-if>
+                            <sc-if value="{{ k.hasPending }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(214,143,46,.14);color:#a2691a;font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">Preview coming</span></sc-if>
+                            <sc-if value="{{ k.hasComments }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.08);color:var(--blue);font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px">{{ k.commentsLabel }}</span></sc-if>
+                            <sc-if value="{{ k.isAgent }}" hint-placeholder-val="{{ false }}"><span style="background:rgba(46,63,214,.08);color:var(--blue);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:999px">Agent</span></sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ k.asking }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:6px;align-items:center">
+                            <span style="font-size:11.5px;color:var(--danger-fg);font-weight:600;flex:1">Delete this card?</span>
+                            <button onClick="{{ k.doRemove }}" style="background:var(--surface-card);border:1px solid var(--danger-line);color:var(--danger-fg);border-radius:8px;padding:4px 10px;font-size:11.5px;font-weight:600;cursor:pointer" style-hover="background:#FDECEA">Delete</button>
+                            <button onClick="{{ k.cancelRemove }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:8px;padding:4px 10px;font-size:11.5px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Keep</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ k.notAsking }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex;gap:6px;align-items:center">
+                            <sc-if value="{{ k.canBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.back }}" title="{{ k.backTitle }}" aria-label="{{ k.backTitle }}" style="background:transparent;border:1px solid var(--gray-200);border-radius:10px;padding:5px 9px;font-size:11px;cursor:pointer;color:var(--text-body);line-height:16px" style-hover="background:var(--gray-100)">◂</button></sc-if>
+                            <sc-if value="{{ k.canFwd }}" hint-placeholder-val="{{ true }}"><button onClick="{{ k.fwd }}" style="{{ k.fwdStyle }}" style-hover="filter:brightness(1.08)">{{ k.advLabel }}</button></sc-if>
+                            <sc-if value="{{ k.isLast }}" hint-placeholder-val="{{ false }}"><span style="flex:1"></span></sc-if>
+                            <button onClick="{{ k.askRemove }}" title="Delete this card" aria-label="Delete this card" style="background:none;border:none;color:var(--text-muted);font-size:15px;cursor:pointer;padding:0 4px;line-height:18px" style-hover="color:var(--danger-fg)">×</button>
+                          </div>
+                        </sc-if>
+                      </div>
                     </div>
                   </sc-for>
                 </div>
@@ -9626,6 +9680,10 @@ class Component extends DCLogic {
     const fmtPillOf=x=>{ const f=FMT_PILL[x.format]; if(!f) return null;
       return {label:f[0], style:{background:f[1],color:'#fff',fontSize:10.5,fontWeight:700,letterSpacing:'.05em',textTransform:'uppercase',
         padding:'3px 9px',borderRadius:999,whiteSpace:'nowrap',display:'inline-block',boxShadow:'0 1px 2px rgba(15,22,51,.18)'}}; };
+    // What the button that moves a card forward says.
+    const advVerb=c=>c[0]==='approved'?'Approve':'Mark '+String(c[1]).toLowerCase();
+    const advBtn=(c,small)=>({flex:small?1:'none',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,border:'none',borderRadius:small?10:12,cursor:'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)',fontWeight:700,
+      fontSize:small?12:13.5,padding:small?'6px 10px':'10px 20px',background:c&&c[0]==='approved'?'var(--green)':'var(--pill-bg)',color:c&&c[0]==='approved'?'#fff':'var(--pill-fg)'});
     const netsOf=x=>Array.isArray(x.networks)&&x.networks.length? x.networks : (x.network? [x.network] : []);
     const netLabels=x=>netsOf(x).map(n=>NET_LABEL[n]||n);
     const stBadge=st=>{ st=ST_LEGACY[st]||st||'idea';
@@ -9703,7 +9761,15 @@ class Component extends DCLogic {
       const pend=cmJobsFor(x.id).filter(j=>j.status==='pending'||j.status==='working').length;
       // An email with its HTML and no image shows the email itself, shrunk.
       const emlThumb=!cover && ch==='email' && !!String(x.html||'').trim();
+      const kc=colsOf(ch), ki=kc.findIndex(c=>c[0]===stOf(x)), knx=(isTeam&&!isArch(x)&&ki>-1&&ki<kc.length-1)? kc[ki+1] : null;
       return {id:x.id, title:x.title||'Untitled', open:openDetail('strategy',x.id),
+        // A preview you can judge at a glance: square for a social post, wide
+        // for a blog or an email, and a short plate when there is no image.
+        coverBox:{position:'relative',aspectRatio:(!cover&&!emlThumb)?'16 / 6':(ch==='social'?'1 / 1':'16 / 10'),background:'var(--gray-100)',overflow:'hidden'},
+        plateSmall:{background:plateOf(x.clientId),position:'absolute',inset:0,display:'flex',alignItems:'flex-end',padding:'10px 12px'},
+        canAdv:!!knx, advLabel:knx?advVerb(knx):'', advStyle:Object.assign(advBtn(knx,true),{flex:'none',alignSelf:'stretch',marginTop:2,padding:'8px 10px'}), fwdStyle:advBtn(knx,true),
+        adv:stopThen(()=>{ if(!knx) return; this.set(y=>{ const it=y.strategy.find(z=>z.id===x.id); if(!it) return y; it.status=knx[0];
+          this.logEv(y,x.clientId,'Social Upgrades moved "'+(it.title||'a card')+'" to '+knx[1],{contentId:x.id,quiet:true}); return y; }); }),
         hasCover:!!cover, noCover:!cover&&!emlThumb, hasEmlThumb:emlThumb, emlDoc:emlThumb? String(x.html) : '', coverUrl:cover?cover.url:'', coverIsVideo:!!cover&&cover.type==='video', coverIsImage:!!cover&&cover.type!=='video', coverAlt:cover?cover.alt:'',
         plateStyle:{background:plateOf(x.clientId),position:'absolute',inset:0,display:'flex',alignItems:'flex-end',padding:'14px 14px 16px'},
         plateText:x.hook||x.caption||x.title||'',
@@ -9750,6 +9816,7 @@ class Component extends DCLogic {
           whenSmall:Object.assign({},c.whenStyle,{fontSize:11,whiteSpace:'nowrap',flex:'none'}),
           commentsN:String(nC),
           hasChips: c.isTop||c.hasFmtPill||c.hasNets||c.hasChange||c.wasRevised||c.hasPending||nC>0||c.isAgent,
+          hasFlags: c.hasNets||c.hasChange||c.wasRevised||c.hasPending||nC>0||c.isAgent,
           backTitle:'Back to '+cmBoardColsRaw[Math.max(i-1,0)][1],
           isLast:i>=cmBoardOrder.length-1 };
         return Object.assign(c,ext,{asking, notAsking:!asking, canBack:i>0,canFwd:i<cmBoardOrder.length-1,back:move(-1),fwd:move(1),
@@ -9820,8 +9887,8 @@ class Component extends DCLogic {
         .flatMap(c=>isMultiOrg(c)? bizList(c).map(b=>({v:c.id+'::'+b.id,l:c.name+' · '+b.name})) : [{v:c.id,l:c.name}]));
     // The detail view of a content card: the big preview, its fields, what
     // Metricool knows about it, and its history. Team edits; a client reads.
-    const DETAIL_BOX=wide=>({position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:wide?'min(880px,94vw)':'min(600px,92vw)',
-      maxHeight:'88vh',overflowY:'auto',background:'var(--surface-card)',zIndex:81,display:'flex',flexDirection:'column',borderRadius:12});
+    const DETAIL_BOX=(wide,xl)=>({position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:xl?'min(1120px,96vw)':(wide?'min(880px,94vw)':'min(600px,92vw)'),
+      maxHeight:xl?'92vh':'88vh',overflowY:'auto',background:'var(--surface-card)',zIndex:81,display:'flex',flexDirection:'column',borderRadius:22,boxShadow:'0 30px 70px rgba(15,22,51,.35)'});
     const contentDetail=(item, findIt)=>{
       const med=mediaOf(item), n=med.length;
       const idx=n? Math.min(Math.max(0,S.mediaIdx||0),n-1) : 0;
@@ -9846,6 +9913,7 @@ class Component extends DCLogic {
           if(arr.join(' ')!==tagsText) write(it=>{ it.hashtags=arr; },'Social Upgrades edited the hashtags of "'+label+'"');
           this.setState(s2=>({d:{...s2.d,cf_hashtags:undefined}})); } };
       const ch=chanOf(item), cols=colsOf(ch);
+      const stIdx=cols.findIndex(c=>c[0]===stOf(item)), nxCol=(stIdx>-1&&stIdx<cols.length-1)? cols[stIdx+1] : null;
       const jobs=cmJobsFor(item.id).filter(j=>j.status!=='done');
       const hostOf=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return 'link'; } };
       const facts=[];
@@ -9884,7 +9952,7 @@ class Component extends DCLogic {
       const caption=[item.hook, item.caption||item.body, item.cta].filter(Boolean).join('\n\n');
       const copyBlock=caption+(tagsText?'\n\n'+tagsText:'');
       return {
-        detailBoxStyle:DETAIL_BOX(n>0||hasEml||(isEml&&isTeam)),
+        detailBoxStyle:DETAIL_BOX(n>0||hasEml||(isEml&&isTeam), n>0&&!isEml),
         // the email itself
         emlShow:hasEml||(isEml&&isTeam), emlHas:hasEml, emlFacts, emlHasFacts:emlFacts.length>0,
         emlIsPreview:hasEml&&!emlCodeMode, emlShowFrame:hasEml&&!emlCodeMode, emlShowCode:emlCodeMode,
@@ -9909,6 +9977,34 @@ class Component extends DCLogic {
         cmIsEmail:isEml, cfSubject:txt('subject','subject line'), cfSubjectB:txt('subjectB','second subject line'),
         cfPreheader:txt('preheader','preview text'), cfAudience:txt('audience','audience'),
         isContentCard:true, cmCanEdit:isTeam, cmReadOnly:!isTeam,
+        // The stage and the decision sit in a bar that stays put while the
+        // card scrolls, so approving never means closing the card first.
+        cmBar:isTeam&&!arch, showDetailBadge:!isTeam,
+        detailTitleStyle:{flex:1,fontFamily:'var(--font-display)',fontSize:21,fontWeight:800,color:'var(--navy)',lineHeight:1.25,overflowWrap:'anywhere'},
+        cmSteps:cols.map((c,i)=>{ const on=i===stIdx, past=i<stIdx;
+          return {label:c[1], mark:past?'✓':'', tip:on?'This card is in '+c[1]:'Move to '+c[1],
+            select:()=>{ if(!on) write(it=>{ it.status=c[0]; },'Social Upgrades moved "'+label+'" to '+c[1]); },
+            dot:{width:16,height:16,flex:'none',borderRadius:'50%',display:'inline-flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700,color:'#fff',
+              background:on?c[2]:(past?'var(--green)':'transparent'),border:(on||past)?'none':'2px solid var(--gray-400)',boxSizing:'border-box'},
+            style:{display:'inline-flex',alignItems:'center',gap:7,background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',border:'none',borderRadius:10,padding:'7px 12px',
+              fontSize:12.5,fontWeight:on?700:600,cursor:on?'default':'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'}}; }),
+        cmCanAdv:!!nxCol, cmAdvLabel:nxCol?advVerb(nxCol):'', cmAdvStyle:advBtn(nxCol,false), cmAdvIcon:ico('check',15),
+        cmAdv:()=>{ if(!nxCol) return; write(it=>{ it.status=nxCol[0]; },'Social Upgrades moved "'+label+'" to '+nxCol[1]);
+          this.setState({flash:(nxCol[0]==='approved'?'Approved. ':'Moved. ')+'This card is now in '+nxCol[1]+'.'}); },
+        cmChangesStyle:{background:'rgba(214,143,46,.12)',border:'1px solid rgba(214,143,46,.45)',borderRadius:12,padding:'9px 14px',fontSize:13,fontWeight:600,color:'#a2691a',cursor:'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)'},
+        cmArchiveStyle:{background:'var(--surface-card)',border:'1px solid var(--gray-200)',borderRadius:12,padding:'9px 14px',fontSize:13,fontWeight:500,color:'var(--text-muted)',cursor:'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)'},
+        cmOpenGrid:{'--cmcols':(n>0&&!isEml)?'minmax(0,1.15fr) minmax(0,1fr)':'minmax(0,1fr)'},
+        cmHasStage:n>0||hasEml||(isEml&&isTeam), cmNoStage:!(n>0||hasEml||(isEml&&isTeam)),
+        cmPills:[
+          ['cal', item.scheduledFor? niceDate(item.scheduledFor)+(item.scheduledTime?' · '+item.scheduledTime:'') : 'No date yet', !item.scheduledFor],
+          item.format? ['play', FMT_LABEL[item.format]||item.format, false] : null,
+          netsOf(item).length? ['users', netLabels(item).join(', '), false] : null,
+          item.pillar? ['target', item.pillar, false] : null
+        ].filter(Boolean).map(([ic,lab,warn])=>({label:lab,icon:Object.assign(ico(ic,13),{opacity:.7}),
+          style:{display:'inline-flex',alignItems:'center',gap:6,background:warn?'rgba(214,143,46,.14)':'var(--gray-100)',color:warn?'#a2691a':'var(--navy)',border:'none',borderRadius:999,padding:'5px 11px',fontSize:12,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)',maxWidth:'100%'}})),
+        cmMoreOpen:!!S.cmMore, cmToggleMore:()=>this.setState(s2=>({cmMore:!s2.cmMore})),
+        cmMoreHint:S.cmMore?'':'Date, time, format, networks, campaign, published link, and the preview file',
+        cmMoreChev:Object.assign(ico('down',15),{color:'var(--text-muted)',transform:S.cmMore?'rotate(180deg)':'none'}),
         cmNav:inTeamMap&&(prevId||nextId), cmHasPrev:!!prevId, cmHasNext:!!nextId,
         cmPrevCard: prevId? openDetail('strategy',prevId) : (()=>{}), cmNextCard: nextId? openDetail('strategy',nextId) : (()=>{}),
         cmChanLabel:CH_META[ch].label, cmChanDot:{width:8,height:8,minWidth:8,borderRadius:999,background:CH_META[ch].color},
@@ -9951,7 +10047,7 @@ class Component extends DCLogic {
         mediaPrev:()=>setIdx(idx-1), mediaNext:()=>setIdx(idx+1),
         mediaThumbs:med.map((m,i)=>({url:m.url,alt:m.alt,isVideo:m.type==='video',isImage:m.type!=='video',select:()=>setIdx(i),
           style:{width:64,height:64,minWidth:64,borderRadius:8,overflow:'hidden',border:'2px solid '+(i===idx?'var(--navy)':'transparent'),padding:0,background:'var(--gray-100)',cursor:'pointer',display:'block'}})),
-        mediaStage:{position:'relative',background:'#0F1633',borderRadius:12,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',minHeight:240,maxHeight:'56vh'},
+        mediaStage:{position:'relative',background:'#0F1633',borderRadius:16,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',minHeight:240,maxHeight:'64vh'},
         mediaCanCover: isTeam&&!!cur&&idx>0&&!cur.fromFile,
         mediaSetCover:()=>write(it=>{ const arr=it.media||[]; const k=arr.findIndex(m=>(m.id||m.url)===cur.id); if(k>0){ const [m]=arr.splice(k,1); arr.unshift(m); } },'Social Upgrades changed the cover of "'+label+'"'),
         mediaCanRemove: isTeam&&!!cur&&!cur.fromFile&&S.delMedia!==cur.id,
@@ -10008,6 +10104,7 @@ class Component extends DCLogic {
         cmHistory:hist, hasCmHistory:hist.length>0,
         agentPill:{background:'rgba(46,63,214,.10)',color:'var(--blue)',fontSize:9.5,fontWeight:600,letterSpacing:'.06em',textTransform:'uppercase',padding:'1px 7px',borderRadius:12},
         cmFieldStyle:{border:'1px solid var(--gray-200)',borderRadius:12,padding:'8px 11px',fontSize:13,width:'100%',boxSizing:'border-box',background:'var(--surface-card)',color:'var(--text-body)',fontFamily:'var(--font-body)'},
+        cmAreaStyle:{border:'1px solid var(--gray-200)',borderRadius:12,padding:'10px 12px',fontSize:13.5,width:'100%',boxSizing:'border-box',background:'var(--surface-card)',color:'var(--text-body)',fontFamily:'var(--font-body)',lineHeight:1.55,resize:'vertical'},
         cmLabelStyle:{fontSize:10.5,fontWeight:600,letterSpacing:'var(--ls-caps)',textTransform:'uppercase',color:'var(--text-muted)'}
       };
     };
@@ -10221,7 +10318,8 @@ class Component extends DCLogic {
           });
         };
         dv={detailOpen:true,
-          detailBoxStyle:DETAIL_BOX(false), isContentCard:false, cmNav:false, hasCmHistory:false,
+          detailBoxStyle:DETAIL_BOX(false), isContentCard:false, cmNav:false, hasCmHistory:false, cmBar:false, showDetailBadge:true,
+          detailTitleStyle:{flex:1,fontSize:16,fontWeight:500,color:'var(--navy)',lineHeight:1.5,overflowWrap:'anywhere'},
           detailKind: ty==='work'?'Work item':ty==='request'?'Request':ty==='strategy'?'Content Map':'Update',
           detailTitle: ty==='update'?item.text:item.title,
           // A title typed in a hurry keeps its typo unless somebody can fix
