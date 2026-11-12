@@ -164,7 +164,7 @@
       .su-ldbar>.su-ldq{flex-basis:100% !important}
       .su-ldbar>.su-ldadd{flex:1}
     }
-    .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .su-ovtiles>*{min-width:0;box-sizing:border-box}
     .su-ovsplit{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
     .su-ovtri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
@@ -174,7 +174,8 @@
     @media (max-width:860px){ .su-ovtri{grid-template-columns:minmax(0,1fr)} .su-ovtri>:first-child{grid-column:auto} .su-ovhero{padding:22px 18px !important;border-radius:22px !important} }
     @media (max-width:560px){ .su-ovchip,.su-ovsub{display:none !important} }
     .su-ovseg{scrollbar-width:none}.su-ovseg::-webkit-scrollbar{display:none}
-    @media (max-width:860px){ .su-ovtiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} }
+    @media (max-width:860px){ .su-ovtiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px} }
+    @media (max-width:560px){ .su-ovtiles>button{padding:9px 12px 9px 9px !important;gap:9px !important} .su-ovtiles>button>span:nth-child(2)>span:nth-child(2){display:none} .su-ovtiles>button>span:nth-child(2)>span:first-child{white-space:normal !important;font-size:12px !important;line-height:1.2} .su-ovtiles>button>span:last-child{font-size:22px !important} }
     /* The menu is a panel that floats over the page rather than a column
        welded to its edge: inset on every side, rounded, with a shadow. */
     .su-side{margin:14px 0 14px 14px;border-radius:24px;box-sizing:border-box;overflow:hidden;
@@ -1407,16 +1408,13 @@
         </div>
         <div class="su-ovtiles">
           <sc-for list="{{ ovTiles }}" as="t" hint-placeholder-count="8">
-            <button onClick="{{ t.open }}" title="{{ t.tip }}" style="{{ t.style }}" style-hover="transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,22,51,.16)">
-              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%">
-                <span style="{{ t.chip }}"><span style="{{ t.icon }}"></span></span>
-                <span style="{{ t.arrow }}"></span>
-              </span>
-              <span style="font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1;margin-top:4px">{{ t.value }}</span>
-              <span style="display:flex;flex-direction:column;gap:1px;max-width:100%">
-                <span style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.label }}</span>
+            <button onClick="{{ t.open }}" title="{{ t.tip }}" style="{{ t.style }}" style-hover="transform:translateY(-2px);box-shadow:0 10px 22px rgba(15,22,51,.14)">
+              <span style="{{ t.chip }}"><span style="{{ t.icon }}"></span></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                <span style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.label }}</span>
                 <span style="font-size:11.5px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.hint }}</span>
               </span>
+              <span style="font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1;flex:none">{{ t.value }}</span>
             </button>
           </sc-for>
         </div>
@@ -11619,9 +11617,9 @@ class Component extends DCLogic {
         seg:{flex:(n||0)+' 1 0',minWidth:n?10:0,display:n?'block':'none',height:'100%',background:STAGE_COL[k],border:'none',padding:0,cursor:'pointer',opacity:ovTab===k?1:.8}}; });
     const iconChip = (col,name,size)=>[{width:size||38,height:size||38,flex:'none',borderRadius:12,background:tint(col,.13),color:col,display:'flex',alignItems:'center',justifyContent:'center'},ico(name,Math.round((size||38)*.47))];
     const ovTile = (label,value,hint,iconName,col,open,on,tip)=>({label,value,hint,tip:tip||'',open,icon:ico(iconName,18),
-      chip:{width:38,height:38,borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',background:on?'rgba(255,255,255,.14)':tint(col,.13),color:on?'#fff':col},
+      chip:{width:36,height:36,flex:'none',borderRadius:11,display:'flex',alignItems:'center',justifyContent:'center',background:on?'rgba(255,255,255,.14)':tint(col,.13),color:on?'#fff':col},
       arrow:Object.assign(ico(on?'down':'right',15),{opacity:.4}),
-      style:{position:'relative',overflow:'hidden',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:8,textAlign:'left',padding:'16px 18px 18px',borderRadius:22,cursor:'pointer',fontFamily:'var(--font-body)',
+      style:{position:'relative',overflow:'hidden',display:'flex',flexDirection:'row',alignItems:'center',gap:12,textAlign:'left',padding:'11px 16px 11px 12px',borderRadius:18,cursor:'pointer',fontFamily:'var(--font-body)',
         transition:'transform .14s ease, box-shadow .14s ease',
         background:on?'var(--chrome)':'var(--surface-card)',color:on?'#fff':'var(--navy)',border:on?'1px solid var(--chrome)':'1px solid var(--border-card)',
         borderBottom:'3px solid '+(Number(value)>0?col:(on?'var(--chrome)':'var(--border-card)')),
