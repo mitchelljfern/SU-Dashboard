@@ -403,12 +403,10 @@
       <div title="{{ userTitle }}" style="font-size:11.5px;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0">Signed in as <strong style="color:#fff;font-weight:600">{{ userName }}</strong></div>
       <button onClick="{{ signOut }}" style="background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:8px 16px;font-weight:500;font-size:12.5px;cursor:pointer" style-hover="background:rgba(255,255,255,.12)">Sign out</button>
       <sc-if value="{{ showSuMark }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
-          <div style="font-size:9.5px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600">Powered by</div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.9">
-            <img src="assets/logo-on-dark.svg" alt="" style="height:32px;width:32px;flex:none;display:block">
-            <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#fff;text-align:center;line-height:1.15">Social Upgrades</span>
-          </div>
+        <div role="img" aria-label="Social Upgrades" title="Social Upgrades" style="display:flex;align-items:center;justify-content:center;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);opacity:.9">
+          <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1">Social</span>
+          <img src="assets/logo-on-dark.svg" alt="" style="height:20px;width:20px;flex:none;display:block">
+          <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1">Upgrades</span>
         </div>
       </sc-if>
     </div>
@@ -480,13 +478,11 @@
         </sc-if>
         <button onClick="{{ signOut }}" style="width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.8);border-radius:12px;padding:10px 16px;font-weight:500;font-size:13px;cursor:pointer">Sign out</button>
         <sc-if value="{{ showSuMark }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)">
-            <div style="font-size:9.5px;letter-spacing:var(--ls-wide);text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600">Powered by</div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.9">
-              <img src="assets/logo-on-dark.svg" alt="" style="height:32px;width:32px;flex:none;display:block">
-              <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;letter-spacing:.07em;text-transform:uppercase;color:#fff;text-align:center;line-height:1.15">Social Upgrades</span>
-            </div>
-          </div>
+        <div role="img" aria-label="Social Upgrades" title="Social Upgrades" style="display:flex;align-items:center;justify-content:center;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);opacity:.9">
+          <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1">Social</span>
+          <img src="assets/logo-on-dark.svg" alt="" style="height:20px;width:20px;flex:none;display:block">
+          <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#fff;line-height:1">Upgrades</span>
+        </div>
         </sc-if>
       </div>
     </div>
