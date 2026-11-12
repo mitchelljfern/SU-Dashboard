@@ -2632,7 +2632,7 @@
                 <sc-if value="{{ msgEmpty }}" hint-placeholder-val="{{ false }}"><div style="margin:auto;text-align:center;font-size:13.5px;color:var(--text-muted);padding:30px 20px">{{ msgEmptyText }}</div></sc-if>
               </div>
               <div style="display:flex;gap:8px;align-items:center;padding:12px 14px;border-top:1px solid var(--border-hairline)">
-                <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}" aria-label="Write a message" style="flex:1;min-width:0;border:1px solid var(--gray-200);border-radius:14px;padding:12px 14px;font-size:14px">
+                <input id="su-msg-input" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}" aria-label="Write a message" autocomplete="off" style="flex:1;min-width:0;border:1px solid var(--gray-200);border-radius:14px;padding:12px 14px;font-size:14px">
                 <button onClick="{{ sendMsg }}" aria-label="Send" style="flex:none;display:inline-flex;align-items:center;gap:7px;background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:14px;padding:12px 18px;font-weight:700;font-size:13px;cursor:pointer" style-hover="opacity:.88"><span style="{{ msgIcoSend }}"></span>Send</button>
               </div>
             </sc-if>
@@ -8787,7 +8787,12 @@ class Component extends DCLogic {
       const org = orgOf(side);
       return person ? person + ' @ ' + org : org;
     };
-    const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
+    // The team composer is not tied to state: every keystroke used to redraw
+    // the whole dashboard, which is what made typing lag. The text is read
+    // from the field when it is sent. The portal's composer still uses state.
+    const msgBox = ()=>document.getElementById('su-msg-input');
+    const sendMsg=()=>{ const el=msgBox(); const text=String((el&&el.value) || d.msg || '').trim(); if(!text) return;
+      if(el) el.value='';
       if(curChat){
         // A chat message has no client. It carries the chat it belongs to, and
         // the database only shows it to people in that chat.
@@ -12340,7 +12345,7 @@ class Component extends DCLogic {
     const mRow = (on,un)=>({display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',background:on?'var(--gray-100)':'transparent',border:'none',borderRadius:14,padding:'10px 10px',cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'inset 3px 0 0 var(--blue)':'none'});
     const mLast = list=>{ const m=list.reduce((a,b)=>(!a||(b.ts||0)>(a.ts||0))?b:a,null); return m; };
     const mPrev = (m,chat)=> m ? ((chat? String(m.who||'').replace(/ @ .*/,'') : (m.from==='team'?'Us':'Them'))+': '+String(m.text||'').replace(/\s+/g,' ')) : 'No messages yet';
-    const openConv = (key,biz)=>()=>{ markRead(key); this.setState({msgClient:key,msgBiz:biz||'',msgOpen:true,chatForm:null}); };
+    const openConv = (key,biz)=>()=>{ const el=document.getElementById('su-msg-input'); if(el) el.value=''; markRead(key); this.setState({msgClient:key,msgBiz:biz||'',msgOpen:true,chatForm:null}); };
     const chatRows = teamChats.map(c=>{ const key='chat:'+c.id, list=D.messages.filter(m=>!m.clientId&&m.chatId===c.id), last=mLast(list), un=chatUnread(c.id), on=!!curChat&&curChat.id===c.id;
       return {key,name:c.name||'Team chat',sub:mPrev(last,true),when:last?this.fmt(last.ts):'',ts:last?last.ts:0,unread:un>0?un:false,initials:'',
         avatar:mAv('var(--chrome)','#fff'),icon:ico('users',17),hasIcon:true,isSub:false,
