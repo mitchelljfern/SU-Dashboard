@@ -146,24 +146,23 @@
     input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:-1px}
     ::placeholder{color:var(--gray-400)}
     .su-bottom{display:none}
-    /* Leads: the selects sit inline on a desktop. On a phone the two tile
-       groups become one swipeable row of chips each, and the selects fold
-       behind a Filters button so the list is not a screen away. */
-    .su-ldfilters{display:contents}
-    .su-ldtoggle,.su-ldlabel{display:none !important}
+    /* Leads list: a table on a desktop, a two-line row on a phone. */
+    .su-ldgrid{display:grid;grid-template-columns:minmax(220px,2.4fr) 112px 104px 84px 52px 96px minmax(120px,1.1fr) 40px;gap:14px;align-items:center;padding:0 20px}
+    .su-ldhead{background:var(--gray-100);border-bottom:1px solid var(--border-hairline);padding-top:4px;padding-bottom:4px}
+    .su-ldd{display:flex;align-items:center;min-width:0}
+    .su-ldm{display:none}
+    .su-ldfgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+    .su-ldtabs{scrollbar-width:none}.su-ldtabs::-webkit-scrollbar{display:none}
+    @media (max-width:1200px){ .su-ldfgrid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+    @media (max-width:980px){
+      .su-ldgrid{grid-template-columns:minmax(0,1fr) 56px;padding:0 14px}
+      .su-ldhead,.su-ldd{display:none !important}
+      .su-ldm{display:flex}
+    }
     @media (max-width:860px){
-      .su-ldlabel{display:block !important}
-      .su-ldrow{flex-wrap:nowrap !important;overflow-x:auto;margin:0 -18px;padding:2px 18px 4px;scrollbar-width:none;scroll-snap-type:x proximity}
-      .su-ldrow::-webkit-scrollbar{display:none}
-      .su-ldrow>button{flex:0 0 auto !important;min-width:0 !important;flex-direction:row !important;align-items:baseline !important;gap:7px !important;padding:9px 14px !important;border-radius:999px !important;scroll-snap-align:start;white-space:nowrap}
-      .su-ldrow>button>span:first-child{font-size:16px !important}
-      .su-ldrow>button>span:nth-child(3){display:none !important}
-      .su-ldbar{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px !important}
-      .su-ldbar>.su-ldq{grid-column:1 / -1;min-width:0 !important;padding:12px 14px !important}
-      .su-ldbar>button{width:100%;box-sizing:border-box;padding:11px 10px !important;text-align:center}
-      .su-ldtoggle{display:block !important;grid-column:1 / -1}
-      .su-ldfilters{display:var(--ldf,none);grid-column:1 / -1;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;background:var(--gray-100);border-radius:14px;padding:10px}
-      .su-ldfilters>select{width:100%;min-width:0;box-sizing:border-box}
+      .su-ldfgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .su-ldbar>.su-ldq{flex-basis:100% !important}
+      .su-ldbar>.su-ldadd{flex:1}
     }
     .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
     .su-ovtiles>*{min-width:0;box-sizing:border-box}
@@ -2232,47 +2231,41 @@
 
       <sc-if value="{{ secLeads }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">How we reach them</div>
-            <div class="su-ldrow" style="display:flex;gap:8px;flex-wrap:wrap">
-              <sc-for list="{{ leadRouteTiles }}" as="t" hint-placeholder-count="5">
-                <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--green)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span><span style="{{ t.subStyle }}">{{ t.sub }}</span></button>
-              </sc-for>
+          <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);padding:16px 18px 0;display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div class="su-ldbar" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <div class="su-ldq" style="flex:1 1 280px;min-width:0;display:flex;align-items:center;gap:10px;background:var(--gray-100);border-radius:14px;padding:11px 14px">
+                <span style="{{ leadIcoSearch }}"></span>
+                <input value="{{ dLeadQ }}" onChange="{{ onLeadQ }}" placeholder="Search company, owner, email or notes" aria-label="Search leads" autocomplete="off" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:14px;padding:0">
+              </div>
+              <button onClick="{{ toggleLeadFilt }}" style="{{ leadFiltBtn }}"><span style="{{ leadIcoFilt }}"></span>Filters<sc-if value="{{ leadFiltN }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:10px;font-size:11px;font-weight:700;padding:0 7px;line-height:18px">{{ leadFiltN }}</span></sc-if></button>
+              <div role="tablist" aria-label="View" style="display:flex;gap:3px;background:var(--gray-100);border-radius:14px;padding:4px">
+                <sc-for list="{{ leadViews }}" as="v" hint-placeholder-count="2"><button role="tab" onClick="{{ v.select }}" style="{{ v.style }}"><span style="{{ v.icon }}"></span>{{ v.label }}</button></sc-for>
+              </div>
+              <button class="su-ldadd" onClick="{{ openAddLead }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:14px;padding:11px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="opacity:.88">+ Add lead</button>
             </div>
-          </div>
-          <div class="su-ldlabel" style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:-10px">Stage</div>
-          <div class="su-ldrow" style="display:flex;gap:8px;flex-wrap:wrap">
-            <sc-for list="{{ leadTiles }}" as="t" hint-placeholder-count="9">
-              <button onClick="{{ t.select }}" style="{{ t.style }}" style-hover="border-color:var(--navy)"><span style="{{ t.numStyle }}">{{ t.n }}</span><span style="{{ t.labStyle }}">{{ t.label }}</span></button>
-            </sc-for>
-          </div>
-          <div class="su-ldbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input class="su-ldq" value="{{ dLeadQ }}" onChange="{{ onLeadQ }}" placeholder="Search company, owner, email or notes" style="flex:1;min-width:200px;border:1px solid var(--gray-200);border-radius:12px;padding:9px 12px;font-size:13px">
-            <button class="su-ldtoggle" onClick="{{ toggleLeadFilt }}" style="{{ leadFiltBtn }}">{{ leadFiltLabel }}</button>
-            <div class="su-ldfilters" style="{{ leadFiltWrap }}">
-            <select value="{{ dLeadCounty }}" onChange="{{ onLeadCounty }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ leadCountyOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-            </select>
-            <select value="{{ dLeadCamp }}" onChange="{{ onLeadCamp }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ leadCampOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-            </select>
-            <select value="{{ dLeadQmin }}" onChange="{{ onLeadQmin }}" aria-label="Lead quality" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ leadQminOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-            </select>
-            <select value="{{ dLeadSort }}" onChange="{{ onLeadSort }}" aria-label="Sort leads" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ leadSortOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-            </select>
-            <select value="{{ dLeadWho }}" onChange="{{ onLeadWho }}" style="border:1px solid var(--gray-200);border-radius:12px;padding:9px;font-size:13px;background:var(--surface-card)">
-              <sc-for list="{{ leadWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for>
-            </select>
-            </div>
-            <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ clearLeadFilters }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear filters</button>
+            <sc-if value="{{ leadFiltOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--gray-100);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px">
+                <div class="su-ldfgrid">
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">Reach by<select value="{{ dLeadRoute }}" onChange="{{ onLeadRoute }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadRouteOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">County<select value="{{ dLeadCounty }}" onChange="{{ onLeadCounty }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadCountyOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">Campaign<select value="{{ dLeadCamp }}" onChange="{{ onLeadCamp }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadCampOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">Quality<select value="{{ dLeadQmin }}" onChange="{{ onLeadQmin }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadQminOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">Assigned<select value="{{ dLeadWho }}" onChange="{{ onLeadWho }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadWhoOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                  <label style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);min-width:0">Sort<select value="{{ dLeadSort }}" onChange="{{ onLeadSort }}" style="width:100%;box-sizing:border-box;border:1px solid var(--gray-200);border-radius:12px;padding:10px;font-size:13px;background:var(--surface-card)"><sc-for list="{{ leadSortOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></label>
+                </div>
+                <sc-if value="{{ leadFiltered }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ clearLeadFilters }}" style="align-self:flex-start;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Clear all filters</button>
+                </sc-if>
+              </div>
             </sc-if>
-            <button onClick="{{ toggleLeadLog }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;white-space:nowrap" style-hover="border-color:var(--navy)">{{ leadLogBtn }}</button>
-            <button onClick="{{ openAddLead }}" style="background:var(--cta-bg);color:#fff;border:none;border-radius:12px;padding:10px 20px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap" style-hover="background:#000">+ Add lead</button>
+            <div class="su-ldtabs" role="tablist" aria-label="Stage" style="display:flex;gap:22px;overflow-x:auto;border-top:1px solid var(--border-hairline);margin:0 -18px;padding:0 18px">
+              <sc-for list="{{ leadTabs }}" as="t" hint-placeholder-count="6"><button role="tab" onClick="{{ t.select }}" style="{{ t.style }}">{{ t.label }}<span style="{{ t.count }}">{{ t.n }}</span></button></sc-for>
+            </div>
           </div>
-          <div style="font-size:12.5px;color:var(--text-muted)">{{ leadSummary }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div style="font-size:12.5px;color:var(--text-muted)">{{ leadSummary }}</div>
+            <button onClick="{{ toggleLeadLog }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:0">{{ leadLogBtn }}</button>
+          </div>
 
           <sc-if value="{{ leadLogOpen }}" hint-placeholder-val="{{ false }}">
             <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;gap:8px;min-width:0">
@@ -2304,6 +2297,38 @@
               <sc-if value="{{ leadLogMore }}" hint-placeholder-val="{{ false }}">
                 <button onClick="{{ moreLeadLog }}" style="align-self:flex-start;background:none;border:none;padding:4px 0;font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer">Show more</button>
               </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ leadListOn }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04);overflow:hidden;min-width:0">
+              <div class="su-ldhead su-ldgrid">
+                <sc-for list="{{ leadHeads }}" as="h" hint-placeholder-count="8"><button onClick="{{ h.sort }}" title="{{ h.tip }}" style="{{ h.style }}">{{ h.label }}<span style="{{ h.arrow }}"></span></button></sc-for>
+              </div>
+              <sc-for list="{{ leadRows }}" as="l" hint-placeholder-count="8">
+                <button class="su-ldgrid su-ldrowx" onClick="{{ l.open }}" style="{{ l.rowStyle }}" style-hover="background:var(--gray-100)">
+                  <span style="display:flex;align-items:center;gap:12px;min-width:0">
+                    <span style="{{ l.avatar }}">{{ l.initials }}</span>
+                    <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                      <span style="font-size:14px;font-weight:600;color:var(--navy);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.name }}</span>
+                      <span style="font-size:12px;color:var(--text-muted);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.meta }}</span>
+                      <span class="su-ldm" style="align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px"><span style="{{ l.stageStyle }}">{{ l.stageLabel }}</span><sc-if value="{{ l.hasRoute }}" hint-placeholder-val="{{ true }}"><span style="{{ l.routeStyle }}">{{ l.routeShort }}</span></sc-if><sc-if value="{{ l.hasNext }}" hint-placeholder-val="{{ false }}"><span style="{{ l.nextStyle }}">{{ l.next }}</span></sc-if></span>
+                    </span>
+                  </span>
+                  <span class="su-ldd"><span style="{{ l.stageStyle }}">{{ l.stageLabel }}</span></span>
+                  <span class="su-ldd"><sc-if value="{{ l.hasRoute }}" hint-placeholder-val="{{ true }}"><span style="{{ l.routeStyle }}">{{ l.routeShort }}</span></sc-if></span>
+                  <span title="{{ l.qualTitle }}" style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                    <span style="{{ l.qNum }}">{{ l.q }}</span>
+                    <span style="display:block;height:4px;border-radius:2px;background:var(--gray-100);overflow:hidden"><span style="{{ l.qBar }}"></span></span>
+                  </span>
+                  <span class="su-ldd" style="font-size:13px;color:var(--text-body)">{{ l.site }}</span>
+                  <span class="su-ldd"><sc-if value="{{ l.hasCamp }}" hint-placeholder-val="{{ false }}"><span style="{{ l.campStyle }}">{{ l.campShort }}</span></sc-if></span>
+                  <span class="su-ldd" style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="{{ l.nextStyle }}">{{ l.next }}</span></span>
+                  <span class="su-ldd" style="justify-content:flex-end"><sc-if value="{{ l.hasWho }}" hint-placeholder-val="{{ false }}"><span title="{{ l.whoTitle }}" style="min-width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center">{{ l.who }}</span></sc-if></span>
+                </button>
+              </sc-for>
+              <sc-if value="{{ leadRowsNone }}" hint-placeholder-val="{{ false }}"><div style="padding:40px 20px;text-align:center;font-size:13.5px;color:var(--text-muted)">No leads match. Try another stage or clear the filters.</div></sc-if>
+              <sc-if value="{{ leadRowsMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ moreLeadRows }}" style="width:100%;background:var(--gray-100);border:none;border-top:1px solid var(--border-hairline);padding:14px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="background:var(--gray-200)">{{ leadRowsMore }}</button></sc-if>
             </div>
           </sc-if>
 
@@ -6011,6 +6036,7 @@ class Component extends DCLogic {
       repClient:null,
       seenTs: Number(localStorage.getItem('su_hub_seen')||0),
       // Whether the sidebar is folded down to its icons. Kept per browser.
+      leadView: (()=>{ try{ return localStorage.getItem('su_lead_view')==='board'?'board':'list'; }catch(e){ return 'list'; } })(),
       navMin: (()=>{ try{ return localStorage.getItem('su_nav_min')==='1'; }catch(e){ return false; } })(),
       d:{todoClient:'', todoWho:'team', updClient:'af', updApproval:false, workClient:'af'},
       profile:null, syncError:null, booted:false,
@@ -8471,6 +8497,7 @@ class Component extends DCLogic {
       folder:'M3 6h6l2 3h10v10H3z',
       panel:'M4 4h16v16H4zM9 4v16',
       search:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4',
+      filter:'M4 6h16M7 12h10M10 18h4',
       out:'M9 20H5V4h4M15 16l4-4-4-4M19 12H9',
       back:'M19 12H5M11 6l-6 6 6 6',
       phone:'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z',
@@ -11941,12 +11968,76 @@ class Component extends DCLogic {
       };
     }
 
+    // ===== Leads: list view =====
+    // The list is the default: one row per lead, sortable from its headers.
+    // The board is the same leads as columns, one tap away.
+    const leadView = S.leadView==='board' ? 'board' : 'list';
+    const leadPool = lf.stage==='active' ? leadsF.filter(l=>LEAD_PIPE.indexOf(l.stage)>-1)
+                   : lf.stage==='due' ? leadsF.filter(leadDue) : leadsF.filter(l=>l.stage===lf.stage);
+    const lsort = S.leadListSort || null;
+    const stageIdx = k=>{ const i=LEAD_STAGES.findIndex(([x])=>x===k); return i<0?99:i; };
+    const LSORT = {
+      name:(a,b)=>String(a.name||'').localeCompare(String(b.name||'')),
+      stage:(a,b)=>stageIdx(a.stage)-stageIdx(b.stage),
+      quality:(a,b)=>(leadQ(a)==null?-1:leadQ(a))-(leadQ(b)==null?-1:leadQ(b)),
+      site:(a,b)=>leadScore(a)-leadScore(b),
+      next:(a,b)=>String(a.nextTouch||'9999').localeCompare(String(b.nextTouch||'9999'))
+    };
+    const leadSorted = leadPool.slice().sort(lsort&&LSORT[lsort.k] ? ((a,b)=>(LSORT[lsort.k](a,b)*(lsort.dir==='desc'?-1:1))||leadOrder(a,b)) : leadOrder);
+    const leadListN = S.leadListN || 50;
+    const SHORT_ROUTE = {email:'Email',form:'Form',call:'Call',none:'Research'};
+    const leadRows = leadView==='list' ? leadSorted.slice(0,leadListN).map(l=>{
+      const c=leadCard(l), q=leadQ(l), due=leadDue(l), r=leadRoute(l);
+      const qCol = q==null ? 'var(--gray-200)' : q>=LEAD_MOCKUP ? '#158a4d' : q>=8 ? 'var(--blue)' : '#9aa0b8';
+      const phone = r==='call' && String(l.phone||'').trim();
+      const next = due ? 'Follow-up due' : l.nextTouch ? 'Follow up '+leadDay(l.nextTouch) : phone ? 'Call '+phone : '';
+      return Object.assign(c,{
+        initials:leadInitials(l.name||'?')||'?',
+        avatar:{width:36,height:36,flex:'none',borderRadius:12,background:'var(--gray-100)',color:'var(--navy)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700},
+        routeShort:(SHORT_ROUTE[r]||'')+(r==='form'&&l.formCaptcha?' · captcha':''),
+        campShort:l.campaign||'', site:c.hasScore?l.siteScore:'',
+        q:q==null?'':q.toFixed(1), qNum:{fontSize:14,fontWeight:700,color:q==null?'var(--text-muted)':'var(--navy)'},
+        qBar:{display:'block',height:'100%',width:(q==null?0:Math.min(100,q*10))+'%',background:qCol,borderRadius:2},
+        next, hasNext:!!next, nextStyle:{fontSize:12.5,fontWeight:due?700:500,color:due?'#a2691a':'var(--text-muted)'},
+        rowStyle:{width:'100%',textAlign:'left',background:'transparent',border:'none',borderBottom:'1px solid var(--border-hairline)',
+          boxShadow:due?'inset 3px 0 0 #E0A12B':l.stage==='replied'?'inset 3px 0 0 var(--green)':'none',
+          paddingTop:12,paddingBottom:12,cursor:'pointer',fontFamily:'var(--font-body)'}});
+    }) : [];
+    const leadHeadDef = [['name','Company'],['stage','Stage'],['','Reach by'],['quality','Quality'],['site','Site'],['','Campaign'],['next','Next step'],['','']];
+    const leadHeads = leadHeadDef.map(([k,label])=>{ const on=lsort&&lsort.k===k&&k;
+      return {label, tip:k?'Sort by '+label.toLowerCase():'',
+        sort:()=>{ if(!k) return; this.setState(s2=>{ const cur=s2.leadListSort;
+          return {leadListSort: !cur||cur.k!==k ? {k,dir:(k==='quality'?'desc':'asc')} : (cur.dir===(k==='quality'?'desc':'asc') ? {k,dir:(k==='quality'?'asc':'desc')} : null)}; }); },
+        arrow: on ? Object.assign(ico('down',12),{transform:lsort.dir==='asc'?'rotate(180deg)':'none'}) : {display:'none'},
+        style:{display:'flex',alignItems:'center',gap:4,background:'none',border:'none',padding:'8px 0',textAlign:'left',fontSize:11,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',
+          color:on?'var(--navy)':'var(--text-muted)',cursor:k?'pointer':'default',fontFamily:'var(--font-body)',minWidth:0}}; });
+    const leadTabs = leadTiles.map(t=>{ const on = t.style.background==='var(--navy)'; const hot=(t.label==='Follow-up due'||t.label==='Replied')&&t.n>0;
+      return {label:t.label==='Pipeline'?'All active':t.label, n:t.n, select:()=>{ t.select(); this.setState({leadListN:50}); },
+        style:{flex:'none',display:'inline-flex',alignItems:'center',gap:7,background:'none',border:'none',borderBottom:'2px solid '+(on?'var(--navy)':'transparent'),padding:'13px 0 11px',
+          fontSize:13,fontWeight:on?700:600,color:on?'var(--navy)':(t.n?'var(--text-body)':'var(--text-muted)'),cursor:'pointer',whiteSpace:'nowrap',fontFamily:'var(--font-body)'},
+        count:{fontSize:11,fontWeight:700,borderRadius:9,padding:'1px 7px',
+          background:hot?(t.label==='Replied'?'rgba(31,178,100,.14)':'rgba(214,143,46,.18)'):(on?'var(--navy)':'var(--gray-100)'),
+          color:hot?(t.label==='Replied'?'#158a4d':'#a2691a'):(on?'#fff':'var(--text-muted)')}}; });
+    const leadFiltN = [lf.route,lf.county,lf.camp,lf.who,lf.qmin].filter(Boolean).length;
+    const leadSeg = on=>({display:'inline-flex',alignItems:'center',gap:6,background:on?'var(--surface-card)':'transparent',color:on?'var(--navy)':'var(--text-muted)',border:'none',borderRadius:10,padding:'7px 12px',fontSize:12.5,fontWeight:700,cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'0 1px 3px rgba(15,22,51,.14)':'none'});
+    const setLeadView = v=>()=>{ try{ localStorage.setItem('su_lead_view',v); }catch(e){} this.setState({leadView:v}); };
+    const leadListVals = {
+      leadListOn:leadView==='list', leadRows, leadHeads, leadTabs,
+      leadRowsNone:leadView==='list'&&leadSorted.length===0,
+      leadRowsMore: leadSorted.length>leadListN ? 'Show 50 more ('+(leadSorted.length-leadListN)+' left)' : false,
+      moreLeadRows:()=>this.setState({leadListN:leadListN+50}),
+      leadViews:[['list','List','more'],['board','Board','board']].map(([k,label,ic])=>({label,select:setLeadView(k),style:leadSeg(leadView===k),icon:ico(ic,14)})),
+      leadIcoSearch:Object.assign(ico('search',17),{color:'var(--text-muted)'}), leadIcoFilt:ico('filter',15),
+      leadFiltN: leadFiltN||false, leadFiltOpen:!!S.leadFiltOpen,
+      dLeadRoute:lf.route, onLeadRoute:e=>this.setState({leadRoute:e.target.value,leadListN:50}),
+      leadRouteOpts:leadRouteTiles.map(t=>({v:t.label==='All routes'?'':(LEAD_ROUTES.find(([,lab])=>lab===t.label)||[''])[0],l:t.label+' ('+t.n+')'})),
+      leadSummary: (leadView==='list' ? 'Showing '+Math.min(leadListN,leadSorted.length)+' of '+leadSorted.length : leadsF.length+' of '+leadsAll.length)+' leads'
+        +(leadFiltered?', filtered.':'.')+' Amber marks a follow-up that is due, green a reply.',
+      leadFiltBtn:{display:'inline-flex',alignItems:'center',gap:7,background:S.leadFiltOpen?'var(--navy)':'var(--surface-card)',color:S.leadFiltOpen?'#fff':'var(--navy)',border:'1px solid '+(S.leadFiltOpen?'var(--navy)':'var(--gray-200)'),borderRadius:14,padding:'10px 14px',fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'}
+    };
     const leadVals={
       secLeads:isTeam&&secKey('leads'),
-      leadRouteTiles, leadTiles, leadBoard, leadGridOn:!leadBoard, leadCols, leadGrid, noLeadGrid:!leadBoard&&leadGrid.length===0,
-      leadSummary: leadsF.length===leadsAll.length
-        ? (leadsAll.length+' leads. Replies and due follow-ups are highlighted, and each column lists the highest quality leads first.')
-        : ('Showing '+leadsF.length+' of '+leadsAll.length+' leads.'),
+      leadRouteTiles, leadTiles, leadBoard:leadView==='board'&&leadBoard, leadGridOn:leadView==='board'&&!leadBoard, leadCols, leadGrid, noLeadGrid:leadView==='board'&&!leadBoard&&leadGrid.length===0,
       dLeadQ:d.leadQ||'', onLeadQ:this.draft('leadQ'),
       dLeadCounty:d.leadCounty||'', onLeadCounty:this.draft('leadCounty'),
       leadCountyOpts:[{v:'',l:'All counties'}].concat(leadCounties.map(c=>({v:c,l:c}))),
@@ -11960,11 +12051,8 @@ class Component extends DCLogic {
       leadWhoOpts:[{v:'',l:'Everyone'},{v:'me',l:'Assigned to me'},{v:'none',l:'Unassigned'}],
       leadFiltered, openAddLead,
       leadLogOpen:!!S.leadLogOpen,
-      leadLogBtn:S.leadLogOpen?'Hide activity':'Activity',
+      leadLogBtn:S.leadLogOpen?'Hide activity log':'View activity log',
       toggleLeadFilt:()=>this.setState(s2=>({leadFiltOpen:!s2.leadFiltOpen})),
-      leadFiltWrap:{'--ldf':S.leadFiltOpen?'grid':'none'},
-      leadFiltLabel:(S.leadFiltOpen?'Hide filters':'Filters and sort')+(leadFiltered?' · on':''),
-      leadFiltBtn:{background:S.leadFiltOpen||leadFiltered?'var(--navy)':'var(--surface-card)',color:S.leadFiltOpen||leadFiltered?'#fff':'var(--navy)',border:'1px solid '+(S.leadFiltOpen||leadFiltered?'var(--navy)':'var(--gray-200)'),borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'},
       toggleLeadLog:()=>this.setState(s2=>({leadLogOpen:!s2.leadLogOpen,leadLogN:40})),
       leadLogList:leadLogF.slice(0,leadLogN).map(leadLogRow),
       noLeadLog:leadLogF.length===0,
@@ -11974,7 +12062,7 @@ class Component extends DCLogic {
       dLeadLogWho:logWhoFilter, onLeadLogWho:this.draft('leadLogWho'),
       leadLogWhoOpts:[{v:'',l:'Everyone'}].concat(leadLogPeople),
       clearLeadFilters:()=>this.setState(s2=>({leadRoute:'',d:{...s2.d,leadQ:'',leadCounty:'',leadCamp:'',leadWho:'',leadQmin:''}})),
-      ...leadModal
+      ...leadModal, ...leadListVals
     };
 
     // ===== who sees which company =====
