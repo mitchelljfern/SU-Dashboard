@@ -292,6 +292,16 @@
     }));
     TABLES.forEach((t, i) => { data[t] = results[i + 9].data.map(fromRow); });
 
+    // Team chats (migration 043). Loaded apart from the rest and allowed to
+    // fail: until the migration is in, the table is not there, and a missing
+    // chat list must not take the whole dashboard down with it. A client gets
+    // an empty list either way.
+    try {
+      const chats = await db.from('team_chats').select('*').order('ts', { ascending: true });
+      data.team_chats = chats.error ? [] : chats.data.map(fromRow);
+      data.chatsReady = !chats.error;
+    } catch (e) { data.team_chats = []; data.chatsReady = false; }
+
     // Every client needs a report block so the portal's Reports tab can render.
     for (const c of data.clients) {
       if (!data.reports[c.id]) data.reports[c.id] = { stats: [], note: '' };
@@ -357,6 +367,13 @@
       const { upserts, deletes } = diffList(prev.time, next.time);
       if (upserts.length) ops.push(db.from('time_entries').upsert(upserts.map(timeToRow)));
       if (deletes.length) ops.push(db.from('time_entries').delete().in('id', deletes));
+    }
+
+    // team chats (admin-only writes; RLS rejects anyone else)
+    if (next.chatsReady) {
+      const { upserts, deletes } = diffList(prev.team_chats || [], next.team_chats || []);
+      if (upserts.length) ops.push(db.from('team_chats').upsert(upserts.map(toRow)));
+      if (deletes.length) ops.push(db.from('team_chats').delete().in('id', deletes));
     }
 
     // message read markers

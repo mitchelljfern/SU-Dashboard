@@ -170,6 +170,19 @@
     .su-ovtiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .su-ovtiles>*{min-width:0;box-sizing:border-box}
     .su-ovsplit{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+    /* Messages: conversations on the left, the open one on the right. On a
+       phone it is one or the other, and the page stops above the tab bar so
+       the composer is never underneath it. */
+    .su-msgx{display:grid;grid-template-columns:320px minmax(0,1fr);height:calc(100vh - 215px);min-height:460px;background:var(--surface-card);border:1px solid var(--border-card);border-radius:22px;overflow:hidden;box-shadow:0 1px 2px rgba(15,22,51,.04),0 8px 24px rgba(15,22,51,.04)}
+    .su-mlist{display:flex;flex-direction:column;min-height:0;min-width:0;border-right:1px solid var(--border-hairline)}
+    .su-mpane{display:flex;flex-direction:column;min-height:0;min-width:0}
+    .su-mback{display:none}
+    @media (max-width:860px){
+      .su-msgx{grid-template-columns:minmax(0,1fr);height:calc(100vh - 255px);height:calc(100dvh - 255px);min-height:360px}
+      .su-msgx>.su-mlist{display:var(--ml,flex);border-right:none}
+      .su-msgx>.su-mpane{display:var(--mp,none)}
+      .su-mback{display:inline-flex}
+    }
     .su-tdherogrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,1fr);gap:26px;align-items:center}
     .su-tdopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
     .su-tdopts option{color:#0F1633}
@@ -2556,31 +2569,111 @@
       </sc-if>
 
       <sc-if value="{{ secMessages }}" hint-placeholder-val="{{ false }}">
-        <div class="su-msg" style="display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;background:var(--surface-card);border:1px solid var(--border-card);min-height:480px;border-radius:12px">
-          <div class="su-tabs" style="border-right:1px solid var(--border-hairline);display:flex;flex-direction:column;padding:12px 0">
-            <sc-for list="{{ msgTabs }}" as="tab" hint-placeholder-count="2">
-              <button onClick="{{ tab.select }}" style="{{ tab.style }}" style-hover="background:var(--gray-100)">
-                <span style="{{ tab.dot }}"></span>
-                <span style="{{ tab.nameStyle }}">{{ tab.name }}</span>
-                <sc-if value="{{ tab.unread }}" hint-placeholder-val="{{ 2 }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:600;padding:1px 8px">{{ tab.unread }}</span></sc-if>
-              </button>
-            </sc-for>
-          </div>
-          <div style="display:flex;flex-direction:column">
-            <div class="su-thread" style="flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:520px">
-              <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
-                <div style="{{ m.rowStyle }}">
-                  <div style="{{ m.bubbleStyle }}">
-                    <div style="font-size:11px;font-weight:600;margin-bottom:3px;opacity:.7">{{ m.who }} · {{ m.when }}</div>
-                    <div style="font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere">{{ m.text }}</div>
-                  </div>
+        <div class="su-msgx" style="{{ msgWrap }}">
+          <div class="su-mlist">
+            <div style="padding:16px 14px 10px;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;background:var(--gray-100);border-radius:14px;padding:10px 13px">
+                <span style="{{ msgIcoSearch }}"></span>
+                <input value="{{ dMsgQ }}" onChange="{{ onMsgQ }}" placeholder="Search conversations" aria-label="Search conversations" autocomplete="off" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-size:14px;padding:0">
+              </div>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:0 8px 12px;display:flex;flex-direction:column;gap:2px">
+              <sc-if value="{{ msgHasTeam }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 8px 4px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Team</span>
+                  <sc-if value="{{ msgCanNew }}" hint-placeholder-val="{{ false }}"><button onClick="{{ msgNewChat }}" style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:700;cursor:pointer;padding:0">+ New chat</button></sc-if>
                 </div>
+                <sc-for list="{{ msgTeamRows }}" as="r" hint-placeholder-count="1">
+                <button onClick="{{ r.select }}" style="{{ r.style }}" style-hover="background:var(--gray-100)">
+                  <span style="{{ r.avatar }}"><sc-if value="{{ r.hasIcon }}" hint-placeholder-val="{{ false }}"><span style="{{ r.icon }}"></span></sc-if>{{ r.initials }}</span>
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                    <span style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="{{ r.nameStyle }}">{{ r.name }}</span><span style="font-size:11px;color:var(--text-muted);flex:none">{{ r.when }}</span></span>
+                    <span style="{{ r.subStyle }}">{{ r.sub }}</span>
+                  </span>
+                  <sc-if value="{{ r.unread }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:700;padding:1px 8px;flex:none">{{ r.unread }}</span></sc-if>
+                </button>
+                </sc-for>
+              </sc-if>
+              <div style="padding:12px 8px 4px"><span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Clients</span></div>
+              <sc-for list="{{ msgClientRows }}" as="r" hint-placeholder-count="3">
+                <button onClick="{{ r.select }}" style="{{ r.style }}" style-hover="background:var(--gray-100)">
+                  <span style="{{ r.avatar }}"><sc-if value="{{ r.hasIcon }}" hint-placeholder-val="{{ false }}"><span style="{{ r.icon }}"></span></sc-if>{{ r.initials }}</span>
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                    <span style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="{{ r.nameStyle }}">{{ r.name }}</span><span style="font-size:11px;color:var(--text-muted);flex:none">{{ r.when }}</span></span>
+                    <span style="{{ r.subStyle }}">{{ r.sub }}</span>
+                  </span>
+                  <sc-if value="{{ r.unread }}" hint-placeholder-val="{{ false }}"><span style="background:var(--green);color:#fff;border-radius:12px;font-size:11px;font-weight:700;padding:1px 8px;flex:none">{{ r.unread }}</span></sc-if>
+                </button>
               </sc-for>
+              <sc-if value="{{ msgNoClients }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-muted);padding:8px">No conversations match.</div></sc-if>
             </div>
-            <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border-hairline)">
-              <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}…" style="flex:1;border:1px solid var(--gray-200);border-radius:12px;padding:10px 12px;font-size:14px">
-              <button onClick="{{ sendMsg }}" style="background:var(--cta-bg);color:#fff;border:none;padding:10px 22px;font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#000">Send</button>
-            </div>
+          </div>
+          <div class="su-mpane">
+            <sc-if value="{{ msgThreadOn }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border-hairline);min-width:0">
+                <button class="su-mback" onClick="{{ msgBack }}" aria-label="Back to conversations" style="width:36px;height:36px;flex:none;align-items:center;justify-content:center;background:var(--gray-100);border:none;border-radius:12px;color:var(--navy);cursor:pointer;padding:0"><span style="{{ msgIcoBack }}"></span></button>
+                <span style="{{ msgHeadAvatar }}"><span style="{{ msgHeadIcon }}"></span>{{ msgHeadInitials }}</span>
+                <div style="flex:1;min-width:0">
+                  <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ msgHeadName }}</div>
+                  <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ msgHeadSub }}</div>
+                </div>
+                <span class="su-ovchip" style="{{ msgHeadTagStyle }}">{{ msgHeadTag }}</span>
+                <sc-if value="{{ msgCanEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ msgEditChat }}" style="flex:none;background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--navy);cursor:pointer" style-hover="border-color:var(--navy)">Edit</button></sc-if>
+              </div>
+              <div id="su-msg-scroll" style="flex:1;min-height:0;overflow-y:auto;padding:14px 18px 18px;display:flex;flex-direction:column">
+                <sc-for list="{{ thread }}" as="m" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column">
+                    <sc-if value="{{ m.hasDay }}" hint-placeholder-val="{{ false }}"><div style="align-self:center;font-size:11px;font-weight:700;color:var(--text-muted);background:var(--gray-100);border-radius:999px;padding:3px 12px;margin:12px 0 4px">{{ m.day }}</div></sc-if>
+                    <div style="{{ m.lineStyle }}">
+                      <span style="{{ m.avatar }}">{{ m.initials }}</span>
+                      <div style="{{ m.colStyle }}">
+                        <sc-if value="{{ m.showWho }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px;color:var(--text-muted)"><strong style="color:var(--navy);font-weight:700">{{ m.who }}</strong> · {{ m.time }}</div></sc-if>
+                        <div title="{{ m.when }}" style="{{ m.bubble2 }}">{{ m.text }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ msgEmpty }}" hint-placeholder-val="{{ false }}"><div style="margin:auto;text-align:center;font-size:13.5px;color:var(--text-muted);padding:30px 20px">{{ msgEmptyText }}</div></sc-if>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;padding:12px 14px;border-top:1px solid var(--border-hairline)">
+                <input value="{{ dMsg }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Message {{ threadName }}" aria-label="Write a message" style="flex:1;min-width:0;border:1px solid var(--gray-200);border-radius:14px;padding:12px 14px;font-size:14px">
+                <button onClick="{{ sendMsg }}" aria-label="Send" style="flex:none;display:inline-flex;align-items:center;gap:7px;background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:14px;padding:12px 18px;font-weight:700;font-size:13px;cursor:pointer" style-hover="opacity:.88"><span style="{{ msgIcoSend }}"></span>Send</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ msgFormOn }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;min-height:0;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+                <div>
+                  <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--navy)">{{ cfTitle }}</div>
+                  <div style="font-size:13px;color:var(--text-muted);margin-top:3px">Internal only. Clients never see team chats, and only the people you add can read this one.</div>
+                </div>
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Chat name
+                  <input value="{{ cfName }}" onChange="{{ onCfName }}" placeholder="Accounting, Developers, Content" style="border:1px solid var(--gray-200);border-radius:12px;padding:11px 13px;font-size:14px;font-weight:500;color:var(--navy);text-transform:none;letter-spacing:0">
+                </label>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)">Who is in it</span>
+                  <sc-for list="{{ cfPeople }}" as="pp" hint-placeholder-count="3">
+                    <button onClick="{{ pp.toggle }}" style="{{ pp.style }}">
+                      <span style="{{ pp.box }}">{{ pp.mark }}</span>
+                      <span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--navy)">{{ pp.name }}</span>
+                      <span style="font-size:12px;color:var(--text-muted)">{{ pp.note }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                  <button onClick="{{ cfSave }}" style="background:var(--pill-bg);color:var(--pill-fg);border:none;border-radius:12px;padding:11px 22px;font-weight:700;font-size:13px;cursor:pointer" style-hover="opacity:.88">{{ cfSaveLabel }}</button>
+                  <button onClick="{{ cfCancel }}" style="background:var(--surface-card);border:1px solid var(--gray-200);border-radius:12px;padding:10px 18px;font-size:13px;color:var(--text-body);cursor:pointer" style-hover="border-color:var(--navy)">Cancel</button>
+                  <span style="flex:1"></span>
+                  <sc-if value="{{ cfCanDelete }}" hint-placeholder-val="{{ false }}">
+                    <sc-if value="{{ cfAsk }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:12.5px;color:var(--danger-fg);font-weight:600">Delete this chat and its messages?</span>
+                      <button onClick="{{ cfDelete }}" style="background:#D8564E;color:#fff;border:none;border-radius:12px;padding:9px 16px;font-weight:700;font-size:12.5px;cursor:pointer">Yes, delete</button>
+                      <button onClick="{{ cfKeep }}" style="background:none;border:1px solid var(--gray-200);border-radius:12px;padding:8px 14px;font-size:12.5px;color:var(--text-body);cursor:pointer">Keep</button>
+                    </sc-if>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ cfCanDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cfAskDelete }}" style="align-self:flex-start;background:none;border:none;color:var(--danger-fg);font-size:12.5px;font-weight:600;cursor:pointer;padding:0">Delete chat</button></sc-if>
+              </div>
+            </sc-if>
           </div>
         </div>
       </sc-if>
@@ -6092,7 +6185,7 @@ class Component extends DCLogic {
     };
   }
   emptyData(){
-    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],report_docs:[],chatbot_intake:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[]};
+    return {clients:[],todos:[],work:[],requests:[],updates:[],messages:[],files:[],invoices:[],log:[],strategy:[],report_docs:[],chatbot_intake:[],leads:[],lead_notes:[],lead_emails:[],reports:{},team:[],payments:[],time:[],rates:[],people:[],reads:[],team_chats:[],chatsReady:false};
   }
   componentDidMount(){
     window.SUBoot.ready.then(({profile,data})=>{
@@ -6176,6 +6269,10 @@ class Component extends DCLogic {
   componentDidUpdate(){
     const S=this.state, me=S.profile;
     if(!S.booted || !me || S.section!=='messages') return;
+    // Opening a conversation, or a new message in it, lands on the newest line.
+    const box = document.getElementById('su-msg-scroll');
+    if(box){ const key = S.msgClient+'|'+(S.msgBiz||'')+'|'+box.childElementCount;
+      if(this.__msgKey!==key || this.__msgStick){ this.__msgKey=key; this.__msgStick=false; box.scrollTop = box.scrollHeight; } }
     // Only while this window is actually in front. Marking read on arrival
     // regardless meant a message that landed in a background tab was read
     // before anyone saw it, and the unread count never appeared at all.
@@ -6188,8 +6285,9 @@ class Component extends DCLogic {
     const last = r ? Number(r.lastReadTs||0) : 0;
     // Only the other side's messages count, and marking read pushes the marker
     // past them — so this settles after one pass rather than looping.
+    const chatKey = inTeamView && String(cid).indexOf('chat:')===0 ? String(cid).slice(5) : '';
     const newest = (S.data.messages||[]).reduce(
-      (a,m)=>(m.clientId===cid && m.from===other && m.ts>a) ? m.ts : a, 0);
+      (a,m)=>((chatKey ? (!m.clientId && m.chatId===chatKey && m.by!==me.id) : (m.clientId===cid && m.from===other)) && m.ts>a) ? m.ts : a, 0);
     if(newest > last) this.markRead(cid);
   }
   // Diffs the current tree against the last successfully-persisted one, so
@@ -8408,7 +8506,9 @@ class Component extends DCLogic {
       return r?Number(r.lastReadTs||0):0; };
     const unreadFor = cid=>D.messages.filter(m=>m.clientId===cid&&m.from===otherSide&&m.ts>readTs(cid)).length;
     // Same reason: in the portal the count is this client's, not every client's.
-    const unreadTotal = isTeam ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0) : unreadFor(client.id);
+    const teamChats = isTeam ? (D.team_chats||[]) : [];
+    const chatUnread = id=>D.messages.filter(m=>!m.clientId&&m.chatId===id&&m.by!==me.id&&m.ts>readTs('chat:'+id)).length;
+    const unreadTotal = isTeam ? D.clients.reduce((a,c)=>a+unreadFor(c.id),0)+teamChats.reduce((a,c)=>a+chatUnread(c.id),0) : unreadFor(client.id);
     const markRead = cid=>this.markRead(cid);
 
     // ===== strategy boards =====
@@ -8546,6 +8646,7 @@ class Component extends DCLogic {
       panel:'M4 4h16v16H4zM9 4v16',
       search:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4',
       filter:'M4 6h16M7 12h10M10 18h4',
+      send:'M4 12l16-8-6 16-3-7z',
       out:'M9 20H5V4h4M15 16l4-4-4-4M19 12H9',
       back:'M19 12H5M11 6l-6 6 6 6',
       phone:'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z',
@@ -8633,7 +8734,11 @@ class Component extends DCLogic {
       return {name:p?String(p.name||p.email||'').trim():'', isAgent:!!(p&&p.isAgent)}; };
     const unseenN = notifSrc.filter(l=>l.ts>S.seenTs).length;
     // messages
-    const msgCid = isTeam? S.msgClient : client.id;
+    const msgChatId = isTeam && String(S.msgClient||'').indexOf('chat:')===0 ? String(S.msgClient).slice(5) : '';
+    const curChat = msgChatId ? teamChats.find(c=>c.id===msgChatId) : null;
+    // A chat that is gone (deleted, or this person was taken out of it) falls
+    // back to the first client board rather than an empty page.
+    const msgCid = isTeam? ((msgChatId && !curChat) ? ((D.clients[0]||{}).id||'') : S.msgClient) : client.id;
     // Older messages stored the company alone. Where the sender is known they
     // are signed properly on the way out; where they are not, the company is
     // still better than nothing.
@@ -8650,9 +8755,28 @@ class Component extends DCLogic {
     const msgOrg = orgRec(msgCid);
     const teamMsgBiz = (isTeam && isMultiOrg(msgOrg) && bizById(msgOrg,S.msgBiz))? S.msgBiz : '';
     const msgShowCo = isTeam? (isMultiOrg(msgOrg) && !teamMsgBiz) : orgOverview;
-    const thread = D.messages.filter(m=>m.clientId===msgCid && (!teamMsgBiz || bizIdOf(m)===teamMsgBiz)).sort((a,b)=>a.ts-b.ts).map(m=>{
-      const mine = isTeam? m.from==='team' : m.from==='client';
-      return {who:msgSigner(m)+(msgShowCo? ' · '+bizNameOf(m) : ''),when:this.fmt(m.ts),text:m.text,
+    const msgInitials = n=>{ const p2=String(n||'').replace(/ @ .*/,'').replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);
+      return ((p2[0]||'?').charAt(0)+(p2.length>1?p2[1].charAt(0):'')).toUpperCase(); };
+    const msgDay = ts=>{ const a=new Date(ts), b=new Date(); const k=x=>x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();
+      if(k(a)===k(b)) return 'Today'; b.setDate(b.getDate()-1); if(k(a)===k(b)) return 'Yesterday';
+      return a.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); };
+    const threadRaw = D.messages.filter(m=> curChat ? (!m.clientId && m.chatId===curChat.id)
+      : (m.clientId===msgCid && (!teamMsgBiz || bizIdOf(m)===teamMsgBiz))).sort((a,b)=>a.ts-b.ts);
+    const thread = threadRaw.map((m,i)=>{
+      const mine = curChat ? m.by===me.id : (isTeam? m.from==='team' : m.from==='client');
+      const prev = threadRaw[i-1];
+      const who = curChat ? String(m.who||'').replace(/ @ .*/,'') || 'Team' : msgSigner(m)+(msgShowCo? ' · '+bizNameOf(m) : '');
+      const newDay = !prev || msgDay(prev.ts)!==msgDay(m.ts);
+      // A run of messages from one person within a few minutes reads as one
+      // turn: the name shows once, at the top of it.
+      const head = newDay || !prev || prev.by!==m.by || prev.from!==m.from || (m.ts-prev.ts)>5*60000;
+      return {who,when:this.fmt(m.ts),text:m.text,
+        hasDay:newDay, day:msgDay(m.ts), showWho:head, initials:msgInitials(who),
+        time:new Date(m.ts).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),
+        avatar:{width:30,height:30,flex:'none',borderRadius:10,background:mine?'var(--chrome)':'var(--gray-200)',color:mine?'#fff':'var(--navy)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10.5,fontWeight:700,visibility:head?'visible':'hidden'},
+        lineStyle:{display:'flex',gap:9,alignItems:'flex-start',flexDirection:mine?'row-reverse':'row',marginTop:head?10:2},
+        colStyle:{display:'flex',flexDirection:'column',gap:3,maxWidth:'74%',minWidth:0,alignItems:mine?'flex-end':'flex-start'},
+        bubble2:{padding:'9px 13px',fontSize:14,lineHeight:1.5,whiteSpace:'pre-wrap',overflowWrap:'anywhere',background:mine?'var(--pill-bg)':'var(--gray-100)',color:mine?'var(--pill-fg)':'var(--text-body)',borderRadius:mine?'16px 16px 4px 16px':'16px 16px 16px 4px'},
         rowStyle:{display:'flex',justifyContent:mine?'flex-end':'flex-start'},
         bubbleStyle:{maxWidth:'70%',padding:'10px 14px',background:mine?'var(--cta-bg)':'var(--gray-100)',color:mine?'var(--cta-fg)':'var(--text-body)',borderRadius:mine?'12px 12px 2px 12px':'12px 12px 12px 2px'}};
     });
@@ -8668,6 +8792,15 @@ class Component extends DCLogic {
       return person ? person + ' @ ' + org : org;
     };
     const sendMsg=()=>{ const text=(d.msg||'').trim(); if(!text) return;
+      if(curChat){
+        // A chat message has no client. It carries the chat it belongs to, and
+        // the database only shows it to people in that chat.
+        const person = String(me.name || meRow.name || me.email || '').trim() || 'Team';
+        this.set(x=>{ x.messages.push({id:this.uid(),clientId:'',chatId:curChat.id,from:'team',by:me.id,who:person,text,ts:Date.now()}); return x; });
+        this.setState(s=>({d:{...s.d,msg:''}}));
+        this.__msgStick = true;
+        return; }
+      this.__msgStick = true;
       const side = isTeam? 'team' : 'client';
       const teamCo = isTeam && isMultiOrg(msgOrg)? {businessId: teamMsgBiz || mainBizId(msgOrg)} : {};
       this.set(x=>{ x.messages.push(Object.assign({id:this.uid(),clientId:msgCid,from:side,by:me.id,
@@ -11767,7 +11900,7 @@ class Component extends DCLogic {
       const m=ms.reduce((a,b2)=>(b2.ts||0)>(a.ts||0)?b2:a); const un=unreadFor(c.id);
       return {ts:m.ts||0,name:c.name,initials:initialsOf(c.name),avatar:avatarOf(c.id,36),when:this.fmt(m.ts),line:msgSigner(m)+': '+(m.text||''),unread:un>0?un:false,
         textStyle:{fontSize:12.5,color:un>0?'var(--navy)':'var(--text-muted)',fontWeight:un>0?600:400,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
-        open:()=>{ markRead(c.id); this.setState({section:'messages',msgClient:c.id,notifOpen:false}); }}; }).filter(Boolean)
+        open:()=>{ markRead(c.id); this.setState({section:'messages',msgClient:c.id,msgOpen:true,chatForm:null,notifOpen:false}); }}; }).filter(Boolean)
       .sort((a,b2)=>(Number(!!b2.unread)-Number(!!a.unread))||b2.ts-a.ts).slice(0,5);
     const ovTodoTab = S.ovTodoTab==='team' ? 'team' : 'mine';
     const teamOpenN = D.todos.filter(t=>t.who==='team'&&!t.done).length;
@@ -12202,6 +12335,85 @@ class Component extends DCLogic {
       leadSummary: (leadView==='list' ? 'Showing '+Math.min(leadListN,leadSorted.length)+' of '+leadSorted.length : leadsF.length+' of '+leadsAll.length)+' leads'
         +(leadFiltered?', filtered.':'.')+' Amber marks a follow-up that is due, green a reply.',
       leadFiltBtn:{display:'inline-flex',alignItems:'center',gap:7,background:S.leadFiltOpen?'var(--navy)':'var(--surface-card)',color:S.leadFiltOpen?'#fff':'var(--navy)',border:'1px solid '+(S.leadFiltOpen?'var(--navy)':'var(--gray-200)'),borderRadius:14,padding:'10px 14px',fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'var(--font-body)'}
+    };
+    // ===== Messages page =====
+    // One list of conversations: team chats first, then every client board,
+    // unread on top. A chat is internal; a client board is shared with them.
+    const mq = String(d.msgQ||'').trim().toLowerCase();
+    const mAv = (bg,fg)=>({width:40,height:40,flex:'none',borderRadius:13,background:bg,color:fg,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12.5,fontWeight:700});
+    const mRow = (on,un)=>({display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',background:on?'var(--gray-100)':'transparent',border:'none',borderRadius:14,padding:'10px 10px',cursor:'pointer',fontFamily:'var(--font-body)',boxShadow:on?'inset 3px 0 0 var(--blue)':'none'});
+    const mLast = list=>{ const m=list.reduce((a,b)=>(!a||(b.ts||0)>(a.ts||0))?b:a,null); return m; };
+    const mPrev = (m,chat)=> m ? ((chat? String(m.who||'').replace(/ @ .*/,'') : (m.from==='team'?'Us':'Them'))+': '+String(m.text||'').replace(/\s+/g,' ')) : 'No messages yet';
+    const openConv = (key,biz)=>()=>{ markRead(key); this.setState({msgClient:key,msgBiz:biz||'',msgOpen:true,chatForm:null}); };
+    const chatRows = teamChats.map(c=>{ const key='chat:'+c.id, list=D.messages.filter(m=>!m.clientId&&m.chatId===c.id), last=mLast(list), un=chatUnread(c.id), on=!!curChat&&curChat.id===c.id;
+      return {key,name:c.name||'Team chat',sub:mPrev(last,true),when:last?this.fmt(last.ts):'',ts:last?last.ts:0,unread:un>0?un:false,initials:'',
+        avatar:mAv('var(--chrome)','#fff'),icon:ico('users',17),hasIcon:true,isSub:false,
+        nameStyle:{fontSize:14,fontWeight:un?800:600,color:'var(--navy)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+        subStyle:{fontSize:12.5,color:un?'var(--navy)':'var(--text-muted)',fontWeight:un?600:400,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+        select:openConv(key),style:mRow(on,un)}; })
+      .filter(r=>!mq||r.name.toLowerCase().indexOf(mq)>=0);
+    const clientRows = D.clients.map(c=>{ const list=D.messages.filter(m=>m.clientId===c.id), last=mLast(list), un=unreadFor(c.id);
+        const on=!curChat && msgCid===c.id && (!isMultiOrg(c) || !teamMsgBiz);
+        return {c,key:c.id,name:c.name,sub:mPrev(last,false),when:last?this.fmt(last.ts):'',ts:last?last.ts:0,unread:un>0?un:false,
+          initials:msgInitials(c.name),avatar:mAv(clientColor(c.id),'#fff'),hasIcon:false,icon:{},isSub:false,
+          nameStyle:{fontSize:14,fontWeight:un?800:600,color:'var(--navy)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+          subStyle:{fontSize:12.5,color:un?'var(--navy)':'var(--text-muted)',fontWeight:un?600:400,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+          select:openConv(c.id),style:mRow(on,un)}; })
+      .filter(r=>!mq||r.name.toLowerCase().indexOf(mq)>=0)
+      .sort((a,b)=>(Number(!!b.unread)-Number(!!a.unread)) || (b.ts-a.ts) || a.name.localeCompare(b.name))
+      .flatMap(r=>{ const c=r.c;
+        if(curChat || !isMultiOrg(c) || msgCid!==c.id) return [r];
+        // The companies open underneath the organization that is selected.
+        return [r].concat(bizList(c).map(b=>{ const on=teamMsgBiz===b.id;
+          const n=D.messages.filter(m=>m.clientId===c.id&&bizIdOf(m)===b.id&&m.from===otherSide&&m.ts>readTs(c.id)).length;
+          return {key:c.id+'|'+b.id,name:b.name,sub:'',when:'',unread:n>0?n:false,initials:'',hasIcon:false,icon:{},isSub:true,
+            avatar:{width:8,height:8,flex:'none',borderRadius:'50%',background:on?'var(--blue)':'var(--gray-400)',margin:'0 6px 0 26px'},
+            nameStyle:{fontSize:13,fontWeight:on?700:500,color:'var(--navy)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},subStyle:{display:'none'},
+            select:openConv(c.id,b.id),style:Object.assign(mRow(on,n),{padding:'7px 10px'})}; })); });
+    const teamPeople = (D.team||[]).filter(t=>t.active!==false&&!t.isAgent);
+    const pName = id=>{ const t=(D.team||[]).find(x=>x.id===id); return t?String(t.name||t.email||'').trim():''; };
+    const CF = S.chatForm || null;
+    const canChats = isTeam && isAdmin && !previewing && !!D.chatsReady;
+    const saveChat = ()=>{ if(!CF) return; const name=String(CF.name||'').trim();
+      if(!name) return this.setState({syncError:'Give the chat a name.'});
+      const id = CF.id || ('c'+this.uid());
+      this.setState({syncError:null});
+      this.set(x=>{ x.team_chats=(x.team_chats||[]).slice(); const cur=x.team_chats.find(c=>c.id===id);
+        if(cur){ cur.name=name; if(!cur.everyone) cur.members=CF.members.slice(); }
+        else x.team_chats.push({id,clientId:'',ts:Date.now(),name,everyone:false,members:CF.members.slice(),createdBy:me.id});
+        return x; });
+      this.setState({chatForm:null,msgClient:'chat:'+id,msgBiz:'',msgOpen:true}); };
+    const msgVals = {
+      msgWrap:{'--ml':S.msgOpen?'none':'flex','--mp':S.msgOpen?'flex':'none'},
+      msgTeamRows:chatRows, msgHasTeam:chatRows.length>0 || canChats, msgClientRows:clientRows, msgNoClients:clientRows.length===0,
+      dMsgQ:d.msgQ||'', onMsgQ:this.draft('msgQ'), msgIcoSearch:Object.assign(ico('search',16),{color:'var(--text-muted)'}),
+      msgCanNew:canChats, msgNewChat:()=>this.setState({chatForm:{id:null,name:'',members:[me.id]},msgOpen:true}),
+      msgBack:()=>this.setState({msgOpen:false,chatForm:null}), msgIcoBack:ico('back',17),
+      msgHeadName: curChat ? (curChat.name||'Team chat') : (isMultiOrg(msgOrg)&&teamMsgBiz ? orgLabel({clientId:msgCid,businessId:teamMsgBiz}) : cname(msgCid)),
+      msgHeadSub: curChat ? (curChat.everyone ? 'Internal. Everyone on the team is in this chat.' : 'Internal. '+((curChat.members||[]).map(pName).filter(Boolean).join(', ')||'No one added yet'))
+        : 'Client board. '+cname(msgCid)+' can read everything here.',
+      msgHeadAvatar: curChat ? mAv('var(--chrome)','#fff') : mAv(clientColor(msgCid),'#fff'),
+      msgHeadInitials: curChat ? '' : msgInitials(cname(msgCid)), msgHeadIcon: curChat ? ico('users',17) : {display:'none'},
+      msgHeadTag: curChat ? 'Internal' : 'Client can see', msgHeadTagStyle:{flex:'none',fontSize:11,fontWeight:700,borderRadius:8,padding:'3px 9px',whiteSpace:'nowrap',
+        background:curChat?'rgba(46,63,214,.09)':'rgba(214,143,46,.16)',color:curChat?'var(--blue)':'#a2691a'},
+      msgCanEdit: canChats && !!curChat && !curChat.everyone,
+      msgEditChat:()=>this.setState({chatForm:{id:curChat.id,name:curChat.name||'',members:(curChat.members||[]).slice()}}),
+      msgThreadOn:!CF, msgFormOn:!!CF, msgEmpty:!CF && thread.length===0,
+      msgEmptyText: curChat ? 'No messages yet. Say hello to the team.' : 'No messages yet. Anything you send here goes to the client.',
+      msgIcoSend:ico('send',17),
+      cfTitle: CF ? (CF.id?'Edit chat':'New team chat') : '', cfName: CF?CF.name:'',
+      onCfName:e=>{ const v=e.target.value; this.setState(s2=>({chatForm:Object.assign({},s2.chatForm,{name:v})})); },
+      cfPeople: CF ? teamPeople.map(t=>{ const on=CF.members.indexOf(t.id)>=0;
+        return {name:String(t.name||t.email||''),note:t.isAdmin?'Admin, sees every chat':'',initials:msgInitials(t.name||t.email),
+          toggle:()=>this.setState(s2=>{ const m=s2.chatForm.members.slice(), i=m.indexOf(t.id); if(i>=0) m.splice(i,1); else m.push(t.id); return {chatForm:Object.assign({},s2.chatForm,{members:m})}; }),
+          box:this.box(on), mark:on?'✓':'',
+          style:{display:'flex',alignItems:'center',gap:12,width:'100%',textAlign:'left',background:on?'rgba(46,63,214,.07)':'transparent',border:'1px solid '+(on?'rgba(46,63,214,.25)':'var(--border-hairline)'),borderRadius:14,padding:'10px 12px',cursor:'pointer',fontFamily:'var(--font-body)'}}; }) : [],
+      cfSave:saveChat, cfSaveLabel: CF&&CF.id ? 'Save changes' : 'Create chat', cfCancel:()=>this.setState({chatForm:null}),
+      cfCanDelete: !!(CF&&CF.id), cfAsk:!!(CF&&CF.ask),
+      cfAskDelete:()=>this.setState(s2=>({chatForm:Object.assign({},s2.chatForm,{ask:true})})),
+      cfKeep:()=>this.setState(s2=>({chatForm:Object.assign({},s2.chatForm,{ask:false})})),
+      cfDelete:()=>{ const id=CF.id; this.set(x=>{ x.team_chats=(x.team_chats||[]).filter(c=>c.id!==id); x.messages=x.messages.filter(m=>!(!m.clientId&&m.chatId===id)); return x; });
+        this.setState({chatForm:null,msgClient:'chat:general',msgOpen:false}); }
     };
     const leadVals={
       secLeads:isTeam&&secKey('leads'),
@@ -12950,22 +13162,8 @@ class Component extends DCLogic {
       noClientCardsText:({active:'No active clients.',stalled:'No stale clients.',inactive:'No inactive clients.'}[S.clientTab||'active']||'No clients yet.'), newRequests, noNewRequests:newRequests.length===0,
       teamCurrentReqs, noTeamCurrentReqs:teamCurrentReqs.length===0,
       teamDoneReqs, noTeamDoneReqs:teamDoneReqs.length===0,
-      msgTabs:D.clients.flatMap(c=>{ const active=S.msgClient===c.id && (!isMultiOrg(c) || !teamMsgBiz);
-        const un=unreadFor(c.id);
-        const row={name:c.name+(isMultiOrg(c)?' (all)':''),dot:clientDot(c.id),unread:un>0?un:false,
-          // Selecting a thread is what marks it read.
-          select:()=>{ markRead(c.id); this.setState({msgClient:c.id,msgBiz:''}); },
-          nameStyle:{flex:1,fontWeight:un?700:(active?600:400)},
-          style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:active?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(active?clientColor(c.id):'transparent'),padding:'12px 16px',fontSize:14,fontWeight:active?600:400,color:'var(--navy)',cursor:'pointer'}};
-        if(!isMultiOrg(c) || S.msgClient!==c.id) return [row];
-        // The companies open underneath the organization that is selected.
-        return [row].concat(bizList(c).map(b=>{ const on=teamMsgBiz===b.id;
-          const n=D.messages.filter(m=>m.clientId===c.id&&bizIdOf(m)===b.id&&m.from===otherSide&&m.ts>readTs(c.id)).length;
-          return {name:b.name, dot:{width:6,height:6,minWidth:6,borderRadius:'50%',background:'var(--gray-400)',marginLeft:14}, unread:n>0?n:false,
-            select:()=>{ markRead(c.id); this.setState({msgClient:c.id,msgBiz:b.id}); },
-            nameStyle:{flex:1,fontWeight:on?600:400,fontSize:13},
-            style:{display:'flex',alignItems:'center',gap:10,textAlign:'left',background:on?'var(--gray-100)':'transparent',border:'none',borderLeft:'3px solid '+(on?clientColor(c.id):'transparent'),padding:'9px 16px',fontSize:13,color:'var(--navy)',cursor:'pointer'}}; })); }),
-      thread, threadName:isTeam?(isMultiOrg(msgOrg)? orgLabel({clientId:msgCid,businessId:teamMsgBiz||mainBizId(msgOrg)}) : cname(msgCid)):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
+      ...msgVals,
+      thread, threadName:isTeam?(curChat? (curChat.name||'the team') : (isMultiOrg(msgOrg)? orgLabel({clientId:msgCid,businessId:teamMsgBiz||mainBizId(msgOrg)}) : cname(msgCid))):'the team', dMsg:d.msg||'', onMsg:this.draft('msg'),
       onMsgKey:e=>{ if(e.key==='Enter') sendMsg(); }, sendMsg,
       portalUpdates, dFeedback:d.feedback||'', onFeedback:this.draft('feedback'),
       pulsePrompt:rated?'Thanks, your rating is in for '+month+'.':'Rate '+month+' from 1 to 5. It goes straight to the team.',
